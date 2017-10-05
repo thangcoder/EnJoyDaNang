@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="rollcalled">#C8C9CE</color>
+    <color name="black">#000000</color>
+    <color name="boder">#cccccc</color>
+    <color name="circle_room">#595970</color>
+    <color name="background_camera">#e2e2e7</color>
+    <color name="message_left">#323232</color>
+    <color name="background_editext">#fafafa</color>
+    <color name="send">#d74157</color>
+    <color name="item_right_chat">#2d2d41</color>
+    <color name="item_left_chat">#eeeeee</color>
+    <color name="tool_bar">#f7f7f7</color>
+    <color name="text_tool_bar">#323232</color>
+    <color name="colorRed">#d74157</color>
+    <color name="colorPoint">#2d2d41</color>
+    <color name="toolbarColor">#F7F7F7</color>
+    <color name="menuchatgroupColor">#2D2D41</color>
+    <color name="menuchatgroupColorSelected">#1B1B27</color>
+    <color name="colortransparent50">#7f000000</color>
+    <color name="button_roll_call_pres_color">#62D4C5</color>
+    <color name="button_roll_call_default_color">#436E9A</color>
+
+    <!--color status bar roll call leader-->
+    <color name="color_status_bar_awake_enable">#3c3c4d</color>
+    <color name="color_status_bar_awake_disable">#bfc1c9</color>
+    <color name="color_status_bar_atten_enable">#31313E</color>
+    <color name="color_status_bar_atten_disable">#a7a9b0</color>
+
+    <!--screen notice-->
+    <color name="color_text_title_on_bar">#323232</color>
+    <color name="color_gray">#eeeeee</color>
+    <color name="color_title_rentable">#e9eef3</color>
+    <color name="color_default">#31313e</color>
+
+    <!--button bg-->
+    <color name="color_gray_start">#DDDDDD</color>
+    <color name="color_gray_end">#777777</color>
+    <color name="color_gray_B">#BBBBBB</color>
+    <color name="color_gray_member">#DDDDDD</color>
+    <color name="color_gray_666">#666666</color>
+    <color name="btn_enable_start">#70F3D3</color>
+    <color name="btn_enable_end">#43589A</color>
+
+    <color name="btn_login_start">#666666</color>
+    <color name="btn_login_end">#70F3D3</color>
+
+    <!--text notice-->
+    <color name="color_text_notice_on">#323232</color>
+    <color name="color_text_notice_off">#d7d7d7</color>
+    <color name="color_greg">#d7d7d7</color>
+    <color name="color_text_date_notice">#999999</color>
+
+
+    <!--Color Chips edittext-->
+
+    <color name="chip_item_background">#fcfcfc</color>
+    <color name="chip_item_text_color">#333333</color>
+    <color name="chip_item_text_background">#dcdcdc</color>
+    <color name="default_item_background">#ffffff</color>
+    <color name="selected_item_background">#dcdcdc</color>
+
+    <color name="color_text_alarm_setting">#164F86</color>
+    <color name="btn_sent_report_disable">#BFBFC9</color>
+    <color name="bg_sign_report">#F7F7F7</color>
+    <color name="text_color">#323232</color>
+    <color name="dark">#2d2d41</color>
+    <color name="brownishGrey">#666666</color>
+    <color name="black32">#323232</color>
+    <color name="warmGrey153">#999999</color>
+    <color name="charcoalGrey">#31313E</color>
+    <color name="color_line_horizontal">#444457</color>
+    <color name="color_row_setting_press">#D0D0D0</color>
+    <color name="color_text_tutorial">#44739D</color>
+    <color name="color_background_tutorial">#EFFFFE</color>
+
+
+</resources>

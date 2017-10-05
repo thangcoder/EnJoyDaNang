@@ -1,0 +1,77 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+ext.deps = [
+        //AppCompat
+        appcompat          : 'com.android.support:appcompat-v7:25.0.1',
+
+
+        recyclerView       : 'com.android.support:recyclerview-v7:25.0.1',
+        cardView           : 'com.android.support:cardview-v7:23.3.0',
+        design             : 'com.android.support:design:25.0.1',
+        // RxJava
+        rxjava             : 'io.reactivex:rxjava:1.2.0',
+        rxandroid          : 'io.reactivex:rxandroid:1.2.1',
+
+        // Dagger
+//        dagger             : 'com.google.dagger:dagger:2.4',
+//        daggercompiler     : 'com.google.dagger:dagger-compiler:2.4',
+//        daggerprovided     : 'javax.annotation:jsr250-api:1.0',
+
+        // Unit test dependencies
+        retrofit           : 'com.squareup.retrofit2:retrofit:2.0.2',
+        retrofitRx         : 'com.squareup.retrofit2:adapter-rxjava:2.0.2',
+
+        //butter knife
+        butterknifecompiler: 'com.jakewharton:butterknife:8.8.1',
+        butterknifeart     : 'com.jakewharton:butterknife-compiler:8.8.1',
+
+        //Picasso
+        picasso            : 'com.squareup.picasso:picasso:2.5.2',
+
+        //glide
+        glide              :'com.github.bumptech.glide:glide:3.7.0',
+
+        // Integration test dependencies
+        gson               : 'com.squareup.retrofit2:converter-gson:2.0.1',
+
+
+
+        //Event bus
+        eventBus           : 'org.greenrobot:eventbus:3.0.0',
+        //Mutiple Screen
+        mutipledp          :'com.intuit.sdp:sdp-android:1.0.4',
+
+        mutiplesp          :'com.intuit.ssp:ssp-android:1.0.4',
+        //Circle imageview
+        circle              :'de.hdodenhof:circleimageview:2.1.0',
+
+        //Round Image
+        round_image       :'com.joooonho:selectableroundedimageview:1.0.1',
+        // Freshso
+        fresco            :'com.facebook.fresco:fresco:1.3.0',
+        custom_cardview                  :'com.github.captain-miao:optroundcardview:1.0.0',
+
+
+]

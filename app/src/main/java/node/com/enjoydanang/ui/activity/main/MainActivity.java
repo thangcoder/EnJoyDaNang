@@ -16,6 +16,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar)
@@ -43,6 +45,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override

@@ -30,6 +30,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //cardview
+    compile deps.cardView
     //Mutitple dp
     compile deps.mutipledp
 
@@ -45,6 +47,17 @@ dependencies {
     //Retrofit
     compile deps.retrofit
     compile deps.retrofitRx
+    
+//Picasso
+    compile deps.picasso
+
+//fresco
+    compile deps.fresco
+
+//    //custom cardview
+    compile deps.custom_cardview
+
+
     compile('com.squareup.okhttp3:logging-interceptor:3.4.1') {
         transitive = true
     }

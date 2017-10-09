@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scanbar_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:shouldScaleToFill="true">
+
+    <me.dm7.barcodescanner.zxing.ZXingScannerView xmlns:scan_bar="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/zxing_scarbar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7"
+        scan_bar:shouldScaleToFill="false" />
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/scanbar_botton_control"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="@color/material_white"
+        card_view:cardBackgroundColor="@color/blue"
+        card_view:cardElevation="4dp">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/scanbar_btn_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/material_grey_200"
+            android:padding="10dp"
+            android:text="@string/btnSyncProduct"
+            android:textColor="@color/material_lightBlue_600"
+            tools:ignore="RtlHardcoded" />
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

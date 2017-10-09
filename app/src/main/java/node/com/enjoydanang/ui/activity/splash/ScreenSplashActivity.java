@@ -3,8 +3,6 @@ package node.com.enjoydanang.ui.activity.splash;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.ui.activity.BaseActivity;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.ui.fragment.home.HomeFragment;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;

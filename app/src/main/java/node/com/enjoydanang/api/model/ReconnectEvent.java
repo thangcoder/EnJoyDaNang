@@ -5,7 +5,7 @@ package node.com.enjoydanang.api.model;
  */
 
 public class ReconnectEvent {
-private boolean isReconnect;
+    private boolean isReconnect;
 
     public ReconnectEvent(boolean isReconnect) {
         this.isReconnect = isReconnect;

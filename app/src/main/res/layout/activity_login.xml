@@ -38,8 +38,8 @@
                 android:layout_marginRight="@dimen/btn_sign_in_margin"
                 android:background="@drawable/drawable_round_edt"
                 android:drawableLeft="@drawable/ic_user"
-                android:paddingLeft="10dp"
                 android:drawablePadding="10dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp" />
 
@@ -50,9 +50,9 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="@dimen/btn_sign_in_margin"
                 android:layout_marginRight="@dimen/btn_sign_in_margin"
-                android:drawablePadding="10dp"
                 android:background="@drawable/drawable_round_edt"
                 android:drawableLeft="@drawable/ic_locked"
+                android:drawablePadding="10dp"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"

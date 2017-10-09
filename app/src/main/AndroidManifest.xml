@@ -21,6 +21,11 @@
             android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="node.com.enjoydanang.ui.activity.login.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

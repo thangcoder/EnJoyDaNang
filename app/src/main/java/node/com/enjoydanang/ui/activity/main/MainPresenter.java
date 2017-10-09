@@ -7,9 +7,8 @@ import node.com.enjoydanang.BasePresenter;
  */
 
 public class MainPresenter extends BasePresenter<MainView> {
+
     public MainPresenter(MainView view) {
-        attachView(view);
+        super(view);
     }
-
-
 }

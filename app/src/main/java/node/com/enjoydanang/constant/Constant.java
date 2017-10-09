@@ -28,4 +28,6 @@ public class Constant {
         ROLLCALLED,
         NOROLLCALL;
     }
+
+    public static final int CONNECT_TIME_OUT = 15000;
 }

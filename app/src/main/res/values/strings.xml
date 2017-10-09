@@ -15,4 +15,63 @@
     <string name="setting">Setting</string>
     <string name="logout">Logout</string>
     <string name="version_1_0_0">Version 1.0.0</string>
+
+
+
+    <string name="change_pwd">Change Password</string>
+    <string name="introduction">Introduction</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="user_name_profile_display">UserName</string>
+    <string name="email_profile_display">Email</string>
+
+    <string name="sign_in">Sign in</string>
+
+    <string name="idea_connect">or</string>
+
+
+    <string name="forgot_pwd">Forgot Password ?</string>
+
+    <string name="create_account">Create Account</string>
+
+
+    <string name="connect_with_us">Connect With Us</string>
+
+
+    <string name="already_have_account">Already have an Account ?</string>
+
+
+    <string name="user_name_temp">Tá Võ</string>
+
+    <string name="user_name_profile">admin</string>
+
+
+    <string name="full_name_profile">Tá Võ</string>
+
+    <string name="email_profile">cheatgame.hit@gmail.com</string>
+
+
+    <string name="phone_profile">01674 873 820</string>
+
+
+    <string name="label_user_name">User name</string>
+
+    <string name="label_full_name">Full name</string>
+
+    <string name="label_email">Email</string>
+
+    <string name="label_phone">Phone</string>
+
+
+    <string name="label_old_pwd">Old Password</string>
+
+    <string name="label_new_pwd">New Password</string>
+
+    <string name="label_reinput_pwd">Re-enter New Password</string>
+
+
+    <string name="label_cancel">Cancel</string>
+
+
+    <string name="label_save">Save</string>
 </resources>

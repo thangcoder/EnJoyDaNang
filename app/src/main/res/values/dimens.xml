@@ -5,4 +5,45 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="card_horizontal_margin">16dp</dimen>
+    <dimen name="card_vertial_margin">8dp</dimen>
+    <dimen name="text_title_size">17sp</dimen>
+    <dimen name="text_singer_size">13sp</dimen>
+
+    <dimen name="parallax_image_height">220dp</dimen>
+    <dimen name="parallax_image_height_opacity">165dp</dimen>
+    <dimen name="cardMarginHorizontal">10dp</dimen>
+    <dimen name="cardMarginVertical">8dp</dimen>
+
+    <dimen name="text_size_common">16sp</dimen>
+
+    <dimen name="play_bar_height">57dp</dimen>
+
+    <dimen name="text_title_video">20sp</dimen>
+    <dimen name="text_artist_video">15sp</dimen>
+    <dimen name="screen_tips_top">80dp</dimen>
+
+    <dimen name="card_corner_radius">7dp</dimen>
+    <dimen name="card_elevation">10dp</dimen>
+
+    <dimen name="padding_sliding_tab">7dp</dimen>
+
+    <dimen name="language_title_setting">17sp</dimen>
+
+    <dimen name="toast_height">48dp</dimen>
+
+
+    <dimen name="item_loading_height">50dp</dimen>
+    <dimen name="item_loading_margin">8dp</dimen>
+    <dimen name="item_loading_padding">10dp</dimen>
+
+    <dimen name="avatar_width">90dp</dimen>
+    <dimen name="avatar_height">90dp</dimen>
+    <dimen name="size_display_username">17sp</dimen>
+
+    <dimen name="btn_sign_in_height">50dp</dimen>
+
+
+    <dimen name="btn_sign_in_margin">20dp</dimen>
 </resources>

@@ -25,6 +25,8 @@
     <string name="user_name_profile_display">UserName</string>
     <string name="email_profile_display">Email</string>
 
+    <string name="label_save">Save</string>
+
     <string name="sign_in">Sign in</string>
 
     <string name="idea_connect">or</string>
@@ -73,5 +75,12 @@
     <string name="label_cancel">Cancel</string>
 
 
-    <string name="label_save">Save</string>
+    <string name="detail_tab_name">Detail</string>
+
+    <string name="menu_tab_name">Menu</string>
+
+    <string name="review_tab_name">Reviews</string>
+
+
+
 </resources>

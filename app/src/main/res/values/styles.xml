@@ -109,4 +109,9 @@
         <item name="android:layout_marginBottom">@dimen/_minus10sdp</item>
     </style>
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/material_yellow_500</item>
+        <item name="colorControlActivated">@color/material_grey_200</item>
+    </style>
+
 </resources>

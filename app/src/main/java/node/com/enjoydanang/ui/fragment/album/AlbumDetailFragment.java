@@ -27,8 +27,8 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     private ProgressDialog pDialog;
     private AlbumAdapter mAdapter;
 
-    @BindView(R.id.rcv_album)
-    RecyclerView recyclerView;
+//    @BindView(R.id.rcv_album)
+//    RecyclerView recyclerView;
 
     @Override
     protected AlbumDetailPresenter createPresenter() {
@@ -42,6 +42,8 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
         mAdapter = new AlbumAdapter(mMainActivity.getApplicationContext(), images);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mMainActivity.getApplicationContext(), 2);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rcv_album);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);

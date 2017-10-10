@@ -17,7 +17,7 @@ import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
  * Version : 1.0
  */
 
-public class DetailActivity extends MvpActivity<DetailActivityPresenter> implements iDetailView, TabLayout.OnTabSelectedListener{
+public class DetailActivity extends MvpActivity<DetailActivityPresenter> implements iDetailView, TabLayout.OnTabSelectedListener {
 
     //This is our tablayout
     @BindView(R.id.tabs)
@@ -46,8 +46,8 @@ public class DetailActivity extends MvpActivity<DetailActivityPresenter> impleme
         setSupportActionBar(toolbar);
         //Adding the tabs using addTab() method
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.detail_tab_name)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.menu_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.review_tab_name)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.album_tab_name)));
 
         //Creating our pager adapter
         DetailPagerAdapter adapter = new DetailPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
@@ -76,7 +76,7 @@ public class DetailActivity extends MvpActivity<DetailActivityPresenter> impleme
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-
+        viewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override

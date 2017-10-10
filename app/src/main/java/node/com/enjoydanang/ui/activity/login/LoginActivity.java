@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.activity.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.ui.activity.detail.DetailActivity;
 import node.com.enjoydanang.utils.support.StatusBarCompat;
 
 /**
@@ -65,7 +67,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onClick(View view){
         switch (view.getId()){
             case R.id.lrlSignIn:
-                Toast.makeText(this, "Button Click", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mActivity, DetailActivity.class);
+                startActivity(intent);
                 break;
             case R.id.txtCreateAccount:
                 Toast.makeText(this, "Create Acc Click", Toast.LENGTH_SHORT).show();

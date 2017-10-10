@@ -35,7 +35,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight=".1"
+                android:layout_weight=".13"
                 android:orientation="horizontal"
                 android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
@@ -75,8 +75,9 @@
 
                 <View
                     android:id="@+id/span"
+                    android:layout_centerVertical="true"
                     android:layout_width="@dimen/_1sdp"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_20sdp"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/txtCountReviews"
                     android:background="@color/material_grey_500" />
@@ -93,7 +94,7 @@
                 android:id="@+id/rcv_review"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight=".85" />
+                android:layout_weight=".87" />
 
         </LinearLayout>
 

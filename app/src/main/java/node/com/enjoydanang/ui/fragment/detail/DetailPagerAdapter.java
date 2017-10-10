@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import node.com.enjoydanang.ui.fragment.album.AlbumDetailFragment;
+
 /**
  * Author: Tavv
  * Created on 10/10/2017.
@@ -30,9 +32,9 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new DetailFragment();
             case 1:
-                return new MenuDetailFragment();
-            case 2:
                 return new ReviewFragment();
+            case 2:
+                return new AlbumDetailFragment();
             default:
                 return null;
         }

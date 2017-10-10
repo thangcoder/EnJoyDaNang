@@ -77,9 +77,9 @@
 
     <string name="detail_tab_name">Detail</string>
 
-    <string name="menu_tab_name">Menu</string>
-
     <string name="review_tab_name">Reviews</string>
+
+    <string name="album_tab_name">Album</string>
 
 
 

@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.fragment.detail;
 import android.view.View;
 
 import node.com.enjoydanang.MvpFragment;
+import node.com.enjoydanang.R;
 
 /**
  * Author: Tavv
@@ -11,7 +12,7 @@ import node.com.enjoydanang.MvpFragment;
  * Version : 1.0
  */
 
-public class DetailFragment extends MvpFragment<DetailPresenter> implements iDetailView{
+public class DetailFragment extends MvpFragment<DetailPresenter> implements iDetailView {
     @Override
     protected DetailPresenter createPresenter() {
         return new DetailPresenter(this);
@@ -29,7 +30,7 @@ public class DetailFragment extends MvpFragment<DetailPresenter> implements iDet
 
     @Override
     public int getRootLayoutId() {
-        return 0;
+        return R.layout.fragment_detail;
     }
 
     @Override

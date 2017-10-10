@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.fragment.detail;
 import android.view.View;
 
 import node.com.enjoydanang.MvpFragment;
+import node.com.enjoydanang.R;
 
 /**
  * Author: Tavv
@@ -29,7 +30,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public int getRootLayoutId() {
-        return 0;
+        return R.layout.fragment_review;
     }
 
     @Override

@@ -9,9 +9,8 @@ import node.com.enjoydanang.BasePresenter;
  * Version : 1.0
  */
 
-public class MenuDetailPresenter extends BasePresenter<iMenuDetailView>{
-    public MenuDetailPresenter(iMenuDetailView view) {
+public class DetailHomePresenter extends BasePresenter<iDetailHomeView>{
+    public DetailHomePresenter(iDetailHomeView view) {
         super(view);
     }
-
 }

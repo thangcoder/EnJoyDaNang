@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.ui.activity.detail.DetailActivity;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.support.StatusBarCompat;
 
 /**
@@ -67,7 +67,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onClick(View view){
         switch (view.getId()){
             case R.id.lrlSignIn:
-                Intent intent = new Intent(mActivity, DetailActivity.class);
+                Intent intent = new Intent(mActivity, MainActivity.class);
                 startActivity(intent);
                 break;
             case R.id.txtCreateAccount:

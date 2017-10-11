@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
 import node.com.enjoydanang.iBaseView;
+import node.com.enjoydanang.model.DetailModel;
 
 /**
  * Author: Tavv
@@ -10,5 +11,5 @@ import node.com.enjoydanang.iBaseView;
  */
 
 public interface iDetailView extends iBaseView {
-
+    void showData(DetailModel detailModel);
 }

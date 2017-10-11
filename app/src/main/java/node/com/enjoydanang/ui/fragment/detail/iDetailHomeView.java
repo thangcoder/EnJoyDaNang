@@ -1,4 +1,4 @@
-package node.com.enjoydanang.ui.activity.detail;
+package node.com.enjoydanang.ui.fragment.detail;
 
 /**
  * Author: Tavv
@@ -7,5 +7,5 @@ package node.com.enjoydanang.ui.activity.detail;
  * Version : 1.0
  */
 
-public interface iDetailView {
+public interface iDetailHomeView {
 }

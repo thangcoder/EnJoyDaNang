@@ -34,6 +34,7 @@
                 android:weightSum="1">
 
                 <TextView
+                    android:id="@+id/txtReviewerName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight=".7"
@@ -44,6 +45,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtNumRate"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight=".3"
@@ -59,9 +61,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/txtContentReview"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Looking for a quick and easy way to tackle the breakfast rush? They " />
+            android:text="" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

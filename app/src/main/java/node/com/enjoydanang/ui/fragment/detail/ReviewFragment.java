@@ -1,9 +1,17 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import node.com.enjoydanang.MvpFragment;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.ReviewDetailModel;
+import node.com.enjoydanang.utils.network.NetworkError;
 
 /**
  * Author: Tavv
@@ -12,15 +20,23 @@ import node.com.enjoydanang.R;
  * Version : 1.0
  */
 
-public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iReviewView{
+public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> implements iReviewView{
+
+    @BindView(R.id.rcv_review)
+    RecyclerView recyclerView;
+
+
+
     @Override
     protected ReviewPresenter createPresenter() {
-        return null;
+        return new ReviewPresenter(this);
     }
 
     @Override
     protected void init(View view) {
-
+        recyclerView.setHasFixedSize(false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
     }
 
     @Override
@@ -35,7 +51,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void bindView(View view) {
-
+        ButterKnife.bind(this, view);
     }
 
     @Override
@@ -45,6 +61,21 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void unKnownError() {
+
+    }
+
+    @Override
+    public void onFetchSuccess(List<ReviewDetailModel> models) {
+
+    }
+
+    @Override
+    public void onFetchSuccess(NetworkError error) {
+
+    }
+
+    @Override
+    public void setupActionBar() {
 
     }
 }

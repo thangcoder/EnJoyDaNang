@@ -40,6 +40,8 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+
+
     //Overriden method getCount to get the number of tabs
     @Override
     public int getCount() {

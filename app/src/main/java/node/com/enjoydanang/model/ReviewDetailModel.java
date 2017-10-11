@@ -14,24 +14,21 @@ public class ReviewDetailModel {
     @SerializedName("rate")
     private float rate;
 
-    @SerializedName("numberOfRated")
-    private int numberOfRated;
-
     @SerializedName("avatar")
     private String avatar;
 
-    @SerializedName("comment")
-    private String comment;
+    @SerializedName("numberOfRated")
+    private int numberOfRated;
+
+    public ReviewDetailModel(float rate, String avatar, int numberOfRated) {
+        this.rate = rate;
+        this.avatar = avatar;
+        this.numberOfRated = numberOfRated;
+    }
 
     public ReviewDetailModel() {
     }
 
-    public ReviewDetailModel(float rate, int numberOfRated, String avatar, String comment) {
-        this.rate = rate;
-        this.numberOfRated = numberOfRated;
-        this.avatar = avatar;
-        this.comment = comment;
-    }
 
     public float getRate() {
         return rate;
@@ -39,14 +36,6 @@ public class ReviewDetailModel {
 
     public void setRate(float rate) {
         this.rate = rate;
-    }
-
-    public int getNumberOfRated() {
-        return numberOfRated;
-    }
-
-    public void setNumberOfRated(int numberOfRated) {
-        this.numberOfRated = numberOfRated;
     }
 
     public String getAvatar() {
@@ -57,21 +46,20 @@ public class ReviewDetailModel {
         this.avatar = avatar;
     }
 
-    public String getComment() {
-        return comment;
+    public int getNumberOfRated() {
+        return numberOfRated;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setNumberOfRated(int numberOfRated) {
+        this.numberOfRated = numberOfRated;
     }
 
     @Override
     public String toString() {
         return "ReviewDetailModel{" +
                 "rate=" + rate +
-                ", numberOfRated=" + numberOfRated +
                 ", avatar='" + avatar + '\'' +
-                ", comment='" + comment + '\'' +
+                ", numberOfRated=" + numberOfRated +
                 '}';
     }
 }

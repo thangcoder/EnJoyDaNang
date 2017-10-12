@@ -2,20 +2,18 @@ package node.com.enjoydanang.ui.fragment.detail;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.ItemReviewModel;
+import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Author: Tavv
@@ -80,13 +78,10 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ReviewViewHolder) {
             ItemReviewModel model = lstReviews.get(position);
-            Glide.with(context).load(model.getAvatar())
-//                        .placeholder(R.drawable.bg_card_top_music_china)
-                    .into(((ReviewViewHolder) holder).imgAvatar);
             ((ReviewViewHolder) holder).txtContentReview.setText(model.getComment());
             ((ReviewViewHolder) holder).txtNumRate.setText(String.valueOf(model.getRate()));
             ((ReviewViewHolder) holder).txtReviewerName.setText(model.getReviewerName());
-
+            ImageUtils.loadImageNoRadius(context, ((ReviewViewHolder) holder).imgAvatar, model.getAvatar());
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }

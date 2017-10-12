@@ -1,4 +1,4 @@
-package node.com.enjoydanang.utils.support;
+package node.com.enjoydanang.utils.helper;
 
 import android.app.Activity;
 import android.content.Context;

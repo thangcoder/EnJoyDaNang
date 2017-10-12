@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.List;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Author: Tavv
@@ -56,11 +54,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public void onBindViewHolder(AlbumViewHolder holder, int position) {
         AlbumModel model = images.get(position);
 
-        Glide.with(mContext).load(model.getImage())
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.thumbnail);
+        ImageUtils.loadImageNoRadius(mContext, holder.thumbnail, model.getImage());
+
+//
+//        Glide.with(mContext).load(model.getImage())
+//                .thumbnail(0.5f)
+//                .crossFade()
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .into(holder.thumbnail);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                 public void onLongPress(MotionEvent e) {
                     View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
                     if (child != null && clickListener != null) {
-                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
+                        clickListener.onLongClick(child, recyclerView.getChildLayoutPosition(child));
                     }
                 }
             });

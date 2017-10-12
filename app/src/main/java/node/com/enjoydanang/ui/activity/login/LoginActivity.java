@@ -13,7 +13,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.utils.support.StatusBarCompat;
+import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
 /**
  * Author: Tavv

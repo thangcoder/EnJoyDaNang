@@ -48,7 +48,7 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         models.add(model_7);
 
 
-        ReviewDetailModel reviewDetailModel = new ReviewDetailModel(3.5f, "http://images6.fanpop.com/image/photos/38400000/-Taylor-Swift-taylor-swift-38425207-500-500.jpg", 69);
+        ReviewDetailModel reviewDetailModel = new ReviewDetailModel(3.5f, "https://www.famousbirthdays.com/headshots/justin-bieber-2.jpg", 69);
 
         mvpView.onFetchLastReview(reviewDetailModel);
         mvpView.onFetchReviews(models);

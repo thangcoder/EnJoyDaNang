@@ -70,7 +70,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/lrlCountRate"
                     android:gravity="center_vertical"
-                    android:text="from 99 reviews"
+                    android:text=""
                     android:textSize="@dimen/_15sdp" />
 
                 <View

@@ -1,20 +1,15 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +17,7 @@ import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.ItemReviewModel;
 import node.com.enjoydanang.model.ReviewDetailModel;
+import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.network.NetworkError;
 
 /**
@@ -31,7 +27,7 @@ import node.com.enjoydanang.utils.network.NetworkError;
  * Version : 1.0
  */
 
-public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> implements iReviewView{
+public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> implements iReviewView {
 
     @BindView(R.id.rcv_review)
     RecyclerView recyclerView;
@@ -61,6 +57,13 @@ public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> impl
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mvpPresenter = createPresenter();
+        mvpPresenter.doDummyData();
+    }
+
+    @Override
     protected void setEvent(View view) {
 
     }
@@ -87,20 +90,24 @@ public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> impl
 
     @Override
     public void onFetchReviews(List<ItemReviewModel> models) {
-        mAdapter = new ReviewAdapter(this.getContext(), models);
+        mAdapter = new ReviewAdapter(getContext(), models);
         recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onFetchSuccess(NetworkError error) {
-
+        Toast.makeText(mMainActivity, error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onFetchLastReview(ReviewDetailModel reviewDetail) {
-        txtRate.setText(String.valueOf(reviewDetail.getRate()));
-        txtCountReviews.setText(reviewDetail.getNumberOfRated());
-        Glide.with(mMainActivity).load(reviewDetail.getAvatar()).into(imgReviewer);
+        if (reviewDetail != null) {
+            String templateCountReviews = "from %d reviews";
+            String numOfReviwed = String.format(Locale.getDefault(), templateCountReviews, reviewDetail.getNumberOfRated());
+            txtRate.setText(String.valueOf(reviewDetail.getRate()));
+            txtCountReviews.setText(numOfReviwed);
+            ImageUtils.loadImageNoRadius(getContext(), imgReviewer, reviewDetail.getAvatar());
+        }
     }
 
     @Override

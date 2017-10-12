@@ -1,18 +1,23 @@
 package node.com.enjoydanang.ui.fragment.album;
 
-import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.utils.network.NetworkError;
 
 /**
  * Author: Tavv
@@ -21,14 +26,17 @@ import node.com.enjoydanang.model.AlbumModel;
  * Version : 1.0
  */
 
-public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> implements iAlbumView {
+public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> implements iAlbumView, AlbumAdapter.ClickListener {
 
-    private ArrayList<AlbumModel> images;
-    private ProgressDialog pDialog;
     private AlbumAdapter mAdapter;
 
-//    @BindView(R.id.rcv_album)
-//    RecyclerView recyclerView;
+    @BindView(R.id.rcv_album)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.progressLoading)
+    ProgressBar progressLoading;
+
+    private ArrayList<AlbumModel> images;
 
     @Override
     protected AlbumDetailPresenter createPresenter() {
@@ -37,21 +45,24 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
     @Override
     protected void init(View view) {
-        pDialog = new ProgressDialog(mMainActivity);
         images = new ArrayList<>();
-        mAdapter = new AlbumAdapter(mMainActivity.getApplicationContext(), images);
-
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mMainActivity.getApplicationContext(), 2);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rcv_album);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mvpPresenter = createPresenter();
+        mvpPresenter.doDummyData();
     }
 
     @Override
     protected void setEvent(View view) {
-
+        recyclerView.addOnItemTouchListener(new AlbumAdapter.RecyclerTouchListener(getContext(), recyclerView, this));
     }
 
     @Override
@@ -61,7 +72,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
     @Override
     public void bindView(View view) {
-
+        ButterKnife.bind(this, view);
     }
 
     @Override
@@ -74,14 +85,37 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
     }
 
+
     @Override
-    public void onFetchImage(List<AlbumModel> listImages) {
-        // TODO: Handle something here !!! onFetchImage
+    public void onFetchAlbumSuccess(List<AlbumModel> images) {
+        this.images.addAll(images);
+        mAdapter = new AlbumAdapter(mMainActivity.getApplicationContext(), images);
+        mAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setVisibility(View.VISIBLE);
+        progressLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onFetchFail(NetworkError error) {
 
     }
 
     @Override
-    public void onFetchFail() {
+    public void onClick(View view, int position) {
+        if (CollectionUtils.isNotEmpty(images)) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("images", images);
+            bundle.putInt("position", position);
+
+            SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+            newFragment.setArguments(bundle);
+            newFragment.show(mFragmentManager, "slideshow");
+        }
+    }
+
+    @Override
+    public void onLongClick(View view, int position) {
 
     }
 }

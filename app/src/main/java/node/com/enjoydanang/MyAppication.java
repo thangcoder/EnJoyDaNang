@@ -2,6 +2,7 @@ package node.com.enjoydanang;
 
 import android.app.Application;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -24,6 +25,7 @@ public class MyAppication extends Application {
         Fresco.initialize(this, frescoConfig, draweeConfig);
         Utils.init(this);
         sInstance = this;
+        AppEventsLogger.activateApp(this);
     }
 
 

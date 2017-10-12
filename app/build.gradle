@@ -81,6 +81,9 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'org.apache.commons:commons-collections4:4.1'
     compile 'org.apache.commons:commons-lang3:3.6'
-
+    compile 'com.facebook.android:facebook-android-sdk:4.27.0'
+    // Dependency for Google Sign-In
+    compile 'com.google.android.gms:play-services-auth:11.4.0'
 }
 
+apply plugin: 'com.google.gms.google-services'

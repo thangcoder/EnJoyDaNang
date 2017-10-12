@@ -154,6 +154,7 @@
                     android:orientation="horizontal">
 
                     <ImageButton
+                        android:id="@+id/btnLoginFb"
                         android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -163,7 +164,7 @@
 
                     <ImageButton
                         android:contentDescription="@null"
-                        android:id="@+id/imageButton"
+                        android:id="@+id/btnLoginGPlus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -171,6 +172,7 @@
                         android:src="@drawable/ic_btn_gplus" />
 
                     <ImageButton
+                        android:id="@+id/btnLoginKakaotalk"
                         android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

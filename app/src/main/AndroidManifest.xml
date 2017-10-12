@@ -10,6 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">
@@ -19,6 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
             android:label="@string/title_activity_main2"
@@ -28,6 +30,9 @@
             android:name="node.com.enjoydanang.ui.activity.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity" />
     </application>
 
 </manifest>

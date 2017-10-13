@@ -18,6 +18,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions {
+        jumboMode true
+    }
+
+
 }
 //pro/**
 // * Use java 1.8
@@ -48,7 +54,7 @@ dependencies {
     //Retrofit
     compile deps.retrofit
     compile deps.retrofitRx
-    
+
 //Picasso
     compile deps.picasso
 
@@ -81,7 +87,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'org.apache.commons:commons-collections4:4.1'
     compile 'org.apache.commons:commons-lang3:3.6'
-    compile 'com.facebook.android:facebook-android-sdk:4.27.0'
+    compile 'com.facebook.android:facebook-login:4.27.0'
+
     // Dependency for Google Sign-In
     compile 'com.google.android.gms:play-services-auth:11.4.0'
 }

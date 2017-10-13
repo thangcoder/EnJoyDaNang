@@ -3,6 +3,8 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import node.com.enjoydanang.constant.LoginType;
+
 /**
  * Author: Tavv
  * Created on 12/10/2017.
@@ -14,7 +16,7 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    private Long id;
+    private String id;
     @SerializedName("name")
     @Expose
     private String fullName;
@@ -40,11 +42,12 @@ public class User {
 
     private String accessToken;
 
+    private LoginType type;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String fullName, Picture picture, Long id, String email, String birthday, String gender, String accessToken) {
+    public User(String firstName, String lastName, String fullName, Picture picture, String id, String email, String birthday, String gender, String accessToken, LoginType type) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = fullName;
@@ -54,6 +57,7 @@ public class User {
         this.birthday = birthday;
         this.gender = gender;
         this.accessToken = accessToken;
+        this.type = type;
     }
 
     public String getFirstName() {
@@ -88,11 +92,11 @@ public class User {
         this.picture = picture;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -128,10 +132,18 @@ public class User {
         this.accessToken = accessToken;
     }
 
+    public LoginType getType() {
+        return type;
+    }
+
+    public void setType(LoginType type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -140,6 +152,7 @@ public class User {
                 ", gender='" + gender + '\'' +
                 ", picture=" + picture +
                 ", accessToken='" + accessToken + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

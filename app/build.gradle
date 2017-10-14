@@ -23,8 +23,8 @@ android {
         jumboMode true
     }
 
-
 }
+
 //pro/**
 // * Use java 1.8
 // */
@@ -91,6 +91,9 @@ dependencies {
 
     // Dependency for Google Sign-In
     compile 'com.google.android.gms:play-services-auth:11.4.0'
+
+    compile 'com.kakao.sdk:kakaotalk:1.6.0'
+    compile 'com.kakao.sdk:usermgmt:1.6.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

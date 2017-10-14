@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.fragment.home;
 import java.util.List;
 
 import node.com.enjoydanang.iBaseView;
+import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.MenuItem;
 import node.com.enjoydanang.model.Products;
 
@@ -13,6 +14,6 @@ import node.com.enjoydanang.model.Products;
 public interface iHomeView  extends iBaseView {
     void getMenuFinish(List<MenuItem> menuList);
     void getMenuFail();
-    void getProductList(List<Products> products);
-    void getProductFail();
+    void getCategorysFinish(Category products);
+    void getCategorysFail();
 }

@@ -2,7 +2,6 @@ package node.com.enjoydanang.api;
 
 
 import node.com.enjoydanang.LogApp;
-import node.com.enjoydanang.api.model.NetworkStatus;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.BaseReponse;
 
@@ -12,6 +11,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import node.com.enjoydanang.model.NetworkStatus;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 

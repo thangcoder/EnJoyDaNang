@@ -20,7 +20,7 @@ public class HeaderInterceptor
         Request request = chain.request();
             request = request.newBuilder()
 //                    .addHeader("Authorization", "Bearer " + ArubaitoGlobal.token)
-                    .addHeader("Connection", "close")
+//                    .addHeader("Connection", "close")
                     .build();
 
         Response response = chain.proceed(request);

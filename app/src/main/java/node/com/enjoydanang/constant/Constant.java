@@ -8,7 +8,7 @@ package node.com.enjoydanang.constant;
 
 public class Constant {
 
-    public static final String URL_HOST = "http://172.16.1.100:3000";
+    public static final String URL_HOST = "http://enjoyindanang.com/API/";
 
     public static final String API_OK = "200";
     public static final String API_401 = "401";

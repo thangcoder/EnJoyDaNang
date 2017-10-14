@@ -1,4 +1,4 @@
-package node.com.enjoydanang.api.model;
+package node.com.enjoydanang.model;
 
 /**
  * Created by chientruong on 2/27/17.

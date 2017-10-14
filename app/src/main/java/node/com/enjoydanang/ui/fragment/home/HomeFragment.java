@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.MenuItem;
 import node.com.enjoydanang.model.Products;
 import node.com.enjoydanang.ui.fragment.setting.SettingPresenter;
@@ -85,6 +87,18 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mvpPresenter.getCategorys(0);
+
+    }
+
+    @Override
     public int getRootLayoutId() {
         return R.layout.fragment_home;
     }
@@ -105,14 +119,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     @Override
-    public void getProductList(List<Products> products) {
+    public void getCategorysFinish(Category products) {
 
     }
 
     @Override
-    public void getProductFail() {
+    public void getCategorysFail() {
 
     }
+
 
     @Override
     protected HomePresenter createPresenter() {

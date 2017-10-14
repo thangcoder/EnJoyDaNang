@@ -8,7 +8,8 @@ import node.com.enjoydanang.BasePresenter;
  */
 
 public class SettingPresenter extends BasePresenter<SettingView> {
-    public SettingPresenter(SettingView view){
-        attachView(view);
+
+    public SettingPresenter(SettingView view) {
+        super(view);
     }
 }

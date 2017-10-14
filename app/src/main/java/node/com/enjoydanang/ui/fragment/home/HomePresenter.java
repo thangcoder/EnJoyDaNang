@@ -12,9 +12,11 @@ import node.com.enjoydanang.model.MenuItem;
  */
 
 public class HomePresenter extends BasePresenter<iHomeView> {
+
     public HomePresenter(iHomeView view) {
-        attachView(view);
+        super(view);
     }
+
     public void getMenuItem(List<MenuItem> menuItems){
 
         mvpView.getMenuFinish(menuItems);

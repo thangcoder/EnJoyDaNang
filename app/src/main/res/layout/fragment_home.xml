@@ -7,7 +7,7 @@
         android:id="@+id/grv_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       />
+        />
     <android.support.v7.widget.RecyclerView
         android:layout_below="@+id/grv_menu"
         android:id="@+id/rcv_product"

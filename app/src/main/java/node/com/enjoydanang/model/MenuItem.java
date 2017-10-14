@@ -1,3 +1,4 @@
+
 package node.com.enjoydanang.model;
 
 import com.google.gson.annotations.SerializedName;

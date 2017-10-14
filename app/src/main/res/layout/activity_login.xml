@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_form_login">
 
-
     <LinearLayout
         android:id="@+id/lrlLoginForm"
         android:layout_width="match_parent"
@@ -38,8 +37,8 @@
                 android:layout_marginRight="@dimen/btn_sign_in_margin"
                 android:background="@drawable/drawable_round_edt"
                 android:drawableLeft="@drawable/ic_user"
-                android:paddingLeft="10dp"
                 android:drawablePadding="10dp"
+                android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp" />
 
@@ -50,9 +49,9 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="@dimen/btn_sign_in_margin"
                 android:layout_marginRight="@dimen/btn_sign_in_margin"
-                android:drawablePadding="10dp"
                 android:background="@drawable/drawable_round_edt"
                 android:drawableLeft="@drawable/ic_locked"
+                android:drawablePadding="10dp"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
@@ -155,6 +154,8 @@
                     android:orientation="horizontal">
 
                     <ImageButton
+                        android:id="@+id/btnLoginFb"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -162,7 +163,8 @@
                         android:src="@drawable/ic_btn_fb" />
 
                     <ImageButton
-                        android:id="@+id/imageButton"
+                        android:contentDescription="@null"
+                        android:id="@+id/btnLoginGPlus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -170,6 +172,8 @@
                         android:src="@drawable/ic_btn_gplus" />
 
                     <ImageButton
+                        android:id="@+id/btnLoginKakaotalk"
+                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"

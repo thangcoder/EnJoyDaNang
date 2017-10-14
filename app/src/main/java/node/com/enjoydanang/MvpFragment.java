@@ -1,9 +1,10 @@
 package node.com.enjoydanang;
 
 
-import node.com.enjoydanang.ui.fragment.BaseFragment;
 import android.os.Bundle;
 import android.view.View;
+
+import node.com.enjoydanang.ui.fragment.BaseFragment;
 
 
 /**
@@ -12,6 +13,7 @@ import android.view.View;
 
 public abstract class MvpFragment<P extends BasePresenter> extends BaseFragment {
     protected P mvpPresenter;
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

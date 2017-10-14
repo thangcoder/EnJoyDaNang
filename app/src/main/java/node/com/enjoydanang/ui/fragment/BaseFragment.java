@@ -2,15 +2,16 @@ package node.com.enjoydanang.ui.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import node.com.enjoydanang.LogApp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -22,11 +23,13 @@ import rx.subscriptions.CompositeSubscription;
 public abstract class BaseFragment extends Fragment {
 
     protected Activity mMainActivity;
+    protected FragmentManager mFragmentManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMainActivity = getActivity();
+        mFragmentManager = getActivity().getSupportFragmentManager();
     }
 
     @Override

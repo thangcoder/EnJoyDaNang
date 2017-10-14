@@ -15,14 +15,20 @@
 
     <string name="history_check_in">History Check-in</string>
     <string name="personal_information">Personal Information</string>
-    <string name="change_pwd">Change Password</string>
-    <string name="introduction">Introduction</string>
     <string name="setting">Setting</string>
     <string name="logout">Logout</string>
+    <string name="version_1_0_0">Version 1.0.0</string>
+
+
+
+    <string name="change_pwd">Change Password</string>
+    <string name="introduction">Introduction</string>
     <string name="login">Login</string>
     <string name="sign_up">Sign up</string>
     <string name="user_name_profile_display">UserName</string>
     <string name="email_profile_display">Email</string>
+
+    <string name="label_save">Save</string>
 
     <string name="sign_in">Sign in</string>
 
@@ -72,5 +78,12 @@
     <string name="label_cancel">Cancel</string>
 
 
-    <string name="label_save">Save</string>
+    <string name="detail_tab_name">Detail</string>
+
+    <string name="review_tab_name">Reviews</string>
+
+    <string name="album_tab_name">Album</string>
+
+    <string name="facebook_app_id">123608678348689</string>
+
 </resources>

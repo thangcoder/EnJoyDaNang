@@ -10,5 +10,7 @@ import node.com.enjoydanang.BasePresenter;
  */
 
 public class LoginPresenter extends BasePresenter<LoginView>{
-
+    public LoginPresenter(LoginView view) {
+        super(view);
+    }
 }

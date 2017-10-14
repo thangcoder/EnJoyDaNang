@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class BaseReponse {
     @SerializedName("system_version")
-    public String system_version;
+    private String system_version;
     @SerializedName("status")
-    public String status;
+    private String status;
     @SerializedName("message")
-    public String message;
+    private String message;
 
     public String getSystem_version() {
         return system_version;

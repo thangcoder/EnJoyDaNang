@@ -1,7 +1,8 @@
 package node.com.enjoydanang;
 
-import node.com.enjoydanang.ui.activity.BaseActivity;
 import android.os.Bundle;
+
+import node.com.enjoydanang.ui.activity.BaseActivity;
 
 /**
  * Created by chientruong on 12/14/16.
@@ -24,6 +25,9 @@ public abstract class MvpActivity<P extends BasePresenter> extends BaseActivity 
             mvpPresenter.detachView();
         }
     }
+
+
+
 
     public void showLoading() {
         showProgressDialog();

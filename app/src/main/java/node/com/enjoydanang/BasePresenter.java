@@ -24,6 +24,10 @@ public class BasePresenter<V> {
     protected ApiStores apiStoresANS;
     protected ApiStores apiStoresAmazon;
 
+    public BasePresenter(V view){
+        attachView(view);
+    }
+
     private CompositeSubscription mCompositeSubscription;
     public void attachView(V mvpView) {
         this.mvpView = mvpView;

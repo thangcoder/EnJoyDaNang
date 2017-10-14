@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "744223830003",
+    "project_id": "enjoyindanang-182705"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744223830003:android:7f8a681be1b1d925",
+        "android_client_info": {
+          "package_name": "node.com.enjoydanang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "744223830003-d5821hs6j22r0lhl4hk2u59vsa95lsch.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "744223830003-q9cehapcmikp89dmqufkeoa7tcd4svg3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "node.com.enjoydanang",
+            "certificate_hash": "f710ae55b1fdd6c25c49eda8c9536898fc26cf9d"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2CjBluiRHFA9Bo0ov1sWrgMhg_um31KA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

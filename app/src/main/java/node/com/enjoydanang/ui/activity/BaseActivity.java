@@ -4,14 +4,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import node.com.enjoydanang.LogApp;
-import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.ApiStores;
-import node.com.enjoydanang.api.model.NetworkStatus;
-import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.framework.FragmentHelper;
-import node.com.enjoydanang.framework.FragmentTransitionInfo;
-import node.com.enjoydanang.utils.ConnectionUltils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +18,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -34,6 +25,14 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import node.com.enjoydanang.LogApp;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.api.ApiStores;
+import node.com.enjoydanang.api.model.NetworkStatus;
+import node.com.enjoydanang.api.module.AppClient;
+import node.com.enjoydanang.framework.FragmentHelper;
+import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.utils.ConnectionUltils;
 import retrofit2.Call;
 import rx.Observable;
 import rx.Subscriber;
@@ -67,6 +66,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         init();
         setValue(savedInstanceState);
         setEvent();
+        setTranslucentStatusBar();
 
 
     }
@@ -391,6 +391,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.startActivity(intent);
 //        overridePendingTransitionEnter();
     }
+
+
+    public void setTranslucentStatusBar(){}
 
 
 }

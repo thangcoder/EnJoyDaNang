@@ -18,7 +18,7 @@ import node.com.enjoydanang.R;
 
 public class ScreenUtils {
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) MyAppication.getInstance().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) MyAppication.getGlobalApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         return wm.getDefaultDisplay().getWidth();
     }
 
@@ -35,19 +35,19 @@ public class ScreenUtils {
     }
 
     public static int dp2px(float dpValue) {
-        Context context = MyAppication.getInstance().getApplicationContext();
+        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int px2dp(float pxValue) {
-        Context context = MyAppication.getInstance().getApplicationContext();
+        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
     public static int sp2px(float spValue) {
-        Context context = MyAppication.getInstance().getApplicationContext();
+        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }

@@ -11,6 +11,7 @@ import com.facebook.internal.CallbackManagerImpl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.kakao.auth.Session;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
+    private LoginViaKakaoTalk loginViaKakaoTalk;
 
 
     @Override
@@ -62,11 +64,12 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         LoginFactory loginFactory = new LoginFactory();
         loginViaFacebook = (LoginViaFacebook) loginFactory.doLogin(LoginType.FACEBOOK, this);
         loginViaGoogle = (LoginViaGoogle) loginFactory.doLogin(LoginType.GOOGLE, this);
+        loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.doLogin(LoginType.KAKAOTALK, this);
 
         //init
         loginViaFacebook.init();
         loginViaGoogle.init();
-
+        loginViaKakaoTalk.init();
     }
 
     @Override
@@ -110,7 +113,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 loginViaGoogle.login();
                 break;
             case R.id.btnLoginKakaotalk:
-                Toast.makeText(this, "Forgot Click", Toast.LENGTH_SHORT).show();
+                loginViaKakaoTalk.login();
                 break;
         }
 
@@ -124,7 +127,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         } else if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInGoogleResult(result);
-
+        }else  if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
         }
     }
 

@@ -18,6 +18,8 @@ public class LoginFactory {
                 return new LoginViaFacebook(activity);
             case GOOGLE:
                 return new LoginViaGoogle(activity);
+            case KAKAOTALK:
+                return new LoginViaKakaoTalk(activity);
             default:
                 return null;
         }

@@ -11,6 +11,8 @@ import com.kakao.util.exception.KakaoException;
 
 import node.com.enjoydanang.ui.activity.BaseActivity;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 /**
  * Author: Tavv
  * Created on 13/10/2017.
@@ -24,21 +26,26 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     private SessionCallback sessionCallback;
 
+    private Session session;
+
     public LoginViaKakaoTalk(BaseActivity activity) {
         this.activity = activity;
     }
 
     @Override
     public void init() {
+
     }
 
     @Override
     public void login() {
-        if(sessionCallback == null){
+        if (sessionCallback == null) {
             sessionCallback = new SessionCallback();
-            Session.getCurrentSession().addCallback(sessionCallback);
+            session = Session.getCurrentSession();
+            session.addCallback(sessionCallback);
         }
         Session.getCurrentSession().open(AuthType.KAKAO_TALK, activity);
+//        redirectSignupActivity();
     }
 
     @Override
@@ -61,7 +68,7 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     }
 
-    private class SessionCallback implements ISessionCallback{
+    private class SessionCallback implements ISessionCallback {
 
         @Override
         public void onSessionOpened() {
@@ -87,5 +94,13 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     public void setSessionCallback(SessionCallback sessionCallback) {
         this.sessionCallback = sessionCallback;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

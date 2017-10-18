@@ -4,6 +4,9 @@ package node.com.enjoydanang.model;
 import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
+import node.com.enjoydanang.constant.Constant;
+
+@Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
 public class Datum {
 
@@ -63,7 +66,7 @@ public class Datum {
     }
 
     public String getPicture() {
-        return mPicture;
+        return Constant.URL_HOST_IMAGE+ mPicture;
     }
 
     public void setPicture(String Picture) {

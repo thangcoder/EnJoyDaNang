@@ -19,6 +19,7 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.toolbar)
@@ -53,7 +54,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     protected void onResume() {
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override
@@ -84,28 +85,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

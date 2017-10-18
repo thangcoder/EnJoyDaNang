@@ -9,6 +9,7 @@ package node.com.enjoydanang.constant;
 public class Constant {
 
     public static final String URL_HOST = "http://enjoyindanang.com/API/";
+    public static final String URL_HOST_IMAGE = "http://enjoyindanang.com";
 
     public static final String API_OK = "200";
     public static final String API_401 = "401";

@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.home;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.model.Data;
+import node.com.enjoydanang.model.Datum;
 import node.com.enjoydanang.model.MenuItem;
+import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Created by chien on 10/8/17.
@@ -21,24 +26,24 @@ import node.com.enjoydanang.model.MenuItem;
 
 public class MenuAdapter extends BaseAdapter {
     Context context;
-    List<MenuItem> menuItems;
+    List<Datum> categories;
     private static LayoutInflater inflater=null;
 
-    public MenuAdapter(Context context, List<MenuItem> menuItems) {
+    public MenuAdapter(Context context, List<Datum> menuItems) {
         this.context = context;
-        this.menuItems = menuItems;
+        this.categories = menuItems;
         inflater = ( LayoutInflater )context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return menuItems.size();
+        return categories.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return menuItems.get(i);
+        return categories.get(i);
     }
 
     @Override
@@ -56,8 +61,9 @@ public class MenuAdapter extends BaseAdapter {
         }else {
             holder=(Holder)view.getTag();
         }
-        MenuItem menuItem = menuItems.get(i);
-        holder.tvName.setText(menuItem.getName());
+        Datum data = categories.get(i);
+        holder.tvName.setText(data.getName());
+        ImageUtils.loadImageNoRadius(context,holder.imgIcon,data.getPicture());
         return view;
     }
     static final class  Holder {

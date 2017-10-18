@@ -15,7 +15,7 @@ public class Repository {
 
 
 
-    public Repository(String status, String token, String message) {
+    public Repository(String status,  String message) {
         this.status = status;
         this.message = message;
     }

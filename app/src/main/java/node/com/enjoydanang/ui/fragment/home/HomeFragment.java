@@ -47,21 +47,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     protected void init(View view) {
-        menuItems = new ArrayList<>();
-        MenuItem menuItem1 =new MenuItem("Tranfer","");
-        MenuItem menuItem2 =new MenuItem("Card Repay","");
-        MenuItem menuItem3 =new MenuItem("Phone Topup","");
-        MenuItem menuItem4 =new MenuItem("Air Forture","");
-        menuItems.add(menuItem1);
-        menuItems.add(menuItem2);
-        menuItems.add(menuItem3);
-        menuItems.add(menuItem4);
-        menuItems.add(menuItem1);
-        menuItems.add(menuItem2);
-        menuItems.add(menuItem3);
-        menuItems.add(menuItem4);
-        homeAdapter = new MenuAdapter(mMainActivity,menuItems);
-        gridView.setAdapter(homeAdapter);
+
 
         /**
          * Init Data Product list
@@ -120,7 +106,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void getCategorysFinish(Category products) {
-
+        homeAdapter = new MenuAdapter(mMainActivity,products.getData());
+        gridView.setAdapter(homeAdapter);
     }
 
     @Override

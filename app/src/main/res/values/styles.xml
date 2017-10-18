@@ -16,7 +16,6 @@
 
         <!--<item name="android:textColorPrimary">@android:color/white</item>-->
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -105,8 +104,8 @@
     </style>
 
     <style name="NavigationTheme" parent="AppTheme">
-        <item name="android:textSize">@dimen/_15ssp</item>
-        <item name="android:layout_marginBottom">@dimen/_minus10sdp</item>
+        <item name="android:textSize">@dimen/_13ssp</item>
+        <item name="android:layout_marginBottom">@dimen/_minus5sdp</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">

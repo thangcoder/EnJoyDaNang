@@ -1,17 +1,32 @@
 package node.com.enjoydanang.ui.activity.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.util.Base64;
+import android.util.Log;
 
+import com.kakao.auth.ApiResponseCallback;
+import com.kakao.auth.AuthService;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.kakaotalk.response.KakaoTalkProfile;
+import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.response.model.User;
 import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import node.com.enjoydanang.ui.activity.BaseActivity;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.kakao.util.helper.Utility.getPackageInfo;
+
 
 /**
  * Author: Tavv
@@ -21,6 +36,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
+    private static final String TAG = LoginViaKakaoTalk.class.getSimpleName();
 
     private BaseActivity activity;
 
@@ -34,23 +50,22 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     @Override
     public void init() {
-
-    }
-
-    @Override
-    public void login() {
         if (sessionCallback == null) {
             sessionCallback = new SessionCallback();
             session = Session.getCurrentSession();
             session.addCallback(sessionCallback);
+            session.checkAndImplicitOpen();
         }
-        Session.getCurrentSession().open(AuthType.KAKAO_TALK, activity);
-//        redirectSignupActivity();
+    }
+
+    @Override
+    public void login() {
+        session.open(AuthType.KAKAO_TALK, activity);
     }
 
     @Override
     public void handleCallbackResult(KakaoTalkProfile callback) {
-
+        Log.i(TAG, "handleCallbackResult " + callback);
     }
 
     @Override
@@ -77,15 +92,63 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
-
+            if (exception != null) {
+                Logger.e(exception);
+            }
         }
-
     }
 
     protected void redirectSignupActivity() {
         final Intent intent = new Intent(activity, KakaoSignupActivity.class);
         activity.startActivity(intent);
         activity.finish();
+    }
+
+
+    private void requestAccessTokenInfo() {
+        AuthService.requestAccessTokenInfo(new ApiResponseCallback<AccessTokenInfoResponse>() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                // TODO: Handle something here !!! onSessionClosed
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                // not happened
+            }
+
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                Logger.e("failed to get access token info. msg=" + errorResult);
+            }
+
+            @Override
+            public void onSuccess(AccessTokenInfoResponse accessTokenInfoResponse) {
+                long userId = accessTokenInfoResponse.getUserId();
+                Logger.d("this access token is for userId=" + userId);
+
+                long expiresInMilis = accessTokenInfoResponse.getExpiresInMillis();
+                Logger.d("this access token expires after " + expiresInMilis + " milliseconds.");
+            }
+        });
+    }
+
+
+    public static String getKeyHash(final Context context) {
+        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
+        if (packageInfo == null)
+            return null;
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+            } catch (NoSuchAlgorithmException e) {
+                Log.w(TAG, "Unable to get MessageDigest. signature=" + signature, e);
+            }
+        }
+        return null;
     }
 
     public SessionCallback getSessionCallback() {

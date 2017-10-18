@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="kakao_app_key">VFyzwGPaEBofA5VWD4YwGlfBd1FvR0Af</string>
+    <!--<string name="kakao_app_key">VFyzwGPaEBofA5VWD4YwGlfBd1FvR0Af</string>-->
+    <string name="kakao_app_key">491df27d35dc32bf8c1445e64dddb929</string>
+    <string name="kakao_hash_key">9xCuVbH91sJcSe2oyVNomPwmz50=</string>
 </resources>

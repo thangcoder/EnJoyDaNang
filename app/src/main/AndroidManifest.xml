@@ -3,6 +3,8 @@
     package="node.com.enjoydanang">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyAppication"
@@ -13,7 +15,16 @@
 
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">
+        <!--<activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <activity android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,10 +32,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name="node.com.enjoydanang.ui.activity.main.MainActivity"-->
+            <!--android:label="@string/title_activity_main2"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
 
         <activity
             android:name="node.com.enjoydanang.ui.activity.login.LoginActivity"
@@ -34,7 +45,7 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity" />
         <meta-data
-            android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
+            android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_hash_key" />
     </application>
 
 </manifest>

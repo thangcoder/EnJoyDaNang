@@ -1,18 +1,18 @@
 package node.com.enjoydanang.ui.activity.login;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.kakao.auth.ErrorCode;
+import com.kakao.kakaotalk.response.KakaoTalkProfile;
+import com.kakao.kakaotalk.v2.KakaoTalkService;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
-
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 
 /**
  * Author: Tavv
@@ -21,7 +21,7 @@ import node.com.enjoydanang.ui.activity.main.MainActivity;
  * Version 1.0
  */
 
-public class KakaoSignupActivity extends Activity {
+public class KakaoSignupActivity extends AppCompatActivity {
     /**
      * Main으로 넘길지 가입 페이지를 그릴지 판단하기 위해 me를 호출한다.
      * @param savedInstanceState 기존 session 정보가 저장된 객체
@@ -31,6 +31,7 @@ public class KakaoSignupActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestMe();
+//        requestProfile();
     }
 
     /**
@@ -66,6 +67,18 @@ public class KakaoSignupActivity extends Activity {
                 Long kakaoID = userProfile.getId();
                 Log.i("ID : " , kakaoID+"");
                 redirectMainActivity(kakaoID); // 로그인 성공시 MainActivity로
+            }
+        });
+    }
+
+    private void requestProfile(){
+        KakaoTalkService.getInstance().requestProfile(new KakaoTalkResponseCallback<KakaoTalkProfile>() {
+            @Override
+            public void onSuccess(KakaoTalkProfile talkProfile) {
+                final String nickName = talkProfile.getNickName();
+                final String profileImageURL = talkProfile.getProfileImageUrl();
+                final String thumbnailURL = talkProfile.getThumbnailUrl();
+                final String countryISO = talkProfile.getCountryISO();
             }
         });
     }

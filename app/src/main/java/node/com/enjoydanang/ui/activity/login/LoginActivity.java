@@ -12,6 +12,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
+import com.kakao.kakaotalk.response.KakaoTalkProfile;
+import com.kakao.kakaotalk.v2.KakaoTalkService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +35,7 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
 public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView {
     private static final String TAG = LoginActivity.class.getSimpleName();
+
 
     @BindView(R.id.lrlSignIn)
     public LinearLayout lrlSignIn;
@@ -95,7 +98,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 startActivity(intent);
                 break;
             case R.id.txtCreateAccount:
-                Toast.makeText(this, "Create Acc Click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.txtForgotPwd:
                 Toast.makeText(this, "Forgot Click", Toast.LENGTH_SHORT).show();
@@ -121,14 +123,15 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        }
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
             loginViaFacebook.getCallbackManager().onActivityResult(requestCode, resultCode, data);
         } else if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInGoogleResult(result);
-        }else  if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
         }
     }
 
@@ -158,5 +161,25 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void setTranslucentStatusBar() {
         StatusBarCompat.translucentStatusBar(this);
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loginViaKakaoTalk.getSession().removeCallback(loginViaKakaoTalk.getSessionCallback());
+    }
+
+    private void requestProfile(){
+        KakaoTalkService.getInstance().requestProfile(new KakaoTalkResponseCallback<KakaoTalkProfile>() {
+            @Override
+            public void onSuccess(KakaoTalkProfile talkProfile) {
+                final String nickName = talkProfile.getNickName();
+                final String profileImageURL = talkProfile.getProfileImageUrl();
+                final String thumbnailURL = talkProfile.getThumbnailUrl();
+                final String countryISO = talkProfile.getCountryISO();
+            }
+        });
+    }
+
 
 }

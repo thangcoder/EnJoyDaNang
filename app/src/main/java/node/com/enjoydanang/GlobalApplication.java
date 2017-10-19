@@ -2,6 +2,12 @@ package node.com.enjoydanang;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.util.Base64;
+import android.util.Log;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
@@ -9,18 +15,21 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.kakao.auth.KakaoSDK;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 import node.com.enjoydanang.utils.Utils;
 
-import static okhttp3.internal.Internal.instance;
+import static com.kakao.util.helper.Utility.getPackageInfo;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class MyAppication extends Application {
-
-    private static volatile MyAppication sInstance = null;
+public class GlobalApplication extends Application {
+    private static final String TAG = GlobalApplication.class.getSimpleName();
+    private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
 
     @Override
@@ -34,6 +43,8 @@ public class MyAppication extends Application {
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
+        String hashKey = getKeyHash(this);
+        Log.i(TAG, "onCreate : " + hashKey);
     }
 
 
@@ -42,14 +53,14 @@ public class MyAppication extends Application {
     }
 
     public static void setCurrentActivity(Activity currentActivity) {
-        MyAppication.currentActivity = currentActivity;
+        GlobalApplication.currentActivity = currentActivity;
     }
 
     /**
      * singleton 애플리케이션 객체를 얻는다.
      * @return singleton 애플리케이션 객체
      */
-    public static MyAppication getGlobalApplicationContext() {
+    public static GlobalApplication getGlobalApplicationContext() {
         if(sInstance == null)
             throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
         return sInstance;
@@ -62,6 +73,23 @@ public class MyAppication extends Application {
     public void onTerminate() {
         super.onTerminate();
         sInstance = null;
+    }
+
+    public static String getKeyHash(final Context context) {
+        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
+        if (packageInfo == null)
+            return null;
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+            } catch (NoSuchAlgorithmException e) {
+                Log.w(TAG, "Unable to get MessageDigest. signature=" + signature, e);
+            }
+        }
+        return null;
     }
 
 

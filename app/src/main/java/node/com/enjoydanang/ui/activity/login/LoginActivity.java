@@ -3,7 +3,9 @@ package node.com.enjoydanang.ui.activity.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,8 +14,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
-import com.kakao.kakaotalk.response.KakaoTalkProfile;
-import com.kakao.kakaotalk.v2.KakaoTalkService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +46,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @BindView(R.id.txtForgotPwd)
     public TextView txtForgotPwd;
 
+    @BindView(R.id.loadingLogin)
+    public ProgressBar prgLoadingLogin;
+
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -72,7 +75,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         //init
         loginViaFacebook.init();
         loginViaGoogle.init();
-        loginViaKakaoTalk.init();
     }
 
     @Override
@@ -82,7 +84,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void setValue(Bundle savedInstanceState) {
-
+        loginViaKakaoTalk.setProgressbar(prgLoadingLogin);
     }
 
     @Override
@@ -109,12 +111,14 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onRegisterWithSocial(View view) {
         switch (view.getId()) {
             case R.id.btnLoginFb:
+                prgLoadingLogin.setVisibility(View.VISIBLE);
                 loginViaFacebook.login();
                 break;
             case R.id.btnLoginGPlus:
                 loginViaGoogle.login();
                 break;
             case R.id.btnLoginKakaotalk:
+                prgLoadingLogin.setVisibility(View.VISIBLE);
                 loginViaKakaoTalk.login();
                 break;
         }
@@ -169,17 +173,10 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaKakaoTalk.getSession().removeCallback(loginViaKakaoTalk.getSessionCallback());
     }
 
-    private void requestProfile(){
-        KakaoTalkService.getInstance().requestProfile(new KakaoTalkResponseCallback<KakaoTalkProfile>() {
-            @Override
-            public void onSuccess(KakaoTalkProfile talkProfile) {
-                final String nickName = talkProfile.getNickName();
-                final String profileImageURL = talkProfile.getProfileImageUrl();
-                final String thumbnailURL = talkProfile.getThumbnailUrl();
-                final String countryISO = talkProfile.getCountryISO();
-            }
-        });
+
+    @Override
+    public void configScreen() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
-
-
 }

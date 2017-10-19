@@ -2,29 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="node.com.enjoydanang">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".MyAppication"
+        android:name=".GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <activity android:name="com.facebook.FacebookActivity" />
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
 
-        <activity android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,20 +31,33 @@
             </intent-filter>
         </activity>
 
-        <!--<activity-->
-            <!--android:name="node.com.enjoydanang.ui.activity.main.MainActivity"-->
-            <!--android:label="@string/title_activity_main2"-->
-            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <!--<activity android:name=".ui.activity.login.LoginActivity"-->
+        <!--android:theme="@style/AppTheme.NoActionBar">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.VIEW"/>-->
+
+        <!--<category android:name="android.intent.category.DEFAULT"/>-->
+        <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+
+        <!--<data android:scheme="@string/fb_login_protocol_scheme"/>-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <!--<activity android:name="node.com.enjoydanang.ui.activity.main.MainActivity"-->
+        <!--android:theme="@style/AppTheme.NoActionBar">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
+
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
 
         <activity
             android:name="node.com.enjoydanang.ui.activity.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <activity android:name="com.facebook.FacebookActivity" />
-        <meta-data
-            android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_hash_key" />
     </application>
 
 </manifest>

@@ -68,6 +68,9 @@ dependencies {
     compile('com.squareup.okhttp3:logging-interceptor:3.4.1') {
         transitive = true
     }
+
+    compile group: project.KAKAO_SDK_GROUP, name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jakewharton:butterknife:8.8.1'
@@ -93,8 +96,6 @@ dependencies {
     // Dependency for Google Sign-In
     compile 'com.google.android.gms:play-services-auth:11.4.0'
 
-    compile 'com.kakao.sdk:kakaotalk:1.6.0'
-    compile 'com.kakao.sdk:usermgmt:1.6.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

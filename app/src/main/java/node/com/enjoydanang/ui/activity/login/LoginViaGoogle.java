@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.activity.login;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -111,6 +112,11 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
                         }
                     }
                 });
+    }
+
+    @Override
+    public void setProgressbar(ProgressBar progressbar) {
+
     }
 
     @Override

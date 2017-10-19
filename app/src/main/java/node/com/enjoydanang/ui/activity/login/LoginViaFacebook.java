@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -111,6 +112,11 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     @Override
     public void removeAccessToken() {
         // TODO: removeAccessToken Facebook
+
+    }
+
+    @Override
+    public void setProgressbar(ProgressBar progressbar) {
 
     }
 

@@ -1,28 +1,37 @@
 package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.AuthService;
 import com.kakao.auth.AuthType;
+import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.auth.network.response.AccessTokenInfoResponse;
-import com.kakao.kakaotalk.response.KakaoTalkProfile;
 import com.kakao.network.ErrorResult;
-import com.kakao.usermgmt.response.model.User;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
+import node.com.enjoydanang.constant.LoginType;
+import node.com.enjoydanang.model.Data;
+import node.com.enjoydanang.model.Picture;
+import node.com.enjoydanang.model.User;
 import node.com.enjoydanang.ui.activity.BaseActivity;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
@@ -35,14 +44,15 @@ import static com.kakao.util.helper.Utility.getPackageInfo;
  * Version : 1.0
  */
 
-public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
+public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     private static final String TAG = LoginViaKakaoTalk.class.getSimpleName();
 
     private BaseActivity activity;
 
     private SessionCallback sessionCallback;
 
-    private Session session;
+    private ProgressBar progressBar;
+
 
     public LoginViaKakaoTalk(BaseActivity activity) {
         this.activity = activity;
@@ -50,22 +60,33 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     @Override
     public void init() {
-        if (sessionCallback == null) {
-            sessionCallback = new SessionCallback();
-            session = Session.getCurrentSession();
-            session.addCallback(sessionCallback);
-            session.checkAndImplicitOpen();
-        }
+        // Login via Kakao haven't init. Function init config at Application
     }
 
     @Override
     public void login() {
-        session.open(AuthType.KAKAO_TALK, activity);
+        if (sessionCallback == null) {
+            sessionCallback = new SessionCallback();
+            Session.getCurrentSession().addCallback(sessionCallback);
+            Session.getCurrentSession().checkAndImplicitOpen();
+        }
+        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, activity);
     }
 
     @Override
-    public void handleCallbackResult(KakaoTalkProfile callback) {
-        Log.i(TAG, "handleCallbackResult " + callback);
+    public void handleCallbackResult(UserProfile callback) {
+        if (callback != null) {
+            User user = new User();
+            user.setFullName(callback.getNickname());
+            Data data = new Data();
+            data.setUrl(callback.getProfileImagePath());
+            Picture picture = new Picture();
+            picture.setData(data);
+            user.setPicture(picture);
+            user.setEmail(callback.getEmail());
+            user.setType(LoginType.KAKAOTALK);
+            pushToServer(user);
+        }
     }
 
     @Override
@@ -75,7 +96,7 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     @Override
     public void pushToServer(User model) {
-
+        Logger.i(TAG, model);
     }
 
     @Override
@@ -83,11 +104,21 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
     }
 
+    @Override
+    public void setProgressbar(ProgressBar progressbar) {
+        if(progressbar == null){
+            throw new NullPointerException("ProgressBar not be null !");
+        }
+        this.progressBar = progressbar;
+    }
+
+
     private class SessionCallback implements ISessionCallback {
 
         @Override
         public void onSessionOpened() {
-            redirectSignupActivity();
+            progressBar.setVisibility(View.GONE);
+            requestMe();
         }
 
         @Override
@@ -96,12 +127,6 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
                 Logger.e(exception);
             }
         }
-    }
-
-    protected void redirectSignupActivity() {
-        final Intent intent = new Intent(activity, KakaoSignupActivity.class);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
 
@@ -119,7 +144,7 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
 
             @Override
             public void onFailure(ErrorResult errorResult) {
-                Logger.e("failed to get access token info. msg=" + errorResult);
+                Logger.e(TAG, "failed to get access token info. msg=" + errorResult);
             }
 
             @Override
@@ -160,10 +185,43 @@ public class LoginViaKakaoTalk implements ILogin<KakaoTalkProfile, User> {
     }
 
     public Session getSession() {
-        return session;
+        return Session.getCurrentSession();
     }
 
-    public void setSession(Session session) {
-        this.session = session;
+    private void requestMe() { //유저의 정보를 받아오는 함수
+        List<String> propertyKeys = new ArrayList<String>();
+        propertyKeys.add("kaccount_email");
+        propertyKeys.add("nickname");
+        propertyKeys.add("profile_image");
+        propertyKeys.add("thumbnail_image");
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                String message = "failed to get user info. msg=" + errorResult;
+                Logger.d(message);
+
+                ErrorCode result = ErrorCode.valueOf(errorResult.getErrorCode());
+                if (result == ErrorCode.CLIENT_ERROR_CODE) {
+                    activity.finish();
+                } else {
+                    Logger.e(TAG, errorResult.getErrorMessage());
+                }
+            }
+
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Logger.e(TAG, errorResult.getErrorMessage());
+            }
+
+            @Override
+            public void onNotSignedUp() {
+            } // 카카오톡 회원이 아닐 시 showSignup(); 호출해야함
+
+            @Override
+            public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
+                //requestAccessTokenInfo();
+                handleCallbackResult(userProfile);
+            }
+        }, propertyKeys, false);
     }
 }

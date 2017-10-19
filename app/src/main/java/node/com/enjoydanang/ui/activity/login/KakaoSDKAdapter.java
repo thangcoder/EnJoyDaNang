@@ -8,7 +8,7 @@ import com.kakao.auth.IApplicationConfig;
 import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 
-import node.com.enjoydanang.MyAppication;
+import node.com.enjoydanang.GlobalApplication;
 
 /**
  * Author: Tavv
@@ -25,7 +25,7 @@ public class KakaoSDKAdapter extends KakaoAdapter {
 
             @Override
             public Context getApplicationContext() {
-                return MyAppication.getGlobalApplicationContext();
+                return GlobalApplication.getGlobalApplicationContext();
             }
         };
     }

@@ -61,6 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configScreen();
         setContentView();
         bindViews();
         init();
@@ -396,4 +397,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setTranslucentStatusBar(){}
 
 
+    public void configScreen(){
+        //// TODO: override when need config before set init layout
+    }
 }

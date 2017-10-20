@@ -20,9 +20,11 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.scan.ScanQRCodeFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit2.http.HEAD;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
@@ -59,7 +61,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     protected void onResume() {
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, ScanQRCodeFragment.class.getName(), false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override
@@ -98,17 +100,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_camera) {
             // Handle the camera action
-        } else if (id == R.id.nav_history) {
+        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_personal) {
+        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_change_pass) {
+        } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_intro) {
+        } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_setting) {
+        } else if (id == R.id.nav_send) {
 
         }
 

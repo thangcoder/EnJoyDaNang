@@ -6,6 +6,7 @@ import node.com.enjoydanang.constant.Constant;
 
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -30,9 +31,9 @@ public class AppClient {
 
     public static Retrofit getClient() {
 
-//        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
 //        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
 //                .tlsVersions(TlsVersion.TLS_1_2)
 //                .cipherSuites(
@@ -40,22 +41,19 @@ public class AppClient {
 //                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
 //                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
 //                .build();
-////
-//        OkHttpClient client = new OkHttpClient.Builder()
+//
+        OkHttpClient httpClient = new OkHttpClient.Builder()
 //                .addNetworkInterceptor(new HeaderInterceptor())
-//                .addInterceptor(interceptor)
-//                .connectTimeout(30, TimeUnit.SECONDS)
-//                .readTimeout(30, TimeUnit.SECONDS)
-//                .retryOnConnectionFailure(true)
-//                .connectionSpecs(Collections.singletonList(spec))
-//                .build();
-//        OkHttpClient client = httpClient.build();
+                .addInterceptor(interceptor)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.URL_HOST)
-                    .client(getUnsafeOkHttpClient())
+                    .client(httpClient)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .addConverterFactory(new NullOnEmptyConverterFactory())
+//                    .addConverterFactory(new NullOnEmptyConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

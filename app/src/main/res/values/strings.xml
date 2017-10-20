@@ -7,11 +7,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="home">Home</string>
+
+
+    <string name="btnSyncProduct">Sync Product</string>
+    <string name="txtClothes">Clothes</string>
+    <string name="txtClothesDes">Favorite Clothes Almost for every girl is very important to have beautiful clothes. For most girl sit is a necessity because it’s a method of self-express</string>
+
     <string name="history_check_in">History Check-in</string>
     <string name="personal_information">Personal Information</string>
-    <string name="change_password">Change Password</string>
-    <string name="introduce">Introduce</string>
     <string name="setting">Setting</string>
     <string name="logout">Logout</string>
     <string name="version_1_0_0">Version 1.0.0</string>

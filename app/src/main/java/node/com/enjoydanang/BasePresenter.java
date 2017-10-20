@@ -21,8 +21,6 @@ import rx.subscriptions.CompositeSubscription;
 public class BasePresenter<V> {
     public V mvpView;
     protected ApiStores apiStores;
-    protected ApiStores apiStoresANS;
-    protected ApiStores apiStoresAmazon;
 
     public BasePresenter(V view){
         attachView(view);

@@ -15,4 +15,5 @@
         android:layout_weight=".7"
         scan_bar:shouldScaleToFill="false" />
 
+
 </LinearLayout>

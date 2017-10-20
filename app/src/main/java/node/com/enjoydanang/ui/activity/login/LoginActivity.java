@@ -1,5 +1,12 @@
 package node.com.enjoydanang.ui.activity.login;
 
+import android.os.Bundle;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import node.com.enjoydanang.MvpActivity;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.LoginType;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

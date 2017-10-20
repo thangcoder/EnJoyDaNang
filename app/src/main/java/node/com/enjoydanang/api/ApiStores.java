@@ -2,9 +2,14 @@ package node.com.enjoydanang.api;
 
 import node.com.enjoydanang.api.model.Repository;
 
+import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.model.Partner;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -15,15 +20,24 @@ public interface ApiStores {
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Call<LoginResponsive> login(@Field("username") String username, @Field("password") String password);
+    @GET("CategoryApi.asmx/ListAll")
+    Observable<Category> getCategorys(@Query("page") int page);
+
 
     @FormUrlEncoded
-    @POST("/login")
-    Observable<Repository> login(@Field("username") String username, @Field("password") String password,
-                                 @Field("device_token") String deviceToken, @Field("os") String os);
-    @FormUrlEncoded
-    @POST("v1/autologin")
-    Observable<Repository> autoLogin(@Field("username") String username,
-                                     @Field("access_token") String access_token, @Field("device_token") String deviceToken);
+    @POST("PartnerApi.asmx/ListAll")
+    Observable<Partner> listPartner(@Field("page") int page);
+
+
+
+//    @FormUrlEncoded
+//    @POST("/login")
+//    Observable<Repository> login(@Field("username") String username, @Field("password") String password,
+//                                      @Field("device_token") String deviceToken, @Field("os") String os);
+//    @FormUrlEncoded
+//    @POST("v1/autologin")
+//    Observable<Repository> autoLogin(@Field("username") String username,
+//                                     @Field("access_token") String access_token, @Field("device_token") String deviceToken);
 
 //    @FormUrlEncoded
 //    @POST("v1/logout")

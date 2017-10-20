@@ -9,13 +9,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.kakao.auth.ApiResponseCallback;
-import com.kakao.auth.AuthService;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ErrorCode;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
-import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
@@ -53,6 +50,8 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
 
     private ProgressBar progressBar;
 
+    private LoginPresenter mLoginPresenter;
+
 
     public LoginViaKakaoTalk(BaseActivity activity) {
         this.activity = activity;
@@ -77,6 +76,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     public void handleCallbackResult(UserProfile callback) {
         if (callback != null) {
             User user = new User();
+            user.setId(String.valueOf(callback.getId()));
             user.setFullName(callback.getNickname());
             Data data = new Data();
             data.setUrl(callback.getProfileImagePath());
@@ -85,6 +85,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
             user.setPicture(picture);
             user.setEmail(callback.getEmail());
             user.setType(LoginType.KAKAOTALK);
+            user.setAccessToken(getAccessToken());
             pushToServer(user);
         }
     }
@@ -95,8 +96,10 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     }
 
     @Override
-    public void pushToServer(User model) {
-        Logger.i(TAG, model);
+    public void pushToServer(User user) {
+        if(user != null){
+            mLoginPresenter.loginViaSocial(user);
+        }
     }
 
     @Override
@@ -106,10 +109,18 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
 
     @Override
     public void setProgressbar(ProgressBar progressbar) {
-        if(progressbar == null){
+        if (progressbar == null) {
             throw new NullPointerException("ProgressBar not be null !");
         }
         this.progressBar = progressbar;
+    }
+
+    @Override
+    public void setLoginPresenter(LoginPresenter loginPresenter) {
+        if (loginPresenter == null) {
+            throw new NullPointerException("LoginPresenter not be null !");
+        }
+        this.mLoginPresenter = loginPresenter;
     }
 
 
@@ -128,36 +139,6 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
             }
         }
     }
-
-
-    private void requestAccessTokenInfo() {
-        AuthService.requestAccessTokenInfo(new ApiResponseCallback<AccessTokenInfoResponse>() {
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                // TODO: Handle something here !!! onSessionClosed
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                // not happened
-            }
-
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                Logger.e(TAG, "failed to get access token info. msg=" + errorResult);
-            }
-
-            @Override
-            public void onSuccess(AccessTokenInfoResponse accessTokenInfoResponse) {
-                long userId = accessTokenInfoResponse.getUserId();
-                Logger.d("this access token is for userId=" + userId);
-
-                long expiresInMilis = accessTokenInfoResponse.getExpiresInMillis();
-                Logger.d("this access token expires after " + expiresInMilis + " milliseconds.");
-            }
-        });
-    }
-
 
     public static String getKeyHash(final Context context) {
         PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
@@ -188,7 +169,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
         return Session.getCurrentSession();
     }
 
-    private void requestMe() { //유저의 정보를 받아오는 함수
+    private void requestMe() {
         List<String> propertyKeys = new ArrayList<String>();
         propertyKeys.add("kaccount_email");
         propertyKeys.add("nickname");
@@ -215,13 +196,16 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
 
             @Override
             public void onNotSignedUp() {
-            } // 카카오톡 회원이 아닐 시 showSignup(); 호출해야함
+            }
 
             @Override
-            public void onSuccess(UserProfile userProfile) {  //성공 시 userProfile 형태로 반환
-                //requestAccessTokenInfo();
+            public void onSuccess(UserProfile userProfile) {
                 handleCallbackResult(userProfile);
             }
         }, propertyKeys, false);
+    }
+
+    private String getAccessToken() {
+        return Session.getCurrentSession().isOpened() ? Session.getCurrentSession().getTokenInfo().getAccessToken() : null;
     }
 }

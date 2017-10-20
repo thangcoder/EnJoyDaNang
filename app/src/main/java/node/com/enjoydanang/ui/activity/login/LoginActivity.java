@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -15,14 +16,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.constant.LoginType;
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
+import node.com.enjoydanang.utils.network.NetworkError;
 
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
@@ -35,7 +42,6 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
 public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView {
     private static final String TAG = LoginActivity.class.getSimpleName();
-
 
     @BindView(R.id.lrlSignIn)
     public LinearLayout lrlSignIn;
@@ -53,11 +59,13 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
     private LoginViaKakaoTalk loginViaKakaoTalk;
+    private LoginPresenter loginPresenter;
 
 
     @Override
     protected LoginPresenter createPresenter() {
-        return new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this);
+        return loginPresenter;
     }
 
     @Override
@@ -75,6 +83,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         //init
         loginViaFacebook.init();
         loginViaGoogle.init();
+        setPresenter();
     }
 
     @Override
@@ -92,14 +101,19 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     }
 
+
     @OnClick({R.id.lrlSignIn, R.id.txtCreateAccount, R.id.txtForgotPwd})
     public void onClick(View view) {
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.lrlSignIn:
-                Intent intent = new Intent(mActivity, MainActivity.class);
+                intent = new Intent(mActivity, MainActivity.class);
                 startActivity(intent);
                 break;
             case R.id.txtCreateAccount:
+                intent = new Intent(mActivity, SignUpActivity.class);
+                startActivity(intent);
+                overridePendingTransitionEnter();
                 break;
             case R.id.txtForgotPwd:
                 Toast.makeText(this, "Forgot Click", Toast.LENGTH_SHORT).show();
@@ -111,7 +125,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onRegisterWithSocial(View view) {
         switch (view.getId()) {
             case R.id.btnLoginFb:
-                prgLoadingLogin.setVisibility(View.VISIBLE);
                 loginViaFacebook.login();
                 break;
             case R.id.btnLoginGPlus:
@@ -153,12 +166,18 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void showToast(String desc) {
-
+        Log.e(TAG, "Error " + desc);
     }
 
     @Override
     public void unKnownError() {
 
+    }
+
+    private void setPresenter() {
+        loginViaGoogle.setLoginPresenter(loginPresenter);
+        loginViaFacebook.setLoginPresenter(loginPresenter);
+        loginViaKakaoTalk.setLoginPresenter(loginPresenter);
     }
 
     @Override
@@ -179,4 +198,18 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
+
+    @Override
+    public void onLoginSuccess(BaseRepository<UserInfo> resultCallBack) {
+        if (resultCallBack != null) {
+            List<UserInfo> userInfoLst = resultCallBack.getData();
+            Log.i(TAG, "onLoginSuccess " + userInfoLst);
+        }
+    }
+
+    @Override
+    public void onLoginFailure(NetworkError error) {
+        Log.e(TAG, "onLoginFailure " + error.getMessage());
+    }
+
 }

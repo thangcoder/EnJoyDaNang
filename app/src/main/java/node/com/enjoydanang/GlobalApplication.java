@@ -19,7 +19,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
-import node.com.enjoydanang.utils.Utils;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
@@ -39,7 +38,6 @@ public class GlobalApplication extends Application {
         DraweeConfig draweeConfig = DraweeConfig.newBuilder()
                 .build();
         Fresco.initialize(this, frescoConfig, draweeConfig);
-        Utils.init(this);
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());

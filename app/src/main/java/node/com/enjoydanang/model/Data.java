@@ -3,6 +3,8 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Author: Tavv
  * Created on 12/10/2017.
@@ -18,6 +20,8 @@ public class Data {
     @Expose
     private String url;
 
+    private String thumbImage;
+
     public boolean isIsSilhouette() {
         return isSilhouette;
     }
@@ -32,5 +36,17 @@ public class Data {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getThumbImage() {
+        return thumbImage;
+    }
+
+    public void setThumbImage(String thumbImage) {
+        this.thumbImage = thumbImage;
+    }
+
+    public String getImage(){
+        return StringUtils.isBlank(thumbImage) ? url : thumbImage;
     }
 }

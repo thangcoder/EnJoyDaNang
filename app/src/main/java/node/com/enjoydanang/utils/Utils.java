@@ -3,6 +3,8 @@ package node.com.enjoydanang.utils;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 
+import node.com.enjoydanang.GlobalApplication;
+
 /**
  * Author: Tavv
  * Created on 09/10/2017.
@@ -12,22 +14,21 @@ import android.support.v4.content.ContextCompat;
 
 public class Utils {
 
-    private static Context sContext;
-
-    public static void init(Context context) {
-        sContext = context.getApplicationContext();
-    }
 
     public static int getColorRes(int colorId) {
-        return ContextCompat.getColor(sContext, colorId);
+        return ContextCompat.getColor(GlobalApplication.getGlobalApplicationContext(), colorId);
     }
 
     public static int getDimensRes(Context context, int dimens) {
         return context.getResources().getDimensionPixelSize(dimens);
     }
 
+    public static String getString(int stringId){
+        return GlobalApplication.getGlobalApplicationContext().getString(stringId);
+    }
+
     public static String getColorTransparent(int baseColor, int percent) {
-        String colorPrimary = Integer.toHexString(ContextCompat.getColor(sContext, baseColor));
+        String colorPrimary = Integer.toHexString(ContextCompat.getColor(GlobalApplication.getGlobalApplicationContext(), baseColor));
         colorPrimary = colorPrimary.substring(2).toUpperCase();
         String hexTransparent;
         switch (percent) {
@@ -100,5 +101,7 @@ public class Utils {
         }
         return hexTransparent + colorPrimary;
     }
+
+
 
 }

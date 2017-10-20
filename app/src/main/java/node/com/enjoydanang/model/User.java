@@ -17,6 +17,7 @@ public class User {
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("name")
     @Expose
     private String fullName;
@@ -140,19 +141,5 @@ public class User {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", birthday='" + birthday + '\'' +
-                ", gender='" + gender + '\'' +
-                ", picture=" + picture +
-                ", accessToken='" + accessToken + '\'' +
-                ", type='" + type + '\'' +
-                '}';
-    }
+
 }

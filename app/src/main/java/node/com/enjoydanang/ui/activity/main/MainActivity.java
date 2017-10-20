@@ -20,11 +20,9 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
-import node.com.enjoydanang.ui.fragment.home.HomeFragment;
-import node.com.enjoydanang.ui.fragment.scan.ScanQRCodeFragment;
+import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import retrofit2.http.HEAD;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
@@ -61,7 +59,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     protected void onResume() {
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, IntroductionFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override

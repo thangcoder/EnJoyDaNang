@@ -1,12 +1,5 @@
 package node.com.enjoydanang.ui.activity.login;
 
-import android.os.Bundle;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import node.com.enjoydanang.MvpActivity;
-import node.com.enjoydanang.R;
-import node.com.enjoydanang.constant.LoginType;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -75,9 +68,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void init() {
         LoginFactory loginFactory = new LoginFactory();
-        loginViaFacebook = (LoginViaFacebook) loginFactory.doLogin(LoginType.FACEBOOK, this);
-        loginViaGoogle = (LoginViaGoogle) loginFactory.doLogin(LoginType.GOOGLE, this);
-        loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.doLogin(LoginType.KAKAOTALK, this);
+        loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this);
+        loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this);
+        loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.getLoginType(LoginType.KAKAOTALK, this);
 
         //init
         loginViaFacebook.init();

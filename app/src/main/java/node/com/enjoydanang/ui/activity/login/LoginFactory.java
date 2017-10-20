@@ -12,7 +12,7 @@ import node.com.enjoydanang.ui.activity.BaseActivity;
 
 public class LoginFactory {
 
-    ILogin doLogin(LoginType loginType, BaseActivity activity) {
+    ILogin getLoginType(LoginType loginType, BaseActivity activity) {
         switch (loginType) {
             case FACEBOOK:
                 return new LoginViaFacebook(activity);

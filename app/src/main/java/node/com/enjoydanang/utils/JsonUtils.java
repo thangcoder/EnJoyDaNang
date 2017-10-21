@@ -1,5 +1,6 @@
 package node.com.enjoydanang.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.Constant;
 
 /**
@@ -34,6 +36,18 @@ public class JsonUtils {
         }
         result = sBuilder.toString();
         return new JSONObject(result);
+    }
+
+    public static String getLanguageByKey(final String key) {
+        JSONObject jsLanguage = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
+        if (jsLanguage != null) {
+            try {
+                return jsLanguage.getString(key);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return StringUtils.EMPTY;
     }
 
 

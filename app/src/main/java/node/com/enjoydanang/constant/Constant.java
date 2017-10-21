@@ -34,4 +34,6 @@ public class Constant {
     }
 
     public static final int CONNECT_TIME_OUT = 15000;
+
+    public static final String FILE_NAME_LANGUAGE = "language.json";
 }

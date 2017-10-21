@@ -4,6 +4,7 @@ import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Introduction;
+import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.model.UserInfo;
@@ -62,6 +63,8 @@ public interface ApiStores {
     @GET("CategoryApi.asmx/ListAll")
     Observable<BaseRepository<Category>> getAllCategories();
 
+    @GET("GlobalApi.asmx/GetResourceLanguage")
+    Observable<BaseRepository<Language>> getLanguage();
 
 //    @FormUrlEncoded
 //    @POST("/login")

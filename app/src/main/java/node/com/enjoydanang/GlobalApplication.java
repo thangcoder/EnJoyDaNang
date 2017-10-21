@@ -15,6 +15,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.kakao.auth.KakaoSDK;
 
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -30,6 +32,7 @@ public class GlobalApplication extends Application {
     private static final String TAG = GlobalApplication.class.getSimpleName();
     private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
+    public JSONObject jsLanguage;
 
     @Override
     public void onCreate() {
@@ -41,8 +44,6 @@ public class GlobalApplication extends Application {
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
-        String hashKey = getKeyHash(this);
-        Log.i(TAG, "onCreate : " + hashKey);
     }
 
 
@@ -90,5 +91,11 @@ public class GlobalApplication extends Application {
         return null;
     }
 
+    public JSONObject getJsLanguage() {
+        return jsLanguage;
+    }
 
+    public void setJsLanguage(JSONObject jsLanguage) {
+        this.jsLanguage = jsLanguage;
+    }
 }

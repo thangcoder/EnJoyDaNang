@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +19,14 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.constant.AppLanguage;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.MenuItem;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.utils.FileUtils;
+import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 import node.com.enjoydanang.utils.network.NetworkError;
@@ -51,8 +57,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
 
     private PartnerAdapter mPartnerAdapter;
 
-    private int countComming = 0;
-
     @Override
     public void showToast(String desc) {
 
@@ -81,11 +85,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         lstCategories = new ArrayList<>();
         mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
         gridView.setAdapter(mCategoryAdapter);
+
+
     }
 
     @Override
     protected void setEvent(View view) {
         rcvPartner.addOnScrollListener(new LoadMoreProduct(mLayoutManager));
+        String value = JsonUtils.getLanguageByKey(AppLanguage.Key.FullName);
+        Log.i(TAG, "setEvent: " + value);
     }
 
     @Override
@@ -153,7 +161,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     @Override
     public void onGetPartnerSuccess(BaseRepository<Partner> data) {
         if (Utils.isNotEmptyContent(data)) {
-            Log.i(TAG, "onGetPartnerSuccess: " + currentPage);
             List<Partner> partners = data.getData();
             updateItemAdapter(partners);
         }

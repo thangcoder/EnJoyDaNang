@@ -28,6 +28,7 @@ import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 import node.com.enjoydanang.utils.network.NetworkError;
 
@@ -201,7 +202,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void onLoginSuccess(BaseRepository<UserInfo> resultCallBack) {
-        if (resultCallBack != null) {
+        if (Utils.isNotEmptyContent(resultCallBack)) {
             List<UserInfo> userInfoLst = resultCallBack.getData();
             Log.i(TAG, "onLoginSuccess " + userInfoLst);
         }

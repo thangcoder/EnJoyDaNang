@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="bannerslider-1.8.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/97f9cba427a7a093d4e9c6f577a29e404b47f9cf/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/97f9cba427a7a093d4e9c6f577a29e404b47f9cf/output/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.ss.bannerslider/bannerslider/1.8.0/90ec1f317a51bf065da12e0f63694cadf032785a/bannerslider-1.8.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

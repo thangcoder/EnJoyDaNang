@@ -88,4 +88,13 @@
 
     <string name="facebook_app_id">123608678348689</string>
 
+    <string name="product_meta">created this recipe</string>
+    
+    
+    <string name="load_fail_footer">Load failed</string>
+
+    <string name="try_again_footer">Try Again</string>
+
+    <string name="end_of_result_footer">No more item</string>
+
 </resources>

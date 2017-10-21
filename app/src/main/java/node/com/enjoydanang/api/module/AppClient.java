@@ -53,7 +53,7 @@ public class AppClient {
                     .baseUrl(Constant.URL_HOST)
                     .client(httpClient)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-//                    .addConverterFactory(new NullOnEmptyConverterFactory())
+                    .addConverterFactory(new NullOnEmptyConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

@@ -18,20 +18,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.Products;
+import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
-    List<Products> products;
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+    List<Product> products;
     Context mContext;
-    public ProductAdapter(Context context, ArrayList<Products> listData) {
+
+    public ProductAdapter(Context context, ArrayList<Product> listData) {
         mContext = context;
         products = listData;
     }
+
     @Override
     public ProductAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext)
@@ -42,26 +44,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ProductAdapter.ViewHolder holder, int position) {
-        Products product = products.get(position);
-       // holder.tvTitle.setText(product.getTitle());
+        Product product = products.get(position);
+        // holder.tvTitle.setText(product.getTitle());
         //holder.tvMeta.setText(product.getMeta());
-        ImageUtils.loadImageDrawable(mContext,holder.imgPhoto);
+        ImageUtils.loadImageDrawable(mContext, holder.imgPhoto);
     }
 
     @Override
     public int getItemCount() {
         return products.size();
     }
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
 //        public SimpleDraweeView imgPhoto;
         public final View mView;
         @BindView(R.id.img_photo)
         ImageView imgPhoto;
         @BindView(R.id.tv_title)
-         TextView tvTitle;
+        TextView tvTitle;
         @BindView(R.id.tv_meta)
-         TextView tvMeta;
+        TextView tvMeta;
 
         public ViewHolder(View v) {
             super(v);

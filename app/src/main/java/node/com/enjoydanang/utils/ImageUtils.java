@@ -1,11 +1,19 @@
 package node.com.enjoydanang.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
-;import com.squareup.picasso.Picasso;
+;import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import node.com.enjoydanang.R;
 
@@ -14,7 +22,7 @@ import node.com.enjoydanang.R;
  */
 
 public class ImageUtils {
-    public static void loadImage(Context context, ImageView imgView, String imgUrl){
+    public static void loadImage(Context context, ImageView imgView, String imgUrl) {
         Picasso.with(context).load(imgUrl)
                 .transform(new RoundedTransformation(50, 0))
 //                .error(R.drawable.error_image)
@@ -24,7 +32,8 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
-    public static void loadImageDrawable(Context context, ImageView imgView){
+
+    public static void loadImageDrawable(Context context, ImageView imgView) {
         Picasso.with(context).load(R.drawable.img_product)
 //                .transform(new RoundedTransformation(50, 0))
 //                .error(R.drawable.error_image)
@@ -36,8 +45,7 @@ public class ImageUtils {
     }
 
 
-
-    public static void loadImageNoRadius(Context context, ImageView imgView, String imgUrl){
+    public static void loadImageNoRadius(Context context, ImageView imgView, String imgUrl) {
         Picasso.with(context).load(imgUrl)
 //                .error(R.drawable.error_image)
                 .error(R.drawable.placeholder)
@@ -48,7 +56,7 @@ public class ImageUtils {
     }
 
 
-//    public static void loadImageNoRadius(Context context,ImageView imageView,String url){
+    //    public static void loadImageNoRadius(Context context,ImageView imageView,String url){
 //        Glide.with(context)
 //                .load(url)
 ////                .transform(new CircleTransform(context))
@@ -73,6 +81,5 @@ public class ImageUtils {
 //                .into(imgView);
 //    }
 //
-
 
 }

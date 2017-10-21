@@ -3,7 +3,12 @@ package node.com.enjoydanang.utils;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import node.com.enjoydanang.GlobalApplication;
+import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.constant.Constant;
 
 /**
  * Author: Tavv
@@ -23,7 +28,7 @@ public class Utils {
         return context.getResources().getDimensionPixelSize(dimens);
     }
 
-    public static String getString(int stringId){
+    public static String getString(int stringId) {
         return GlobalApplication.getGlobalApplicationContext().getString(stringId);
     }
 
@@ -102,6 +107,10 @@ public class Utils {
         return hexTransparent + colorPrimary;
     }
 
-
+    public static <T> boolean isNotEmptyContent(BaseRepository<T> repository) {
+        return repository != null
+                && StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_SUCCESS)
+                && CollectionUtils.isNotEmpty(repository.getData());
+    }
 
 }

@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -31,7 +32,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
-    @BindView(R.id.nav_view)
+    @BindView(R.id.left_drawer)
     NavigationView navigationView;
     @Override
     public void setContentView() {
@@ -59,7 +60,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     protected void onResume() {
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, IntroductionFragment.class.getName(), false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override
@@ -126,16 +127,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void unKnownError() {
 
     }
-    @OnClick({R.id.fab})
-    void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fab:
-                Toast.makeText(mActivity, "Hello", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
-    }
+//    @OnClick({R.id.fab})
+//    void onClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.fab:
+//                Toast.makeText(mActivity, "Hello", Toast.LENGTH_SHORT).show();
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

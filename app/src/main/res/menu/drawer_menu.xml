@@ -22,14 +22,6 @@
                         android:id="@+id/introduction"
                         android:title="@string/introduction" />
 
-                    <item
-                        android:id="@+id/setting"
-                        android:title="@string/setting" />
-
-                    <item
-                        android:id="@+id/logout"
-                        android:title="@string/logout" />
-
 
                 </group>
             </menu>

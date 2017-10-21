@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by chien on 10/8/17.
  */
 
-public class Products {
+public class Product {
     @SerializedName("meta")
     private String meta;
     @SerializedName("title")
@@ -39,10 +39,10 @@ public class Products {
         this.image = image;
     }
 
-    public Products() {
+    public Product() {
     }
 
-    public Products(String meta, String title, String image) {
+    public Product(String meta, String title, String image) {
         this.meta = meta;
         this.title = title;
         this.image = image;

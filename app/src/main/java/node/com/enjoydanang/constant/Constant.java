@@ -19,6 +19,9 @@ public class Constant {
     public static final String API_405 = "405";
     public static final String API_501 = "501";
     public static final String API_502 = "502";
+    public static final String MSG_SUCCESS = "success";
+    public static final String MSG_FAILURE = "fail";
+
     public enum ReportResult{
         NULL,
         REPORTED,

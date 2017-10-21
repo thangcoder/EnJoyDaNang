@@ -1,9 +1,11 @@
 package node.com.enjoydanang.api;
 
 import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.model.UserInfo;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -48,6 +50,17 @@ public interface ApiStores {
 
     @GET("LandingPageApi.asmx/Introduction")
     Observable<BaseRepository<Introduction>> getIntroduction();
+
+
+    @GET("GlobalApi.asmx/GetBanner")
+    Observable<BaseRepository<Banner>> getBanner();
+
+    @GET("PartnerApi.asmx/ListAll")
+    Observable<BaseRepository<Partner>> getPartner(@Query("page") int page);
+
+
+    @GET("CategoryApi.asmx/ListAll")
+    Observable<BaseRepository<Category>> getAllCategories();
 
 
 //    @FormUrlEncoded

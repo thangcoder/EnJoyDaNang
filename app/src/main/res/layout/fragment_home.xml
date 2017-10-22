@@ -3,13 +3,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <GridView
-        android:numColumns="4"
         android:id="@+id/grv_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_150sdp"
+        android:columnWidth="@dimen/_90sdp"
+        android:numColumns="4"
+        android:background="@color/fifty_percent_transparency_grey_400"
+        android:verticalSpacing="@dimen/_1sdp"
+        android:horizontalSpacing="@dimen/_1sdp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_minus8sdp"
         />
-    <android.support.v7.widget.RecyclerView
+    <View
+        android:layout_marginTop="@dimen/_7sdp"
         android:layout_below="@+id/grv_menu"
+        android:id="@+id/view_below"
+        android:background="@color/fifty_percent_transparency_grey_400"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"/>
+
+    <RelativeLayout
+        android:id="@+id/slide"
+        android:layout_below="@+id/view_below"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+        <ImageView
+            android:visibility="visible"
+            android:id="@+id/prev"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/prev" />
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:src="@drawable/next" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_below="@+id/slide"
+        android:id="@+id/weather"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp">
+        <TextView
+            android:textSize="@dimen/_16ssp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/weather"
         android:id="@+id/rcv_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

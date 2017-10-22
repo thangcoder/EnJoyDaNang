@@ -3,39 +3,70 @@ package node.com.enjoydanang.model;
 
 import java.util.List;
 import javax.annotation.Generated;
+
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.Constant;
 
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
-public class Banner extends Repository{
+public class Banner {
 
-    @SerializedName("count")
-    private Long mCount;
-    @SerializedName("data")
-    private List<Datum> mData;
+    @SerializedName("Id")
+    @Expose
+    private Integer id;
+    @SerializedName("Picture")
+    @Expose
+    private String picture;
+    @SerializedName("Href")
+    @Expose
+    private String href;
+    @SerializedName("Target")
+    @Expose
+    private String target;
+    @SerializedName("Title")
+    @Expose
+    private String title;
 
-    public Banner(String status, String message) {
-        super(status, message);
+    public Integer getId() {
+        return id;
     }
 
-
-    public Long getCount() {
-        return mCount;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setCount(Long count) {
-        mCount = count;
+    public String getPicture() {
+        return Constant.URL_HOST_IMAGE + picture;
     }
 
-    public List<Datum> getData() {
-        return mData;
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
-    public void setData(List<Datum> data) {
-        mData = data;
+    public String getHref() {
+        return href;
     }
 
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
 }

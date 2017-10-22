@@ -2,11 +2,13 @@ package node.com.enjoydanang.ui.fragment.home;
 
 import android.content.Context;
 import android.media.Image;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,12 +28,13 @@ import node.com.enjoydanang.utils.ImageUtils;
 
 public class MenuAdapter extends BaseAdapter {
     Context context;
-    List<Datum> categories;
+    List<Category> categories;
     private static LayoutInflater inflater=null;
-
-    public MenuAdapter(Context context, List<Datum> menuItems) {
+    private OnItemClick onItemClick;
+    public MenuAdapter(Context context, List<Category> menuItems,OnItemClick onItemClick) {
         this.context = context;
         this.categories = menuItems;
+        this.onItemClick = onItemClick;
         inflater = ( LayoutInflater )context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -52,8 +55,8 @@ public class MenuAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        Holder holder;
+    public View getView(final int i, View view, ViewGroup viewGroup) {
+        final Holder holder;
         if(view==null){
             view = inflater.inflate(R.layout.item_home_menu, null);
             holder = new Holder(view);
@@ -61,9 +64,16 @@ public class MenuAdapter extends BaseAdapter {
         }else {
             holder=(Holder)view.getTag();
         }
-        Datum data = categories.get(i);
+        final Category data = categories.get(i);
         holder.tvName.setText(data.getName());
-        ImageUtils.loadImageNoRadius(context,holder.imgIcon,data.getPicture());
+        holder.llRoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                holder.llRoot.setBackgroundColor(ContextCompat.getColor(context, R.color.color_gray));
+                onItemClick.onItemClick(data.getId(),i);
+            }
+        });
+        ImageUtils.loadImageRounded(context,holder.imgIcon,data.getPicture());
         return view;
     }
     static final class  Holder {
@@ -71,9 +81,14 @@ public class MenuAdapter extends BaseAdapter {
         TextView tvName;
         @BindView(R.id.img_icon)
         ImageView imgIcon;
+        @BindView(R.id.ll_root)
+        LinearLayout llRoot;
 
         Holder(View view) {
             ButterKnife.bind(this, view);
         }
+    }
+    interface OnItemClick{
+        void onItemClick(int id, int position);
     }
 }

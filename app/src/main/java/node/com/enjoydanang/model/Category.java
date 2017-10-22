@@ -2,41 +2,106 @@
 package node.com.enjoydanang.model;
 
 import java.util.List;
+
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import javax.annotation.Generated;
 
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.Constant;
 
 
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
-public class Category extends Repository {
+public class Category{
 
-    @SerializedName("count")
-    private Long mCount;
-    @SerializedName("data")
-    private List<Datum> mData;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
+    @SerializedName("Id")
+    @Expose
+    private Integer id;
+    @SerializedName("Name")
+    @Expose
+    private String name;
+    @SerializedName("Picture")
+    @Expose
+    private String picture;
+    @SerializedName("Phone")
+    @Expose
+    private String phone;
+    @SerializedName("Address")
+    @Expose
+    private String address;
+    @SerializedName("StarReview")
+    @Expose
+    private Integer starReview;
+    @SerializedName("Discount")
+    @Expose
+    private Integer discount;
 
-    public Category(String status, String token, String message) {
-        super(status,  message);
+    public String getIcon() {
+        return icon;
     }
 
-    public Long getCount() {
-        return mCount;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public void setCount(Long count) {
-        mCount = count;
+    public Integer getId() {
+        return id;
     }
 
-    public List<Datum> getData() {
-        return mData;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setData(List<Datum> data) {
-        mData = data;
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getPicture() {
+        return Constant.URL_HOST_IMAGE + picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Integer getStarReview() {
+        return starReview;
+    }
+
+    public void setStarReview(Integer starReview) {
+        this.starReview = starReview;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
 }

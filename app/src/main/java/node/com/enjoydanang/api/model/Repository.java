@@ -2,11 +2,13 @@ package node.com.enjoydanang.api.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by chientruong on 12/26/16.
  */
 
-public class Repository {
+public class Repository<T> {
     @SerializedName("status")
     private String status;
 
@@ -14,6 +16,16 @@ public class Repository {
     private String message;
 
 
+    @SerializedName("data")
+    private List<T> data;
+
+    public List<T> getData() {
+        return data;
+    }
+
+    public void setData(List<T> data) {
+        this.data = data;
+    }
 
     public Repository(String status,  String message) {
         this.status = status;

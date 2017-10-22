@@ -2,13 +2,12 @@ package node.com.enjoydanang.api;
 
 import node.com.enjoydanang.api.model.Repository;
 
+import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.Partner;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -21,13 +20,18 @@ public interface ApiStores {
 //    @POST("/login")
 //    Call<LoginResponsive> login(@Field("username") String username, @Field("password") String password);
     @GET("CategoryApi.asmx/ListAll")
-    Observable<Category> getCategorys(@Query("page") int page);
+    Observable<Repository<Category>> getCategorys(@Query("page") int page);
 
+    @GET("GlobalApi.asmx/GetBanner")
+    Observable<Repository<Banner>> getBanner();
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListAll")
-    Observable<Partner> listPartner(@Field("page") int page);
+    Observable<Repository<Category>> listPartner(@Field("page") int page);
 
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListByCategory")
+    Observable<Repository<Category>> listByCategory(@Field("id") int id,@Field("page") int page);
 
 
 //    @FormUrlEncoded

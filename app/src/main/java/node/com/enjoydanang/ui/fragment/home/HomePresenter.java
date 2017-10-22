@@ -1,11 +1,10 @@
 package node.com.enjoydanang.ui.fragment.home;
 
-import java.util.List;
-
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
+import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.MenuItem;
 
 /**
  * Created by chien on 10/8/17.
@@ -17,17 +16,58 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         super(view);
     }
 
-    public void getMenuItem(List<MenuItem> menuItems){
 
-        mvpView.getMenuFinish(menuItems);
-    }
     public void getCategorys(int page) {
-//        mvpView.showLoading();
-        addSubscription(apiStores.getCategorys(page), new ApiCallback<Category>() {
+        mvpView.showLoading();
+        addSubscription(apiStores.getCategorys(page), new ApiCallback<Repository<Category>>() {
+            @Override
+            public void onSuccess(Repository<Category> model) {
+                if(model.getData().size()>0){
+                    mvpView.getCategorysFinish(model.getData());
+                }
+            }
 
             @Override
-            public void onSuccess(Category model) {
-                mvpView.getCategorysFinish(model);
+            public void onFailure(String msg) {
+                mvpView.hideLoading();
+            }
+
+            @Override
+            public void onFinish() {
+                mvpView.hideLoading();
+            }
+
+        });
+    }
+    public void getListByCategorys(int id,int page) {
+        mvpView.showLoading();
+        addSubscription(apiStores.listByCategory(id,page), new ApiCallback<Repository<Category>>() {
+            @Override
+            public void onSuccess(Repository<Category> model) {
+                if(model.getData().size()>0){
+                    mvpView.getListByCategoryFinish( model.getData());
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.hideLoading();
+            }
+
+            @Override
+            public void onFinish() {
+                mvpView.hideLoading();
+            }
+        });
+    }
+    public void getBanner() {
+        mvpView.showLoading();
+        addSubscription(apiStores.getBanner(), new ApiCallback<Repository<Banner>>() {
+            @Override
+            public void onSuccess(Repository<Banner> model) {
+                if(model.getData().size()>0){
+                    mvpView.getBannerFinish( model.getData());
+                }
             }
 
             @Override

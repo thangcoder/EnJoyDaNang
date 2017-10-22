@@ -104,7 +104,7 @@
     <color name="white">#FFFFFF</color>
 
     <color name="background_form_login">#f4b0aa</color>
-
+    <color name="tab_select">#F3641E</color>
 
     <!-- Red -->
     <color name="material_red_50">#fde0dc</color>

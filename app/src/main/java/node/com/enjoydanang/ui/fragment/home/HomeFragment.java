@@ -62,6 +62,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
 
     private PartnerAdapter mPartnerAdapter;
     private LoadMorePartner loadMorePartner;
+    private boolean hasLoadmore;
 
     @Override
     public void showToast(String desc) {
@@ -196,7 +197,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
             mPartnerAdapter.clearAndUpdateData(data.getData());
             rcvPartner.setVisibility(View.VISIBLE);
             txtEmptyView.setVisibility(View.GONE);
-        }else{
+        } else if (!Utils.isNotEmptyContent(data) && !hasLoadmore) {
             mPartnerAdapter.clearAndUpdateData(Collections.EMPTY_LIST);
             rcvPartner.setVisibility(View.GONE);
             txtEmptyView.setVisibility(View.VISIBLE);
@@ -229,6 +230,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
             showLoading();
             loadMorePartner.setTypeGetPartner(TypeGetPartner.PARTNER_BY_CATEGORY);
             loadMorePartner.setCategoryId(category.getId());
+            hasLoadmore = false;
             mvpPresenter.getPartnerByCategory(category.getId(), startPage);
         }
     }
@@ -236,7 +238,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     private class LoadMorePartner extends EndlessRecyclerViewScrollListener {
 
         private TypeGetPartner typeGetPartner;
-        private int categoryId = 0;
+        private int categoryId = -1;
 
         public LoadMorePartner(LinearLayoutManager layoutManager) {
             super(layoutManager);
@@ -250,6 +252,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         @Override
         public void onLoadMore(int page, int totalItemsCount) {
             currentPage = page;
+            hasLoadmore = true;
             onRetryGetPartner(page, categoryId, typeGetPartner);
         }
 
@@ -265,10 +268,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     private void onRetryGetPartner(int page, int categoryId, TypeGetPartner type) {
         if (type == TypeGetPartner.ALL_PARTNER) {
             mvpPresenter.getPartner(page);
-        } else if (type == TypeGetPartner.PARTNER_BY_CATEGORY) {
+        } else if (type == TypeGetPartner.PARTNER_BY_CATEGORY && categoryId != -1) {
             mvpPresenter.getPartnerByCategory(categoryId, page);
         }
-
     }
 
 

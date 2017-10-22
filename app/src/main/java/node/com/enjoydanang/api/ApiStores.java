@@ -3,9 +3,11 @@ package node.com.enjoydanang.api;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.model.UserInfo;
 import retrofit2.http.Field;
@@ -70,6 +72,15 @@ public interface ApiStores {
     @POST("PartnerApi.asmx/ListByCategory")
     Observable<BaseRepository<Partner>> getPartnerByCategoryId(@Field("id") int id, @Field("page") int page);
 
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/Detail")
+    Observable<BaseRepository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);
+
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/Picture")
+    Observable<BaseRepository<PartnerAlbum>> getAlbumPartnerById(@Field("id") int partnerId);
+    
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

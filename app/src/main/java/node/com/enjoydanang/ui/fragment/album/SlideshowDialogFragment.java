@@ -17,7 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.ArrayList;
 
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.model.PartnerAlbum;
 
 /**
  * Author: Tavv
@@ -28,7 +28,7 @@ import node.com.enjoydanang.model.AlbumModel;
 
 public class SlideshowDialogFragment extends DialogFragment {
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
-    private ArrayList<AlbumModel> images;
+    private ArrayList<PartnerAlbum> images;
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDate;
@@ -47,7 +47,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblTitle = (TextView) view.findViewById(R.id.title);
         lblDate = (TextView) view.findViewById(R.id.date);
 
-        images = (ArrayList<AlbumModel>) getArguments().getSerializable("images");
+        images = (ArrayList<PartnerAlbum>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
 
         myViewPagerAdapter = new MyViewPagerAdapter();
@@ -86,7 +86,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private void displayMetaInfo(int position) {
         lblCount.setText((position + 1) + " of " + images.size());
 
-        AlbumModel model = images.get(position);
+        PartnerAlbum model = images.get(position);
         lblTitle.setText(model.getName());
         lblDate.setText(model.getTime());
     }
@@ -113,7 +113,7 @@ public class SlideshowDialogFragment extends DialogFragment {
 
             ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
 
-            AlbumModel model = images.get(position);
+            PartnerAlbum model = images.get(position);
 
             Glide.with(getActivity()).load(model.getImage())
                     .thumbnail(0.5f)

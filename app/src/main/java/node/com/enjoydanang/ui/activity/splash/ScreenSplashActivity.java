@@ -11,6 +11,7 @@ import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.constant.AppError;
@@ -73,7 +74,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     }
 
     private void openMainActivity() {
-        Intent i = new Intent(ScreenSplashActivity.this, MainActivity.class);
+        Intent i = new Intent(ScreenSplashActivity.this, LoginActivity.class);
         startActivity(i);
         finish();
     }

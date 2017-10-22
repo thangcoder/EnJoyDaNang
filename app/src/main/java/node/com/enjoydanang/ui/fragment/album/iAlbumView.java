@@ -3,7 +3,7 @@ package node.com.enjoydanang.ui.fragment.album;
 import java.util.List;
 
 import node.com.enjoydanang.iBaseView;
-import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.constant.AppError;
 
 /**
@@ -14,7 +14,7 @@ import node.com.enjoydanang.constant.AppError;
  */
 
 public interface iAlbumView extends iBaseView {
-    void onFetchAlbumSuccess(List<AlbumModel> images);
+    void onFetchAlbumSuccess(List<PartnerAlbum> images);
 
     void onFetchFail(AppError error);
 

@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.constant.AppError;
 
 /**
@@ -36,7 +36,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     @BindView(R.id.progressLoading)
     ProgressBar progressLoading;
 
-    private ArrayList<AlbumModel> images;
+    private ArrayList<PartnerAlbum> images;
 
     @Override
     protected AlbumDetailPresenter createPresenter() {
@@ -87,7 +87,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
 
     @Override
-    public void onFetchAlbumSuccess(List<AlbumModel> images) {
+    public void onFetchAlbumSuccess(List<PartnerAlbum> images) {
         this.images.addAll(images);
         mAdapter = new AlbumAdapter(mMainActivity.getApplicationContext(), images);
         mAdapter.notifyDataSetChanged();

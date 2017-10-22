@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import java.util.List;
 
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.AlbumModel;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**
@@ -24,7 +24,7 @@ import node.com.enjoydanang.utils.ImageUtils;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
 
-    private List<AlbumModel> images;
+    private List<PartnerAlbum> images;
     private Context mContext;
 
     public class AlbumViewHolder extends RecyclerView.ViewHolder {
@@ -37,7 +37,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     }
 
 
-    public AlbumAdapter(Context context, List<AlbumModel> images) {
+    public AlbumAdapter(Context context, List<PartnerAlbum> images) {
         mContext = context;
         this.images = images;
     }
@@ -52,7 +52,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     @Override
     public void onBindViewHolder(AlbumViewHolder holder, int position) {
-        AlbumModel model = images.get(position);
+        PartnerAlbum model = images.get(position);
 
         ImageUtils.loadImageNoRadius(mContext, holder.thumbnail, model.getImage());
 

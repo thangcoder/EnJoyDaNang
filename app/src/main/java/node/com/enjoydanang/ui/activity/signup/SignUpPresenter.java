@@ -4,7 +4,7 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -31,7 +31,7 @@ public class SignUpPresenter extends BasePresenter<SignUpView>{
             @Override
             public void onFailure(String msg) {
                 mvpView.hideLoading();
-                mvpView.onRegisterFailure(new NetworkError(new Throwable(msg)));
+                mvpView.onRegisterFailure(new AppError(new Throwable(msg)));
             }
 
             @Override

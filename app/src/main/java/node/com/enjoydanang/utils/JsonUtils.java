@@ -38,17 +38,5 @@ public class JsonUtils {
         return new JSONObject(result);
     }
 
-    public static String getLanguageByKey(final String key) {
-        JSONObject jsLanguage = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
-        if (jsLanguage != null) {
-            try {
-                return jsLanguage.getString(key);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return StringUtils.EMPTY;
-    }
-
 
 }

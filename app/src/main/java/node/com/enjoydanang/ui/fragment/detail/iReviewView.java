@@ -5,7 +5,7 @@ import java.util.List;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.ItemReviewModel;
 import node.com.enjoydanang.model.ReviewDetailModel;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -17,7 +17,7 @@ import node.com.enjoydanang.utils.network.NetworkError;
 public interface iReviewView extends iBaseView {
     void onFetchReviews(List<ItemReviewModel> models);
 
-    void onFetchSuccess(NetworkError error);
+    void onFetchSuccess(AppError error);
 
     void onFetchLastReview(ReviewDetailModel reviewDetail);
 }

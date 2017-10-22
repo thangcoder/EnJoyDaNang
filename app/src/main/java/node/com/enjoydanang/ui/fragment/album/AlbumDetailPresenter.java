@@ -7,7 +7,7 @@ import java.util.List;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.model.AlbumModel;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -26,7 +26,7 @@ public class AlbumDetailPresenter extends BasePresenter<iAlbumView>{
         mvpView.onFetchAlbumSuccess(images);
     }
 
-    void onFetchFail(NetworkError error){
+    void onFetchFail(AppError error){
         mvpView.onFetchFail(error);
     }
 

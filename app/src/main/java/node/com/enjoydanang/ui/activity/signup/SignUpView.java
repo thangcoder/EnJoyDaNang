@@ -3,7 +3,7 @@ package node.com.enjoydanang.ui.activity.signup;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -15,5 +15,5 @@ import node.com.enjoydanang.utils.network.NetworkError;
 public interface SignUpView extends iBaseView {
     void onRegisterSuccess(BaseRepository<UserInfo> resultCallBack);
 
-    void onRegisterFailure(NetworkError error);
+    void onRegisterFailure(AppError error);
 }

@@ -30,7 +30,7 @@ import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
@@ -209,7 +209,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
     @Override
-    public void onLoginFailure(NetworkError error) {
+    public void onLoginFailure(AppError error) {
         Log.e(TAG, "onLoginFailure " + error.getMessage());
     }
 

@@ -8,7 +8,7 @@ import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.Introduction;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -74,7 +74,7 @@ public class IntroductionFragment extends MvpFragmentWithToolbar<IntroductionPre
     }
 
     @Override
-    public void onLoadFailure(NetworkError error) {
+    public void onLoadFailure(AppError error) {
         Log.e(TAG, "onLoadFailure " + error.getMessage());
     }
 }

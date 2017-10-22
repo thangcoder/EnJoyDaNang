@@ -19,7 +19,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -140,7 +140,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     }
 
     @Override
-    public void onRegisterFailure(NetworkError error) {
+    public void onRegisterFailure(AppError error) {
         Log.i(TAG, "onRegisterFailure " + error.getMessage());
     }
 }

@@ -5,31 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.BaseRepository;
-import node.com.enjoydanang.constant.AppLanguage;
 import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.Language;
-import node.com.enjoydanang.ui.activity.BaseActivity;
-import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.FileUtils;
-import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.network.NetworkError;
-
-import static android.R.id.list;
+import node.com.enjoydanang.constant.AppError;
 
 
 public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> implements SplashScreenView {
@@ -114,8 +98,8 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     }
 
     @Override
-    public void onLoadFailre(NetworkError networkError) {
-        Log.e(TAG, "onLoadFailre: " + networkError.getMessage());
+    public void onLoadFailre(AppError appError) {
+        Log.e(TAG, "onLoadFailre: " + appError.getMessage());
     }
 
 }

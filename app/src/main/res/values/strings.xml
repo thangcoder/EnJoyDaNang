@@ -97,4 +97,7 @@
 
     <string name="end_of_result_footer">No more item</string>
 
+
+    <string name="no_data_available">Haven\'t partner right now !</string>
+
 </resources>

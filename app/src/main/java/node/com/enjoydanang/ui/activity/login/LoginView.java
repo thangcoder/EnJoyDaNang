@@ -3,7 +3,7 @@ package node.com.enjoydanang.ui.activity.login;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -16,6 +16,6 @@ public interface LoginView extends iBaseView{
 
     void onLoginSuccess(BaseRepository<UserInfo> resultCallBack);
 
-    void onLoginFailure(NetworkError error);
+    void onLoginFailure(AppError error);
 
 }

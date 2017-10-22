@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.AlbumModel;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -97,7 +97,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     }
 
     @Override
-    public void onFetchFail(NetworkError error) {
+    public void onFetchFail(AppError error) {
 
     }
 

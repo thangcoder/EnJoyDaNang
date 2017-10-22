@@ -18,7 +18,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.ItemReviewModel;
 import node.com.enjoydanang.model.ReviewDetailModel;
 import node.com.enjoydanang.utils.ImageUtils;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -95,7 +95,7 @@ public class ReviewFragment extends MvpFragmentWithToolbar<ReviewPresenter> impl
     }
 
     @Override
-    public void onFetchSuccess(NetworkError error) {
+    public void onFetchSuccess(AppError error) {
         Toast.makeText(mMainActivity, error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 

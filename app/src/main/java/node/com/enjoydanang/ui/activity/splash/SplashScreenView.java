@@ -2,10 +2,8 @@ package node.com.enjoydanang.ui.activity.splash;
 
 import org.json.JSONObject;
 
-import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.iBaseView;
-import node.com.enjoydanang.model.Language;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -16,5 +14,5 @@ import node.com.enjoydanang.utils.network.NetworkError;
 
 public interface SplashScreenView extends iBaseView {
     void onLoadLanguageSuccess(JSONObject json);
-    void onLoadFailre(NetworkError networkError);
+    void onLoadFailre(AppError appError);
 }

@@ -1,4 +1,4 @@
-package node.com.enjoydanang.utils.network;
+package node.com.enjoydanang.constant;
 
 import android.text.TextUtils;
 
@@ -20,13 +20,13 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
  * Version : 1.0
  */
 
-public class NetworkError extends Throwable{
+public class AppError extends Throwable{
     public static final String DEFAULT_ERROR_MESSAGE = "Something went wrong! Please try again.";
     public static final String NETWORK_ERROR_MESSAGE = "No Internet Connection!";
     private static final String ERROR_MESSAGE_HEADER = "Error-Message";
     private final Throwable error;
 
-    public NetworkError(Throwable e) {
+    public AppError(Throwable e) {
         super(e);
         this.error = e;
     }
@@ -79,7 +79,7 @@ public class NetworkError extends Throwable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        NetworkError that = (NetworkError) o;
+        AppError that = (AppError) o;
 
         return error != null ? error.equals(that.error) : that.error == null;
 

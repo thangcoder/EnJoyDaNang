@@ -66,6 +66,10 @@ public interface ApiStores {
     @GET("GlobalApi.asmx/GetResourceLanguage")
     Observable<BaseRepository<Language>> getLanguage();
 
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListByCategory")
+    Observable<BaseRepository<Partner>> getPartnerByCategoryId(@Field("id") int id, @Field("page") int page);
+
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

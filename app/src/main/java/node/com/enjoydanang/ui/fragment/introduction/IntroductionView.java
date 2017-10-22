@@ -3,7 +3,7 @@ package node.com.enjoydanang.ui.fragment.introduction;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.Introduction;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -16,5 +16,5 @@ public interface IntroductionView extends iBaseView {
 
     void onGetIntroductionSuccess(BaseRepository<Introduction> data);
 
-    void onLoadFailure(NetworkError error);
+    void onLoadFailure(AppError error);
 }

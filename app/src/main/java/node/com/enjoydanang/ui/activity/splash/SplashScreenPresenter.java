@@ -1,6 +1,5 @@
 package node.com.enjoydanang.ui.activity.splash;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -48,7 +47,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView>{
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onLoadFailre(new NetworkError(new Throwable(msg)));
+                mvpView.onLoadFailre(new AppError(new Throwable(msg)));
             }
 
             @Override

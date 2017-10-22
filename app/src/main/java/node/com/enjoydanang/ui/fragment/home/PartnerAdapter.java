@@ -19,6 +19,8 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.utils.ImageUtils;
 
+import static android.R.attr.data;
+
 /**
  * Author: Tavv
  * Created on 21/10/2017
@@ -105,6 +107,23 @@ public class PartnerAdapter extends RecyclerView.Adapter {
             mView = v;
             ButterKnife.bind(this, mView);
         }
+    }
+
+    public void clearAndUpdateData(List<Partner> partners) {
+        if (this.partners != null && this.partners.size() > 0){
+            clear();
+        }
+        if(this.partners != null){
+            this.partners.addAll(partners);
+
+        }
+        notifyDataSetChanged();
+    }
+
+    private void clear() {
+        int size = this.partners.size();
+        this.partners.clear();
+        notifyItemRangeRemoved(0, size);
     }
 
 }

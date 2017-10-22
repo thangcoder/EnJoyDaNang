@@ -9,7 +9,9 @@ import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.MenuItem;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
+
+import static android.R.attr.category;
 
 /**
  * Created by chien on 10/8/17.
@@ -56,7 +58,7 @@ public class HomePresenter extends BasePresenter<HomeViewCallbackListener> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onGetBannerFailure(new NetworkError(new Throwable(msg)));
+                mvpView.onGetBannerFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
@@ -76,7 +78,7 @@ public class HomePresenter extends BasePresenter<HomeViewCallbackListener> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onGetPartnerFailure(new NetworkError(new Throwable(msg)));
+                mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
@@ -96,7 +98,7 @@ public class HomePresenter extends BasePresenter<HomeViewCallbackListener> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onGetCategoryFailure(new NetworkError(new Throwable(msg)));
+                mvpView.onGetCategoryFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
@@ -104,5 +106,27 @@ public class HomePresenter extends BasePresenter<HomeViewCallbackListener> {
 
             }
         });
+    }
+
+    void getPartnerByCategory(int categoryId, int page){
+            addSubscription(apiStores.getPartnerByCategoryId(categoryId, page), new ApiCallback<BaseRepository<Partner>>(){
+
+                @Override
+                public void onSuccess(BaseRepository<Partner> data) {
+                    mvpView.hideLoading();
+                    mvpView.onGetPartnerByCategorySuccess(data);
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    mvpView.hideLoading();
+                    mvpView.onGetPartnerByCategoryFailure(new AppError(new Throwable(msg)));
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            });
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.AlbumModel;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -16,6 +16,6 @@ import node.com.enjoydanang.utils.network.NetworkError;
 public interface iAlbumView extends iBaseView {
     void onFetchAlbumSuccess(List<AlbumModel> images);
 
-    void onFetchFail(NetworkError error);
+    void onFetchFail(AppError error);
 
 }

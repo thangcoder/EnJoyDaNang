@@ -4,7 +4,7 @@ import node.com.enjoydanang.api.model.BaseRepository;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -13,16 +13,21 @@ import node.com.enjoydanang.utils.network.NetworkError;
  * Version 1.0
  */
 
-public interface HomeViewCallbackListener extends iHomeView{
+public interface HomeViewCallbackListener extends iHomeView {
 
     void onGetBannerSuccess(BaseRepository<Banner> data);
-    void onGetBannerFailure(NetworkError error);
+
+    void onGetBannerFailure(AppError error);
 
     void onGetPartnerSuccess(BaseRepository<Partner> data);
 
-    void onGetPartnerFailure(NetworkError error);
+    void onGetPartnerFailure(AppError error);
 
     void onGetCategorySuccess(BaseRepository<Category> data);
 
-    void onGetCategoryFailure(NetworkError error);
+    void onGetCategoryFailure(AppError error);
+
+    void onGetPartnerByCategorySuccess(BaseRepository<Partner> data);
+
+    void onGetPartnerByCategoryFailure(AppError error);
 }

@@ -1,6 +1,6 @@
 package node.com.enjoydanang.ui.activity.login;
 
-import node.com.enjoydanang.utils.network.NetworkError;
+import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -11,5 +11,5 @@ import node.com.enjoydanang.utils.network.NetworkError;
 
 public interface ResultLoginCallBack<M> {
     void onResultCallBack(M model);
-    void onError(NetworkError error);
+    void onError(AppError error);
 }

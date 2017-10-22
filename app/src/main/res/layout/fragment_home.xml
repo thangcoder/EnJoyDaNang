@@ -10,26 +10,30 @@
         android:id="@+id/grv_menu"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/_3sdp"
         android:layout_weight=".4"
         android:gravity="center"
+        android:listSelector="@drawable/gridview_selector"
+        android:numColumns="4"
         android:padding="2dp"
         android:stretchMode="columnWidth"
-        android:clipToPadding="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:descendantFocusability="blocksDescendants"
         android:scrollbars="none"
-        android:numColumns="4"
         android:verticalSpacing="2dp" />
 
     <ss.com.bannerslider.views.BannerSlider
         android:id="@+id/carouselView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/_3sdp"
         android:layout_weight=".2"
-        app:animateIndicators="true"
-        app:defaultIndicators="circle"
         android:paddingLeft="@dimen/_5sdp"
         android:paddingRight="@dimen/_5sdp"
+        app:animateIndicators="true"
+        app:defaultIndicators="circle"
         app:interval="0"
-        android:layout_marginBottom="@dimen/_3sdp"
         app:loopSlides="true" />
 
     <android.support.v7.widget.RecyclerView
@@ -37,4 +41,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".4" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:layout_weight=".4"
+        android:textColor="@color/material_red_500"
+        android:text="@string/no_data_available" />
 </LinearLayout>

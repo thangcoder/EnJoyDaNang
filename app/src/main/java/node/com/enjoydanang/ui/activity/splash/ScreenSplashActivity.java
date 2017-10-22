@@ -1,6 +1,5 @@
 package node.com.enjoydanang.ui.activity.splash;
 
-import node.com.enjoydanang.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,7 +7,6 @@ import android.os.Handler;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.ui.activity.BaseActivity;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 
 
 public class ScreenSplashActivity extends BaseActivity {
@@ -60,7 +58,7 @@ public class ScreenSplashActivity extends BaseActivity {
     }
 
     private void openMainActivity() {
-        Intent i = new Intent(ScreenSplashActivity.this, MainActivity.class);
+        Intent i = new Intent(ScreenSplashActivity.this, LoginActivity.class);
         startActivity(i);
         finish();
     }

@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="node.com.enjoydanang">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".MyAppication"
+        android:name=".GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <activity android:name="com.facebook.FacebookActivity" />
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
+
+        <activity android:name=".ui.activity.splash.ScreenSplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,19 +33,16 @@
         </activity>
 
         <activity
-            android:name="node.com.enjoydanang.ui.activity.main.MainActivity"
-            android:label="@string/title_activity_main2"
+            android:name=".ui.activity.login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name="node.com.enjoydanang.ui.activity.login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.activity.main.MainActivity"/>
+
+        <activity android:name=".ui.activity.signup.SignUpActivity"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"/>
 
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <activity android:name="com.facebook.FacebookActivity" />
-        <meta-data
-            android:name="com.kakao.sdk.AppKey" android:value="@string/kakao_app_key" />
     </application>
 
 </manifest>

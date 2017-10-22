@@ -2,7 +2,7 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -41,6 +41,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = LoginViaGoogle.class.getSimpleName();
 
+    private static final String SCOPES = "oauth2:profile email";
+
     static final int RC_SIGN_IN = 0x1;
 
     private GoogleApiClient mGoogleApiClient;
@@ -48,6 +50,10 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     private BaseActivity activity;
 
     private User user;
+
+    private LoginPresenter mLoginPresenter;
+
+    private ProgressBar progressBar;
 
     public LoginViaGoogle(BaseActivity activity) {
         this.activity = activity;
@@ -74,14 +80,13 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     public void handleCallbackResult(GoogleSignInAccount signInAccount) {
         user = new User();
         user.setId(signInAccount.getId());
-        user.setAccessToken(signInAccount.getIdToken());
         user.setEmail(signInAccount.getEmail());
         user.setFullName(signInAccount.getDisplayName());
         user.setFirstName(signInAccount.getFamilyName());
         user.setLastName(signInAccount.getGivenName());
         Picture picture = new Picture();
         Data data = new Data();
-        if (signInAccount.getPhotoUrl() != null) {
+            if (signInAccount.getPhotoUrl() != null) {
             data.setUrl(signInAccount.getPhotoUrl().toString());
         }
         picture.setData(data);
@@ -95,9 +100,10 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     }
 
     @Override
-    public void pushToServer(User model) {
-        // TODO: push info of user after login success to server
-        Log.i(TAG, "pushToServer Google : " + model);
+    public void pushToServer(User user) {
+        if(user != null){
+            mLoginPresenter.loginViaSocial(user);
+        }
     }
 
     @Override
@@ -114,18 +120,33 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     }
 
     @Override
+    public void setProgressbar(ProgressBar progressbar) {
+        if (progressbar == null) {
+            throw new NullPointerException("ProgressBar not be null !");
+        }
+        this.progressBar = progressbar;
+    }
+
+    @Override
+    public void setLoginPresenter(LoginPresenter loginPresenter) {
+        if (loginPresenter == null) {
+            throw new NullPointerException("LoginPresenter not be null !");
+        }
+        this.mLoginPresenter = loginPresenter;
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(activity, connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 
     public void getTokenGoogle(final GoogleSignInResult acct) {
         if (acct != null) {
-            final String scopes = "oauth2:profile email";
             Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     try {
-                        String token = GoogleAuthUtil.getToken(getApplicationContext(), acct.getSignInAccount().getAccount(), scopes);
+                        String token = GoogleAuthUtil.getToken(getApplicationContext(), acct.getSignInAccount().getAccount(), SCOPES);
                         subscriber.onNext(token);
                         subscriber.onCompleted();
                     } catch (IOException | GoogleAuthException e) {
@@ -152,7 +173,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
                                 user.setAccessToken(token);
                                 pushToServer(user);
                             }
-                            removeAccessToken();
+                            //removeAccessToken();
                         }
                     });
         }

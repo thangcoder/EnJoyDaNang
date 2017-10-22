@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
-import node.com.enjoydanang.MyAppication;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 
 /**
@@ -18,7 +18,7 @@ import node.com.enjoydanang.R;
 
 public class ScreenUtils {
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) MyAppication.getGlobalApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) GlobalApplication.getGlobalApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         return wm.getDefaultDisplay().getWidth();
     }
 
@@ -35,19 +35,19 @@ public class ScreenUtils {
     }
 
     public static int dp2px(float dpValue) {
-        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
+        Context context = GlobalApplication.getGlobalApplicationContext().getApplicationContext();
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int px2dp(float pxValue) {
-        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
+        Context context = GlobalApplication.getGlobalApplicationContext().getApplicationContext();
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
     public static int sp2px(float spValue) {
-        Context context = MyAppication.getGlobalApplicationContext().getApplicationContext();
+        Context context = GlobalApplication.getGlobalApplicationContext().getApplicationContext();
         final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }

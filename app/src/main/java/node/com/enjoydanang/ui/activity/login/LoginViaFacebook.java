@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -35,6 +36,8 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     private CallbackManager callbackManager;
     private AccessToken accessToken;
     private BaseActivity activity;
+    private LoginPresenter mLoginPresenter;
+    private ProgressBar progressBar;
 
     public LoginViaFacebook(BaseActivity activity) {
         this.activity = activity;
@@ -91,7 +94,7 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
         });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, first_name,last_name, email, birthday, gender, picture");
+        parameters.putString("fields", "id, name, first_name,last_name, email, birthday, gender, picture.type(large)");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -103,15 +106,32 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
 
 
     @Override
-    public void pushToServer(User model) {
-        // TODO: push info of user after login success to server
-        Log.i(TAG, "pushToServer Facebook : " + model);
+    public void pushToServer(User user) {
+        if (user != null) {
+           // mLoginPresenter.loginViaSocial(user);
+        }
     }
 
     @Override
     public void removeAccessToken() {
         // TODO: removeAccessToken Facebook
 
+    }
+
+    @Override
+    public void setProgressbar(ProgressBar progressbar) {
+        if (progressbar == null) {
+            throw new NullPointerException("ProgressBar not be null !");
+        }
+        this.progressBar = progressbar;
+    }
+
+    @Override
+    public void setLoginPresenter(LoginPresenter loginPresenter) {
+        if (loginPresenter == null) {
+            throw new NullPointerException("LoginPresenter not be null !");
+        }
+        this.mLoginPresenter = loginPresenter;
     }
 
     private User toUserObject(String jsonResponse) {

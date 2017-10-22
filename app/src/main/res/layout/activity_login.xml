@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_form_login">
 
+    <ProgressBar
+        android:id="@+id/loadingLogin"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/lrlLoginForm"
         android:layout_width="match_parent"
@@ -125,7 +132,7 @@
                     android:background="@color/material_grey_500" />
             </LinearLayout>
 
-            <LinearLayout
+            <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/lrlSocialContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,29 +162,30 @@
 
                     <ImageButton
                         android:id="@+id/btnLoginFb"
-                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:background="@null"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_btn_fb" />
 
                     <ImageButton
-                        android:contentDescription="@null"
                         android:id="@+id/btnLoginGPlus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:background="@null"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_btn_gplus" />
 
                     <ImageButton
                         android:id="@+id/btnLoginKakaotalk"
-                        android:contentDescription="@null"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@null"
+                        android:contentDescription="@null"
                         android:src="@drawable/ic_kakaotalk_small" />
+
 
                 </LinearLayout>
 

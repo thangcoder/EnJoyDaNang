@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.activity.main;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -8,12 +9,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +26,13 @@ import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
+import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+    private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -68,13 +75,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         currentTab = HomeTab.getCurrentTab(0);
         setStateTabSelected();
 
+        requestCodeQRCodePermissions();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, IntroductionFragment.class.getName(), false, null, transitionInfo);
     }
 
     @Override
@@ -192,4 +200,25 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    }
+
+    @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
+    private void requestCodeQRCodePermissions() {
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (!EasyPermissions.hasPermissions(this, perms)) {
+            EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
+        }
+    }
 }

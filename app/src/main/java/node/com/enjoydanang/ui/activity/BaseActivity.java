@@ -4,24 +4,18 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import node.com.enjoydanang.LogApp;
-import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.ApiStores;
-import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.framework.FragmentHelper;
-import node.com.enjoydanang.framework.FragmentTransitionInfo;
-import node.com.enjoydanang.model.NetworkStatus;
-import node.com.enjoydanang.utils.ConnectionUltils;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -40,6 +34,7 @@ import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.framework.FragmentHelper;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.model.NetworkStatus;
 import node.com.enjoydanang.utils.ConnectionUltils;
 import retrofit2.Call;
 import rx.Observable;
@@ -69,6 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configScreen();
         setContentView();
         bindViews();
         init();
@@ -404,4 +400,32 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setTranslucentStatusBar(){}
 
 
+    public void configScreen(){
+        //// TODO: override when need config before set init layout
+    }
+
+
+    protected void initToolbar(Toolbar toolbar) {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(false);
+            actionBar.setHomeButtonEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
+        }
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 }

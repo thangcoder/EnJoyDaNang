@@ -1,5 +1,7 @@
 package node.com.enjoydanang.ui.activity.login;
 
+import android.widget.ProgressBar;
+
 import node.com.enjoydanang.ui.activity.BaseActivity;
 
 /**
@@ -9,7 +11,12 @@ import node.com.enjoydanang.ui.activity.BaseActivity;
  * Version : 1.0
  */
 
+/**
+ * @param <C> Callback
+ * @param <M> Model
+ */
 public interface ILogin<C, M> {
+
     void init();
 
     void login();
@@ -21,4 +28,9 @@ public interface ILogin<C, M> {
     void pushToServer(M model);
 
     void removeAccessToken();
+
+    void setProgressbar(ProgressBar progressbar);
+
+    void setLoginPresenter(LoginPresenter loginPresenter);
+
 }

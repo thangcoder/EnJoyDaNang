@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="kakao_app_key">VFyzwGPaEBofA5VWD4YwGlfBd1FvR0Af</string>
+    <!--<string name="kakao_app_key">VFyzwGPaEBofA5VWD4YwGlfBd1FvR0Af</string>-->
+    <string name="kakao_app_key">496e1946a95637cb24165a39c1d596dd</string>
+    <string name="admin_key">4bc8390556f864755e6182d95e2daf89</string>
+    <string name="kakao_hash_key">9xCuVbH91sJcSe2oyVNomPwmz50=</string>
+    <string name="fb_login_protocol_scheme">fb123608678348689</string>
 </resources>

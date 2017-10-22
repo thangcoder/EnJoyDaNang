@@ -9,7 +9,7 @@ package node.com.enjoydanang.constant;
 
 public enum LoginType {
 
-    FACEBOOK("Facebook"), GOOGLE("Google"), KAKAOTALK("Kakaotalk");
+    FACEBOOK("FACEBOOK"), GOOGLE("GOOGLE"), KAKAOTALK("KAKAOTALK");
 
     private String strValue;
 

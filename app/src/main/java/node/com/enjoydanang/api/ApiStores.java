@@ -4,6 +4,10 @@ import node.com.enjoydanang.api.model.Repository;
 
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.model.Introduction;
+import node.com.enjoydanang.model.UserInfo;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -32,6 +36,26 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListByCategory")
     Observable<Repository<Category>> listByCategory(@Field("id") int id,@Field("page") int page);
+
+    @FormUrlEncoded
+    @POST("AccountApi.asmx/SocialNetworkLogin")
+    Observable<BaseRepository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") String userId, @Field("token") String accessToken, @Field("type") String type, @Field("image") String image);
+
+
+    @FormUrlEncoded
+    @POST("AccountApi.asmx/NormalLogin")
+    Observable<BaseRepository<UserInfo>> normalLogin(@Field("username") String userName, @Field("password") String pwd);
+
+
+    @FormUrlEncoded
+    @POST("AccountApi.asmx/NormalRegister")
+    Observable<BaseRepository<UserInfo>> normalRegister(@Field("username") String userName, @Field("password") String pwd,
+                                                        @Field("fullname") String fullName, @Field("email") String email,
+                                                        @Field("phone") String phoneNo);
+
+
+    @GET("LandingPageApi.asmx/Introduction")
+    Observable<BaseRepository<Introduction>> getIntroduction();
 
 
 //    @FormUrlEncoded

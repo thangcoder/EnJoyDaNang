@@ -24,13 +24,13 @@
     <string name="change_pwd">Change Password</string>
     <string name="introduction">Introduction</string>
     <string name="login">Login</string>
-    <string name="sign_up">Sign up</string>
+    <string name="sign_up">Sign Up</string>
     <string name="user_name_profile_display">UserName</string>
     <string name="email_profile_display">Email</string>
 
     <string name="label_save">Save</string>
 
-    <string name="sign_in">Sign in</string>
+    <string name="sign_in">Sign In</string>
 
     <string name="idea_connect">or</string>
 
@@ -73,6 +73,8 @@
     <string name="label_new_pwd">New Password</string>
 
     <string name="label_reinput_pwd">Re-enter New Password</string>
+
+    <string name="label_pwd">Password</string>
 
 
     <string name="label_cancel">Cancel</string>

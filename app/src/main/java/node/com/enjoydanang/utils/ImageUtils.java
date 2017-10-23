@@ -32,25 +32,31 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
-
-    public static void loadImageDrawable(Context context, ImageView imgView) {
+    public static void loadImageRounded(Context context, ImageView imgView, String imgUrl){
+        Picasso.with(context).load(imgUrl)
+                .transform(new CircleTransform())
+//                .error(R.drawable.error_image)
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+//                .centerInside()
+                .fit()
+                .into(imgView);
+    }
+    public static void loadImageDrawable(Context context, ImageView imgView){
         Picasso.with(context).load(R.drawable.img_product)
 //                .transform(new RoundedTransformation(50, 0))
 //                .error(R.drawable.error_image)
                 .error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder)
-//                .centerInside()
-//                .fit()
+
                 .into(imgView);
     }
 
 
     public static void loadImageNoRadius(Context context, ImageView imgView, String imgUrl) {
         Picasso.with(context).load(imgUrl)
-//                .error(R.drawable.error_image)
                 .error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder)
-//                .centerInside()
                 .fit()
                 .into(imgView);
     }

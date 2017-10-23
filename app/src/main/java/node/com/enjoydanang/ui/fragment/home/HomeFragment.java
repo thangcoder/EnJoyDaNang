@@ -2,6 +2,9 @@ package node.com.enjoydanang.ui.fragment.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,32 +14,34 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.MenuItem;
+import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.Weather;
+import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
+import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
+import node.com.enjoydanang.ui.fragment.home.adapter.ViewPagerAdapter;
+import node.com.enjoydanang.ui.fragment.home.adapter.WeatherAdapter;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
-import node.com.enjoydanang.constant.AppError;
-import ss.com.bannerslider.banners.RemoteBanner;
-import ss.com.bannerslider.views.BannerSlider;
+import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class HomeFragment extends MvpFragment<HomePresenter> implements HomeViewCallbackListener, AdapterView.OnItemClickListener {
+public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     public enum TypeGetPartner {
@@ -47,13 +52,18 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     RecyclerView rcvPartner;
     @BindView(R.id.grv_menu)
     GridView gridView;
-    @BindView(R.id.carouselView)
-    BannerSlider bannerSlider;
-    @BindView(R.id.empty_view)
-    TextView txtEmptyView;
+    @BindView(R.id.rcv_weather)
+    RecyclerView rcvWeather;
+    @BindView(R.id.txtExchangeRate)
+    TextView txtExchangeRate;
+    @BindView(R.id.txtNameExchange)
+    TextView txtNameExchange;
+
+    @BindView(R.id.nestedScroll)
+    NestedScrollView nestedScrollView;
+
 
     private CategoryAdapter mCategoryAdapter;
-    private LinearLayoutManager mLayoutManager;
     private final int startPage = 0;
     private int currentPage;
 
@@ -61,8 +71,18 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     private List<Category> lstCategories;
 
     private PartnerAdapter mPartnerAdapter;
-    private LoadMorePartner loadMorePartner;
     private boolean hasLoadmore;
+    private WeatherAdapter mWeatherAdapter;
+
+
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+
+
+    private LinearLayoutManager mLayoutManager;
+    private FragmentStatePagerAdapter adapter;
+
+    private LoadmorePartner loadmorePartner;
 
     @Override
     public void showToast(String desc) {
@@ -83,33 +103,37 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner);
         rcvPartner.setHasFixedSize(false);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
                 new DividerItemDecoration(mMainActivity, DividerItemDecoration.VERTICAL));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
+        rcvPartner.setNestedScrollingEnabled(false);
 
         lstCategories = new ArrayList<>();
         mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
         gridView.setAdapter(mCategoryAdapter);
-        loadMorePartner = new LoadMorePartner(mLayoutManager);
 
+        rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override
     protected void setEvent(View view) {
-        rcvPartner.addOnScrollListener(loadMorePartner);
+        loadmorePartner = new LoadmorePartner(mLayoutManager);
         gridView.setOnItemClickListener(this);
+        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        loadMorePartner.setTypeGetPartner(TypeGetPartner.ALL_PARTNER);
+        loadmorePartner.setTypeGetPartner(TypeGetPartner.ALL_PARTNER);
         mvpPresenter.getPartner(startPage);
         mvpPresenter.getAllCategories();
         mvpPresenter.getBanner();
+        mvpPresenter.getWeather();
+        mvpPresenter.getExchangeRate();
     }
 
     @Override
@@ -127,37 +151,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         ButterKnife.bind(this, view);
     }
 
-    @Override
-    public void getMenuFinish(List<MenuItem> menuList) {
-
-    }
 
     @Override
-    public void getMenuFail() {
-
-    }
-
-    @Override
-    public void getCategorysFinish(Category category) {
-//        homeAdapter = new CategoryAdapter(mMainActivity, category.getData());
-//        gridView.setAdapter(homeAdapter);
-    }
-
-    @Override
-    public void getCategorysFail() {
-
-    }
-
-    @Override
-    public void onGetBannerSuccess(BaseRepository<Banner> data) {
-        if (Utils.isNotEmptyContent(data)) {
-            List<ss.com.bannerslider.banners.Banner> banners = new ArrayList<>();
-            int length = data.getData().size();
-            for (int i = 0; i < length; i++) {
-                banners.add(new RemoteBanner(data.getData().get(i).getPicture()));
-            }
-            bannerSlider.setBanners(banners);
-        }
+    public void onGetBannerSuccess(List<Banner> data) {
+        adapter = new ViewPagerAdapter(getFragmentManager(), data);
+        viewPager.setAdapter(adapter);
     }
 
     @Override
@@ -166,11 +164,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     }
 
     @Override
-    public void onGetPartnerSuccess(BaseRepository<Partner> data) {
-        if (Utils.isNotEmptyContent(data)) {
-            List<Partner> partners = data.getData();
-            updateItemAdapter(partners);
-        }
+    public void onGetPartnerSuccess(List<Partner> partners) {
+        updateItemAdapter(partners);
     }
 
     @Override
@@ -179,11 +174,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     }
 
     @Override
-    public void onGetCategorySuccess(BaseRepository<Category> data) {
-        if (Utils.isNotEmptyContent(data)) {
-            lstCategories.addAll(data.getData());
-            mCategoryAdapter.notifyDataSetChanged();
-        }
+    public void onGetCategorySuccess(List<Category> data) {
+        lstCategories.addAll(data);
+        mCategoryAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -192,21 +185,43 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
     }
 
     @Override
-    public void onGetPartnerByCategorySuccess(BaseRepository<Partner> data) {
-        if (Utils.isNotEmptyContent(data)) {
-            mPartnerAdapter.clearAndUpdateData(data.getData());
-            rcvPartner.setVisibility(View.VISIBLE);
-            txtEmptyView.setVisibility(View.GONE);
-        } else if (!Utils.isNotEmptyContent(data) && !hasLoadmore) {
+    public void onGetPartnerByCategorySuccess(Repository<Partner> data) {
+        if (!Utils.isNotEmptyContent(data) && !hasLoadmore) {
             mPartnerAdapter.clearAndUpdateData(Collections.EMPTY_LIST);
             rcvPartner.setVisibility(View.GONE);
-            txtEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mPartnerAdapter.clearAndUpdateData(data.getData());
+            rcvPartner.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onGetPartnerByCategoryFailure(AppError error) {
+        Log.e(TAG, "onGetPartnerByCategoryFailure: " + error.getMessage());
+    }
 
+    @Override
+    public void onFetchWeatherSuccess(List<Weather> lstWeathers) {
+        mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
+        rcvWeather.setAdapter(mWeatherAdapter);
+    }
+
+    @Override
+    public void onFetchWeatherFailure(AppError error) {
+        Log.e(TAG, "onGetPartnerByCategoryFailure: " + error.getMessage());
+    }
+
+    @Override
+    public void onFetchExchangeRateSuccess(List<ExchangeRate> lstExchanges) {
+        //Only one item return
+        ExchangeRate exchangeRate = lstExchanges.get(0);
+        txtNameExchange.setText(exchangeRate.getName());
+        txtExchangeRate.setText(exchangeRate.getRate());
+    }
+
+    @Override
+    public void onFetchExchangeRateFailure(AppError error) {
+        Log.e(TAG, "onGetPartnerByCategoryFailure: " + error.getMessage());
     }
 
 
@@ -217,7 +232,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
 
     private void updateItemAdapter(@NonNull List<Partner> partners) {
         int newSize = partners.size();
-        int oldSize = partners.size();
+        int oldSize = lstPartner.size();
         lstPartner.addAll(partners);
         mPartnerAdapter.notifyItemRangeChanged(0, newSize + oldSize);
         mPartnerAdapter.notifyDataSetChanged();
@@ -228,25 +243,27 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         Category category = (Category) parent.getItemAtPosition(position);
         if (category != null) {
             showLoading();
-            loadMorePartner.setTypeGetPartner(TypeGetPartner.PARTNER_BY_CATEGORY);
-            loadMorePartner.setCategoryId(category.getId());
+            for (int i = 0; i < gridView.getCount(); i++) {
+                View v = gridView.getChildAt(i);
+                if (i == position) {
+                    v.setBackgroundResource(R.drawable.border_item_selected);
+                } else {
+                    v.setBackgroundResource(R.drawable.border_item_default);
+                }
+            }
+            loadmorePartner.setTypeGetPartner(TypeGetPartner.PARTNER_BY_CATEGORY);
+            loadmorePartner.setCategoryId(category.getId());
             hasLoadmore = false;
             mvpPresenter.getPartnerByCategory(category.getId(), startPage);
         }
     }
 
-    private class LoadMorePartner extends EndlessRecyclerViewScrollListener {
-
+    private class LoadmorePartner extends EndlessParentScrollListener {
         private TypeGetPartner typeGetPartner;
         private int categoryId = -1;
 
-        public LoadMorePartner(LinearLayoutManager layoutManager) {
+        public LoadmorePartner(RecyclerView.LayoutManager layoutManager) {
             super(layoutManager);
-        }
-
-        @Override
-        public int getFooterViewType(int defaultNoFooterViewType) {
-            return 1;
         }
 
         @Override
@@ -265,6 +282,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         }
     }
 
+
     private void onRetryGetPartner(int page, int categoryId, TypeGetPartner type) {
         if (type == TypeGetPartner.ALL_PARTNER) {
             mvpPresenter.getPartner(page);
@@ -273,5 +291,19 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements HomeView
         }
     }
 
-
+    @OnClick({R.id.prev, R.id.next})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.next:
+                if (viewPager.getCurrentItem() < viewPager.getAdapter().getCount() - 1) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                }
+                break;
+            case R.id.prev:
+                if (viewPager.getCurrentItem() > 0) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
+                }
+                break;
+        }
+    }
 }

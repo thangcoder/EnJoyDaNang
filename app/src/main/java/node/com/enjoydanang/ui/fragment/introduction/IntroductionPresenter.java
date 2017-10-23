@@ -2,7 +2,7 @@ package node.com.enjoydanang.ui.fragment.introduction;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.constant.AppError;
 
@@ -22,10 +22,10 @@ public class IntroductionPresenter extends BasePresenter<IntroductionView>{
 
     void getIntroduction(){
         mvpView.showLoading();
-        addSubscription(apiStores.getIntroduction(), new ApiCallback<BaseRepository<Introduction>>(){
+        addSubscription(apiStores.getIntroduction(), new ApiCallback<Repository<Introduction>>(){
 
             @Override
-            public void onSuccess(BaseRepository<Introduction> data) {
+            public void onSuccess(Repository<Introduction> data) {
                 mvpView.hideLoading();
                 mvpView.onGetIntroductionSuccess(data);
             }

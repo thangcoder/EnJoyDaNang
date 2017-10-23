@@ -1,54 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nestedScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <GridView
-        android:id="@+id/grv_menu"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/_3sdp"
-        android:layout_weight=".4"
-        android:gravity="center"
-        android:listSelector="@drawable/gridview_selector"
-        android:numColumns="4"
-        android:padding="2dp"
-        android:stretchMode="columnWidth"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:descendantFocusability="blocksDescendants"
-        android:scrollbars="none"
-        android:verticalSpacing="2dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ss.com.bannerslider.views.BannerSlider
-        android:id="@+id/carouselView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/_3sdp"
-        android:layout_weight=".2"
-        android:paddingLeft="@dimen/_5sdp"
-        android:paddingRight="@dimen/_5sdp"
-        app:animateIndicators="true"
-        app:defaultIndicators="circle"
-        app:interval="0"
-        app:loopSlides="true" />
+        <GridView
+            android:id="@+id/grv_menu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_marginBottom="@dimen/_minus8sdp"
+            android:background="@color/white"
+            android:columnWidth="@dimen/_90sdp"
+            android:gravity="center"
+            android:horizontalSpacing="@dimen/_1sdp"
+            android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/_1sdp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcv_partner"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".4" />
+        <View
+            android:id="@+id/view_below"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:background="@color/fifty_percent_transparency_grey_400" />
 
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center_horizontal"
-        android:visibility="gone"
-        android:layout_weight=".4"
-        android:textColor="@color/material_red_500"
-        android:text="@string/no_data_available" />
-</LinearLayout>
+        <RelativeLayout
+            android:id="@+id/slide"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v4.view.ViewPager>
+
+            <ImageView
+                android:id="@+id/prev"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@drawable/prev"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/next"
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@drawable/next" />
+        </RelativeLayout>
+
+        <include layout="@layout/include_widget" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcv_partner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:focusableInTouchMode="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

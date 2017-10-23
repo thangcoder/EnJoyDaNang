@@ -7,7 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import node.com.enjoydanang.GlobalApplication;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 
 /**
@@ -107,10 +107,10 @@ public class Utils {
         return hexTransparent + colorPrimary;
     }
 
-    public static <T> boolean isNotEmptyContent(BaseRepository<T> repository) {
-        return repository != null
-                && StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_SUCCESS)
-                && CollectionUtils.isNotEmpty(repository.getData());
+    public static <T, B> boolean isNotEmptyContent(Repository<T> lstModel) {
+        return lstModel != null
+                && StringUtils.endsWithIgnoreCase(lstModel.getStatus(), Constant.MSG_SUCCESS)
+                && CollectionUtils.isNotEmpty(lstModel.getData());
     }
 
 }

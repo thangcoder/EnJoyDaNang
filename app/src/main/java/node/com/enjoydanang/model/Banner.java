@@ -10,16 +10,13 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
-import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
-
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Banner {
 
     @SerializedName("Id")
     @Expose
-    private int id;
+    private Integer id;
     @SerializedName("Picture")
     @Expose
     private String picture;
@@ -33,11 +30,11 @@ public class Banner {
     @Expose
     private String title;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,7 +69,6 @@ public class Banner {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     @Override
     public String toString() {

@@ -1,6 +1,6 @@
 package node.com.enjoydanang.ui.activity.login;
 
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.constant.AppError;
@@ -14,7 +14,7 @@ import node.com.enjoydanang.constant.AppError;
 
 public interface LoginView extends iBaseView{
 
-    void onLoginSuccess(BaseRepository<UserInfo> resultCallBack);
+    void onLoginSuccess(Repository<UserInfo> resultCallBack);
 
     void onLoginFailure(AppError error);
 

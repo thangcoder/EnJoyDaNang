@@ -2,7 +2,7 @@ package node.com.enjoydanang.ui.activity.signup;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.constant.AppError;
 
@@ -20,10 +20,10 @@ public class SignUpPresenter extends BasePresenter<SignUpView>{
 
     void normalRegister(UserInfo userInfo){
         addSubscription(apiStores.normalRegister(userInfo.getUserName(), userInfo.getPassword(),
-                userInfo.getFullName(), userInfo.getEmail(), userInfo.getPhone()), new ApiCallback<BaseRepository<UserInfo>>(){
+                userInfo.getFullName(), userInfo.getEmail(), userInfo.getPhone()), new ApiCallback<Repository<UserInfo>>(){
 
             @Override
-            public void onSuccess(BaseRepository<UserInfo> userInfo) {
+            public void onSuccess(Repository<UserInfo> userInfo) {
                 mvpView.hideLoading();
                 mvpView.onRegisterSuccess(userInfo);
             }

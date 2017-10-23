@@ -1,25 +1,36 @@
 package node.com.enjoydanang.api.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
- * Created by chientruong on 12/26/16.
+ * Author: Tavv
+ * Created on 20/10/2017.
+ * Project Name: EnJoyDaNang
+ * Version : 1.0
  */
 
-public class Repository {
+public class Repository<T> {
+
     @SerializedName("status")
-    private String status;
+    @Expose
+    protected String status;
 
     @SerializedName("message")
-    private String message;
+    @Expose
+    protected String message;
 
+    @SerializedName("data")
+    @Expose
+    protected java.util.List<T> data;
 
-
-    public Repository(String status,  String message) {
+    public Repository(String status, String message, java.util.List<T> data) {
         this.status = status;
         this.message = message;
+        this.data = data;
     }
-
 
     public String getStatus() {
         return status;
@@ -35,5 +46,22 @@ public class Repository {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public java.util.List<T> getData() {
+        return data;
+    }
+
+    public void setData(java.util.List<T> data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "Repository{" +
+                "status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
     }
 }

@@ -1,16 +1,11 @@
 
 package node.com.enjoydanang.model;
 
-import java.util.List;
-
-import javax.annotation.Generated;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
-import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 
 public class Partner {

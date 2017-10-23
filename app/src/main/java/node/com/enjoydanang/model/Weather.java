@@ -1,30 +1,70 @@
-
 package node.com.enjoydanang.model;
 
-import java.util.List;
-import javax.annotation.Generated;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import node.com.enjoydanang.api.model.Repository;
+/**
+ * Author: Tavv
+ * Created on 23/10/2017
+ * Project Name: EnjoyDaNang
+ * Version 1.0
+ */
 
-@Generated("net.hexar.json2pojo")
-@SuppressWarnings("unused")
-public class Weather extends Repository {
+public class Weather {
 
-    @SerializedName("data")
-    private List<Datum> mData;
+    @SerializedName("Type")
+    @Expose
+    private String type;
+    @SerializedName("Name")
+    @Expose
+    private String name;
+    @SerializedName("Ngay")
+    @Expose
+    private String day;
+    @SerializedName("HinhAnh")
+    @Expose
+    private String image;
+    @SerializedName("NhietDo")
+    @Expose
+    private String temperature;
 
-    public Weather(String status, String message) {
-        super(status, message);
+    public String getType() {
+        return type;
     }
 
-
-    public List<Datum> getData() {
-        return mData;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setData(List<Datum> data) {
-        mData = data;
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
 }

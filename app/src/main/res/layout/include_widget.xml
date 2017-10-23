@@ -25,13 +25,32 @@
         android:layout_marginRight="@dimen/_5sdp"
         android:background="@color/grey_500" />
 
-    <ImageView
-        android:id="@+id/img_logo_app"
-        android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_50sdp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_logo_app" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_marginTop="3dp"
+            android:id="@+id/imgUSRate"
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/exchange_rate" />
+
+        <ImageView
+            android:id="@+id/imgVNRate"
+            android:layout_width="@dimen/_27sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:contentDescription="@null" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txtExchangeRate"
@@ -40,5 +59,5 @@
         android:layout_marginTop="@dimen/_3sdp"
         android:gravity="center"
         android:textColor="@color/color_title_category"
-        android:textSize="@dimen/_20ssp" />
+        android:textSize="@dimen/_17ssp" />
 </LinearLayout>

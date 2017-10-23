@@ -100,4 +100,7 @@
 
     <string name="no_data_available">Haven\'t partner right now !</string>
 
+
+    <string name="exchange_rate">&lt;=&gt;</string>
+
 </resources>

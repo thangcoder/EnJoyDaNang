@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
@@ -36,6 +38,7 @@ import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.ViewPagerAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.WeatherAdapter;
+import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
@@ -61,6 +64,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     TextView txtExchangeRate;
     @BindView(R.id.txtNameExchange)
     TextView txtNameExchange;
+
+    @BindView(R.id.imgVNRate)
+    ImageView imgVNRate;
+
+    @BindView(R.id.imgUSRate)
+    ImageView imgUSRate;
 
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
@@ -217,8 +226,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onFetchExchangeRateSuccess(List<ExchangeRate> lstExchanges) {
         //Only one item return
         ExchangeRate exchangeRate = lstExchanges.get(0);
+        String strExchange = String.format(Constant.EXCHANGE_RATE_FORMAT, exchangeRate.getRate());
         txtNameExchange.setText(exchangeRate.getName());
-        txtExchangeRate.setText(exchangeRate.getRate());
+        ImageUtils.loadImageNoRadius(getContext(), imgUSRate, exchangeRate.getFlagEN());
+        ImageUtils.loadImageNoRadius(getContext(), imgVNRate, exchangeRate.getFlagVN());
+        txtExchangeRate.setText(strExchange);
     }
 
     @Override

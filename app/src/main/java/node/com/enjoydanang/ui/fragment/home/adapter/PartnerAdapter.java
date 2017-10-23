@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.home.adapter;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,10 +70,14 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
-            //TODO : remove HardCode Meta In Partner Adapter
-            ((ViewHolder) holder).tvMeta.setText(mContext.getString(R.string.full_name_profile));
             ImageUtils.loadImageNoRadius(mContext, ((ViewHolder) holder).imgPhoto, partner.getPicture());
             ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnItemClickListener.onClick(view, position);
+                }
+            });
+            ((ViewHolder) holder).fabFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mOnItemClickListener.onClick(view, position);
@@ -103,8 +108,8 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         ImageView imgPhoto;
         @BindView(R.id.tv_partner_name)
         TextView tvTitle;
-        @BindView(R.id.tv_partner_meta)
-        TextView tvMeta;
+        @BindView(R.id.fabFavorite)
+        FloatingActionButton fabFavorite;
 
         public ViewHolder(View v) {
             super(v);

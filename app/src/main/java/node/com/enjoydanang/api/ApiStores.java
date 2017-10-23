@@ -76,6 +76,10 @@ public interface ApiStores {
 
     @GET("GlobalApi.asmx/GetWidgetExchangeRate")
     Observable<Repository<ExchangeRate>> getWidgetExchangeRate();
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListHome")
+    Observable<Repository<Partner>> getListPartnerHome(@Field("customerId") int customerId);
     
 //    @FormUrlEncoded
 //    @POST("/login")

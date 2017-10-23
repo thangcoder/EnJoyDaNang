@@ -40,4 +40,5 @@ public interface iHomeView  extends iBaseView {
     void onFetchExchangeRateSuccess(List<ExchangeRate> lstExchange);
 
     void onFetchExchangeRateFailure(AppError error);
+
 }

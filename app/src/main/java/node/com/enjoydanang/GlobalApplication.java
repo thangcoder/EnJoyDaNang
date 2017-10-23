@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 
 import static com.kakao.util.helper.Utility.getPackageInfo;
@@ -33,6 +34,7 @@ public class GlobalApplication extends Application {
     private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
     public JSONObject jsLanguage;
+    private UserInfo userInfo;
 
     @Override
     public void onCreate() {
@@ -97,5 +99,13 @@ public class GlobalApplication extends Application {
 
     public void setJsLanguage(JSONObject jsLanguage) {
         this.jsLanguage = jsLanguage;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

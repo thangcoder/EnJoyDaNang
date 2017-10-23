@@ -31,6 +31,9 @@ public class Partner {
     @SerializedName("Discount")
     @Expose
     private int discount;
+    @SerializedName("Favorite")
+    @Expose
+    private int favorite;
 
     public int getId() {
         return id;
@@ -88,4 +91,11 @@ public class Partner {
         this.discount = discount;
     }
 
+    public int getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
 }

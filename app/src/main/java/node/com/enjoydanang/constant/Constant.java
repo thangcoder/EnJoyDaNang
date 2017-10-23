@@ -22,6 +22,7 @@ public class Constant {
     public static final String API_501 = "501";
     public static final String API_502 = "502";
     public static final String MSG_SUCCESS = "success";
+    public static final String MSG_WARNING = "warning";
     public static final String MSG_FAILURE = "fail";
 
     public enum ReportResult{

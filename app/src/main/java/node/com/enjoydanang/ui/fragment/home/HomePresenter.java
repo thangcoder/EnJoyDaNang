@@ -171,4 +171,29 @@ public class HomePresenter extends BasePresenter<iHomeView> {
             }
         });
     }
+
+    void getListHome(int customerId){
+        addSubscription(apiStores.getListPartnerHome(customerId), new ApiCallback<Repository<Partner>>(){
+
+            @Override
+            public void onSuccess(Repository<Partner> model) {
+                mvpView.hideLoading();
+                if(Utils.isNotEmptyContent(model)){
+                    mvpView.onGetPartnerSuccess(model.getData());
+                }else{
+                    mvpView.onGetPartnerFailure(new AppError(new Throwable(model.getMessage())));
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
 }

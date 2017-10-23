@@ -1,19 +1,24 @@
 package node.com.enjoydanang.ui.fragment.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
+import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
@@ -42,6 +48,11 @@ import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
+import node.com.enjoydanang.utils.helper.FragmentHelper;
+import ss.com.bannerslider.banners.RemoteBanner;
+import ss.com.bannerslider.views.BannerSlider;
+
+import static node.com.enjoydanang.R.id.fabFavorite;
 
 /**
  * Created by chien on 10/8/17.
@@ -74,6 +85,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
 
+    @BindView(R.id.carouselView)
+    BannerSlider bannerSlider;
+
 
     private CategoryAdapter mCategoryAdapter;
     private final int startPage = 0;
@@ -85,15 +99,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private PartnerAdapter mPartnerAdapter;
     private boolean hasLoadmore;
 
-
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
-
-
     private LinearLayoutManager mLayoutManager;
-    private FragmentStatePagerAdapter adapter;
 
     private LoadmorePartner loadmorePartner;
+
+    private final int defaultCustomerId = 0;
 
     @Override
     public void showToast(String desc) {
@@ -109,8 +119,10 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     protected void init(View view) {
         /**
-         * Init Data Product list
+         * Init Data
          */
+        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
+        mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         rcvPartner.setHasFixedSize(false);
@@ -126,6 +138,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         gridView.setAdapter(mCategoryAdapter);
 
         rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
+        bannerSlider.setLoopSlides(true);
     }
 
     @Override
@@ -140,7 +153,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         loadmorePartner.setTypeGetPartner(TypeGetPartner.ALL_PARTNER);
-        mvpPresenter.getPartner(startPage);
+        mvpPresenter.getListHome(defaultCustomerId);
         mvpPresenter.getAllCategories();
         mvpPresenter.getBanner();
         mvpPresenter.getWeather();
@@ -165,8 +178,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onGetBannerSuccess(List<Banner> data) {
-        adapter = new ViewPagerAdapter(getFragmentManager(), data);
-        viewPager.setAdapter(adapter);
+        List<ss.com.bannerslider.banners.Banner> banners = new ArrayList<>();
+        int length = data.size();
+        for (int i = 0; i < length; i++) {
+            banners.add(new RemoteBanner(data.get(i).getPicture()));
+        }
+        bannerSlider.setBanners(banners);
     }
 
     @Override
@@ -298,36 +315,22 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
 
     private void onRetryGetPartner(int page, int categoryId, TypeGetPartner type) {
-        if (type == TypeGetPartner.ALL_PARTNER) {
-            mvpPresenter.getPartner(page);
-        } else if (type == TypeGetPartner.PARTNER_BY_CATEGORY && categoryId != -1) {
+        if (type == TypeGetPartner.PARTNER_BY_CATEGORY && categoryId != -1) {
             mvpPresenter.getPartnerByCategory(categoryId, page);
-        }
-    }
-
-    @OnClick({R.id.prev, R.id.next})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.next:
-                if (viewPager.getCurrentItem() < viewPager.getAdapter().getCount() - 1) {
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                }
-                break;
-            case R.id.prev:
-                if (viewPager.getCurrentItem() > 0) {
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
-                }
-                break;
         }
     }
 
     @Override
     public void onClick(View view, int position) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        Bundle bundle = new Bundle();
-        bundle.putInt(DetailHomeFragment.class.getSimpleName(), lstPartner.get(position).getId());
-        mBaseActivity.replaceFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
-
+        if (view.getId() == fabFavorite) {
+            FloatingActionButton fabFavorite = (FloatingActionButton) view;
+            //TODO : call apply favorite
+        } else {
+            FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+            Bundle bundle = new Bundle();
+            bundle.putInt(DetailHomeFragment.class.getSimpleName(), lstPartner.get(position).getId());
+            mBaseActivity.replaceFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
+        }
     }
 
 }

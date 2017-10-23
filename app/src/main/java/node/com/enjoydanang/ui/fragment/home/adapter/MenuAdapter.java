@@ -1,8 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home.adapter;
 
 import android.content.Context;
-import android.media.Image;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.Data;
-import node.com.enjoydanang.model.Datum;
-import node.com.enjoydanang.model.MenuItem;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**

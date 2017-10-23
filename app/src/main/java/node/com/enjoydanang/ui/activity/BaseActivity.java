@@ -58,6 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private boolean isConnect;
     private Subscriber subMessage;
     public boolean isHideApp = false;
+    protected Toolbar mToolbar;
 
     public static int RESULT_UPDATE = 1;
 
@@ -405,7 +406,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void initToolbar(Toolbar toolbar) {
+    public void initToolbar(Toolbar toolbar) {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             ActionBar actionBar = getSupportActionBar();
@@ -427,5 +428,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
+
+    public void setToolbar(Toolbar mToolbar) {
+        this.mToolbar = mToolbar;
     }
 }

@@ -107,10 +107,15 @@ public class Utils {
         return hexTransparent + colorPrimary;
     }
 
-    public static <T, B> boolean isNotEmptyContent(Repository<T> lstModel) {
+    public static <T> boolean isNotEmptyContent(Repository<T> lstModel) {
         return lstModel != null
                 && StringUtils.endsWithIgnoreCase(lstModel.getStatus(), Constant.MSG_SUCCESS)
                 && CollectionUtils.isNotEmpty(lstModel.getData());
+    }
+
+    public static <T> boolean isResponseError(Repository<T> repository) {
+        return StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_SUCCESS) ||
+                StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_WARNING);
     }
 
 }

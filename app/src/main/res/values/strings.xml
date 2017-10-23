@@ -103,4 +103,12 @@
 
     <string name="exchange_rate">&lt;=&gt;</string>
 
+    <string name="Home_Screen_Title">HOME</string>
+
+    <string name="action_search">Search</string>
+
+    <string name="action_scan">Scan</string>
+
 </resources>
+
+

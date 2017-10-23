@@ -12,6 +12,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserInfo{
 
+    private long userId;
+
     @SerializedName("username")
     @Expose
     private String userName;
@@ -126,6 +128,14 @@ public class UserInfo{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     @Override

@@ -54,7 +54,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     public void onBindViewHolder(AlbumViewHolder holder, int position) {
         PartnerAlbum model = images.get(position);
 
-        ImageUtils.loadImageNoRadius(mContext, holder.thumbnail, model.getImage());
+        ImageUtils.loadImageNoRadius(mContext, holder.thumbnail, model.getPicture());
 
 //
 //        Glide.with(mContext).load(model.getImage())

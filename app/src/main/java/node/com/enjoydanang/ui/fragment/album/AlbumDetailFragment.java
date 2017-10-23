@@ -57,7 +57,6 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        mvpPresenter.doDummyData();
     }
 
     @Override

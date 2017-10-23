@@ -87,8 +87,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         lblCount.setText((position + 1) + " of " + images.size());
 
         PartnerAlbum model = images.get(position);
-        lblTitle.setText(model.getName());
-        lblDate.setText(model.getTime());
+        lblTitle.setText(model.getTitle());
     }
 
     @Override
@@ -115,7 +114,7 @@ public class SlideshowDialogFragment extends DialogFragment {
 
             PartnerAlbum model = images.get(position);
 
-            Glide.with(getActivity()).load(model.getImage())
+            Glide.with(getActivity()).load(model.getPicture())
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

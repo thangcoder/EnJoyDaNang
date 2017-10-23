@@ -2,7 +2,7 @@ package node.com.enjoydanang.ui.activity.login;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.User;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.constant.AppError;
@@ -21,10 +21,10 @@ public class LoginPresenter extends BasePresenter<LoginView>{
 
     void loginViaSocial(User user){
         addSubscription(apiStores.doSignOrRegisterViaSocial(user.getId(), user.getAccessToken(),
-                user.getType().toString(), user.getPicture().getData().getImage()), new ApiCallback<BaseRepository<UserInfo>>(){
+                user.getType().toString(), user.getPicture().getData().getImage()), new ApiCallback<Repository<UserInfo>>(){
 
             @Override
-            public void onSuccess(BaseRepository<UserInfo> userInfo) {
+            public void onSuccess(Repository<UserInfo> userInfo) {
                 mvpView.onLoginSuccess(userInfo);
             }
 
@@ -42,10 +42,10 @@ public class LoginPresenter extends BasePresenter<LoginView>{
     }
 
     void normalLogin(UserInfo userInfo){
-        addSubscription(apiStores.normalLogin(userInfo.getUserName(), userInfo.getPassword()), new ApiCallback<BaseRepository<UserInfo>>(){
+        addSubscription(apiStores.normalLogin(userInfo.getUserName(), userInfo.getPassword()), new ApiCallback<Repository<UserInfo>>(){
 
             @Override
-            public void onSuccess(BaseRepository<UserInfo> userInfo) {
+            public void onSuccess(Repository<UserInfo> userInfo) {
                 mvpView.onLoginSuccess(userInfo);
             }
 

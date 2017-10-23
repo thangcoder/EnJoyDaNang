@@ -65,7 +65,7 @@ public abstract class GenericAdapter<T> extends BaseAdapter{
 
 
     /**
-     * the size of the List plus one, the one is the last row, which displays a Progressbar
+     * the size of the Repository plus one, the one is the last row, which displays a Progressbar
      */
     @Override
     public int getCount() {

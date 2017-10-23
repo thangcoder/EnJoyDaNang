@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_100sdp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/txtWeatherDay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_3sdp"
+        android:paddingTop="@dimen/_3sdp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:background="@color/grey_500" />
+
+    <ImageView
+        android:id="@+id/imgWeather"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_no_user" />
+
+
+    <TextView
+        android:id="@+id/txtTemperature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_7sdp"
+        android:paddingTop="@dimen/_2sdp"
+        android:textSize="@dimen/_16ssp" />
+</LinearLayout>

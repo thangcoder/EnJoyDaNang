@@ -6,7 +6,7 @@ import android.view.View;
 
 import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.constant.AppError;
 
@@ -69,7 +69,7 @@ public class IntroductionFragment extends MvpFragmentWithToolbar<IntroductionPre
     }
 
     @Override
-    public void onGetIntroductionSuccess(BaseRepository<Introduction> data) {
+    public void onGetIntroductionSuccess(Repository<Introduction> data) {
         Log.i(TAG, "onGetIntroductionSuccess " + data);
     }
 

@@ -16,14 +16,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
@@ -201,9 +199,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
     @Override
-    public void onLoginSuccess(BaseRepository<UserInfo> resultCallBack) {
+    public void onLoginSuccess(Repository<UserInfo> resultCallBack) {
         if (Utils.isNotEmptyContent(resultCallBack)) {
-            List<UserInfo> userInfoLst = resultCallBack.getData();
+            java.util.List userInfoLst = resultCallBack.getData();
             Log.i(TAG, "onLoginSuccess " + userInfoLst);
         }
     }

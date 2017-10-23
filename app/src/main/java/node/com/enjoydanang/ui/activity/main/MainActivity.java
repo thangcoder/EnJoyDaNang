@@ -4,12 +4,15 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,6 +24,9 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
+import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
+import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -34,6 +40,21 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     DrawerLayout drawer;
     @BindView(R.id.left_drawer)
     NavigationView navigationView;
+    @BindView(R.id.img_home)
+    ImageView imgHome;
+    @BindView(R.id.tv_home)
+    TextView tvHome;
+
+    @BindView(R.id.img_search)
+    ImageView imgSearch;
+
+    @BindView(R.id.img_profile)
+    ImageView imgProfile;
+    @BindView(R.id.tv_profile)
+    TextView tvProfile;
+
+
+    private HomeTab currentTab;
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -44,7 +65,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-
     @Override
     public void init() {
         setSupportActionBar(toolbar);
@@ -53,6 +73,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        currentTab = HomeTab.getCurrentTab(0);
+        setStateTabSelected();
+
         requestCodeQRCodePermissions();
     }
 
@@ -99,17 +122,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_history) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_info) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_info) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_setting) {
 
         }
 
@@ -127,16 +148,59 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void unKnownError() {
 
     }
-//    @OnClick({R.id.fab})
-//    void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.fab:
-//                Toast.makeText(mActivity, "Hello", Toast.LENGTH_SHORT).show();
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+
+    @OnClick({R.id.ll_home,R.id.ll_profile,R.id.img_search})
+    public void onClick(View view){
+        switch (view.getId()) {
+            case R.id.ll_home:
+                currentTab = HomeTab.Home;
+                setStateTabSelected();
+                break;
+            case R.id.img_search:
+                currentTab = HomeTab.Search;
+                setStateTabSelected();
+                break;
+            case R.id.ll_profile:
+                currentTab = HomeTab.Profile;
+                setStateTabSelected();
+                break;
+            default:
+                setStateTabSelected();
+                break;
+        }
+
+
+
+    }
+    public void setStateTabSelected() {
+        switch (currentTab) {
+            case Home:
+                imgHome.setImageResource(R.drawable.tab1_selected_3x);
+                imgSearch.setImageResource(R.drawable.tab2_default_3x);
+                imgProfile.setImageResource(R.drawable.tab3_default_3x);
+                tvHome.setTextColor(ContextCompat.getColor(this,R.color.tab_select));
+                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.black));
+                break;
+            case Search:
+                imgHome.setImageResource(R.drawable.tab1_default_3x);
+                imgSearch.setImageResource(R.drawable.tab2_selected_3x);
+                imgProfile.setImageResource(R.drawable.tab3_default_3x);
+                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.black));
+                tvHome.setTextColor(ContextCompat.getColor(this,R.color.black));
+                break;
+            case Profile:
+                imgHome.setImageResource(R.drawable.tab1_default_3x);
+                imgSearch.setImageResource(R.drawable.tab2_default_3x);
+                imgProfile.setImageResource(R.drawable.tab3_selected_3x);
+                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.tab_select));
+                tvHome.setTextColor(ContextCompat.getColor(this,R.color.black));
+                break;
+            default:
+                break;
+        }
+
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

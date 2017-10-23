@@ -1,15 +1,16 @@
 package node.com.enjoydanang.api;
 
-import node.com.enjoydanang.api.model.BaseRepository;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.DetailPartner;
+import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
-import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.model.Weather;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -22,64 +23,60 @@ import rx.Observable;
  */
 
 public interface ApiStores {
-//    @FormUrlEncoded
-//    @POST("/login")
-//    Call<LoginResponsive> login(@Field("username") String username, @Field("password") String password);
-    @GET("CategoryApi.asmx/ListAll")
-    Observable<Category> getCategorys(@Query("page") int page);
 
 
-    @FormUrlEncoded
-    @POST("PartnerApi.asmx/ListAll")
-    Observable<Partner> listPartner(@Field("page") int page);
-
+    @GET("GlobalApi.asmx/GetBanner")
+    Observable<Repository<Banner>> getBanner();
 
     @FormUrlEncoded
     @POST("AccountApi.asmx/SocialNetworkLogin")
-    Observable<BaseRepository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") String userId, @Field("token") String accessToken, @Field("type") String type, @Field("image") String image);
+    Observable<Repository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") String userId, @Field("token") String accessToken, @Field("type") String type, @Field("image") String image);
 
 
     @FormUrlEncoded
     @POST("AccountApi.asmx/NormalLogin")
-    Observable<BaseRepository<UserInfo>> normalLogin(@Field("username") String userName, @Field("password") String pwd);
+    Observable<Repository<UserInfo>> normalLogin(@Field("username") String userName, @Field("password") String pwd);
 
 
     @FormUrlEncoded
     @POST("AccountApi.asmx/NormalRegister")
-    Observable<BaseRepository<UserInfo>> normalRegister(@Field("username") String userName, @Field("password") String pwd,
-                                                        @Field("fullname") String fullName, @Field("email") String email,
-                                                        @Field("phone") String phoneNo);
+    Observable<Repository<UserInfo>> normalRegister(@Field("username") String userName, @Field("password") String pwd,
+                                                    @Field("fullname") String fullName, @Field("email") String email,
+                                                    @Field("phone") String phoneNo);
 
 
     @GET("LandingPageApi.asmx/Introduction")
-    Observable<BaseRepository<Introduction>> getIntroduction();
-
-
-    @GET("GlobalApi.asmx/GetBanner")
-    Observable<BaseRepository<Banner>> getBanner();
+    Observable<Repository<Introduction>> getIntroduction();
 
     @GET("PartnerApi.asmx/ListAll")
-    Observable<BaseRepository<Partner>> getPartner(@Query("page") int page);
+    Observable<Repository<Partner>> getPartner(@Query("page") int page);
 
 
     @GET("CategoryApi.asmx/ListAll")
-    Observable<BaseRepository<Category>> getAllCategories();
+    Observable<Repository<Category>> getAllCategories();
 
     @GET("GlobalApi.asmx/GetResourceLanguage")
-    Observable<BaseRepository<Language>> getLanguage();
+    Observable<Repository<Language>> getLanguage();
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListByCategory")
-    Observable<BaseRepository<Partner>> getPartnerByCategoryId(@Field("id") int id, @Field("page") int page);
+    Observable<Repository<Partner>> getPartnerByCategoryId(@Field("id") int id, @Field("page") int page);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
-    Observable<BaseRepository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);
+    Observable<Repository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);
 
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Picture")
-    Observable<BaseRepository<PartnerAlbum>> getAlbumPartnerById(@Field("id") int partnerId);
+    Observable<Repository<PartnerAlbum>> getAlbumPartnerById(@Field("id") int partnerId);
+
+
+    @GET("GlobalApi.asmx/GetWidgetWeather")
+    Observable<Repository<Weather>> getWidgetWeather();
+
+    @GET("GlobalApi.asmx/GetWidgetExchangeRate")
+    Observable<Repository<ExchangeRate>> getWidgetExchangeRate();
     
 //    @FormUrlEncoded
 //    @POST("/login")
@@ -98,7 +95,7 @@ public interface ApiStores {
 //    Observable<ThreadInfo> getThreadInfo(@Path("thread_id") String threadId);
 //
 //    @GET("v1/users")
-//    Observable<List<UserInfo>> getUserListInfo(@Query("ids") String users);
+//    Observable<Repository<UserInfo>> getUserListInfo(@Query("ids") String users);
 //
 //    @GET("v1/users/{user_id}")
 //    Observable<UserInfo> getUserInfo(@Path("user_id") String userId);
@@ -126,7 +123,7 @@ public interface ApiStores {
 ////                                                                @Part("file") RequestBody photo);
 //
 //    @GET("v1/roll-call/{jobid}")
-//    Observable<List<RollCallRequestDTO>> getlistRollCall(@Path("jobid") String jobid, @Query("ids") String users);
+//    Observable<Repository<RollCallRequestDTO>> getlistRollCall(@Path("jobid") String jobid, @Query("ids") String users);
 //
 //    @Multipart
 //    @Headers("Accept:application/json; charset=utf-8")

@@ -1,4 +1,4 @@
-package node.com.enjoydanang.ui.fragment.home;
+package node.com.enjoydanang.ui.fragment.home.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -125,5 +125,6 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         this.partners.clear();
         notifyItemRangeRemoved(0, size);
     }
+
 
 }

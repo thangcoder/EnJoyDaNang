@@ -1,24 +1,19 @@
-package node.com.enjoydanang.ui.fragment.home;
+package node.com.enjoydanang.ui.fragment.home.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.Product;
+import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**
@@ -26,12 +21,12 @@ import node.com.enjoydanang.utils.ImageUtils;
  */
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    List<Product> products;
+    List<Category> partners;
     Context mContext;
 
-    public ProductAdapter(Context context, ArrayList<Product> listData) {
+    public ProductAdapter(Context context, List<Category> partners) {
         mContext = context;
-        products = listData;
+        this.partners = partners;
     }
 
     @Override
@@ -44,15 +39,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ProductAdapter.ViewHolder holder, int position) {
-        Product product = products.get(position);
-        // holder.tvTitle.setText(product.getTitle());
-        //holder.tvMeta.setText(product.getMeta());
-        ImageUtils.loadImageDrawable(mContext, holder.imgPhoto);
+        Category category = partners.get(position);
+        holder.tvTitle.setText(category.getName());
+        ImageUtils.loadImageNoRadius(mContext, holder.imgPhoto, category.getPicture());
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return partners.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -66,7 +66,6 @@ public interface ApiStores {
     @POST("PartnerApi.asmx/Detail")
     Observable<Repository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);
 
-
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Picture")
     Observable<Repository<PartnerAlbum>> getAlbumPartnerById(@Field("id") int partnerId);

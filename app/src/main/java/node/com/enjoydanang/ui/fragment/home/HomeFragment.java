@@ -25,23 +25,26 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Weather;
+import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.ViewPagerAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.WeatherAdapter;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener {
+public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     public enum TypeGetPartner {
@@ -72,7 +75,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private PartnerAdapter mPartnerAdapter;
     private boolean hasLoadmore;
-    private WeatherAdapter mWeatherAdapter;
 
 
     @BindView(R.id.view_pager)
@@ -101,7 +103,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
          * Init Data Product list
          */
         lstPartner = new ArrayList<>();
-        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner);
+        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         rcvPartner.setHasFixedSize(false);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
@@ -202,7 +204,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onFetchWeatherSuccess(List<Weather> lstWeathers) {
-        mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
+        WeatherAdapter mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
         rcvWeather.setAdapter(mWeatherAdapter);
     }
 
@@ -306,4 +308,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                 break;
         }
     }
+
+    @Override
+    public void onClick(View view, int position) {
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        Bundle bundle = new Bundle();
+        bundle.putInt(DetailHomeFragment.class.getSimpleName(), lstPartner.get(position).getId());
+        mBaseActivity.replaceFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
+
+    }
+
 }

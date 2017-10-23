@@ -9,17 +9,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.model.Product;
 import node.com.enjoydanang.utils.ImageUtils;
-
-import static android.R.attr.data;
+import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
  * Author: Tavv
@@ -34,10 +31,12 @@ public class PartnerAdapter extends RecyclerView.Adapter {
 
     private List<Partner> partners;
     private Context mContext;
+    private OnItemClickListener mOnItemClickListener;
 
-    public PartnerAdapter(Context context, List<Partner> partners) {
+    public PartnerAdapter(Context context, List<Partner> partners, OnItemClickListener mOnItemClickListener) {
         mContext = context;
         this.partners = partners;
+        this.mOnItemClickListener = mOnItemClickListener;
     }
 
 
@@ -66,14 +65,19 @@ public class PartnerAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
             //TODO : remove HardCode Meta In Partner Adapter
-            ((ViewHolder) holder).tvMeta.setText("Jenky");
+            ((ViewHolder) holder).tvMeta.setText(mContext.getString(R.string.full_name_profile));
             ImageUtils.loadImageNoRadius(mContext, ((ViewHolder) holder).imgPhoto, partner.getPicture());
+            ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnItemClickListener.onClick(view, position);
+                }
+            });
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }

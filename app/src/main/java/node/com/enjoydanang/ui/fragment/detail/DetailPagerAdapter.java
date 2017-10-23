@@ -16,12 +16,13 @@ import node.com.enjoydanang.ui.fragment.album.AlbumDetailFragment;
 public class DetailPagerAdapter extends FragmentStatePagerAdapter {
     //integer to count number of tabs
     private int tabCount;
-
+    private int partnerId;
     //Constructor to the class
-    public DetailPagerAdapter(FragmentManager fm, int tabCount) {
+    public DetailPagerAdapter(FragmentManager fm, int tabCount, int partnerId) {
         super(fm);
         //Initializing tab count
         this.tabCount= tabCount;
+        this.partnerId = partnerId;
     }
 
     //Overriding method getItem
@@ -30,7 +31,7 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                return new DetailFragment();
+                return DetailPartnerFragment.newInstance(partnerId);
             case 1:
                 return new ReviewFragment();
             case 2:

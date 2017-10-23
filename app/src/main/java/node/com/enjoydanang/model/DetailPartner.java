@@ -3,6 +3,10 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringUtils;
+
+import node.com.enjoydanang.constant.Constant;
+
 /**
  * Author: Tavv
  * Created on 22/10/2017
@@ -21,6 +25,9 @@ public class DetailPartner {
     @SerializedName("Name")
     @Expose
     private String name;
+    @SerializedName("Description")
+    @Expose
+    private String description;
     @SerializedName("Picture")
     @Expose
     private String picture;
@@ -94,8 +101,16 @@ public class DetailPartner {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getPicture() {
-        return picture;
+        return StringUtils.isNotBlank(picture) ? Constant.URL_HOST_IMAGE + picture : picture;
     }
 
     public void setPicture(String picture) {
@@ -220,5 +235,31 @@ public class DetailPartner {
 
     public void setVideo(String video) {
         this.video = video;
+    }
+
+    @Override
+    public String toString() {
+        return "DetailPartner{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", picture='" + picture + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", emailBooking='" + emailBooking + '\'' +
+                ", booking=" + booking +
+                ", address='" + address + '\'' +
+                ", starReview=" + starReview +
+                ", discount=" + discount +
+                ", totalView=" + totalView +
+                ", allowCustomerReviews=" + allowCustomerReviews +
+                ", geoLat='" + geoLat + '\'' +
+                ", geoLng='" + geoLng + '\'' +
+                ", geoLocation='" + geoLocation + '\'' +
+                ", incentivesOther=" + incentivesOther +
+                ", incentivesContent='" + incentivesContent + '\'' +
+                ", video='" + video + '\'' +
+                '}';
     }
 }

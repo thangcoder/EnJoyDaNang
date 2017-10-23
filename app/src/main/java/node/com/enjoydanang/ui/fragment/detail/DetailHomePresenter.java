@@ -13,4 +13,6 @@ public class DetailHomePresenter extends BasePresenter<iDetailHomeView>{
     public DetailHomePresenter(iDetailHomeView view) {
         super(view);
     }
+
+
 }

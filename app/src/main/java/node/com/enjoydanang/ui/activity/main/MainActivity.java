@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -24,10 +23,7 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
-import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
-import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
-import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -55,10 +51,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
 
     private HomeTab currentTab;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,8 +147,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    @OnClick({R.id.ll_home,R.id.ll_profile,R.id.img_search})
-    public void onClick(View view){
+    @OnClick({R.id.ll_home, R.id.ll_profile, R.id.img_search})
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_home:
                 currentTab = HomeTab.Home;
@@ -170,30 +168,30 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
 
 
-
     }
+
     public void setStateTabSelected() {
         switch (currentTab) {
             case Home:
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                tvHome.setTextColor(ContextCompat.getColor(this,R.color.tab_select));
-                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.black));
+                tvHome.setTextColor(ContextCompat.getColor(this, R.color.tab_select));
+                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.black));
-                tvHome.setTextColor(ContextCompat.getColor(this,R.color.black));
+                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.black));
+                tvHome.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                tvProfile.setTextColor(ContextCompat.getColor(this,R.color.tab_select));
-                tvHome.setTextColor(ContextCompat.getColor(this,R.color.black));
+                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.tab_select));
+                tvHome.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             default:
                 break;

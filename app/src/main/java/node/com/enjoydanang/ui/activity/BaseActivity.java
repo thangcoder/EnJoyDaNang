@@ -32,7 +32,7 @@ import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.framework.FragmentHelper;
+import node.com.enjoydanang.utils.helper.FragmentHelper;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NetworkStatus;
 import node.com.enjoydanang.utils.ConnectionUltils;

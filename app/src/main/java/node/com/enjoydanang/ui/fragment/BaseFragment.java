@@ -2,17 +2,20 @@ package node.com.enjoydanang.ui.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.ui.activity.BaseActivity;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -24,6 +27,8 @@ public abstract class BaseFragment extends Fragment {
 
     protected Activity mMainActivity;
     protected FragmentManager mFragmentManager;
+    protected FragmentTransaction mTransaction;
+    protected BaseActivity mBaseActivity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,5 +166,15 @@ public abstract class BaseFragment extends Fragment {
             // progressDialog.hide();会导致android.view.WindowLeaked
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AppCompatActivity activity;
+        if (context instanceof AppCompatActivity) {
+            activity = (AppCompatActivity) context;
+            mBaseActivity = (BaseActivity) activity;
+        }
+        super.onAttach(context);
     }
 }

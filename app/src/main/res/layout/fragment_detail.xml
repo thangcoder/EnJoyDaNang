@@ -7,7 +7,7 @@
     android:weightSum="1">
 
     <ImageView
-        android:id="@+id/imgProduct"
+        android:id="@+id/imgPartner"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".3"
@@ -23,7 +23,7 @@
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true"
-        app:contentPadding="0dp">
+        app:contentPadding="5dp">
 
 
         <LinearLayout
@@ -36,7 +36,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="15dp"
-                android:text="Lemon Drink"
                 android:textColor="@color/material_grey_800"
                 android:textSize="@dimen/_20sdp"
                 android:textStyle="bold" />
@@ -60,7 +59,7 @@
                 <TextView
                     android:id="@+id/txtContent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
                     android:scrollbars="vertical" />
 

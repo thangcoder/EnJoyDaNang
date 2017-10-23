@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -17,6 +18,7 @@ import node.com.enjoydanang.R;
  */
 
 public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> implements iDetailHomeView, TabLayout.OnTabSelectedListener{
+    private static final String TAG = DetailHomeFragment.class.getSimpleName();
 
     //This is our tablayout
     @BindView(R.id.tabs)
@@ -25,6 +27,15 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     //This is our viewPager
     @BindView(R.id.viewpager)
     ViewPager viewPager;
+
+    public static DetailHomeFragment newInstance(int partnerId) {
+        DetailHomeFragment fragment = new DetailHomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TAG, partnerId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -52,8 +63,12 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.review_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.album_tab_name)));
         //Creating our pager adapter
-        DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            int parterId = bundle.getInt(TAG);
+            DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), parterId);
+            viewPager.setAdapter(adapter);
+        }
 
         //Adding adapter to pager
     }
@@ -72,6 +87,16 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     @Override
     public void bindView(View view) {
         ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void showToast(String desc) {
+
+    }
+
+    @Override
+    public void unKnownError() {
+
     }
 
 }

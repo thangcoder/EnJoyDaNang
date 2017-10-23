@@ -1,13 +1,14 @@
-package node.com.enjoydanang.framework;
-
-import node.com.enjoydanang.LogApp;
-import node.com.enjoydanang.R;
+package node.com.enjoydanang.utils.helper;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
+import node.com.enjoydanang.LogApp;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.framework.FragmentTransitionInfo;
 
 /**
  * Fragment Utility

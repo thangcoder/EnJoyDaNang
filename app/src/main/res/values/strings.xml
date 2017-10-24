@@ -102,5 +102,18 @@
 
 
     <string name="exchange_rate">&lt;=&gt;</string>
+    <string name="err_msg_email">Email Invalid</string>
+
+
+    <string-array name="item_menu">
+        <item>INFOMATION</item>
+        <item>Introduce</item>
+        <item>Contact Us</item>
+        <item>Favorite</item>
+        <item>Log Check-in</item>
+        <item>PERSIONAL</item>
+        <item>Change Password</item>
+        <item>Log out</item>
+    </string-array>
 
 </resources>

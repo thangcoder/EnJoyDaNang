@@ -82,12 +82,13 @@
             android:text="@string/label_email" />
 
         <EditText
+            android:id="@+id/editText"
+            style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_edittext_icon"
             android:drawableLeft="@drawable/ic_email_1"
-            android:text="@string/email_profile_display"
-            style="@style/EditTextProfileStyle" />
+            android:text="@string/email_profile_display" />
 
 
         <TextView
@@ -103,8 +104,6 @@
             android:text="@string/phone_profile"
             android:drawableLeft="@drawable/ic_call"
             style="@style/EditTextProfileStyle" />
-
-
     </LinearLayout>
 
 </LinearLayout>

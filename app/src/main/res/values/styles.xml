@@ -23,14 +23,14 @@
         <!--Toolbar Theme / Apply white arrow -->
         <item name="colorControlNormal">@android:color/white</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/green_button</item>
 
         <item name="android:windowBackground">@android:color/white</item>
 
         <!-- Material Theme -->
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">@color/white</item>
+        <item name="colorAccent">@color/green_button</item>
 
     </style>
 

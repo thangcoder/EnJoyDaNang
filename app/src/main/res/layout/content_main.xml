@@ -6,7 +6,7 @@
 
     <FrameLayout
         android:id="@+id/container_fragment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_bottom_menu"
         android:background="@color/white"

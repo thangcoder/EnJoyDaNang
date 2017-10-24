@@ -53,10 +53,11 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
 
     private LoginPresenter mLoginPresenter;
 
-    private ProgressBar progressBar;
+    private LoginCallBack loginCallBack;
 
-    public LoginViaGoogle(BaseActivity activity) {
+    public LoginViaGoogle(BaseActivity activity, LoginCallBack loginCallBack) {
         this.activity = activity;
+        this.loginCallBack = loginCallBack;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     @Override
     public void login() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        loginCallBack.hideWaiting();
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -119,13 +121,6 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
                 });
     }
 
-    @Override
-    public void setProgressbar(ProgressBar progressbar) {
-        if (progressbar == null) {
-            throw new NullPointerException("ProgressBar not be null !");
-        }
-        this.progressBar = progressbar;
-    }
 
     @Override
     public void setLoginPresenter(LoginPresenter loginPresenter) {

@@ -47,4 +47,12 @@
 
 
     <dimen name="btn_sign_in_margin">20dp</dimen>
+
+    <dimen name="spacing">5dp</dimen>
+
+    <dimen name="button_login_social_width">350dp</dimen>
+
+    <dimen name="button_login_social_height">40dp</dimen>
+
+    <dimen name="text_size_name_social">@dimen/_14ssp</dimen>
 </resources>

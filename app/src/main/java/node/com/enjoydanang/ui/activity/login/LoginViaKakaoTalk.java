@@ -7,7 +7,6 @@ import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ErrorCode;
@@ -48,13 +47,14 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
 
     private SessionCallback sessionCallback;
 
-    private ProgressBar progressBar;
-
     private LoginPresenter mLoginPresenter;
 
 
-    public LoginViaKakaoTalk(BaseActivity activity) {
+    private LoginCallBack loginCallBack;
+
+    public LoginViaKakaoTalk(BaseActivity activity, LoginCallBack loginCallBack) {
         this.activity = activity;
+        this.loginCallBack = loginCallBack;
     }
 
     @Override
@@ -108,14 +108,6 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     }
 
     @Override
-    public void setProgressbar(ProgressBar progressbar) {
-        if (progressbar == null) {
-            throw new NullPointerException("ProgressBar not be null !");
-        }
-        this.progressBar = progressbar;
-    }
-
-    @Override
     public void setLoginPresenter(LoginPresenter loginPresenter) {
         if (loginPresenter == null) {
             throw new NullPointerException("LoginPresenter not be null !");
@@ -128,7 +120,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
 
         @Override
         public void onSessionOpened() {
-            progressBar.setVisibility(View.GONE);
+            loginCallBack.hideWaiting();
             requestMe();
         }
 

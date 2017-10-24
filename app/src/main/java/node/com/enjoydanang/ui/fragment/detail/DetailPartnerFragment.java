@@ -81,7 +81,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @BindView(R.id.mapView)
     MapView mMapView;
 
-    private GoogleMap mGoogleMap;
 
     private DetailPartner partner;
 
@@ -206,7 +205,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
-        mGoogleMap = googleMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -273,12 +271,16 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        mWebView.resumeTimers();
+        mWebView.onResume();
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
+        mWebView.onPause();
+        mWebView.pauseTimers();
         mMapView.onPause();
     }
 
@@ -294,4 +296,13 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
+    @Override
+    public void onDestroy() {
+        mWebView.loadUrl("about:blank");
+        mWebView.destroy();
+        mWebView = null;
+        super.onDestroy();
+    }
+
 }

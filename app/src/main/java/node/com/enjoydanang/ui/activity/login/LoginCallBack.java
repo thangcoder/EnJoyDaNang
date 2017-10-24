@@ -9,7 +9,6 @@ import node.com.enjoydanang.constant.AppError;
  * Version : 1.0
  */
 
-public interface ResultLoginCallBack<M> {
-    void onResultCallBack(M model);
-    void onError(AppError error);
+public interface LoginCallBack {
+    void hideWaiting();
 }

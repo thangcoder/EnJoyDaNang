@@ -37,10 +37,11 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     private AccessToken accessToken;
     private BaseActivity activity;
     private LoginPresenter mLoginPresenter;
-    private ProgressBar progressBar;
+    private LoginCallBack loginCallBack;
 
-    public LoginViaFacebook(BaseActivity activity) {
+    public LoginViaFacebook(BaseActivity activity, LoginCallBack loginCallBack) {
         this.activity = activity;
+        this.loginCallBack = loginCallBack;
     }
 
     @Override
@@ -116,14 +117,6 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     public void removeAccessToken() {
         // TODO: removeAccessToken Facebook
 
-    }
-
-    @Override
-    public void setProgressbar(ProgressBar progressbar) {
-        if (progressbar == null) {
-            throw new NullPointerException("ProgressBar not be null !");
-        }
-        this.progressBar = progressbar;
     }
 
     @Override

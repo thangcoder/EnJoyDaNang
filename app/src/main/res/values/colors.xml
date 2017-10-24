@@ -28,6 +28,8 @@
     <color name="color_status_bar_atten_enable">#31313E</color>
     <color name="color_status_bar_atten_disable">#a7a9b0</color>
 
+    <color name="color_button_login">#eeb900</color>
+
     <!--screen notice-->
     <color name="color_text_title_on_bar">#323232</color>
     <color name="color_gray">#eeeeee</color>

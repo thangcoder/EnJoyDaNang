@@ -17,12 +17,13 @@
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
 
         <!--Toolbar Theme / Apply white arrow -->
         <item name="colorControlNormal">@android:color/white</item>
         <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
-
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@color/background_color</item>
 
         <!-- Material Theme -->

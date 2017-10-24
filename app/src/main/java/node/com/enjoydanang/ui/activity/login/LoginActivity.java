@@ -1,15 +1,21 @@
 package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.util.Util;
 import com.facebook.internal.CallbackManagerImpl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -39,21 +45,23 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
  * Version : 1.0
  */
 
-public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView {
+public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    @BindView(R.id.lrlSignIn)
-    public LinearLayout lrlSignIn;
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
-    @BindView(R.id.txtCreateAccount)
-    public TextView txtCreateAccount;
+    @BindView(R.id.userNameWrapper)
+    TextInputLayout usernameWrapper;
 
-    @BindView(R.id.txtForgotPwd)
-    public TextView txtForgotPwd;
+    @BindView(R.id.passwordWrapper)
+    TextInputLayout passwordWrapper;
 
-    @BindView(R.id.loadingLogin)
-    public ProgressBar prgLoadingLogin;
+    @BindView(R.id.edtUserName)
+    EditText edtUserName;
 
+    @BindView(R.id.edtPassWord)
+    EditText edtPassword;
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -69,20 +77,22 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void setContentView() {
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_v2);
     }
 
     @Override
     public void init() {
+        setTitle(Utils.getString(R.string.Login_Screen_Title));
         LoginFactory loginFactory = new LoginFactory();
-        loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this);
-        loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this);
-        loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.getLoginType(LoginType.KAKAOTALK, this);
+        loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this, this);
+        loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this, this);
+        loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.getLoginType(LoginType.KAKAOTALK, this, this);
 
         //init
         loginViaFacebook.init();
         loginViaGoogle.init();
         setPresenter();
+        initToolbar(toolbar);
     }
 
     @Override
@@ -92,36 +102,25 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void setValue(Bundle savedInstanceState) {
-        loginViaKakaoTalk.setProgressbar(prgLoadingLogin);
+        usernameWrapper.setHint(Utils.getString(R.string.user_name_hint));
+        passwordWrapper.setHint(Utils.getString(R.string.pwd_hint));
     }
 
     @Override
     public void setEvent() {
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransitionExit();
+            }
+        });
     }
 
-
-    @OnClick({R.id.lrlSignIn, R.id.txtCreateAccount, R.id.txtForgotPwd})
-    public void onClick(View view) {
-        Intent intent = null;
-        switch (view.getId()) {
-            case R.id.lrlSignIn:
-                intent = new Intent(mActivity, MainActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.txtCreateAccount:
-                intent = new Intent(mActivity, SignUpActivity.class);
-                startActivity(intent);
-                overridePendingTransitionEnter();
-                break;
-            case R.id.txtForgotPwd:
-                Toast.makeText(this, "Forgot Click", Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
 
     @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk})
     public void onRegisterWithSocial(View view) {
+        showLoading();
         switch (view.getId()) {
             case R.id.btnLoginFb:
                 loginViaFacebook.login();
@@ -130,7 +129,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 loginViaGoogle.login();
                 break;
             case R.id.btnLoginKakaotalk:
-                prgLoadingLogin.setVisibility(View.VISIBLE);
                 loginViaKakaoTalk.login();
                 break;
         }
@@ -211,4 +209,16 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         Log.e(TAG, "onLoginFailure " + error.getMessage());
     }
 
+    @Override
+    public void hideWaiting() {
+        hideLoading();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransitionExit();
+    }
 }

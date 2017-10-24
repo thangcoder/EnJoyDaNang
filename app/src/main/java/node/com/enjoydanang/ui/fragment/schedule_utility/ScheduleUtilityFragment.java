@@ -2,7 +2,11 @@ package node.com.enjoydanang.ui.fragment.schedule_utility;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -30,6 +34,12 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
     ListView lvUtility;
     @BindView(R.id.lvSchedule)
     ListView lvSchedule;
+
+    @BindView(R.id.schedule_utility_content)
+    LinearLayout lrlContent;
+
+    @BindView(R.id.txtEmpty)
+    TextView txtEmptyData;
 
     public static ScheduleUtilityFragment newInstance(int partnerId) {
         ScheduleUtilityFragment fragment = new ScheduleUtilityFragment();
@@ -89,18 +99,32 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
 
     @Override
     public void onFetchUtilitySuccess(List<Utility> utilities) {
+        setVisibleContent(true);
         UtilityAdapter adapter = new UtilityAdapter(getContext(), utilities);
         lvUtility.setAdapter(adapter);
     }
 
     @Override
     public void onFetchScheduleSuccess(List<Schedule> schedules) {
+        setVisibleContent(true);
         ScheduleAdapter adapter = new ScheduleAdapter(getContext(), schedules);
         lvSchedule.setAdapter(adapter);
     }
 
     @Override
     public void onFetchFailure(AppError error) {
+        if(StringUtils.isBlank(error.getMessage())){
+           setVisibleContent(false);
+        }
+    }
 
+    private void setVisibleContent(boolean show){
+        if(show){
+            lrlContent.setVisibility(View.VISIBLE);
+            txtEmptyData.setVisibility(View.GONE);
+        }else{
+            lrlContent.setVisibility(View.GONE);
+            txtEmptyData.setVisibility(View.VISIBLE);
+        }
     }
 }

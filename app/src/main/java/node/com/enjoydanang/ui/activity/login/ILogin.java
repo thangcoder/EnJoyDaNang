@@ -29,8 +29,6 @@ public interface ILogin<C, M> {
 
     void removeAccessToken();
 
-    void setProgressbar(ProgressBar progressbar);
-
     void setLoginPresenter(LoginPresenter loginPresenter);
 
 }

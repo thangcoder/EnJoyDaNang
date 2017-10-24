@@ -43,6 +43,7 @@ import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 
 import static node.com.enjoydanang.R.id.fabFavorite;
+import static node.com.enjoydanang.R.id.slider;
 
 /**
  * Created by chien on 10/8/17.
@@ -50,10 +51,6 @@ import static node.com.enjoydanang.R.id.fabFavorite;
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
-
-    public enum TypeGetPartner {
-        ALL_PARTNER, PARTNER_BY_CATEGORY
-    }
 
     @BindView(R.id.rcv_partner)
     RecyclerView rcvPartner;
@@ -142,12 +139,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        loadmorePartner.setTypeGetPartner(TypeGetPartner.ALL_PARTNER);
         mvpPresenter.getListHome(defaultCustomerId);
         mvpPresenter.getAllCategories();
         mvpPresenter.getBanner();
         mvpPresenter.getWeather();
         mvpPresenter.getExchangeRate();
+        loadmorePartner.setCategoryId(-1);
     }
 
     @Override
@@ -272,15 +269,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                     v.setBackgroundResource(R.drawable.border_item_default);
                 }
             }
-            loadmorePartner.setTypeGetPartner(TypeGetPartner.PARTNER_BY_CATEGORY);
             loadmorePartner.setCategoryId(category.getId());
             hasLoadmore = false;
             mvpPresenter.getPartnerByCategory(category.getId(), startPage);
+            bannerSlider.setVisibility(View.GONE);
         }
     }
 
     private class LoadmorePartner extends EndlessParentScrollListener {
-        private TypeGetPartner typeGetPartner;
         private int categoryId = -1;
 
         public LoadmorePartner(RecyclerView.LayoutManager layoutManager) {
@@ -291,11 +287,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         public void onLoadMore(int page, int totalItemsCount) {
             currentPage = page;
             hasLoadmore = true;
-            onRetryGetPartner(page, categoryId, typeGetPartner);
-        }
-
-        public void setTypeGetPartner(TypeGetPartner typeGetPartner) {
-            this.typeGetPartner = typeGetPartner;
+            onRetryGetPartner(page, categoryId);
         }
 
         public void setCategoryId(int categoryId) {
@@ -304,8 +296,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
 
-    private void onRetryGetPartner(int page, int categoryId, TypeGetPartner type) {
-        if (type == TypeGetPartner.PARTNER_BY_CATEGORY && categoryId != -1) {
+    private void onRetryGetPartner(int page, int categoryId) {
+        if (categoryId != -1) {
             mvpPresenter.getPartnerByCategory(categoryId, page);
         }
     }
@@ -319,7 +311,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
             Bundle bundle = new Bundle();
             bundle.putInt(DetailHomeFragment.class.getSimpleName(), lstPartner.get(position).getId());
-            mBaseActivity.replaceFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
+            mBaseActivity.addFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
         }
     }
 

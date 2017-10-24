@@ -102,6 +102,7 @@
     <string name="exchange_rate">&lt;=&gt;</string>
 
     <string name="Home_Screen_Title">HOME</string>
+    <string name="Login_Screen_Title">LOGIN</string>
 
     <string name="action_search">Search</string>
 
@@ -109,6 +110,20 @@
 
 
     <string name="utility_title">Utility</string>
+
+    <string name="empty_data_schedule_utility">Partner currently haven\'t schedule and utility</string>
+
+    <string name="fb_login">Facebook Login</string>
+
+    <string name="google_login">Google Login</string>
+
+    <string name="kakao_login">Kakao Login</string>
+
+    <string name="user_name_hint">User name</string>
+
+    <string name="pwd_hint">Password</string>
+
+    <string name="continue_hint">Continue</string>
 
 </resources>
 

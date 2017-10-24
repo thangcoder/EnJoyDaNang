@@ -12,14 +12,14 @@ import node.com.enjoydanang.ui.activity.BaseActivity;
 
 public class LoginFactory {
 
-    ILogin getLoginType(LoginType loginType, BaseActivity activity) {
+    ILogin getLoginType(LoginType loginType, BaseActivity activity, LoginCallBack loginCallBack) {
         switch (loginType) {
             case FACEBOOK:
-                return new LoginViaFacebook(activity);
+                return new LoginViaFacebook(activity, loginCallBack);
             case GOOGLE:
-                return new LoginViaGoogle(activity);
+                return new LoginViaGoogle(activity, loginCallBack);
             case KAKAOTALK:
-                return new LoginViaKakaoTalk(activity);
+                return new LoginViaKakaoTalk(activity, loginCallBack);
             default:
                 return null;
         }

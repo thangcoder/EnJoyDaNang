@@ -18,6 +18,7 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.utils.helper.SpacesItemDecoration;
 
 /**
  * Author: Tavv
@@ -53,6 +54,8 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     protected void init(View view) {
         images = new ArrayList<>();
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mMainActivity.getApplicationContext(), 2);
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import node.com.enjoydanang.ui.fragment.album.AlbumDetailFragment;
+import node.com.enjoydanang.ui.fragment.schedule_utility.ScheduleUtilityFragment;
 
 /**
  * Author: Tavv
@@ -33,9 +34,9 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return DetailPartnerFragment.newInstance(partnerId);
             case 1:
-                return new ReviewFragment();
+                return ScheduleUtilityFragment.newInstance(partnerId);
             case 2:
-                return new AlbumDetailFragment();
+                return AlbumDetailFragment.newInstance(partnerId);
             default:
                 return null;
         }

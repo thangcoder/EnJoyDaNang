@@ -1,10 +1,14 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
+import java.util.List;
+
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.DetailPartner;
+import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -42,4 +46,31 @@ public class DetailPartnerPresenter extends BasePresenter<iDetailPartnerView> {
         });
     }
 
+
+    void getSlideByPartnerId(int partnerId){
+        addSubscription(apiStores.getSlideByPartnerId(partnerId), new ApiCallback<Repository<PartnerAlbum>>(){
+
+            @Override
+            public void onSuccess(Repository<PartnerAlbum> model) {
+                mvpView.hideLoading();
+                if(Utils.isNotEmptyContent(model)){
+                    List<PartnerAlbum> images = model.getData();
+                    mvpView.onFetchSlideSuccess(images);
+                }else{
+                    mvpView.onFetchFailure(new AppError(new Throwable(model.getMessage())));
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.hideLoading();
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
 }

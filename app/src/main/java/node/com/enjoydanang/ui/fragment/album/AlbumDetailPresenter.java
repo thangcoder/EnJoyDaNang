@@ -1,10 +1,11 @@
 package node.com.enjoydanang.ui.fragment.album;
 
-import java.util.List;
-
 import node.com.enjoydanang.BasePresenter;
+import node.com.enjoydanang.api.ApiCallback;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -19,11 +20,34 @@ public class AlbumDetailPresenter extends BasePresenter<iAlbumView>{
         super(view);
     }
 
-    void onFetchAlbumSuccess(List<PartnerAlbum> images){
-        mvpView.onFetchAlbumSuccess(images);
+    void getAlbum(int partnerId){
+        addSubscription(apiStores.getAlbumPartnerById(partnerId), new ApiCallback<Repository<PartnerAlbum>>(){
+
+            @Override
+            public void onSuccess(Repository<PartnerAlbum> model) {
+                mvpView.hideLoading();
+                if(Utils.isNotEmptyContent(model)){
+                    mvpView.onFetchAlbumSuccess(model.getData());
+                }else{
+                    mvpView.onFetchFail(new AppError(new Throwable(model.getMessage())));
+                }
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.hideLoading();
+                mvpView.onFetchFail(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 
     void onFetchFail(AppError error){
         mvpView.onFetchFail(error);
     }
 }
+

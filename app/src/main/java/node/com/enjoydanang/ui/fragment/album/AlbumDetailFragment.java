@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.PartnerAlbum;
 
 /**
  * Author: Tavv
@@ -27,16 +27,22 @@ import node.com.enjoydanang.constant.AppError;
  */
 
 public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> implements iAlbumView, AlbumAdapter.ClickListener {
+    private static final String TAG = AlbumDetailFragment.class.getSimpleName();
 
     private AlbumAdapter mAdapter;
 
     @BindView(R.id.rcv_album)
     RecyclerView recyclerView;
 
-    @BindView(R.id.progressLoading)
-    ProgressBar progressLoading;
-
     private ArrayList<PartnerAlbum> images;
+
+    public static AlbumDetailFragment newInstance(int partnerId) {
+        AlbumDetailFragment fragment = new AlbumDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TAG, partnerId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected AlbumDetailPresenter createPresenter() {
@@ -57,6 +63,12 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            int partnerId = bundle.getInt(TAG);
+            showLoading();
+            mvpPresenter.getAlbum(partnerId);
+        }
     }
 
     @Override
@@ -92,12 +104,11 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
         mAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(mAdapter);
         recyclerView.setVisibility(View.VISIBLE);
-        progressLoading.setVisibility(View.GONE);
     }
 
     @Override
     public void onFetchFail(AppError error) {
-
+        Log.e(TAG, "onFetchFail " + error.getMessage());
     }
 
     @Override

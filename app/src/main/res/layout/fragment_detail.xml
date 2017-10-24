@@ -1,60 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <ImageView
-        android:id="@+id/imgPartner"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".3"
-        android:contentDescription="@null"
-        android:scaleType="fitXY"
-        android:src="@drawable/bg_drink_temp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="-20dp"
-        android:layout_weight=".7"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="5dp">
-
-
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imgPartner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:textColor="@color/material_grey_800"
-                android:textSize="@dimen/_20sdp"
-                android:textStyle="bold" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="@style/RatingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:theme="@style/RatingBar"
-                android:stepSize="0.5" />
+            android:layout_height="0dp"
+            android:layout_weight=".2"
+            android:contentDescription="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_drink_temp" />
 
 
-            <ScrollView
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="-20dp"
+            android:layout_weight=".8"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="5dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical">
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:textColor="@color/material_grey_800"
+                    android:textSize="@dimen/_20sdp"
+                    android:textStyle="bold" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/RatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:theme="@style/RatingBar" />
+
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
+
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    app:auto_cycle="true"
+                    app:indicator_visibility="visible"
+                    app:pager_animation="Accordion"
+                    app:pager_animation_span="1100" />
+
+                <WebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="5dp" />
 
                 <TextView
                     android:id="@+id/txtContent"
@@ -62,11 +84,12 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
                     android:scrollbars="vertical" />
-
-            </ScrollView>
-        </LinearLayout>
+            </LinearLayout>
 
 
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-</LinearLayout>
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
+

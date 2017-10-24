@@ -39,4 +39,6 @@ public class Constant {
     public static final int CONNECT_TIME_OUT = 15000;
 
     public static final String FILE_NAME_LANGUAGE = "language.json";
+
+    public static String EMBEB_YOUTUBE_FORMAT = "<html><body><iframe width=\"%d\" height=\"%d\" src=\"%s\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
 }

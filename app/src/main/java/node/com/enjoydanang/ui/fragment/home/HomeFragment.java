@@ -1,24 +1,18 @@
 package node.com.enjoydanang.ui.fragment.home;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
-import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
@@ -42,13 +34,11 @@ import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
-import node.com.enjoydanang.ui.fragment.home.adapter.ViewPagerAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.WeatherAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
-import node.com.enjoydanang.utils.helper.FragmentHelper;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 

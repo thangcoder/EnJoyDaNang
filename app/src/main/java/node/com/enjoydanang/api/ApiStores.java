@@ -9,7 +9,9 @@ import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -80,6 +82,19 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListHome")
     Observable<Repository<Partner>> getListPartnerHome(@Field("customerId") int customerId);
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/Slider")
+    Observable<Repository<PartnerAlbum>> getSlideByPartnerId(@Field("id") int partnerId);
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/Utility")
+    Observable<Repository<Utility>> getUtilityByPartnerId(@Field("id") int partnerId);
+
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/Schedule")
+    Observable<Repository<Schedule>> getScheduleByPartnerId(@Field("id") int partnerId);
     
 //    @FormUrlEncoded
 //    @POST("/login")

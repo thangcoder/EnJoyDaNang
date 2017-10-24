@@ -82,11 +82,9 @@
 
     <string name="detail_tab_name">Detail</string>
 
-    <string name="review_tab_name">Reviews</string>
+    <string name="review_tab_name">Schedule &amp; Utility</string>
 
     <string name="album_tab_name">Album</string>
-
-    <string name="facebook_app_id">123608678348689</string>
 
     <string name="product_meta">created this recipe</string>
     
@@ -108,6 +106,9 @@
     <string name="action_search">Search</string>
 
     <string name="action_scan">Scan</string>
+
+
+    <string name="utility_title">Utility</string>
 
 </resources>
 

@@ -6,4 +6,6 @@
     <string name="admin_key">4bc8390556f864755e6182d95e2daf89</string>
     <string name="kakao_hash_key">9xCuVbH91sJcSe2oyVNomPwmz50=</string>
     <string name="fb_login_protocol_scheme">fb123608678348689</string>
+    <string name="facebook_app_id">123608678348689</string>
+    <string name="google_map_key">AIzaSyACkM_OFDB78OK2aexfO5IW-SKpidDOZ5g</string>
 </resources>

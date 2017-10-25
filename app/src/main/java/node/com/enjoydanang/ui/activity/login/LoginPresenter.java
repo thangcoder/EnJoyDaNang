@@ -3,9 +3,10 @@ package node.com.enjoydanang.ui.activity.login;
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.User;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -41,11 +42,16 @@ public class LoginPresenter extends BasePresenter<LoginView>{
         });
     }
 
-    void normalLogin(UserInfo userInfo){
-        addSubscription(apiStores.normalLogin(userInfo.getUserName(), userInfo.getPassword()), new ApiCallback<Repository<UserInfo>>(){
+    void normalLogin(String userName, String password){
+        addSubscription(apiStores.normalLogin(userName, password), new ApiCallback<Repository<UserInfo>>(){
 
             @Override
             public void onSuccess(Repository<UserInfo> userInfo) {
+                mvpView.hideLoading();
+                if(Utils.isResponseError(userInfo)){
+                    mvpView.onLoginFailure(new AppError(new Throwable(userInfo.getMessage())));
+                    return;
+                }
                 mvpView.onLoginSuccess(userInfo);
             }
 

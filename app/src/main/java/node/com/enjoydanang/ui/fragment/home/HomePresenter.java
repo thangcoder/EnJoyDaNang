@@ -5,16 +5,13 @@ import java.util.Collections;
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.constant.AppError;
-
 import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.utils.Utils;
-
-import static com.kakao.auth.StringSet.msg;
 
 /**
  * Created by chien on 10/8/17.
@@ -172,7 +169,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         });
     }
 
-    void getListHome(int customerId){
+    void getListHome(long customerId){
         addSubscription(apiStores.getListPartnerHome(customerId), new ApiCallback<Repository<Partner>>(){
 
             @Override

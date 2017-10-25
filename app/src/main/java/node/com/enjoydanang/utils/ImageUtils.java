@@ -1,21 +1,13 @@
 package node.com.enjoydanang.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-;import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import node.com.enjoydanang.R;
+
+;
 
 /**
  * Created by quangphuoc on 10/27/16.
@@ -32,6 +24,8 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
+
+
     public static void loadImageRounded(Context context, ImageView imgView, String imgUrl){
         Picasso.with(context).load(imgUrl)
                 .transform(new CircleTransform())

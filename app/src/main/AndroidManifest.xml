@@ -39,11 +39,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.login.LoginActivity" />
+        <activity android:name=".ui.activity.login.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
 
         <activity android:name=".ui.activity.main.MainActivity" />
 
-        <activity android:name=".ui.activity.signup.SignUpActivity" />
+        <activity android:name=".ui.activity.signup.SignUpActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
 
         <activity android:name=".ui.activity.start.StartActivity" />
 

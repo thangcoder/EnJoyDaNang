@@ -3,6 +3,11 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringUtils;
+
+import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.constant.Role;
+
 /**
  * Author: Tavv
  * Created on 20/10/2017.
@@ -10,9 +15,11 @@ import com.google.gson.annotations.SerializedName;
  * Version : 1.0
  */
 
-public class UserInfo{
+public class UserInfo {
 
-    private long userId;
+    @SerializedName("id")
+    @Expose
+    private long userId = -1;
 
     @SerializedName("username")
     @Expose
@@ -44,11 +51,14 @@ public class UserInfo{
 
     @SerializedName("role")
     @Expose
-    private String role;
+    private Role role;
 
     @SerializedName("type")
     @Expose
     private String type;
+
+    public UserInfo() {
+    }
 
     public UserInfo(String userName, String password, String email, String fullName, String phone) {
         this.userName = userName;
@@ -83,7 +93,7 @@ public class UserInfo{
     }
 
     public String getFullName() {
-        return fullName;
+        return StringUtils.isNoneBlank(fullName) ? fullName : userName;
     }
 
     public void setFullName(String fullName) {
@@ -99,7 +109,7 @@ public class UserInfo{
     }
 
     public String getImage() {
-        return image;
+        return StringUtils.isNotBlank(image) ? Constant.URL_HOST_IMAGE + image : image;
     }
 
     public void setImage(String image) {
@@ -114,11 +124,11 @@ public class UserInfo{
         this.code = code;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

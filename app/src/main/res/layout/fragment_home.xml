@@ -51,7 +51,7 @@
                 app:loopSlides="true" />
 
 
-            <include layout="@layout/include_widget" />
+            <!--<include layout="@layout/include_widget" />-->
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcv_partner"

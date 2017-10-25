@@ -1,18 +1,18 @@
 package node.com.enjoydanang.ui.fragment.home;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,30 +20,28 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
-import node.com.enjoydanang.ui.fragment.detail.DetailHomeFragment;
+import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
-import node.com.enjoydanang.ui.fragment.home.adapter.WeatherAdapter;
-import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
+import node.com.enjoydanang.utils.helper.VerticalSpaceItemDecoration;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 
 import static node.com.enjoydanang.R.id.fabFavorite;
-import static node.com.enjoydanang.R.id.slider;
 
 /**
  * Created by chien on 10/8/17.
@@ -51,23 +49,25 @@ import static node.com.enjoydanang.R.id.slider;
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
+    private static final int VERTICAL_ITEM_SPACE = 48;
 
     @BindView(R.id.rcv_partner)
     RecyclerView rcvPartner;
     @BindView(R.id.grv_menu)
     GridView gridView;
-    @BindView(R.id.rcv_weather)
-    RecyclerView rcvWeather;
-    @BindView(R.id.txtExchangeRate)
-    TextView txtExchangeRate;
-    @BindView(R.id.txtNameExchange)
-    TextView txtNameExchange;
 
-    @BindView(R.id.imgVNRate)
-    ImageView imgVNRate;
+//    @BindView(R.id.rcv_weather)
+//    RecyclerView rcvWeather;
+//    @BindView(R.id.txtExchangeRate)
+//    TextView txtExchangeRate;
+//    @BindView(R.id.txtNameExchange)
+//    TextView txtNameExchange;
 
-    @BindView(R.id.imgUSRate)
-    ImageView imgUSRate;
+//    @BindView(R.id.imgVNRate)
+//    ImageView imgVNRate;
+//
+//    @BindView(R.id.imgUSRate)
+//    ImageView imgUSRate;
 
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
@@ -90,7 +90,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private LoadmorePartner loadmorePartner;
 
-    private final int defaultCustomerId = 0;
+    private UserInfo user;
 
     @Override
     public void showToast(String desc) {
@@ -105,6 +105,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     protected void init(View view) {
+        user = GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
         /**
          * Init Data
          */
@@ -115,7 +116,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         rcvPartner.setHasFixedSize(false);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
-                new DividerItemDecoration(mMainActivity, DividerItemDecoration.VERTICAL));
+                new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
         rcvPartner.setNestedScrollingEnabled(false);
@@ -124,7 +125,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
         gridView.setAdapter(mCategoryAdapter);
 
-        rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
+//        rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
         bannerSlider.setLoopSlides(true);
     }
 
@@ -139,17 +140,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        mvpPresenter.getListHome(defaultCustomerId);
+        mvpPresenter.getListHome(user.getUserId());
         mvpPresenter.getAllCategories();
         mvpPresenter.getBanner();
-        mvpPresenter.getWeather();
-        mvpPresenter.getExchangeRate();
+//        mvpPresenter.getWeather();
+//        mvpPresenter.getExchangeRate();
         loadmorePartner.setCategoryId(-1);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -180,6 +176,10 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onGetPartnerSuccess(List<Partner> partners) {
+        if (CollectionUtils.isEmpty(partners)) {
+            rcvPartner.setVisibility(View.GONE);
+            return;
+        }
         updateItemAdapter(partners);
     }
 
@@ -217,8 +217,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onFetchWeatherSuccess(List<Weather> lstWeathers) {
-        WeatherAdapter mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
-        rcvWeather.setAdapter(mWeatherAdapter);
+//        WeatherAdapter mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
+//        rcvWeather.setAdapter(mWeatherAdapter);
     }
 
     @Override
@@ -229,12 +229,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onFetchExchangeRateSuccess(List<ExchangeRate> lstExchanges) {
         //Only one item return
-        ExchangeRate exchangeRate = lstExchanges.get(0);
-        String strExchange = String.format(Constant.EXCHANGE_RATE_FORMAT, exchangeRate.getRate());
-        txtNameExchange.setText(exchangeRate.getName());
-        ImageUtils.loadImageNoRadius(getContext(), imgUSRate, exchangeRate.getFlagEN());
-        ImageUtils.loadImageNoRadius(getContext(), imgVNRate, exchangeRate.getFlagVN());
-        txtExchangeRate.setText(strExchange);
+//        ExchangeRate exchangeRate = lstExchanges.get(0);
+//        String strExchange = String.format(Constant.EXCHANGE_RATE_FORMAT, exchangeRate.getRate());
+//        txtNameExchange.setText(exchangeRate.getName());
+//        ImageUtils.loadImageNoRadius(getContext(), imgUSRate, exchangeRate.getFlagEN());
+//        ImageUtils.loadImageNoRadius(getContext(), imgVNRate, exchangeRate.getFlagVN());
+//        txtExchangeRate.setText(strExchange);
     }
 
     @Override
@@ -303,15 +303,19 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     @Override
-    public void onClick(View view, int position) {
+    public void onClick(View view, final int position) {
         if (view.getId() == fabFavorite) {
             FloatingActionButton fabFavorite = (FloatingActionButton) view;
             //TODO : call apply favorite
         } else {
-            FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-            Bundle bundle = new Bundle();
-            bundle.putInt(DetailHomeFragment.class.getSimpleName(), lstPartner.get(position).getId());
-            mBaseActivity.addFragment(R.id.container_fragment, DetailHomeFragment.class.getName(), true, bundle, transitionInfo);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position).getId());
+                    dialog.show(mFragmentManager, TAG);
+                }
+            }, 50);
+
         }
     }
 

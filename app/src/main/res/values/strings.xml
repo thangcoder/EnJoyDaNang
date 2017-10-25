@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EnJoyDaNang</string>
+    <string name="app_name">EnJoyInDaNang</string>
     <string name="loading">Loading</string>
     <string name="title_activity_main2">Main2Activity</string>
 
@@ -103,6 +103,7 @@
 
     <string name="Home_Screen_Title">HOME</string>
     <string name="Login_Screen_Title">LOGIN</string>
+    <string name="Detail_Screen_Title">DETAIL</string>
 
     <string name="action_search">Search</string>
 

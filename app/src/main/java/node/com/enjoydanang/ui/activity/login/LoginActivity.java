@@ -1,40 +1,35 @@
 package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.util.Util;
 import com.facebook.internal.CallbackManagerImpl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
 
+import org.apache.commons.lang3.StringUtils;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.refactor.lib.colordialog.PromptDialog;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
-import node.com.enjoydanang.constant.AppError;
 
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
@@ -50,12 +45,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
-
-    @BindView(R.id.userNameWrapper)
-    TextInputLayout usernameWrapper;
-
-    @BindView(R.id.passwordWrapper)
-    TextInputLayout passwordWrapper;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -102,8 +91,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void setValue(Bundle savedInstanceState) {
-        usernameWrapper.setHint(Utils.getString(R.string.user_name_hint));
-        passwordWrapper.setHint(Utils.getString(R.string.pwd_hint));
     }
 
     @Override
@@ -118,8 +105,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
 
-    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk})
-    public void onRegisterWithSocial(View view) {
+    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal})
+    public void onLoginClick(View view) {
         showLoading();
         switch (view.getId()) {
             case R.id.btnLoginFb:
@@ -130,6 +117,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.btnLoginKakaotalk:
                 loginViaKakaoTalk.login();
+                break;
+            case R.id.btnLoginNormal:
+                loginNormal();
                 break;
         }
 
@@ -199,14 +189,16 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void onLoginSuccess(Repository<UserInfo> resultCallBack) {
         if (Utils.isNotEmptyContent(resultCallBack)) {
-            java.util.List userInfoLst = resultCallBack.getData();
-            Log.i(TAG, "onLoginSuccess " + userInfoLst);
+            UserInfo userInfo = resultCallBack.getData().get(0);
+            GlobalApplication.setUserInfo(userInfo);
+            Utils.clearForm(edtUserName, edtPassword);
+            redirectMain();
         }
     }
 
     @Override
     public void onLoginFailure(AppError error) {
-        Log.e(TAG, "onLoginFailure " + error.getMessage());
+        Utils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
     }
 
     @Override
@@ -214,6 +206,14 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         hideLoading();
     }
 
+    private void loginNormal() {
+        String userName = edtUserName.getText().toString();
+        String password = edtPassword.getText().toString();
+        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
+            showLoading();
+            mvpPresenter.normalLogin(userName, password);
+        }
+    }
 
     @Override
     public void onBackPressed() {

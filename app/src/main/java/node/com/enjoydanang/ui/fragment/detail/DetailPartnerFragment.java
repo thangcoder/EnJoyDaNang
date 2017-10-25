@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -99,7 +100,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     protected void init(View view) {
-
+        mBaseActivity.setTitle(Utils.getString(R.string.Detail_Screen_Title));
 
     }
 
@@ -179,7 +180,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     public void onFetchFailure(AppError appError) {
-        Log.e(TAG, "onFetchFailure " + appError.getMessage());
+        Toast.makeText(mMainActivity, appError.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

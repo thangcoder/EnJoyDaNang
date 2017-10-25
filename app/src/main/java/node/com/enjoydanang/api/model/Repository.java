@@ -24,9 +24,9 @@ public class Repository<T> {
 
     @SerializedName("data")
     @Expose
-    protected java.util.List<T> data;
+    protected List<T> data;
 
-    public Repository(String status, String message, java.util.List<T> data) {
+    public Repository(String status, String message, List<T> data) {
         this.status = status;
         this.message = message;
         this.data = data;
@@ -48,11 +48,11 @@ public class Repository<T> {
         this.message = message;
     }
 
-    public java.util.List<T> getData() {
+    public List<T> getData() {
         return data;
     }
 
-    public void setData(java.util.List<T> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 

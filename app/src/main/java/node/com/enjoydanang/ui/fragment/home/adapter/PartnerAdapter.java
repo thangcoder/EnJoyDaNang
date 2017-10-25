@@ -71,6 +71,8 @@ public class PartnerAdapter extends RecyclerView.Adapter {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
             ImageUtils.loadImageNoRadius(mContext, ((ViewHolder) holder).imgPhoto, partner.getPicture());
+            boolean isFavorite = partner.getFavorite() > 0;
+            ((ViewHolder) holder).fabFavorite.setImageResource(isFavorite ? R.drawable.follow : R.drawable.unfollow);
             ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -119,10 +121,10 @@ public class PartnerAdapter extends RecyclerView.Adapter {
     }
 
     public void clearAndUpdateData(List<Partner> partners) {
-        if (this.partners != null && this.partners.size() > 0){
+        if (this.partners != null && this.partners.size() > 0) {
             clear();
         }
-        if(this.partners != null){
+        if (this.partners != null) {
             this.partners.addAll(partners);
 
         }

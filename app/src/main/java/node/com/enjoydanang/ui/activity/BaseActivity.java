@@ -32,6 +32,7 @@ import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.module.AppClient;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.helper.FragmentHelper;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NetworkStatus;
@@ -127,6 +128,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
 
 
+    }
+
+    protected void redirectMain(){
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     @Override
@@ -412,6 +417,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             ActionBar actionBar = getSupportActionBar();
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setPadding(0, getStatusBarHeight(), 0, 0);
         }
     }
 

@@ -2,12 +2,14 @@ package node.com.enjoydanang.utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.widget.EditText;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
 
+import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
@@ -116,12 +118,12 @@ public class Utils {
     }
 
     public static <T> boolean isResponseError(Repository<T> repository) {
-        return StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_SUCCESS) ||
+        return StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_FAILURE) ||
                 StringUtils.endsWithIgnoreCase(repository.getStatus(), Constant.MSG_WARNING);
     }
 
-    public static String reFormatYoutubeUrl(int width, int height, String url){
-        if(StringUtils.isNotBlank(url)){
+    public static String reFormatYoutubeUrl(int width, int height, String url) {
+        if (StringUtils.isNotBlank(url)) {
             return String.format(Locale.getDefault(), Constant.EMBEB_YOUTUBE_FORMAT, width, height, url);
         }
         return StringUtils.EMPTY;
@@ -134,6 +136,44 @@ public class Utils {
                 + "?&theme=dark&autohide=2&modestbranding=1&showinfo=0&autoplay=1\fs=0\" frameborder=\"0\" "
                 + "allowfullscreen autobuffer " + "controls onclick=\"this.play()\">\n" + "</iframe>\n";
         return html;
+    }
+
+    /**
+     * @param context Context
+     * @param type {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
+     * @param title Title dialog
+     * @param msg Message want to display
+     */
+    public static void showDialog(Context context, int type, String title, String msg) {
+        new PromptDialog(context)
+                .setDialogType(type)
+                .setAnimationEnable(true)
+                .setTitleText(title)
+                .setContentText(msg)
+                .setPositiveListener(getString(android.R.string.ok), new PromptDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(PromptDialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+    public static void clearForm(EditText... editTexts){
+        for(EditText editText : editTexts){
+            if (editText != null) {
+                editText.setText(StringUtils.EMPTY);
+            }
+        }
+    }
+
+    public static int getStatusBarHeight() {
+        Context context = GlobalApplication.getGlobalApplicationContext();
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
 }

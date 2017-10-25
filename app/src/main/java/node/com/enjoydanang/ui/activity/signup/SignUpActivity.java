@@ -2,24 +2,22 @@ package node.com.enjoydanang.ui.activity.signup;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.utils.ValidUtils;
 
 /**
  * Author: Tavv
@@ -34,9 +32,6 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
-    @BindView(R.id.lrlSignIn)
-    LinearLayout lrlSign;
-
     @BindView(R.id.edtUserName)
     EditText edtUserName;
     @BindView(R.id.edtEmail)
@@ -48,7 +43,8 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @BindView(R.id.edtFullName)
     EditText edtFullName;
 
-    private TextView txtSignAction;
+    private ValidUtils validator;
+
 
     @Override
     protected SignUpPresenter createPresenter() {
@@ -57,12 +53,12 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void setContentView() {
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_sign_up_v2);
     }
 
     @Override
     public void init() {
-        txtSignAction = (TextView) lrlSign.findViewById(R.id.txtSignAction);
+        validator = new ValidUtils();
     }
 
     @Override
@@ -72,32 +68,19 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void setValue(Bundle savedInstanceState) {
-        txtSignAction.setText(getResources().getString(R.string.sign_up));
         initToolbar(toolbar);
-        toolbar.getBackground().setAlpha(0);
-        setTitle(getResources().getString(R.string.sign_up));
+        setTitle(getResources().getString(R.string.sign_up).toUpperCase());
     }
 
-    @OnClick({R.id.lrlSignIn, R.id.txtBackToSignIn})
+    @OnClick({R.id.txtBackToSignIn, R.id.btnSignUp})
     public void onClickListener(View view) {
         switch (view.getId()) {
-            case R.id.lrlSignIn:
-                String userName = edtUserName.getText().toString();
-                String pwd = edtPassWord.getText().toString();
-                if (!isValidBeforeSubmit(userName, pwd)) {
-                    String email = edtEmail.getText().toString();
-                    String phoneNum = edtPhoneNum.getText().toString();
-                    String fullName = edtFullName.getText().toString();
-                    UserInfo userInfo = new UserInfo(userName, pwd, email, fullName, phoneNum);
-                    showLoading();
-                    mvpPresenter.normalRegister(userInfo);
-                } else {
-                    Toast.makeText(mActivity, Utils.getString(R.string.user_or_pwd_not_empty), Toast.LENGTH_SHORT).show();
-                }
-                break;
             case R.id.txtBackToSignIn:
                 finish();
                 overridePendingTransitionExit();
+                break;
+            case R.id.btnSignUp:
+                register();
                 break;
         }
     }
@@ -130,17 +113,57 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
         overridePendingTransitionExit();
     }
 
-    private boolean isValidBeforeSubmit(String userName, String pwd) {
+    private boolean isUserNameAndPwdInValid(String userName, String pwd) {
         return StringUtils.isBlank(userName) || StringUtils.isBlank(pwd);
     }
 
     @Override
     public void onRegisterSuccess(Repository<UserInfo> resultCallBack) {
-        Log.i(TAG, "onRegisterSuccess " + resultCallBack);
+        if (Utils.isNotEmptyContent(resultCallBack)) {
+            UserInfo userInfo = resultCallBack.getData().get(0);
+            GlobalApplication.setUserInfo(userInfo);
+            clearFormAfterSuccess();
+            redirectMain();
+        }
     }
 
     @Override
     public void onRegisterFailure(AppError error) {
-        Log.i(TAG, "onRegisterFailure " + error.getMessage());
+        Utils.showDialog(this, 1, Utils.getString(R.string.sign_up), error.getMessage());
     }
+
+    private void register() {
+        String userName = edtUserName.getText().toString();
+        String pwd = edtPassWord.getText().toString();
+        String email = edtEmail.getText().toString();
+        String fullName = edtFullName.getText().toString();
+        String strError = getStrErrorInValid(userName, pwd, email, fullName);
+        if (StringUtils.isEmpty(strError)) {
+            String phoneNum = edtPhoneNum.getText().toString();
+            UserInfo userInfo = new UserInfo(userName, pwd, email, fullName, phoneNum);
+            showLoading();
+            mvpPresenter.normalRegister(userInfo);
+        } else {
+            Utils.showDialog(this, 1, "Validator", strError);
+        }
+    }
+
+    private String getStrErrorInValid(String userName, String pwd, String email, String fullName) {
+        if (isUserNameAndPwdInValid(userName, pwd)) {
+            return Utils.getString(R.string.user_or_pwd_not_empty);
+        }
+        if (!validator.isValidEmail(email)) {
+            return Utils.getString(R.string.email_invalid);
+        }
+        if(StringUtils.isEmpty(fullName)){
+            return Utils.getString(R.string.full_name_empty);
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private void clearFormAfterSuccess(){
+        Utils.clearForm(edtUserName, edtPassWord, edtFullName, edtEmail, edtPhoneNum);
+    }
+
+
 }

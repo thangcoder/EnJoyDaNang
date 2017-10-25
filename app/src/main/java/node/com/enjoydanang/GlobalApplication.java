@@ -34,7 +34,7 @@ public class GlobalApplication extends Application {
     private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
     public JSONObject jsLanguage;
-    private UserInfo userInfo;
+    private static UserInfo userInfo;
 
     @Override
     public void onCreate() {
@@ -101,11 +101,11 @@ public class GlobalApplication extends Application {
         this.jsLanguage = jsLanguage;
     }
 
-    public UserInfo getUserInfo() {
+    public static UserInfo getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public static void setUserInfo(UserInfo userInfo) {
+        GlobalApplication.userInfo = userInfo;
     }
 }

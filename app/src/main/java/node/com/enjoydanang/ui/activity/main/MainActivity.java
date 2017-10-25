@@ -4,7 +4,6 @@ import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
@@ -34,22 +35,26 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    DrawerLayout mDrawer;
     @BindView(R.id.left_drawer)
-    NavigationView navigationView;
+    NavigationView mNavigationView;
     @BindView(R.id.img_home)
     ImageView imgHome;
-    @BindView(R.id.tv_home)
-    TextView tvHome;
+
+    @BindView(R.id.container_fragment)
+    FrameLayout frlContainer;
 
     @BindView(R.id.img_search)
     ImageView imgSearch;
 
     @BindView(R.id.img_profile)
     ImageView imgProfile;
-    @BindView(R.id.tv_profile)
-    TextView tvProfile;
 
+    private CircleImageView imgAvatarUser;
+
+    private TextView txtFullName;
+
+    private TextView txtEmail;
 
     private HomeTab currentTab;
 
@@ -59,23 +64,18 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public void init() {
-        setSupportActionBar(toolbar);
+        initToolbar(toolbar);
         setToolbar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+        mNavigationView.setNavigationItemSelectedListener(this);
         currentTab = HomeTab.getCurrentTab(0);
         setStateTabSelected();
 
+        mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         requestCodeQRCodePermissions();
     }
 
@@ -84,11 +84,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         super.onResume();
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
+
     }
 
     @Override
     public void bindViews() {
         ButterKnife.bind(this);
+        View headerLayout = mNavigationView.getHeaderView(0);
+        imgAvatarUser = (CircleImageView) headerLayout.findViewById(R.id.imgAvatarUser);
+        txtFullName = (TextView) headerLayout.findViewById(R.id.txtFullName);
+        txtEmail = (TextView) headerLayout.findViewById(R.id.txtEmail);
+
     }
 
     @Override
@@ -183,6 +189,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
             case R.id.menu_scan:
                 break;
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -193,22 +202,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                tvHome.setTextColor(ContextCompat.getColor(this, R.color.tab_select));
-                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.black));
-                tvHome.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                tvProfile.setTextColor(ContextCompat.getColor(this, R.color.tab_select));
-                tvHome.setTextColor(ContextCompat.getColor(this, R.color.black));
                 break;
             default:
                 break;
@@ -237,5 +240,4 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
         }
     }
-
 }

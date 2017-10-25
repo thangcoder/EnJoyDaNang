@@ -81,7 +81,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListHome")
-    Observable<Repository<Partner>> getListPartnerHome(@Field("customerId") int customerId);
+    Observable<Repository<Partner>> getListPartnerHome(@Field("customerId") long customerId);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Slider")

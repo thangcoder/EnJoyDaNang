@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ import node.com.enjoydanang.ui.fragment.personal.PersonalFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView,AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
 
     @BindView(R.id.toolbar)
@@ -104,7 +105,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void setEvent() {
-
+        lvDrawerNav.setOnItemClickListener(this);
     }
 
     @Override
@@ -232,5 +233,32 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private void replaceFr(String fragmentTag){
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (i) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                replaceFr(PersonalFragment.class.getName());
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
     }
 }

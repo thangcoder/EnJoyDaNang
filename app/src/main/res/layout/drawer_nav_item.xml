@@ -8,6 +8,8 @@
     android:paddingBottom="@dimen/_4sdp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_4sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -22,7 +24,7 @@
             android:layout_gravity="center"
             android:textSize="@dimen/_12ssp"
             android:textColor="@color/black"
-            android:id="@+id/txt_item_title"
+            android:id="@+id/txt_normal_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_16sdp"
@@ -30,6 +32,8 @@
             android:text="item title" />
     </LinearLayout>
     <View
+        android:background="@color/boder"
+        android:layout_marginLeft="@dimen/_20sdp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_1sdp"/>
     </LinearLayout>

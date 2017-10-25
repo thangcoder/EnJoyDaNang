@@ -112,8 +112,21 @@
         <item>Favorite</item>
         <item>Log Check-in</item>
         <item>PERSIONAL</item>
+        <item>Change Profile</item>
         <item>Change Password</item>
         <item>Log out</item>
     </string-array>
+
+    <array name="imgs">
+        <item>@drawable/ic_introduction</item>
+        <item>@drawable/ic_introduction</item>
+        <item>@drawable/ic_contact</item>
+        <item>@drawable/ic_favorite</item>
+        <item>@drawable/ic_log_checkin</item>
+        <item>@drawable/ic_log_checkin</item>
+        <item>@drawable/ic_profile</item>
+        <item>@drawable/ic_change_password</item>
+        <item>@drawable/ic_logout</item>
+    </array>
 
 </resources>

@@ -79,7 +79,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
 
             @Override
             public void onSuccess(Repository<Category> data) {
-                mvpView.hideLoading();
+//                mvpView.hideLoading();
                 if (Utils.isNotEmptyContent(data)) {
                     mvpView.onGetCategorySuccess(data.getData());
                 }
@@ -88,7 +88,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
+//                mvpView.hideLoading();
                 mvpView.onGetCategoryFailure(new AppError(new Throwable(msg)));
             }
 
@@ -99,19 +99,17 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         });
     }
 
-    void getPartnerByCategory(int categoryId, int page) {
-        addSubscription(apiStores.getPartnerByCategoryId(categoryId, page), new ApiCallback<Repository<Partner>>() {
+    void getPartnerByCategory(int categoryId, int page, long userId) {
+        addSubscription(apiStores.getPartnerByCategoryId(categoryId, page, userId), new ApiCallback<Repository<Partner>>() {
 
             @Override
             public void onSuccess(Repository<Partner> data) {
-                mvpView.hideLoading();
                 mvpView.onGetPartnerByCategorySuccess(data);
 
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onGetPartnerByCategoryFailure(new AppError(new Throwable(msg)));
             }
 
@@ -174,7 +172,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
 
             @Override
             public void onSuccess(Repository<Partner> model) {
-                mvpView.hideLoading();
+//                mvpView.hideLoading();
                 if(Utils.isNotEmptyContent(model)){
                     mvpView.onGetPartnerSuccess(model.getData());
                 }else{
@@ -185,6 +183,30 @@ public class HomePresenter extends BasePresenter<iHomeView> {
             @Override
             public void onFailure(String msg) {
                 mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
+    void addFavorite(long userId, int partnerId){
+        addSubscription(apiStores.addFavorite(userId, partnerId), new ApiCallback<Repository>(){
+
+            @Override
+            public void onSuccess(Repository model) {
+                if (Utils.isResponseError(model)){
+                    mvpView.addFavoriteFailure(new AppError(new Throwable(model.getMessage())));
+                    return;
+                }
+                mvpView.addFavoriteSuccess();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.addFavoriteFailure(new AppError(new Throwable(msg)));
             }
 
             @Override

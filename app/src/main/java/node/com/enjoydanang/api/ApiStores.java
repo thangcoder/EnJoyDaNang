@@ -5,6 +5,7 @@ import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.ExchangeRate;
+import node.com.enjoydanang.model.Favorite;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
@@ -62,7 +63,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListByCategory")
-    Observable<Repository<Partner>> getPartnerByCategoryId(@Field("id") int id, @Field("page") int page);
+    Observable<Repository<Partner>> getPartnerByCategoryId(@Field("categoryId") int categoryId, @Field("page") int page, @Field("customerId") long userId);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
@@ -95,7 +96,17 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Schedule")
     Observable<Repository<Schedule>> getScheduleByPartnerId(@Field("id") int partnerId);
-    
+
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/Favorite")
+    Observable<Repository<Favorite>> getFavoriteByUserId(@Field("customerId") long userId);
+
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/ApplyFavorite")
+    Observable<Repository> addFavorite(@Field("customerId") long userId, @Field("partnerId") long partnerId);
+
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

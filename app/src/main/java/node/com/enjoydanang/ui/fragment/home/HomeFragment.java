@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+
+import com.google.android.gms.common.api.Api;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -23,12 +26,16 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
@@ -38,10 +45,17 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 import node.com.enjoydanang.utils.helper.VerticalSpaceItemDecoration;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 
+import static com.kakao.auth.StringSet.api;
 import static node.com.enjoydanang.R.id.fabFavorite;
+import static node.com.enjoydanang.R.id.mapView;
 
 /**
  * Created by chien on 10/8/17.
@@ -49,7 +63,7 @@ import static node.com.enjoydanang.R.id.fabFavorite;
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final int VERTICAL_ITEM_SPACE = 48;
+    private static final int VERTICAL_ITEM_SPACE = 50;
 
     @BindView(R.id.rcv_partner)
     RecyclerView rcvPartner;
@@ -81,10 +95,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private int currentPage;
 
     private List<Partner> lstPartner;
+    private List<Partner> lstPartnerByCategory;
     private List<Category> lstCategories;
+
 
     private PartnerAdapter mPartnerAdapter;
     private boolean hasLoadmore;
+
+    private int countCategoryClick = 0;
 
     private LinearLayoutManager mLayoutManager;
 
@@ -112,13 +130,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
         mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
         lstPartner = new ArrayList<>();
+        lstPartnerByCategory = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
-        rcvPartner.setHasFixedSize(false);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
                 new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
+        rcvPartner.setHasFixedSize(false);
         rcvPartner.setNestedScrollingEnabled(false);
 
         lstCategories = new ArrayList<>();
@@ -180,7 +199,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             rcvPartner.setVisibility(View.GONE);
             return;
         }
-        updateItemAdapter(partners);
+        updateItemNoLoadmore(partners);
     }
 
     @Override
@@ -201,17 +220,19 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onGetPartnerByCategorySuccess(Repository<Partner> data) {
+        hideLoading();
         if (!Utils.isNotEmptyContent(data) && !hasLoadmore) {
             mPartnerAdapter.clearAndUpdateData(Collections.EMPTY_LIST);
             rcvPartner.setVisibility(View.GONE);
         } else {
-            mPartnerAdapter.clearAndUpdateData(data.getData());
+            updateItemAdapter(data.getData());
             rcvPartner.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onGetPartnerByCategoryFailure(AppError error) {
+        hideLoading();
         Log.e(TAG, "onGetPartnerByCategoryFailure: " + error.getMessage());
     }
 
@@ -249,29 +270,46 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void updateItemAdapter(@NonNull List<Partner> partners) {
+        if (countCategoryClick == 1 && !hasLoadmore) {
+            clearFirstTimeData();
+            lstPartner.addAll(partners);
+            mPartnerAdapter.notifyItemRangeChanged(0, partners.size());
+        } else {
+            int newSize = partners.size();
+            int oldSize = lstPartner.size();
+            lstPartner.addAll(partners);
+            mPartnerAdapter.notifyItemRangeChanged(0, newSize + oldSize);
+        }
+        mPartnerAdapter.notifyDataSetChanged();
+
+    }
+
+    private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
         int newSize = partners.size();
-        int oldSize = lstPartner.size();
         lstPartner.addAll(partners);
-        mPartnerAdapter.notifyItemRangeChanged(0, newSize + oldSize);
+        mPartnerAdapter.notifyItemRangeChanged(0, newSize);
         mPartnerAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        countCategoryClick++;
+        lstPartner.clear();
         Category category = (Category) parent.getItemAtPosition(position);
         if (category != null) {
-            showLoading();
             for (int i = 0; i < gridView.getCount(); i++) {
-                View v = gridView.getChildAt(i);
+                View childView = gridView.getChildAt(i);
+                TextView txtName = (TextView) childView.findViewById(R.id.tv_name);
                 if (i == position) {
-                    v.setBackgroundResource(R.drawable.border_item_selected);
+                    txtName.setTextColor(Utils.getColorRes(R.color.color_category_selected));
                 } else {
-                    v.setBackgroundResource(R.drawable.border_item_default);
+                    txtName.setTextColor(Utils.getColorRes(R.color.color_title_category));
                 }
             }
+            showLoading();
             loadmorePartner.setCategoryId(category.getId());
             hasLoadmore = false;
-            mvpPresenter.getPartnerByCategory(category.getId(), startPage);
+            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId() == -1 ? 0 : user.getUserId());
             bannerSlider.setVisibility(View.GONE);
         }
     }
@@ -298,15 +336,23 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private void onRetryGetPartner(int page, int categoryId) {
         if (categoryId != -1) {
-            mvpPresenter.getPartnerByCategory(categoryId, page);
+            mvpPresenter.getPartnerByCategory(categoryId, page, user.getUserId() == -1 ? 0 : user.getUserId());
         }
     }
 
     @Override
     public void onClick(View view, final int position) {
         if (view.getId() == fabFavorite) {
-            FloatingActionButton fabFavorite = (FloatingActionButton) view;
-            //TODO : call apply favorite
+            if (user.getUserId() != -1) {
+                FloatingActionButton fabFavorite = (FloatingActionButton) view;
+                mvpPresenter.addFavorite(user.getUserId(), lstPartner.get(position).getId());
+                boolean isFavorite = lstPartner.get(position).getFavorite() > 0;
+                fabFavorite.setImageResource(isFavorite ? R.drawable.unfollow : R.drawable.follow);
+                lstPartner.get(position).setFavorite(isFavorite ? 0 : 1);
+            } else {
+                Utils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
+            }
+
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -318,5 +364,24 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
         }
     }
+
+    @Override
+    public void addFavoriteSuccess() {
+    }
+
+    @Override
+    public void addFavoriteFailure(AppError error) {
+        Log.e(TAG, "onError: " + error.getMessage());
+        Utils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+    }
+
+    private void clearFirstTimeData() {
+        if (CollectionUtils.isNotEmpty(lstPartner)) {
+            int size = this.lstPartner.size();
+            lstPartner.clear();
+            mPartnerAdapter.notifyItemRangeChanged(0, size);
+        }
+    }
+
 
 }

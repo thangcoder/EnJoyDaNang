@@ -22,7 +22,7 @@ public abstract class EndlessParentScrollListener implements NestedScrollView.On
     private int startingPageIndex = 0;
     // The minimum amount of pixels to have below your current scroll position
     // before loading more.
-    private int visibleThresholdDistance = 300;
+    private int visibleThresholdDistance = 500;
 
     RecyclerView.LayoutManager mLayoutManager;
 

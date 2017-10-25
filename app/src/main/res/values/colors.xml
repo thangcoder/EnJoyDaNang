@@ -97,6 +97,7 @@
 
     <color name="cyan_category">#6bcbca</color>
 
+    <color name="color_category_selected">#ebb800</color>
 
     <color name="statusBarColor">@color/blue</color>
     <color name="navigationBarColor">@android:color/black</color>

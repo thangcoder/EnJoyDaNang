@@ -19,14 +19,14 @@
             android:orientation="vertical">
 
             <GridView
+                android:layout_marginTop="10dp"
                 android:id="@+id/grv_menu"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
-                android:layout_marginBottom="@dimen/_minus8sdp"
                 android:background="@color/white"
-                android:columnWidth="@dimen/_90sdp"
                 android:gravity="center"
                 android:horizontalSpacing="@dimen/_1sdp"
+                android:minHeight="@dimen/_16sdp"
                 android:numColumns="4"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="@dimen/_1sdp" />
@@ -35,13 +35,12 @@
                 android:id="@+id/view_below"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
-                android:layout_marginTop="@dimen/_7sdp"
                 android:background="@color/fifty_percent_transparency_grey_400" />
 
             <ss.com.bannerslider.views.BannerSlider
                 android:id="@+id/carouselView"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="180dp"
                 android:layout_marginBottom="@dimen/_3sdp"
                 android:paddingLeft="@dimen/_5sdp"
                 android:paddingRight="@dimen/_5sdp"
@@ -55,6 +54,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcv_partner"
+                android:background="@color/material_blueGrey_200"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:descendantFocusability="blocksDescendants"

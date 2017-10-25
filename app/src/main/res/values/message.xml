@@ -9,4 +9,6 @@
 
     <string name="full_name_empty">Full name not be empty!</string>
 
+    <string name="must_login">You must login !</string>
+
 </resources>

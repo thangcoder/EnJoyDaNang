@@ -126,7 +126,6 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         }
         if (this.partners != null) {
             this.partners.addAll(partners);
-
         }
         notifyDataSetChanged();
     }

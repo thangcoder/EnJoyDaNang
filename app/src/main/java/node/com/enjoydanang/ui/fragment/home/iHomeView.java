@@ -41,4 +41,8 @@ public interface iHomeView  extends iBaseView {
 
     void onFetchExchangeRateFailure(AppError error);
 
+    void addFavoriteSuccess();
+
+    void addFavoriteFailure(AppError error);
+
 }

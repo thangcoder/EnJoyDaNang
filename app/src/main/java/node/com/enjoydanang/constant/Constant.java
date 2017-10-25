@@ -41,4 +41,11 @@ public class Constant {
     public static final String FILE_NAME_LANGUAGE = "language.json";
 
     public static String EMBEB_YOUTUBE_FORMAT = "<html><body><iframe width=\"%d\" height=\"%d\" src=\"%s\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+
+    public static final String TITLE_ERROR = "Error";
+
+    public static final String TITLE_WARNING = "Warning";
+
+    public static final String TITLE_SUCCESS = "Success";
+
 }

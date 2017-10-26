@@ -7,9 +7,9 @@
 
 
     <android.support.v7.widget.RecyclerView
+        android:paddingTop="@dimen/_10sdp"
         android:id="@+id/rcvFavorite"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/material_blueGrey_700" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

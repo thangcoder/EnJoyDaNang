@@ -2,8 +2,6 @@ package node.com.enjoydanang.ui.activity.main;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.media.Image;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,8 @@ import node.com.enjoydanang.R;
  */
 
 public class DrawerAdapter extends BaseAdapter {
+    private static final String TAG = DrawerAdapter.class.getSimpleName();
+    private final int[] CATEGORY_INDEX = new int[]{0, 5};
 
     private LayoutInflater mInflater;
     private Context context;
@@ -58,67 +58,20 @@ public class DrawerAdapter extends BaseAdapter {
         //== inflate views
         TypedArray imgs = context.getResources().obtainTypedArray(R.array.imgs);
         ItemType type = getItemType(i);
-//        if (view == null) {
-//            holder = new NormalItemHolder();
-//            switch (type) {
-//                case Group:
-//                    view = mInflater.inflate(R.layout.drawer_nav_item_group, viewGroup, false);
-//                    holder.txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
-//
-//                    break;
-//                case Normal:
-//                    view = mInflater.inflate(R.layout.drawer_nav_item, viewGroup, false);
-//                    holder.txtNormal = (TextView) view.findViewById(R.id.txt_normal_title);
-//                    holder.image = (ImageView) view.findViewById(R.id.img_icon);
-//                    break;
-//            }
-//            view.setTag(holder);
-//        } else {
-//            holder = (NormalItemHolder) view.getTag();
-//        }
-//        switch (type) {
-//            case Group:
-//                holder.txtTitle.setText(context.getResources().getStringArray(R.array.item_menu)[i]);
-//                break;
-//            case Normal:
-//                holder.txtNormal.setText(context.getResources().getStringArray(R.array.item_menu)[i]);
-//                holder.image.setImageResource(imgs.getResourceId(i, -1));
-//                break;
-//            default:
-//                break;
-//        }
-        Log.d("CHENG", "getView: "+context.getResources().getStringArray(R.array.item_menu)[i]);
-
+        String[] titles = context.getResources().getStringArray(R.array.item_menu);
         switch (type) {
             case Group:
-//                GroupItemHolder groupItemHolder = null;
-//                View v = view;
-//                if (view == null) {
-//                    groupItemHolder = new GroupItemHolder();
-                    view = mInflater.inflate(R.layout.drawer_nav_item_group, viewGroup, false);
-                    TextView txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
-//                    groupItemHolder.txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
-//                    view.setTag(groupItemHolder);
-//                }else {
-//                    groupItemHolder = (GroupItemHolder) view.getTag();
-//                }
-//                groupItemHolder.txtTitle.setText(context.getResources().getStringArray(R.array.item_menu)[i]);
-                txtTitle.setText(context.getResources().getStringArray(R.array.item_menu)[i]);
+                view = mInflater.inflate(R.layout.drawer_nav_item_group, viewGroup, false);
+                TextView txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
+                txtTitle.setText(titles[i]);
                 return view;
             case Normal:
-//                NormalItemHolder normalItemHolder = null;
-//                if (view == null) {
-//                    normalItemHolder = new NormalItemHolder();
-                    view = mInflater.inflate(R.layout.drawer_nav_item, viewGroup, false);
-//                    normalItemHolder.txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
-//                    normalItemHoldenormalItemHolder.txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
-                        TextView txtTitleNormal = (TextView) view.findViewById(R.id.txt_normal_title);
-                     ImageView image = (ImageView) view.findViewById(R.id.img_icon);
-//                    view.setTag(normalItemHolder);
-//                }else {
-//                    normalItemHolder = (NormalItemHolder) view.getTag();
-//                }
-                txtTitleNormal.setText(context.getResources().getStringArray(R.array.item_menu)[i]);
+                view = mInflater.inflate(R.layout.drawer_nav_item, viewGroup, false);
+                TextView txtTitleNormal = (TextView) view.findViewById(R.id.txt_normal_title);
+                ImageView image = (ImageView) view.findViewById(R.id.img_icon);
+                View span = (View) view.findViewById(R.id.span);
+                hideSpan(span, i, titles);
+                txtTitleNormal.setText(titles[i]);
                 image.setImageResource(imgs.getResourceId(i, -1));
                 return view;
         }
@@ -130,7 +83,7 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     private static class NormalItemHolder {
-        TextView txtTitle,txtNormal;
+        TextView txtTitle, txtNormal;
         ImageView image;
     }
 
@@ -145,6 +98,16 @@ public class DrawerAdapter extends BaseAdapter {
                 return ItemType.Group;
             default:
                 return ItemType.Normal;
+        }
+    }
+
+    private void hideSpan(View span, int position, String[] titles) {
+        if (span != null) {
+            for (int i = 0; i < CATEGORY_INDEX.length; i++) {
+                if((CATEGORY_INDEX[i]> 0 && position == CATEGORY_INDEX[i] - 1) || position == titles.length - 1){
+                    span.setVisibility(View.INVISIBLE);
+                }
+            }
         }
     }
 }

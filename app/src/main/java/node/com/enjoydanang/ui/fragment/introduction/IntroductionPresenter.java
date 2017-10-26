@@ -3,8 +3,9 @@ package node.com.enjoydanang.ui.fragment.introduction;
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
-import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.Introduction;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -26,13 +27,17 @@ public class IntroductionPresenter extends BasePresenter<IntroductionView>{
 
             @Override
             public void onSuccess(Repository<Introduction> data) {
-                mvpView.hideLoading();
-                mvpView.onGetIntroductionSuccess(data);
+                if (Utils.isResponseError(data)) {
+                    mvpView.onLoadFailure(new AppError(new Throwable(data.getMessage())));
+                    return;
+                }
+                if(Utils.isNotEmptyContent(data)){
+                    mvpView.onGetIntroductionSuccess(data.getData().get(0));
+                }
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onLoadFailure(new AppError(new Throwable(msg)));
             }
 

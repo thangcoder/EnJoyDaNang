@@ -21,6 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
+            android:background="@color/white"
+            android:choiceMode="singleChoice"
+            android:listSelector="@drawable/drawer_list_selection"
             android:dividerHeight="0dp" />
     </LinearLayout>
 </android.support.design.widget.NavigationView>

@@ -35,21 +35,12 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext.deps = [
-        //AppCompat
-        appcompat          : 'com.android.support:appcompat-v7:25.0.1',
 
 
-        recyclerView       : 'com.android.support:recyclerview-v7:25.0.1',
-        cardView           : 'com.android.support:cardview-v7:23.3.0',
-        design             : 'com.android.support:design:25.0.1',
         // RxJava
         rxjava             : 'io.reactivex:rxjava:1.2.0',
         rxandroid          : 'io.reactivex:rxandroid:1.2.1',
 
-        // Dagger
-//        dagger             : 'com.google.dagger:dagger:2.4',
-//        daggercompiler     : 'com.google.dagger:dagger-compiler:2.4',
-//        daggerprovided     : 'javax.annotation:jsr250-api:1.0',
 
         // Unit test dependencies
         retrofit           : 'com.squareup.retrofit2:retrofit:2.3.0',
@@ -76,8 +67,6 @@ ext.deps = [
         mutipledp          :'com.intuit.sdp:sdp-android:1.0.4',
 
         mutiplesp          :'com.intuit.ssp:ssp-android:1.0.4',
-        //Circle imageview
-        circle              :'de.hdodenhof:circleimageview:2.1.0',
 
         //Round Image
         round_image       :'com.joooonho:selectableroundedimageview:1.0.1',

@@ -103,7 +103,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     @Override
     public void pushToServer(User user) {
         if(user != null){
-            //mLoginPresenter.loginViaSocial(user);
+            mLoginPresenter.loginViaSocial(user);
         }
     }
 

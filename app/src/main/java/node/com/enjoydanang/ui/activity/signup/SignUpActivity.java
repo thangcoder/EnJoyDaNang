@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.activity.signup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -16,6 +17,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 
@@ -76,7 +78,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     public void onClickListener(View view) {
         switch (view.getId()) {
             case R.id.txtBackToSignIn:
-                finish();
+                startActivity(new Intent(this, LoginActivity.class));
                 overridePendingTransitionExit();
                 break;
             case R.id.btnSignUp:

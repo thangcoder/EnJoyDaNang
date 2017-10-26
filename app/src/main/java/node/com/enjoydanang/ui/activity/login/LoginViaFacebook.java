@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -14,6 +13,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -51,6 +51,7 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
 
     @Override
     public void login() {
+        loginCallBack.hideWaiting();
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
             handleCallbackResult(accessToken);
@@ -90,6 +91,9 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
                 User user = toUserObject(response.getRawResponse());
                 user.setAccessToken(accessToken.getToken());
                 user.setType(LoginType.FACEBOOK);
+                if(StringUtils.isBlank(user.getEmail())){
+                    user.setEmail(StringUtils.EMPTY);
+                }
                 pushToServer(user);
             }
         });
@@ -109,7 +113,7 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     @Override
     public void pushToServer(User user) {
         if (user != null) {
-           // mLoginPresenter.loginViaSocial(user);
+            mLoginPresenter.loginViaSocial(user);
         }
     }
 

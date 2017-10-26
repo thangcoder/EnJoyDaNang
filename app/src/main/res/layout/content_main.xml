@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlMainContent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:weightSum="1">
 
     <FrameLayout
         android:id="@+id/container_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/frlBottomMenu"
         android:background="@color/white"
         android:visibility="visible" />
 
-    <include layout="@layout/include_bottom_menu" />
-</LinearLayout>
+    <include
+        android:id="@+id/frlBottomMenu"
+        layout="@layout/include_bottom_menu" />
+</RelativeLayout>

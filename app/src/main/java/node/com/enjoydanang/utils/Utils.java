@@ -13,6 +13,7 @@ import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.UserInfo;
 
 /**
  * Author: Tavv
@@ -183,4 +184,14 @@ public class Utils {
         return StringUtils.isNotEmpty(firstName) || StringUtils.isNotEmpty(lastName) ? (firstName.trim() + " " + lastName.trim()).trim() : StringUtils.EMPTY;
     }
 
+    public static String getImageNormalOrSocial(String url){
+        if(StringUtils.isNotEmpty(url) && url.matches(Constant.REGEX_URL)){
+            return url;
+        }
+        return StringUtils.isNotEmpty(url) ? Constant.URL_HOST_IMAGE + url : url;
+    }
+
+    public static UserInfo getUserInfo(){
+        return GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
+    }
 }

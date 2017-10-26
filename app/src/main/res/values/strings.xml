@@ -82,7 +82,7 @@
 
     <string name="detail_tab_name">Detail</string>
 
-    <string name="review_tab_name">Schedule &amp; Utility</string>
+    <string name="review_tab_name">Schedule</string>
 
     <string name="album_tab_name">Album</string>
 
@@ -105,7 +105,7 @@
 
     <string-array name="item_menu">
         <item>INFOMATION</item>
-        <item>Introduce</item>
+        <item>Introduction</item>
         <item>Contact Us</item>
         <item>Favorite</item>
         <item>Log Check-in</item>
@@ -128,8 +128,14 @@
     </array>
 
     <string name="Home_Screen_Title">HOME</string>
+    <string name="Favorite_Screen_Title">FAVORITE</string>
+    <string name="Contact_Screen_Title">CONTACT</string>
     <string name="Login_Screen_Title">LOGIN</string>
     <string name="Detail_Screen_Title">DETAIL</string>
+    <string name="Log_Check_Screen_Title">LOG CHECK-IN</string>
+    <string name="Change_Pwd_Screen_Title">CHANGE PASSWORD</string>
+    <string name="Update_Profile_Screen_Title">PROFILE</string>
+    <string name="Introduction_Screen_Title">Introduction</string>
 
     <string name="action_search">Search</string>
 
@@ -151,6 +157,14 @@
     <string name="pwd_hint">Password</string>
 
     <string name="continue_hint">Continue</string>
+
+    <string name="introduction_description">Find all the recent &amp; trending food recipe below</string>
+
+    <string name="contact_address_label">Address</string>
+
+    <string name="contact_email_label">Email</string>
+
+    <string name="contact_phone_label">Phone</string>
 
 </resources>
 

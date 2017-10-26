@@ -6,13 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Api;
-
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.ApiCallback;
@@ -23,11 +20,13 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Favorite;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.VerticalSpaceItemDecoration;
+import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Author: Tavv
@@ -37,12 +36,13 @@ import rx.schedulers.Schedulers;
  */
 
 public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements FavoriteView, OnItemClickListener {
+    private static final String TAG = FavoriteFragment.class.getSimpleName();
 
-    private static final int VERTICAL_ITEM_SPACE = 40;
+    private static final int VERTICAL_ITEM_SPACE = 5;
 
 
     @BindView(R.id.rcvFavorite)
-     RecyclerView rcvFavorite;
+    RecyclerView rcvFavorite;
 
     private UserInfo userInfo;
 
@@ -73,6 +73,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
         this.lstFavorites = lstFavorites;
         mAdapter = new FavoriteAdapter(lstFavorites, getContext(), this);
         rcvFavorite.setAdapter(mAdapter);
+        hideLoading();
     }
 
     @Override
@@ -88,10 +89,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
 
     @Override
     protected void init(View view) {
-        userInfo = GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
+        userInfo = Utils.getUserInfo();
+        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Favorite_Screen_Title));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rcvFavorite.addItemDecoration(
-                new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
+        rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvFavorite.setLayoutManager(layoutManager);
         rcvFavorite.setHasFixedSize(false);
     }
@@ -113,16 +114,16 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
 
     @Override
     public void onClick(View view, final int position) {
+        ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
         if (view.getId() == R.id.btnDelete) {
-            AppClient.getClient().create(ApiStores.class)
-                    .addFavorite(userInfo.getUserId(), lstFavorites.get(position).getId())
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
+            new CompositeSubscription().add(apiStores.addFavorite(userInfo.getUserId(), lstFavorites.get(position).getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
                         @Override
                         public void onSuccess(Repository model) {
-                            if(!Utils.isResponseError(model)){
-                                mAdapter.deleteItem(position);
+                            if (!Utils.isResponseError(model)) {
+                                mAdapter.removeAt(position);
                             }
                         }
 
@@ -135,9 +136,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                         public void onFinish() {
 
                         }
-                    });
-        }else {
-            // TODO: redirect to Detail fragment
+                    }));
+        } else {
+            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position).getId());
+            dialog.show(mFragmentManager, TAG);
         }
 
     }

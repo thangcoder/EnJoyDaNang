@@ -1,9 +1,8 @@
 package node.com.enjoydanang.ui.fragment.introduction;
 
-import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.Introduction;
-import node.com.enjoydanang.constant.AppError;
 
 /**
  * Author: Tavv
@@ -14,7 +13,7 @@ import node.com.enjoydanang.constant.AppError;
 
 public interface IntroductionView extends iBaseView {
 
-    void onGetIntroductionSuccess(Repository<Introduction> data);
+    void onGetIntroductionSuccess(Introduction introduction);
 
     void onLoadFailure(AppError error);
 }

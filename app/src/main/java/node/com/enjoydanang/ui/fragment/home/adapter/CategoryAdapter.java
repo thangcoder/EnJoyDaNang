@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -14,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -70,7 +70,7 @@ public class CategoryAdapter extends BaseAdapter {
         TextView tvName;
 
         @BindView(R.id.img_icon)
-        ImageView imgCategory;
+        CircleImageView imgCategory;
 
         Holder(View view) {
             ButterKnife.bind(this, view);

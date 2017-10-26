@@ -13,6 +13,8 @@ public class Constant {
 
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
+    public static String REGEX_URL = "((http)[s]?(://).*)";
+
     public static final String API_OK = "200";
     public static final String API_401 = "401";
     public static final String API_402 = "402";

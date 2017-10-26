@@ -99,8 +99,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         }
     }
 
-    public void deleteItem(int index) {
-        lstFavorites.remove(index);
-        notifyItemRemoved(index);
+    public void removeAt(int position) {
+        lstFavorites.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, lstFavorites.size());
     }
 }

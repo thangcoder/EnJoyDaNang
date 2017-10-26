@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.Manifest;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -26,8 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.ui.fragment.favorite.FavoriteFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
+import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import node.com.enjoydanang.ui.fragment.personal.PersonalFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -35,6 +38,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView,AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
+
+    private final int INTRODUCTION = 1;
+    private final int CONTACT_US = 2;
+    private final int FAVORITE = 3;
+    private final int LOG_CHECKIN = 4;
+    private final int CHANGE_PROFILE = 6;
+    private final int CHANGE_PASSWORD = 7;
+    private final int LOGOUT = 8;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -64,18 +75,43 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private TextView txtEmail;
 
     private HomeTab currentTab;
-    private DrawerAdapter drawerAdapter;
+
+    private DrawerLayout mDrawerLayout;
+
+    private CharSequence mTitle;
+
+    private CharSequence mDrawerTitle;
+
+    private String[] navMenuTitles;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
     }
 
+
     @Override
     public void init() {
         initToolbar(toolbar);
         setToolbar(toolbar);
+        navMenuTitles = getResources().getStringArray(R.array.item_menu);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                setTitle(mTitle);
+                //Setting, Refresh and Rate App
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                setTitle(mDrawerTitle);
+                invalidateOptionsMenu();
+            }
+        };
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
@@ -85,14 +121,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         requestCodeQRCodePermissions();
 
-        drawerAdapter = new DrawerAdapter(this);
+        DrawerAdapter drawerAdapter = new DrawerAdapter(this);
         lvDrawerNav.setAdapter(drawerAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        replaceFr(HomeFragment.class.getName());
+        replaceFr(HomeFragment.class.getName(), 0);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -101,6 +143,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         imgAvatarUser = (CircleImageView) mNavigationView.findViewById(R.id.imgAvatarUser);
         txtFullName = (TextView) mNavigationView.findViewById(R.id.txtFullName);
         txtEmail = (TextView) mNavigationView.findViewById(R.id.txtEmail);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
     }
 
@@ -121,9 +164,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -134,19 +176,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-//        switch (id){
-//            case R.id.history_check_in:
-//                break;
-//            case R.id.personal_info:
-//                replaceFr(PersonalFragment.class.getName());
-//                break;
-//            case R.id.nav_info:
-//                break;
-//            case R.id.change_pwd:
-//                break;
-//            case R.id.introduction:
-//                break;
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -248,35 +277,39 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
         }
     }
-    private void replaceFr(String fragmentTag){
+    private void replaceFr(String fragmentTag, int position){
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        lvDrawerNav.setItemChecked(position, true);
+        setTitle(navMenuTitles[position]);
         replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        switch (i) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (position) {
             case 0:
                 break;
-            case 1:
+            case INTRODUCTION:
+                replaceFr(IntroductionFragment.class.getName(), position);
                 break;
-            case 2:
+            case CONTACT_US:
                 break;
-            case 3:
+            case FAVORITE:
+                replaceFr(FavoriteFragment.class.getName(), position);
                 break;
-            case 4:
+            case LOG_CHECKIN:
                 break;
             case 5:
                 break;
-            case 6:
+            case CHANGE_PROFILE:
+                replaceFr(PersonalFragment.class.getName(), position);
                 break;
-            case 7:
-                replaceFr(PersonalFragment.class.getName());
+            case CHANGE_PASSWORD:
                 break;
-            case 8:
-                break;
-            case 9:
+            case LOGOUT:
                 break;
         }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
+
 }

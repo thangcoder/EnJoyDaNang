@@ -429,4 +429,8 @@
     <color name="material_textWhite_text">#ddffffff</color>
 
 
+    <color name="list_item_title">#fff</color>
+    <color name="list_background">#BABABA</color>
+    <color name="list_background_pressed">@color/material_orange_100</color>
+
 </resources>

@@ -26,18 +26,21 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
             @Override
             public void onSuccess(Repository<UserInfo> userInfo) {
+                if(Utils.isResponseError(userInfo)){
+                    mvpView.onLoginFailure(new AppError(new Throwable(userInfo.getMessage())));
+                    return;
+                }
                 mvpView.onLoginSuccess(userInfo);
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onLoginFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
             public void onFinish() {
-
+                mvpView.hideLoading();
             }
         });
     }
@@ -47,7 +50,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
             @Override
             public void onSuccess(Repository<UserInfo> userInfo) {
-                mvpView.hideLoading();
                 if (Utils.isResponseError(userInfo)) {
                     mvpView.onLoginFailure(new AppError(new Throwable(userInfo.getMessage())));
                     return;
@@ -57,13 +59,11 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onLoginFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
             public void onFinish() {
-
             }
         });
     }

@@ -18,7 +18,6 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.ui.fragment.schedule_utility.adapter.ScheduleAdapter;
-import node.com.enjoydanang.ui.fragment.schedule_utility.adapter.UtilityAdapter;
 
 /**
  * Author: Tavv
@@ -30,8 +29,8 @@ import node.com.enjoydanang.ui.fragment.schedule_utility.adapter.UtilityAdapter;
 public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresenter> implements ScheduleUtilityView {
     private static final String TAG = ScheduleUtilityFragment.class.getSimpleName();
 
-    @BindView(R.id.lvUtility)
-    ListView lvUtility;
+//    @BindView(R.id.lvUtility)
+//    ListView lvUtility;
     @BindView(R.id.lvSchedule)
     ListView lvSchedule;
 
@@ -73,7 +72,7 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
             int partnerId = bundle.getInt(TAG);
             showLoading();
             mvpPresenter.getSchedule(partnerId);
-            mvpPresenter.getUtility(partnerId);
+//            mvpPresenter.getUtility(partnerId);
         }
     }
 
@@ -99,9 +98,9 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
 
     @Override
     public void onFetchUtilitySuccess(List<Utility> utilities) {
-        setVisibleContent(true);
-        UtilityAdapter adapter = new UtilityAdapter(getContext(), utilities);
-        lvUtility.setAdapter(adapter);
+//        setVisibleContent(true);
+//        UtilityAdapter adapter = new UtilityAdapter(getContext(), utilities);
+//        lvUtility.setAdapter(adapter);
     }
 
     @Override

@@ -192,12 +192,14 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             UserInfo userInfo = resultCallBack.getData().get(0);
             GlobalApplication.setUserInfo(userInfo);
             Utils.clearForm(edtUserName, edtPassword);
+            hideLoading();
             redirectMain();
         }
     }
 
     @Override
     public void onLoginFailure(AppError error) {
+        hideLoading();
         Utils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
     }
 

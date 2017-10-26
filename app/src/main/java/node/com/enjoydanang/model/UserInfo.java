@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.Role;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -109,7 +109,7 @@ public class UserInfo {
     }
 
     public String getImage() {
-        return StringUtils.isNotBlank(image) ? Constant.URL_HOST_IMAGE + image : image;
+        return Utils.getImageNormalOrSocial(image);
     }
 
     public void setImage(String image) {

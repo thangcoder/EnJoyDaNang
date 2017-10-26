@@ -37,12 +37,13 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:layout_marginTop="@dimen/_4sdp"
                     android:id="@+id/txtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="15dp"
                     android:textColor="@color/material_grey_800"
-                    android:textSize="@dimen/_20sdp"
+                    android:textSize="@dimen/_16sdp"
                     android:textStyle="bold" />
 
                 <RatingBar
@@ -50,9 +51,9 @@
                     style="@style/RatingBar"
                     android:isIndicator="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_30sdp"
                     android:numStars="5"
-                    android:stepSize="0.5"
+                    android:stepSize="1"
                     android:theme="@style/RatingBar" />
 
 
@@ -79,11 +80,14 @@
                     android:layout_marginTop="5dp" />
 
                 <TextView
+                    android:paddingTop="@dimen/_15sdp"
                     android:id="@+id/txtContent"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
-                    android:scrollbars="vertical" />
+                     />
             </LinearLayout>
 
 

@@ -13,8 +13,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.Api;
-
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -23,19 +21,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
-import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
@@ -44,26 +38,20 @@ import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
-import node.com.enjoydanang.utils.helper.VerticalSpaceItemDecoration;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 
-import static com.kakao.auth.StringSet.api;
 import static node.com.enjoydanang.R.id.fabFavorite;
-import static node.com.enjoydanang.R.id.mapView;
 
 /**
  * Created by chien on 10/8/17.
+ *
  */
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final int VERTICAL_ITEM_SPACE = 50;
+    private static final int VERTICAL_ITEM_SPACE = 8;
 
     @BindView(R.id.rcv_partner)
     RecyclerView rcvPartner;
@@ -95,7 +83,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private int currentPage;
 
     private List<Partner> lstPartner;
-    private List<Partner> lstPartnerByCategory;
     private List<Category> lstCategories;
 
 
@@ -123,18 +110,17 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     protected void init(View view) {
-        user = GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
+        user = Utils.getUserInfo();
         /**
          * Init Data
          */
         mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
         mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
         lstPartner = new ArrayList<>();
-        lstPartnerByCategory = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
-                new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_700),VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
         rcvPartner.setHasFixedSize(false);
@@ -361,7 +347,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                     dialog.show(mFragmentManager, TAG);
                 }
             }, 50);
-
         }
     }
 
@@ -382,6 +367,4 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             mPartnerAdapter.notifyItemRangeChanged(0, size);
         }
     }
-
-
 }

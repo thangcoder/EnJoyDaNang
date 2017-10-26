@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -81,7 +80,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     @Override
     public void handleCallbackResult(GoogleSignInAccount signInAccount) {
         user = new User();
-        user.setId(signInAccount.getId());
+        //user.setId(signInAccount.getId());
         user.setEmail(signInAccount.getEmail());
         user.setFullName(signInAccount.getDisplayName());
         user.setFirstName(signInAccount.getFamilyName());
@@ -104,7 +103,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     @Override
     public void pushToServer(User user) {
         if(user != null){
-            mLoginPresenter.loginViaSocial(user);
+            //mLoginPresenter.loginViaSocial(user);
         }
     }
 

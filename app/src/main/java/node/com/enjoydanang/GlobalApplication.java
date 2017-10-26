@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Base64;
 import android.util.Log;
 
@@ -23,13 +25,14 @@ import java.security.NoSuchAlgorithmException;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class GlobalApplication extends Application {
+public class GlobalApplication extends MultiDexApplication {
     private static final String TAG = GlobalApplication.class.getSimpleName();
     private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
@@ -47,7 +50,11 @@ public class GlobalApplication extends Application {
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
     }
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     public static Activity getCurrentActivity() {
         return currentActivity;

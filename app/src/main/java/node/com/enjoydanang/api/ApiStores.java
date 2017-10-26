@@ -1,6 +1,7 @@
 package node.com.enjoydanang.api;
 
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.DetailPartner;
@@ -33,7 +34,9 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("AccountApi.asmx/SocialNetworkLogin")
-    Observable<Repository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") String userId, @Field("token") String accessToken, @Field("type") String type, @Field("image") String image);
+    Observable<Repository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") long userId, @Field("token") String token,
+                                                               @Field("type") LoginType type, @Field("image") String image,
+                                                               @Field("fullname") String fullname, @Field("email") String email);
 
 
     @FormUrlEncoded

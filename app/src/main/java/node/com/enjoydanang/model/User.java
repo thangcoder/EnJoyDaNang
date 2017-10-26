@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import node.com.enjoydanang.constant.LoginType;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -16,7 +17,7 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private long id;
 
     @SerializedName("name")
     @Expose
@@ -48,7 +49,7 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String fullName, Picture picture, String id, String email, String birthday, String gender, String accessToken, LoginType type) {
+    public User(String firstName, String lastName, String fullName, Picture picture, long id, String email, String birthday, String gender, String accessToken, LoginType type) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = fullName;
@@ -78,7 +79,7 @@ public class User {
     }
 
     public String getFullName() {
-        return fullName;
+        return Utils.getFullName(firstName, lastName, fullName);
     }
 
     public void setFullName(String fullName) {
@@ -93,11 +94,11 @@ public class User {
         this.picture = picture;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

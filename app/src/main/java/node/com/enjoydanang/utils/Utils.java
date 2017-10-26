@@ -140,9 +140,9 @@ public class Utils {
 
     /**
      * @param context Context
-     * @param type {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
-     * @param title Title dialog
-     * @param msg Message want to display
+     * @param type    {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
+     * @param title   Title dialog
+     * @param msg     Message want to display
      */
     public static void showDialog(Context context, int type, String title, String msg) {
         new PromptDialog(context)
@@ -158,8 +158,8 @@ public class Utils {
                 }).show();
     }
 
-    public static void clearForm(EditText... editTexts){
-        for(EditText editText : editTexts){
+    public static void clearForm(EditText... editTexts) {
+        for (EditText editText : editTexts) {
             if (editText != null) {
                 editText.setText(StringUtils.EMPTY);
             }
@@ -174,6 +174,13 @@ public class Utils {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static String getFullName(String firstName, String lastName, String fullName) {
+        if (StringUtils.isNotEmpty(fullName)) {
+            return fullName.trim();
+        }
+        return StringUtils.isNotEmpty(firstName) || StringUtils.isNotEmpty(lastName) ? (firstName.trim() + " " + lastName.trim()).trim() : StringUtils.EMPTY;
     }
 
 }

@@ -15,14 +15,14 @@ import node.com.enjoydanang.utils.Utils;
  * Version 1.0
  */
 
-public class LoginPresenter extends BasePresenter<LoginView>{
+public class LoginPresenter extends BasePresenter<LoginView> {
     public LoginPresenter(LoginView view) {
         super(view);
     }
 
-    void loginViaSocial(User user){
+    void loginViaSocial(User user) {
         addSubscription(apiStores.doSignOrRegisterViaSocial(user.getId(), user.getAccessToken(),
-                user.getType().toString(), user.getPicture().getData().getImage()), new ApiCallback<Repository<UserInfo>>(){
+                user.getType(), user.getPicture().getData().getImage(), user.getFullName(), user.getEmail()), new ApiCallback<Repository<UserInfo>>() {
 
             @Override
             public void onSuccess(Repository<UserInfo> userInfo) {
@@ -42,13 +42,13 @@ public class LoginPresenter extends BasePresenter<LoginView>{
         });
     }
 
-    void normalLogin(String userName, String password){
-        addSubscription(apiStores.normalLogin(userName, password), new ApiCallback<Repository<UserInfo>>(){
+    void normalLogin(String userName, String password) {
+        addSubscription(apiStores.normalLogin(userName, password), new ApiCallback<Repository<UserInfo>>() {
 
             @Override
             public void onSuccess(Repository<UserInfo> userInfo) {
                 mvpView.hideLoading();
-                if(Utils.isResponseError(userInfo)){
+                if (Utils.isResponseError(userInfo)) {
                     mvpView.onLoginFailure(new AppError(new Throwable(userInfo.getMessage())));
                     return;
                 }

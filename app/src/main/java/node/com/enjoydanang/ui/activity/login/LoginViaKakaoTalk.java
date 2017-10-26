@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ErrorCode;
@@ -76,7 +75,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     public void handleCallbackResult(UserProfile callback) {
         if (callback != null) {
             User user = new User();
-            user.setId(String.valueOf(callback.getId()));
+            user.setId(callback.getId());
             user.setFullName(callback.getNickname());
             Data data = new Data();
             data.setUrl(callback.getProfileImagePath());

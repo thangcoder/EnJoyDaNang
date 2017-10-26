@@ -11,8 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,10 +28,12 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
+import node.com.enjoydanang.ui.fragment.personal.PersonalFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView,AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
 
     @BindView(R.id.toolbar)
@@ -50,6 +54,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.img_profile)
     ImageView imgProfile;
 
+    @BindView(R.id.lv_drawer_nav)
+    ListView lvDrawerNav;
+
     private CircleImageView imgAvatarUser;
 
     private TextView txtFullName;
@@ -57,7 +64,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private TextView txtEmail;
 
     private HomeTab currentTab;
-
+    private DrawerAdapter drawerAdapter;
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -77,23 +84,23 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         requestCodeQRCodePermissions();
+
+        drawerAdapter = new DrawerAdapter(this);
+        lvDrawerNav.setAdapter(drawerAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        replaceFragment(R.id.container_fragment, HomeFragment.class.getName(), false, null, transitionInfo);
-
+        replaceFr(HomeFragment.class.getName());
     }
 
     @Override
     public void bindViews() {
         ButterKnife.bind(this);
-        View headerLayout = mNavigationView.getHeaderView(0);
-        imgAvatarUser = (CircleImageView) headerLayout.findViewById(R.id.imgAvatarUser);
-        txtFullName = (TextView) headerLayout.findViewById(R.id.txtFullName);
-        txtEmail = (TextView) headerLayout.findViewById(R.id.txtEmail);
+        imgAvatarUser = (CircleImageView) mNavigationView.findViewById(R.id.imgAvatarUser);
+        txtFullName = (TextView) mNavigationView.findViewById(R.id.txtFullName);
+        txtEmail = (TextView) mNavigationView.findViewById(R.id.txtEmail);
 
     }
 
@@ -104,7 +111,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void setEvent() {
-
+        lvDrawerNav.setOnItemClickListener(this);
     }
 
     @Override
@@ -127,18 +134,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_history) {
-
-        } else if (id == R.id.nav_info) {
-
-        } else if (id == R.id.nav_info) {
-
-        } else if (id == R.id.nav_setting) {
-
-        }
+//        switch (id){
+//            case R.id.history_check_in:
+//                break;
+//            case R.id.personal_info:
+//                replaceFr(PersonalFragment.class.getName());
+//                break;
+//            case R.id.nav_info:
+//                break;
+//            case R.id.change_pwd:
+//                break;
+//            case R.id.introduction:
+//                break;
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -238,6 +246,37 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(this, perms)) {
             EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
+        }
+    }
+    private void replaceFr(String fragmentTag){
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (i) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                replaceFr(PersonalFragment.class.getName());
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
         }
     }
 }

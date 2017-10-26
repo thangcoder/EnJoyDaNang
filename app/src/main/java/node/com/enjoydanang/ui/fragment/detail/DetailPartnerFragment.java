@@ -131,6 +131,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         Bundle bundle = getArguments();
         if (bundle != null) {
             int partnerId = bundle.getInt(TAG);
+            showLoading();
             mvpPresenter.getDetailPartner(partnerId);
             mvpPresenter.getSlideByPartnerId(partnerId);
         }
@@ -176,6 +177,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
             loadVideo(detailPartner.getVideo());
         }
+        hideLoading();
     }
 
     @Override

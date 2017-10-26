@@ -29,19 +29,16 @@ public class DetailPartnerPresenter extends BasePresenter<iDetailPartnerView> {
 
             @Override
             public void onSuccess(Repository<DetailPartner> model) {
-                mvpView.hideLoading();
                 mvpView.onFetchDetailPartnerSuccess(model);
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onFetchFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
             public void onFinish() {
-
             }
         });
     }
@@ -52,7 +49,6 @@ public class DetailPartnerPresenter extends BasePresenter<iDetailPartnerView> {
 
             @Override
             public void onSuccess(Repository<PartnerAlbum> model) {
-                mvpView.hideLoading();
                 if(Utils.isNotEmptyContent(model)){
                     List<PartnerAlbum> images = model.getData();
                     mvpView.onFetchSlideSuccess(images);
@@ -63,13 +59,11 @@ public class DetailPartnerPresenter extends BasePresenter<iDetailPartnerView> {
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onFetchFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
             public void onFinish() {
-
             }
         });
     }

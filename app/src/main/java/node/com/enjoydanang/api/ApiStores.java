@@ -1,9 +1,12 @@
 package node.com.enjoydanang.api;
 
+import android.support.annotation.NonNull;
+
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
+import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Favorite;
@@ -109,6 +112,23 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("GlobalApi.asmx/ApplyFavorite")
     Observable<Repository> addFavorite(@Field("customerId") long userId, @Field("partnerId") long partnerId);
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/Contact")
+    Observable<Repository> sendContact(@NonNull @Field("name") String name , @Field("phone") String phone , @Field("email") String email , @Field("title") String title , @Field("content") String content);
+
+    @GET("GlobalApi.asmx/Info")
+    Observable<Repository<Contact>> getInformation();
+
+    @FormUrlEncoded
+    @POST("AccountApi.asmx/ChangePassword")
+    Observable<Repository<UserInfo>> changePwd(@Field("userId") long userId, @Field("oldPassword") String oldPwd, @Field("newPassword") String newPwd);
+
+    @FormUrlEncoded
+    @POST("AccountApi.asmx/UpdateProfile")
+    Observable<Repository<UserInfo>> updateProfile(@Field("userId") long userId,
+                                                   @Field("fullname") String fullname, @Field("phone") String phone,
+                                                   @Field("email") String email, @Field("picture") String picBase64);
 
 //    @FormUrlEncoded
 //    @POST("/login")

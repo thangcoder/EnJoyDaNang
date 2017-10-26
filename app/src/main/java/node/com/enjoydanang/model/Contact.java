@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Version : 1.0
  */
 
-public class AppInfomation {
+public class Contact {
     @SerializedName("Logo")
     @Expose
     private String logo;

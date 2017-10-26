@@ -166,6 +166,25 @@
 
     <string name="contact_phone_label">Phone</string>
 
+    <string name="lbNameContact">Name</string>
+
+    <string name="lbPhoneContact">Phone</string>
+
+    <string name="lbEmailContact">Email</string>
+
+    <string name="lbTitleContact">Title</string>
+
+    <string name="lbContentContact">Content</string>
+
+    <string name="btnSubmitContact">Send</string>
+
+
+    <string name="btnUpdateProfile">Update</string>
+
+    <string name="take_a_photo">Take a photo</string>
+
+    <string name="upload_from_gallery">Upload from Gallery</string>
+
 </resources>
 
 

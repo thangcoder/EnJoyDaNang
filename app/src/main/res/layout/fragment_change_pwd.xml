@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/include_toolbar" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,10 +19,12 @@
             android:text="@string/label_old_pwd" />
 
         <EditText
+            android:id="@+id/edtOldPwd"
+            android:padding="8dp"
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_round" />
+            android:background="@drawable/border_edittext_normal" />
 
         <TextView
             style="@style/LabelProfileStyle"
@@ -33,10 +33,12 @@
             android:text="@string/label_new_pwd" />
 
         <EditText
+            android:padding="8dp"
+            android:id="@+id/edtPwd"
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_icon" />
+            android:background="@drawable/border_edittext_normal" />
 
         <TextView
             style="@style/LabelProfileStyle"
@@ -45,31 +47,35 @@
             android:text="@string/label_reinput_pwd" />
 
         <EditText
+            android:id="@+id/edtReEnterPwd"
+            android:padding="8dp"
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_icon" />
+            android:background="@drawable/border_edittext_normal" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="20dp"
+            android:orientation="horizontal"
             android:weightSum="2">
 
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnCancel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/label_cancel"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="@string/label_cancel" />
 
 
             <android.support.v7.widget.AppCompatButton
-                android:theme="@style/AppTheme.Button"
+                android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/label_save"
-                android:layout_weight="1" />
+                android:theme="@style/AppTheme.Button" />
 
         </LinearLayout>
     </LinearLayout>

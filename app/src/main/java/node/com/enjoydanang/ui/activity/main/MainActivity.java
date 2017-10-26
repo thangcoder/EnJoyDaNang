@@ -27,6 +27,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.ui.fragment.change_password.ChangePwdFragment;
+import node.com.enjoydanang.ui.fragment.contact.ContactUsFragment;
 import node.com.enjoydanang.ui.fragment.favorite.FavoriteFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
@@ -281,7 +283,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         lvDrawerNav.setItemChecked(position, true);
         setTitle(navMenuTitles[position]);
-        replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+    }
+
+    private void addFr(String fragmentTag, int position){
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
+        lvDrawerNav.setItemChecked(position, true);
+        setTitle(navMenuTitles[position]);
+        addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
     }
 
     @Override
@@ -290,21 +299,23 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case 0:
                 break;
             case INTRODUCTION:
-                replaceFr(IntroductionFragment.class.getName(), position);
+                addFr(IntroductionFragment.class.getName(), position);
                 break;
             case CONTACT_US:
+                addFr(ContactUsFragment.class.getName(), position);
                 break;
             case FAVORITE:
-                replaceFr(FavoriteFragment.class.getName(), position);
+                addFr(FavoriteFragment.class.getName(), position);
                 break;
             case LOG_CHECKIN:
                 break;
             case 5:
                 break;
             case CHANGE_PROFILE:
-                replaceFr(PersonalFragment.class.getName(), position);
+                addFr(PersonalFragment.class.getName(), position);
                 break;
             case CHANGE_PASSWORD:
+                addFr(ChangePwdFragment.class.getName(), position);
                 break;
             case LOGOUT:
                 break;

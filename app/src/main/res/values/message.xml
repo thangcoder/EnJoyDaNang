@@ -7,8 +7,11 @@
 
     <string name="phone_number_invalid">Phone number invalid !</string>
 
-    <string name="full_name_empty">Full name not be empty!</string>
+    <string name="full_name_empty">Name not be empty!</string>
 
     <string name="must_login">You must login !</string>
 
+    <string name="msg_valid_old_new_pwd">New password not match!</string>
+
+    <string name="msg_send_contact_success">Your contact sent</string>
 </resources>

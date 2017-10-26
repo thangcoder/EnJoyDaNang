@@ -79,7 +79,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     public void onFetchFailure(AppError error) {
         hideLoading();
-        Utils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+        Utils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
     }
 
     @Override

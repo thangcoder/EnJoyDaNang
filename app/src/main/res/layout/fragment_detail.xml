@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@android:color/white"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imgPartner"
@@ -37,31 +37,36 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="@dimen/_4sdp"
                     android:id="@+id/txtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="15dp"
+                    android:layout_marginTop="@dimen/_6sdp"
                     android:textColor="@color/material_grey_800"
                     android:textSize="@dimen/_16sdp"
                     android:textStyle="bold" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
-                    style="@style/RatingBar"
-                    android:isIndicator="true"
+                    style="?attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_30sdp"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
                     android:numStars="5"
+                    android:rating="3.5"
+                    android:scaleX="2"
+                    android:scaleY="2"
                     android:stepSize="1"
-                    android:theme="@style/RatingBar" />
+                    android:theme="@style/RatingBar"
+                    android:transformPivotX="0dp"
+                    android:transformPivotY="0dp" />
 
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapView"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_marginTop="@dimen/_13sdp" />
 
                 <com.daimajia.slider.library.SliderLayout
                     android:id="@+id/slider"
@@ -80,14 +85,13 @@
                     android:layout_marginTop="5dp" />
 
                 <TextView
-                    android:paddingTop="@dimen/_15sdp"
                     android:id="@+id/txtContent"
-                    android:paddingLeft="@dimen/_5sdp"
-                    android:paddingRight="@dimen/_5sdp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
-                     />
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:paddingTop="@dimen/_15sdp" />
             </LinearLayout>
 
 

@@ -1,5 +1,8 @@
 package node.com.enjoydanang.ui.fragment.profile;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,6 +20,9 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.PhotoHelper;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Author: Tavv
@@ -45,6 +51,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     private UserInfo userInfo;
 
+    private PhotoHelper mPhotoHelper;
+
     @Override
     public void showToast(String desc) {
 
@@ -63,6 +71,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
+        mPhotoHelper = PhotoHelper.newInstance(this);
         edtUserName.setText(userInfo.getUserName());
         edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
         edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
@@ -72,7 +81,6 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     protected void setEvent(View view) {
-
     }
 
     @Override
@@ -102,11 +110,33 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnUpdate:
+                //// TODO: Handle something here !!! btnUpdate onClick
                 break;
             case R.id.txtTakeAPhoto:
+                mPhotoHelper.cameraIntent();
                 break;
             case R.id.txtUploadFrGallery:
+                mPhotoHelper.startGalleryIntent();
                 break;
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE){
+            if(resultCode == RESULT_OK && data != null){
+                if(StringUtils.isNotEmpty(mPhotoHelper.getCurrentPhotoPath())){
+                    Uri uri = Uri.parse(mPhotoHelper.getCurrentPhotoPath());
+                    Bitmap bitmapResult = mPhotoHelper.decodeFile(uri);
+                    imgAvatarUser.setImageBitmap(bitmapResult);
+                    String strBase64 =  ImageUtils.encodeTobase64(bitmapResult);
+                }
+            }
+        } else if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE) {
+            if (resultCode == RESULT_OK) {
+                Bitmap bitmap = mPhotoHelper.getBitmapSelectFromGallery(data);
+            }
         }
     }
 }

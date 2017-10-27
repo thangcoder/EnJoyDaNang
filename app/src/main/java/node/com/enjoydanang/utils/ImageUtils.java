@@ -1,11 +1,19 @@
 package node.com.enjoydanang.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.ByteArrayOutputStream;
+
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.utils.helper.RoundedTransformation;
 
 ;
 
@@ -26,7 +34,7 @@ public class ImageUtils {
     }
 
 
-    public static void loadImageRounded(Context context, ImageView imgView, String imgUrl){
+    public static void loadImageRounded(Context context, ImageView imgView, String imgUrl) {
         Picasso.with(context).load(imgUrl)
                 .transform(new CircleTransform())
 //                .error(R.drawable.error_image)
@@ -36,7 +44,8 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
-    public static void loadImageDrawable(Context context, ImageView imgView){
+
+    public static void loadImageDrawable(Context context, ImageView imgView) {
         Picasso.with(context).load(R.drawable.img_product)
 //                .transform(new RoundedTransformation(50, 0))
 //                .error(R.drawable.error_image)
@@ -55,31 +64,19 @@ public class ImageUtils {
                 .into(imgView);
     }
 
+    public static String encodeTobase64(Bitmap image) {
+        if (image != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            return Base64.encodeToString(b, Base64.DEFAULT);
+        }
+        return StringUtils.EMPTY;
+    }
 
-    //    public static void loadImageNoRadius(Context context,ImageView imageView,String url){
-//        Glide.with(context)
-//                .load(url)
-////                .transform(new CircleTransform(context))
-//                .error(R.drawable.placeholder)
-//                .placeholder(R.drawable.placeholder)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .into((imageView));
-//    }
-     /*
-        ImageView
-         */
-//    public static void loadAvatar(Context context, ImageView imgView, String imgUrl) {
-//        if(imgUrl == null)
-//        {
-//            imgView.setImageResource(R.drawable.default_avatar);
-//            return;
-//        }
-//        Picasso.with(context).load(imgUrl)
-//                .transform(new RoundedTransformation(50, 0))
-//                .error(R.drawable.ic_baby_default)
-//                .placeholder(R.drawable.placeholder)
-//                .into(imgView);
-//    }
-//
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
 
 }

@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.fragment.change_password;
 
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,37 +78,38 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
 
     @Override
     public void onChangeSuccess(UserInfo userInfo) {
-        if(userInfo != null){
+        if (userInfo != null) {
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
         }
+        Utils.clearForm(edtOldPwd, edtNewPwd, edtReEnterNewPwd);
         hideLoading();
+        Utils.showDialog(getContext(), 2, Constant.TITLE_SUCCESS, Utils.getString(R.string.password_updated));
     }
 
     @Override
     public void onChangeFailure(AppError error) {
+        hideLoading();
         Utils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
     }
 
-    @OnClick({R.id.btnCancel, R.id.btnSave})
+    @OnClick(R.id.btnSave)
     void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btnCancel:
-                break;
             case R.id.btnSave:
                 changePwd();
                 break;
         }
     }
 
-    private void changePwd(){
+    private void changePwd() {
         String oldPwd = edtOldPwd.getText().toString();
         String newPwd = edtNewPwd.getText().toString();
         String confirmPwd = edtReEnterNewPwd.getText().toString();
-        if(isPwdMatched(newPwd, confirmPwd) && StringUtils.isNotEmpty(oldPwd)){
+        if (isPwdMatched(newPwd, confirmPwd) && StringUtils.isNotEmpty(oldPwd)) {
             showLoading();
             mvpPresenter.changePwd(userInfo.getUserId(), oldPwd, newPwd);
-        }else {
+        } else {
             Utils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.msg_valid_old_new_pwd));
         }
     }

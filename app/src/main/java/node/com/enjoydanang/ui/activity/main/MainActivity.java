@@ -33,12 +33,14 @@ import node.com.enjoydanang.ui.fragment.favorite.FavoriteFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
-import node.com.enjoydanang.ui.fragment.personal.PersonalFragment;
+import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView,AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
 
     private final int INTRODUCTION = 1;
@@ -100,7 +102,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setToolbar(toolbar);
         navMenuTitles = getResources().getStringArray(R.array.item_menu);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close){
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 setTitle(mTitle);
@@ -130,7 +132,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     protected void onResume() {
         super.onResume();
-        replaceFr(HomeFragment.class.getName(), 0);
+        addFr(HomeFragment.class.getName(), 0);
     }
 
     @Override
@@ -169,7 +171,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int countFragment = getSupportFragmentManager().getBackStackEntryCount();
+            if (countFragment > 1) {
+                super.onBackPressed();
+            } else {
+                this.finish();
+            }
         }
     }
 
@@ -223,7 +230,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_search:
                 break;
             case R.id.menu_scan:
@@ -279,17 +286,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
         }
     }
-    private void replaceFr(String fragmentTag, int position){
+
+    private void replaceFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         lvDrawerNav.setItemChecked(position, true);
         setTitle(navMenuTitles[position]);
         replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
     }
 
-    private void addFr(String fragmentTag, int position){
+    private void addFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         lvDrawerNav.setItemChecked(position, true);
-        setTitle(navMenuTitles[position]);
         addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
     }
 
@@ -312,7 +319,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case 5:
                 break;
             case CHANGE_PROFILE:
-                addFr(PersonalFragment.class.getName(), position);
+                addFr(ProfileFragment.class.getName(), position);
                 break;
             case CHANGE_PASSWORD:
                 addFr(ChangePwdFragment.class.getName(), position);
@@ -322,5 +329,4 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
-
 }

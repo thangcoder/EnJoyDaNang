@@ -185,6 +185,9 @@
 
     <string name="upload_from_gallery">Upload from Gallery</string>
 
+
+    <string name="password_updated">Your password updated !</string>
+
 </resources>
 
 

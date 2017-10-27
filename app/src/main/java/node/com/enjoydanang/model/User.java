@@ -17,7 +17,7 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private String id;
 
     @SerializedName("name")
     @Expose
@@ -49,7 +49,7 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String fullName, Picture picture, long id, String email, String birthday, String gender, String accessToken, LoginType type) {
+    public User(String firstName, String lastName, String fullName, Picture picture, String id, String email, String birthday, String gender, String accessToken, LoginType type) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.fullName = fullName;
@@ -94,11 +94,11 @@ public class User {
         this.picture = picture;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

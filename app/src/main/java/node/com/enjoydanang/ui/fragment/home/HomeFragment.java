@@ -120,7 +120,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_700),VERTICAL_ITEM_SPACE));
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_500),VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
         rcvPartner.setHasFixedSize(false);

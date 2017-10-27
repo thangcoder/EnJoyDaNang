@@ -14,9 +14,13 @@
         android:contentDescription="@null"
         android:src="@drawable/ic_logo_app" />
 
-    <include layout="@layout/include_progress_bar" />
+    <include layout="@layout/include_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"/>
 
     <TextView
+        android:text="Loading Language..."
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

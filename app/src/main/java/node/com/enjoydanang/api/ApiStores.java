@@ -37,7 +37,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("AccountApi.asmx/SocialNetworkLogin")
-    Observable<Repository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") long userId, @Field("token") String token,
+    Observable<Repository<UserInfo>> doSignOrRegisterViaSocial(@Field("userId") String userId, @Field("token") String token,
                                                                @Field("type") LoginType type, @Field("image") String image,
                                                                @Field("fullname") String fullname, @Field("email") String email);
 

@@ -1,4 +1,4 @@
-package node.com.enjoydanang.utils;
+package node.com.enjoydanang.utils.helper;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

@@ -18,6 +18,8 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -75,10 +77,10 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     public void handleCallbackResult(UserProfile callback) {
         if (callback != null) {
             User user = new User();
-            user.setId(callback.getId());
+            user.setId(String.valueOf(callback.getId()));
             user.setFullName(callback.getNickname());
             Data data = new Data();
-            data.setUrl(callback.getProfileImagePath());
+            data.setUrl(StringUtils.isNoneBlank(callback.getProfileImagePath()) ? callback.getProfileImagePath() : StringUtils.EMPTY);
             Picture picture = new Picture();
             picture.setData(data);
             user.setPicture(picture);

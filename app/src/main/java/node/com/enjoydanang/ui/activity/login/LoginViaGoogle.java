@@ -15,6 +15,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 
 import node.com.enjoydanang.constant.LoginType;
@@ -80,15 +82,17 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
     @Override
     public void handleCallbackResult(GoogleSignInAccount signInAccount) {
         user = new User();
-        //user.setId(signInAccount.getId());
+        user.setId(signInAccount.getEmail());
         user.setEmail(signInAccount.getEmail());
         user.setFullName(signInAccount.getDisplayName());
         user.setFirstName(signInAccount.getFamilyName());
         user.setLastName(signInAccount.getGivenName());
         Picture picture = new Picture();
         Data data = new Data();
-            if (signInAccount.getPhotoUrl() != null) {
+        if (signInAccount.getPhotoUrl() != null) {
             data.setUrl(signInAccount.getPhotoUrl().toString());
+        }else{
+            data.setUrl(StringUtils.EMPTY);
         }
         picture.setData(data);
         user.setPicture(picture);
@@ -102,7 +106,7 @@ public class LoginViaGoogle implements ILogin<GoogleSignInAccount, User>, Google
 
     @Override
     public void pushToServer(User user) {
-        if(user != null){
+        if (user != null) {
             mLoginPresenter.loginViaSocial(user);
         }
     }

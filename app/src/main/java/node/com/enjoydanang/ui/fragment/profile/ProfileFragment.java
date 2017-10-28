@@ -1,12 +1,31 @@
 package node.com.enjoydanang.ui.fragment.profile;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +40,9 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -33,6 +55,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends MvpFragment<ProfilePresenter> implements ProfileView {
     private static final String TAG = ProfileFragment.class.getSimpleName();
+    public static String uriImageCapture;
+    public static String base64Image;
+
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -64,6 +89,11 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     protected ProfilePresenter createPresenter() {
         return new ProfilePresenter(this);
     }
@@ -71,12 +101,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
-        mPhotoHelper = PhotoHelper.newInstance(this);
-        edtUserName.setText(userInfo.getUserName());
-        edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
-        edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
-        edtPhone.setText(StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone());
-        ImageUtils.loadImageNoRadius(getContext(), imgAvatarUser, userInfo.getImage());
+        initData();
     }
 
     @Override
@@ -98,6 +123,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         if (userInfo != null) {
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
+            initData();
+            Toast.makeText(getActivity(), "Câp nhật thành công", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -111,12 +138,19 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         switch (view.getId()) {
             case R.id.btnUpdate:
                 //// TODO: Handle something here !!! btnUpdate onClick
+                    if(!TextUtils.isEmpty(base64Image)){
+                    mvpPresenter.updateProfile(userInfo.getUserId(),
+                                String.valueOf(edtFullname.getText()),
+                                String.valueOf(edtPhone.getText()),
+                                String.valueOf(edtEmail.getText()),
+                                base64Image);
+                    }
                 break;
             case R.id.txtTakeAPhoto:
-                mPhotoHelper.cameraIntent();
+                mPhotoHelper.openCamera();
                 break;
             case R.id.txtUploadFrGallery:
-                mPhotoHelper.startGalleryIntent();
+                mPhotoHelper.openGallery();
                 break;
         }
     }
@@ -124,19 +158,39 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE){
-            if(resultCode == RESULT_OK && data != null){
-                if(StringUtils.isNotEmpty(mPhotoHelper.getCurrentPhotoPath())){
-                    Uri uri = Uri.parse(mPhotoHelper.getCurrentPhotoPath());
-                    Bitmap bitmapResult = mPhotoHelper.decodeFile(uri);
-                    imgAvatarUser.setImageBitmap(bitmapResult);
-                    String strBase64 =  ImageUtils.encodeTobase64(bitmapResult);
-                }
-            }
-        } else if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE) {
-            if (resultCode == RESULT_OK) {
-                Bitmap bitmap = mPhotoHelper.getBitmapSelectFromGallery(data);
-            }
+        if (resultCode != RESULT_OK) {
+            return;
         }
+        switch (requestCode) {
+            case PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE:
+                File imgFile = new File(uriImageCapture);
+                if (imgFile.exists()) {
+                    updateAvatar(imgFile);
+                } else {
+                    Toast.makeText(getActivity(), "Không tìm thấy ảnh", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            case PhotoHelper.SELECT_FROM_GALLERY_CODE:
+                if (data != null) {
+                    Uri uri = data.getData();
+                    File finalFile = new File(mPhotoHelper.getRealPathFromURI(uri));
+                    updateAvatar(finalFile);
+
+                }
+                break;
+        }
+    }
+    private void updateAvatar(File file) {
+        base64Image = ImageUtils.encodeTobase64(file);
+        ImageUtils.loadImageFromFile(mMainActivity,imgAvatarUser,file);
+    }
+    private void initData(){
+        mPhotoHelper = PhotoHelper.newInstance(this);
+        edtUserName.setText(userInfo.getUserName());
+        edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
+        edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
+        edtPhone.setText(StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone());
+        ImageUtils.loadImageNoRadius(getContext(), imgAvatarUser, userInfo.getImage());
     }
 }

@@ -127,8 +127,10 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("AccountApi.asmx/UpdateProfile")
     Observable<Repository<UserInfo>> updateProfile(@Field("userId") long userId,
-                                                   @Field("fullname") String fullname, @Field("phone") String phone,
-                                                   @Field("email") String email, @Field("picture") String picBase64);
+                                                   @Field("fullname") String fullname,
+                                                   @Field("phone") String phone,
+                                                   @Field("email") String email,
+                                                   @Field("picture") String picBase64);
 
 //    @FormUrlEncoded
 //    @POST("/login")

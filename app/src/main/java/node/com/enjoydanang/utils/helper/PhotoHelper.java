@@ -1,16 +1,21 @@
 package node.com.enjoydanang.utils.helper;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +30,8 @@ import java.util.List;
 
 import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**
@@ -103,13 +110,13 @@ public class PhotoHelper {
         return null;
     }
 
-
-    public String convertResultToBase64(Bitmap bitmap) {
-        if (bitmap != null) {
-            return ImageUtils.encodeTobase64(bitmap);
-        }
-        return StringUtils.EMPTY;
-    }
+//
+//    public String convertResultToBase64(Bitmap bitmap) {
+//        if (bitmap != null) {
+//            return ImageUtils.encodeTobase64(bitmap);
+//        }
+//        return StringUtils.EMPTY;
+//    }
 
 
     public Bitmap getBitmapSelectFromGallery(Intent data) {
@@ -268,4 +275,44 @@ public class PhotoHelper {
         return i;
     }
 
+    public void openCamera() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".jpg";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        ProfileFragment.uriImageCapture  = storageDir.getAbsolutePath() + "/" + imageFileName;
+        File file = new File(ProfileFragment.uriImageCapture);
+        Uri outputFileUri = Uri.fromFile(file);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        fragment.startActivityForResult(cameraIntent, CAPTURE_IMAGE_REQUEST_CODE);
+    }
+    public void openGallery() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(fragment.getActivity(),
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                    ActivityCompat.requestPermissions(fragment.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FROM_GALLERY_CODE);
+                } else {
+                    ActivityCompat.requestPermissions(fragment.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FROM_GALLERY_CODE);
+                }
+            } else {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                fragment.startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
+            }
+        } else {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            fragment.startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
+        }
+    }
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = fragment.getActivity().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
 }

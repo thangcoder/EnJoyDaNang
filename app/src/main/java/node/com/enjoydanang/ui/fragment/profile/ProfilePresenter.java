@@ -22,8 +22,8 @@ public class ProfilePresenter extends BasePresenter<ProfileView>{
     }
 
     void updateProfile(long userId, String fullName, String phone, String email, String picBase64){
+        mvpView.showLoading();
         addSubscription(apiStores.updateProfile(userId, fullName, phone, email, picBase64), new ApiCallback<Repository<UserInfo>>(){
-
             @Override
             public void onSuccess(Repository<UserInfo> model) {
                 if(Utils.isResponseError(model)){
@@ -35,6 +35,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView>{
 
             @Override
             public void onFailure(String msg) {
+                mvpView.hideLoading();
                 mvpView.onUpdateFailure(new AppError(new Throwable(msg)));
             }
 

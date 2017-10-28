@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,7 +43,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
-
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
     private final int FAVORITE = 3;
@@ -50,7 +50,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private final int CHANGE_PROFILE = 6;
     private final int CHANGE_PASSWORD = 7;
     private final int LOGOUT = 8;
-
+    private boolean isOpen;
+    private final String IS_OPEN = "IS_OPEN";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -128,11 +129,29 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         DrawerAdapter drawerAdapter = new DrawerAdapter(this);
         lvDrawerNav.setAdapter(drawerAdapter);
     }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            isOpen = (boolean) savedInstanceState.getSerializable(IS_OPEN);
+            if (!isOpen) {
+                addFr(HomeFragment.class.getName(), 0);
 
+            }
+        }else{
+            addFr(HomeFragment.class.getName(), 0);
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(IS_OPEN, true);
+        super.onSaveInstanceState(outState);
+    }
     @Override
     protected void onResume() {
         super.onResume();
-        addFr(HomeFragment.class.getName(), 0);
     }
 
     @Override
@@ -329,4 +348,5 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
+
 }

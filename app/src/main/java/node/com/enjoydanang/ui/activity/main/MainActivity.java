@@ -6,6 +6,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -35,6 +40,8 @@ import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
+import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
+import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -73,7 +80,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.lv_drawer_nav)
     ListView lvDrawerNav;
 
-    private CircleImageView imgAvatarUser;
+//    private CircleImageView imgAvatarUser;
+    @BindView(R.id.imgAvatarUser)
+    SimpleDraweeView imgAvatarUser;
 
     private TextView txtFullName;
 
@@ -106,15 +115,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
-                setTitle(mTitle);
+//                setTitle(mTitle);
                 //Setting, Refresh and Rate App
-                invalidateOptionsMenu();
+//                invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                setTitle(mDrawerTitle);
-                invalidateOptionsMenu();
+//                setTitle(mDrawerTitle);
+//                invalidateOptionsMenu();
             }
         };
         mDrawer.addDrawerListener(mDrawerToggle);
@@ -135,11 +144,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (savedInstanceState != null) {
             isOpen = (boolean) savedInstanceState.getSerializable(IS_OPEN);
             if (!isOpen) {
-                addFr(HomeFragment.class.getName(), 0);
+                addFrMenu(HomeFragment.class.getName(),true);
 
             }
         }else{
-            addFr(HomeFragment.class.getName(), 0);
+            addFrMenu(HomeFragment.class.getName(),true);
         }
 
     }
@@ -163,7 +172,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void bindViews() {
         ButterKnife.bind(this);
-        imgAvatarUser = (CircleImageView) mNavigationView.findViewById(R.id.imgAvatarUser);
         txtFullName = (TextView) mNavigationView.findViewById(R.id.txtFullName);
         txtEmail = (TextView) mNavigationView.findViewById(R.id.txtEmail);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -189,12 +197,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else {
             int countFragment = getSupportFragmentManager().getBackStackEntryCount();
-            if (countFragment > 1) {
-                super.onBackPressed();
+            if (countFragment > 0) {
+                this.getSupportFragmentManager().popBackStack();
+                setStateFragment();
             } else {
-                this.finish();
+                finish();
             }
         }
     }
@@ -224,40 +234,80 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_home:
+                if(currentTab != HomeTab.Home) {
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
+                    if (fragment == null) {
+                        addFrMenu(HomeFragment.class.getName(),true);
+                    } else {
+                        resurfaceFragment(HomeFragment.class.getName());
+                    }
+                }
                 currentTab = HomeTab.Home;
-                setStateTabSelected();
                 break;
             case R.id.img_search:
                 currentTab = HomeTab.Search;
-                setStateTabSelected();
                 break;
             case R.id.ll_profile:
+                if(currentTab != HomeTab.Profile){
+                    Fragment fragment  = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
+                    if(fragment== null){
+                        addFrMenu(ProfileMenuFragment.class.getName(),true);
+                    }else{
+                        resurfaceFragment(ProfileMenuFragment.class.getName());
+                    }
+                }
                 currentTab = HomeTab.Profile;
-                setStateTabSelected();
-                break;
-            default:
-                setStateTabSelected();
                 break;
         }
+        setStateTabSelected();
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        switch (currentTab){
+            case Home:
+                editItem.setVisible(false);
+                scanItem.setVisible(true);
+                break;
+            case Search:
+                editItem.setVisible(false);
+                scanItem.setVisible(false);
+                break;
+            case Profile:
+                editItem.setVisible(true);
+                scanItem.setVisible(false);
+                break;
+            case None:
+                editItem.setVisible(false);
+                scanItem.setVisible(false);
+                break;
+            default:
+                break;
+        }
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_search:
-                break;
+//            case R.id.menu_search:
+//                break;
             case R.id.menu_scan:
-                break;
+                return true;
+            case R.id.menu_edit:
+                addFr(ProfileFragment.class.getName(),5);
+                currentTab = HomeTab.None;
+                return true;
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
-                break;
+                return true;
         }
+        setStateTabSelected();
         return super.onOptionsItemSelected(item);
     }
 
@@ -267,16 +317,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
+                getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
+                getToolbar().setTitle(Utils.getString(R.string.action_search));
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
+                getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+                break;
+            case None:
+                imgHome.setImageResource(R.drawable.tab1_default_3x);
+                imgSearch.setImageResource(R.drawable.tab2_default_3x);
+                imgProfile.setImageResource(R.drawable.tab3_default_3x);
                 break;
             default:
                 break;
@@ -306,18 +364,38 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
     }
 
-    private void replaceFr(String fragmentTag, int position) {
+    private void replaceFr(String fragmentTag) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        lvDrawerNav.setItemChecked(position, true);
-        setTitle(navMenuTitles[position]);
-        replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+    }
+    private void addFrMenu(String fragmentTag, boolean isBackStack) {
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, transitionInfo);
     }
 
     private void addFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         lvDrawerNav.setItemChecked(position, true);
-        addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+        addFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
     }
+    public boolean resurfaceFragment(String tag){
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(tag);
+        FragmentTransaction transaction = manager.beginTransaction();
+        if (fragment!=null){
+            for (int i = 0; i < manager.getFragments().size(); i++) {
+                Fragment f =  manager.getFragments().get(i);
+                transaction.hide(f);
+
+            }
+            transaction.show(fragment).commit();
+            return true;
+        }
+
+        return false;
+    }
+
+
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -338,7 +416,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case 5:
                 break;
             case CHANGE_PROFILE:
-                addFr(ProfileFragment.class.getName(), position);
+                addFr(ProfileFragment.class.getName(),position);
                 break;
             case CHANGE_PASSWORD:
                 addFr(ChangePwdFragment.class.getName(), position);
@@ -346,7 +424,39 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case LOGOUT:
                 break;
         }
+        if(position==5){
+            currentTab = HomeTab.Profile;
+        }else {
+            currentTab = HomeTab.None;
+        }
+        setStateTabSelected();
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
+    public void setCurrentTab(HomeTab homeTab){
+        currentTab = homeTab;
+        setStateTabSelected();
+    }
+    public Fragment getTopFragment() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return null;
+        }
+        String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+        return getSupportFragmentManager().findFragmentByTag(fragmentTag);
+    }
+    private void setStateFragment(){
+        String tag =getTopFragment().getTag();
+        if(tag.equals(HomeFragment.class.getName())) {
+            currentTab = HomeTab.Home;
+        }
+        else if(tag.equals(ProfileMenuFragment.class.getName())) {
+            currentTab = HomeTab.Profile;
+        }
+        else {
+            currentTab = HomeTab.None;
+        }
+        setStateTabSelected();
+
+        }
+
 
 }

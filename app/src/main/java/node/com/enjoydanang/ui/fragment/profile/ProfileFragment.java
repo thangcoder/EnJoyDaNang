@@ -16,6 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -37,6 +40,8 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
@@ -82,7 +87,15 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     public void showToast(String desc) {
 
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        editItem.setVisible(false);
+        scanItem.setVisible(false);
 
+    }
     @Override
     public void unKnownError() {
 
@@ -100,6 +113,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     protected void init(View view) {
+        setHasOptionsMenu(true);
         userInfo = Utils.getUserInfo();
         initData();
     }
@@ -138,13 +152,11 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         switch (view.getId()) {
             case R.id.btnUpdate:
                 //// TODO: Handle something here !!! btnUpdate onClick
-                    if(!TextUtils.isEmpty(base64Image)){
                     mvpPresenter.updateProfile(userInfo.getUserId(),
                                 String.valueOf(edtFullname.getText()),
                                 String.valueOf(edtPhone.getText()),
                                 String.valueOf(edtEmail.getText()),
                                 base64Image);
-                    }
                 break;
             case R.id.txtTakeAPhoto:
                 mPhotoHelper.openCamera();
@@ -155,6 +167,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) mMainActivity;
+        activity.setCurrentTab(HomeTab.Profile);
+        activity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

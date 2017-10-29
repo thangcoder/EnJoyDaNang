@@ -5,7 +5,7 @@ package node.com.enjoydanang.ui.fragment.home;
  */
 
 public enum HomeTab {
-    Home,Search,Profile;
+    Home,Search,Profile,None;
 
     public static HomeTab getCurrentTab(int index){
         HomeTab homeTab = Home;
@@ -18,6 +18,9 @@ public enum HomeTab {
                 break;
             case 2:
                 homeTab = Profile;
+                break;
+            case 3:
+                homeTab = None;
                 break;
         }
         return homeTab;

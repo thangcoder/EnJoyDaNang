@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -8,6 +9,9 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -32,6 +36,7 @@ import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
@@ -98,6 +103,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private UserInfo user;
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        editItem.setVisible(false);
+        scanItem.setVisible(true);
+
+    }
+    @Override
     public void showToast(String desc) {
 
     }
@@ -110,6 +124,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     protected void init(View view) {
+        setHasOptionsMenu(true);
         user = Utils.getUserInfo();
         /**
          * Init Data
@@ -226,6 +241,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onFetchWeatherSuccess(List<Weather> lstWeathers) {
 //        WeatherAdapter mWeatherAdapter = new WeatherAdapter(lstWeathers, getContext());
 //        rcvWeather.setAdapter(mWeatherAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) mMainActivity;
+        activity.setCurrentTab(HomeTab.Home);
     }
 
     @Override

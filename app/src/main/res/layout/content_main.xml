@@ -18,4 +18,14 @@
     <include
         android:id="@+id/frlBottomMenu"
         layout="@layout/include_bottom_menu" />
+
+    <ImageView
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/img_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@null"
+        android:src="@drawable/tab2_default_3x" />
 </RelativeLayout>

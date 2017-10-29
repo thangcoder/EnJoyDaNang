@@ -14,6 +14,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +57,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         View rootView = inflater.inflate(R.layout.fragment_detail_home, container, false);
         initToolbar(rootView);
         mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         return rootView;
@@ -95,6 +98,8 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
             int parterId = bundle.getInt(TAG);
             DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), parterId);
             mViewPager.setAdapter(adapter);
+            int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
+            mViewPager.setOffscreenPageLimit(limit);
         }
     }
 

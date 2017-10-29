@@ -41,7 +41,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView>{
 
             @Override
             public void onFinish() {
-
+                mvpView.hideLoading();
             }
         });
     }

@@ -135,11 +135,14 @@
     <string name="Log_Check_Screen_Title">LOG CHECK-IN</string>
     <string name="Change_Pwd_Screen_Title">CHANGE PASSWORD</string>
     <string name="Update_Profile_Screen_Title">PROFILE</string>
+    <string name="Edit_Profile_Screen_Title">EDIT PROFILE</string>
     <string name="Introduction_Screen_Title">Introduction</string>
 
     <string name="action_search">Search</string>
 
-    <string name="action_scan">Scan</string>
+    <string name="action_scan">Scan</string>Edit
+
+    <string name="action_edit">Edit</string>
 
 
     <string name="utility_title">Utility</string>

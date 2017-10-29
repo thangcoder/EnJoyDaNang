@@ -35,6 +35,7 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mMainActivity = getActivity();
         mFragmentManager = getActivity().getSupportFragmentManager();
+        setHasOptionMenu();
     }
 
     @Override
@@ -60,7 +61,6 @@ public abstract class BaseFragment extends Fragment {
     public abstract int getRootLayoutId();
 
     public abstract void bindView(View view);
-
 
     protected void executeBase() {
     }
@@ -177,4 +177,6 @@ public abstract class BaseFragment extends Fragment {
         }
         super.onAttach(context);
     }
+
+    protected void setHasOptionMenu(){}
 }

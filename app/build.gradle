@@ -96,6 +96,7 @@ dependencies {
     // Dependency for Google Sign-In
     compile 'com.google.android.gms:play-services-auth:11.4.0'
     compile 'com.google.android.gms:play-services-maps:11.4.0'
+    compile 'com.google.android.gms:play-services-location:11.4.0'
     compile 'com.ss.bannerslider:bannerslider:1.8.0'
     compile 'com.makeramen:roundedimageview:2.3.0'
     compile 'com.github.andyxialm:ColorDialog:1.0.0'

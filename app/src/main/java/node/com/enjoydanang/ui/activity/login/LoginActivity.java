@@ -28,6 +28,8 @@ import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
@@ -105,9 +107,11 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
 
-    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal})
+    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
+            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
     public void onLoginClick(View view) {
         showLoading();
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.btnLoginFb:
                 loginViaFacebook.login();
@@ -121,6 +125,20 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             case R.id.btnLoginNormal:
                 loginNormal();
                 break;
+            case R.id.txtCreateAccount:
+                intent = new Intent(this, SignUpActivity.class);
+                break;
+            case R.id.txtForgotPwd:
+                //TODO : redirect to web forgot
+                break;
+            case R.id.txtContinue:
+                intent = new Intent(this, MainActivity.class);
+                break;
+        }
+        if (intent != null) {
+            hideLoading();
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         }
 
     }

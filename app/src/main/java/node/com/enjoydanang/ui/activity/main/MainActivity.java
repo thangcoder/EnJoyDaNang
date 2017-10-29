@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,6 +28,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.fragment.change_password.ChangePwdFragment;
 import node.com.enjoydanang.ui.fragment.contact.ContactUsFragment;
@@ -34,6 +37,8 @@ import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
+import node.com.enjoydanang.ui.fragment.search.SearchFragment;
+import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -82,10 +87,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private DrawerLayout mDrawerLayout;
 
-    private CharSequence mTitle;
-
-    private CharSequence mDrawerTitle;
-
     private String[] navMenuTitles;
 
     private ActionBarDrawerToggle mDrawerToggle;
@@ -105,14 +106,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
-                setTitle(mTitle);
                 //Setting, Refresh and Rate App
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                setTitle(mDrawerTitle);
                 invalidateOptionsMenu();
             }
         };
@@ -125,8 +124,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         requestCodeQRCodePermissions();
 
-        DrawerAdapter drawerAdapter = new DrawerAdapter(this);
-        lvDrawerNav.setAdapter(drawerAdapter);
+        settingLeftMenu(Utils.hasLogin());
     }
 
     @Override
@@ -139,6 +137,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private void settingLeftMenu(boolean hasLogin) {
+        List<Integer> lstIndexHeaders = new ArrayList<>(Arrays.asList(hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
+
+        int[] icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
+
+        String[] titles = hasLogin ? getResources().getStringArray(R.array.item_menu) : getResources().getStringArray(R.array.item_no_sign_in);
+
+        NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,
+                NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles));
+
+        lvDrawerNav.setAdapter(mNavigationAdapter);
     }
 
     @Override
@@ -232,6 +243,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
+                FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
+                addFragment(R.id.container_fragment, SearchFragment.class.getName(), true, null, transitionInfo);
                 break;
             case R.id.menu_scan:
                 break;

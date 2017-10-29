@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -107,13 +107,13 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="-1dp"
             android:layout_weight="1"
-            android:textCursorDrawable="@null"
             android:background="@drawable/leftroundborder"
             android:hint="@string/user_name_hint"
             android:inputType="text"
             android:maxLines="1"
             android:padding="8dp"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/secondary_text"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <LinearLayout
@@ -139,13 +139,13 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="-1dp"
             android:layout_weight="1"
-            android:textCursorDrawable="@null"
             android:background="@drawable/leftroundborder"
             android:hint="@string/pwd_hint"
             android:inputType="textPassword"
             android:maxLines="1"
             android:padding="8dp"
-            android:textColor="@color/secondary_text" />
+            android:textColor="@color/secondary_text"
+            android:textCursorDrawable="@null" />
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatButton
@@ -156,4 +156,51 @@
         android:layout_marginTop="@dimen/_12sdp"
         android:background="@color/color_button_login"
         android:text="@string/login" />
+
+
+    <LinearLayout
+        android:layout_width="@dimen/button_login_social_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtCreateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:text="@string/create_account"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/txtForgotPwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textSize="@dimen/_13ssp"
+            android:text="@string/forgot_pwd"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txtContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/btn_sign_in_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/continue_hint"
+        android:textColor="@color/bg_login_button"
+        android:textSize="@dimen/_20ssp"
+        android:textStyle="bold" />
+
 </LinearLayout>

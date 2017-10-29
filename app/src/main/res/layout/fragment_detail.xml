@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollDetailPartner"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
@@ -18,8 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:contentDescription="@null"
-            android:scaleType="fitXY"
-            android:src="@drawable/bg_drink_temp" />
+            android:scaleType="fitXY" />
 
 
         <android.support.v7.widget.CardView
@@ -41,6 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
+                    android:paddingLeft="5dp"
                     android:textColor="@color/material_grey_800"
                     android:textSize="@dimen/_16sdp"
                     android:textStyle="bold" />
@@ -61,11 +62,12 @@
                     android:transformPivotY="0dp" />
 
 
-                <com.google.android.gms.maps.MapView
+                <node.com.enjoydanang.utils.widget.CustomMapView
                     android:id="@+id/mapView"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="250dp"
+
                     android:layout_marginTop="@dimen/_13sdp" />
 
                 <com.daimajia.slider.library.SliderLayout

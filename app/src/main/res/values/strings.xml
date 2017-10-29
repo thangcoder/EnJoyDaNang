@@ -115,6 +115,14 @@
         <item>Log out</item>
     </string-array>
 
+    <string-array name="item_no_sign_in">
+        <item>INFOMATION</item>
+        <item>Introduction</item>
+        <item>Contact Us</item>
+        <item>PERSIONAL</item>
+        <item>Login</item>
+    </string-array>
+
     <array name="imgs">
         <item>@drawable/ic_introduction</item>
         <item>@drawable/ic_introduction</item>
@@ -136,6 +144,7 @@
     <string name="Change_Pwd_Screen_Title">CHANGE PASSWORD</string>
     <string name="Update_Profile_Screen_Title">PROFILE</string>
     <string name="Introduction_Screen_Title">Introduction</string>
+    <string name="Search_Screen_Title">SEARCH</string>
 
     <string name="action_search">Search</string>
 
@@ -188,6 +197,8 @@
 
     <string name="password_updated">Your password updated !</string>
 
+
+    <string name="search_partner_hint">Search partner</string>
 </resources>
 
 

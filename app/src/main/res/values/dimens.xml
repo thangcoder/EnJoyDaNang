@@ -56,5 +56,5 @@
 
     <dimen name="text_size_name_social">@dimen/_14ssp</dimen>
 
-    <dimen name="logo_app_hight_default">150dp</dimen>
+    <dimen name="logo_app_hight_default">120dp</dimen>
 </resources>

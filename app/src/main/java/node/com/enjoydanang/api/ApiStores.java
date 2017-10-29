@@ -2,6 +2,8 @@ package node.com.enjoydanang.api;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONObject;
+
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
@@ -18,11 +20,14 @@ import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -115,7 +120,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/Contact")
-    Observable<Repository> sendContact(@NonNull @Field("name") String name , @Field("phone") String phone , @Field("email") String email , @Field("title") String title , @Field("content") String content);
+    Observable<Repository> sendContact(@NonNull @Field("name") String name, @Field("phone") String phone, @Field("email") String email, @Field("title") String title, @Field("content") String content);
 
     @GET("GlobalApi.asmx/Info")
     Observable<Repository<Contact>> getInformation();
@@ -129,6 +134,10 @@ public interface ApiStores {
     Observable<Repository<UserInfo>> updateProfile(@Field("userId") long userId,
                                                    @Field("fullname") String fullname, @Field("phone") String phone,
                                                    @Field("email") String email, @Field("picture") String picBase64);
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/SearchApp")
+    Observable<Repository<Partner>> searchWithQuery(@Field("query") String query);
 
 //    @FormUrlEncoded
 //    @POST("/login")

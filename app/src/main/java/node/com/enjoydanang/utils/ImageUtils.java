@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.utils.helper.RoundedTransformation;
@@ -63,11 +64,19 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
+    public static void loadImageFromFile(Context context, ImageView imgView, File file) {
+        Picasso.with(context).load(file)
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .fit()
+                .into(imgView);
+    }
 
-    public static String encodeTobase64(Bitmap image) {
-        if (image != null) {
+    public static String encodeTobase64( File file ) {
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+        if (bitmap != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] b = baos.toByteArray();
             return Base64.encodeToString(b, Base64.DEFAULT);
         }

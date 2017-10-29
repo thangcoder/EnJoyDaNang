@@ -4,7 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.album.AlbumDetailFragment;
+import node.com.enjoydanang.ui.fragment.review.ReviewFragment;
 import node.com.enjoydanang.ui.fragment.schedule_utility.ScheduleUtilityFragment;
 
 /**
@@ -17,13 +19,13 @@ import node.com.enjoydanang.ui.fragment.schedule_utility.ScheduleUtilityFragment
 public class DetailPagerAdapter extends FragmentStatePagerAdapter {
     //integer to count number of tabs
     private int tabCount;
-    private int partnerId;
+    private Partner partner;
     //Constructor to the class
-    public DetailPagerAdapter(FragmentManager fm, int tabCount, int partnerId) {
+    public DetailPagerAdapter(FragmentManager fm, int tabCount,Partner partner) {
         super(fm);
         //Initializing tab count
         this.tabCount= tabCount;
-        this.partnerId = partnerId;
+        this.partner = partner;
     }
 
     //Overriding method getItem
@@ -32,11 +34,13 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                return DetailPartnerFragment.newInstance(partnerId);
+                return DetailPartnerFragment.newInstance(partner);
             case 1:
-                return ScheduleUtilityFragment.newInstance(partnerId);
+                return ReviewFragment.newInstance(partner);
             case 2:
-                return AlbumDetailFragment.newInstance(partnerId);
+                return ScheduleUtilityFragment.newInstance(partner);
+            case 3:
+                return AlbumDetailFragment.newInstance(partner);
             default:
                 return null;
         }

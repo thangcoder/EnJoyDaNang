@@ -9,6 +9,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.Partner;
 
 /**
  * Author: Tavv
@@ -28,10 +29,10 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     @BindView(R.id.viewpager)
     ViewPager viewPager;
 
-    public static DetailHomeFragment newInstance(int partnerId) {
+    public static DetailHomeFragment newInstance(Partner partner) {
         DetailHomeFragment fragment = new DetailHomeFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TAG, partnerId);
+        bundle.putSerializable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -61,13 +62,16 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     protected void init(View view) {
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.detail_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.review_tab_name)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.schedule_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.album_tab_name)));
         //Creating our pager adapter
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int parterId = bundle.getInt(TAG);
-            DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), parterId);
-            viewPager.setAdapter(adapter);
+            Partner partner = (Partner) bundle.getSerializable(TAG);
+            if (partner != null) {
+                DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), partner);
+                viewPager.setAdapter(adapter);
+            }
         }
 
         //Adding adapter to pager

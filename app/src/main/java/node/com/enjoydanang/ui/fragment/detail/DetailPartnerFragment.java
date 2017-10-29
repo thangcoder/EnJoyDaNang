@@ -47,6 +47,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.DetailPartner;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
@@ -103,10 +104,10 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private LocationHelper locationHelper;
 
-    public static DetailPartnerFragment newInstance(int partnerId) {
+    public static DetailPartnerFragment newInstance(Partner partner) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TAG, partnerId);
+        bundle.putSerializable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -152,10 +153,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int partnerId = bundle.getInt(TAG);
-            showLoading();
-            mvpPresenter.getDetailPartner(partnerId);
-            mvpPresenter.getSlideByPartnerId(partnerId);
+            Partner partner = (Partner) bundle.getSerializable(TAG);
+            if (partner != null) {
+                showLoading();
+                mvpPresenter.getDetailPartner(partner.getId());
+                mvpPresenter.getSlideByPartnerId(partner.getId());
+            }
         }
 
     }

@@ -18,6 +18,7 @@ import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 
@@ -131,7 +132,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void onRegisterFailure(AppError error) {
-        Utils.showDialog(this, 1, Utils.getString(R.string.sign_up), error.getMessage());
+        DialogUtils.showDialog(this, 1, Utils.getString(R.string.sign_up), error.getMessage());
     }
 
     private void register() {
@@ -146,7 +147,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
             showLoading();
             mvpPresenter.normalRegister(userInfo);
         } else {
-            Utils.showDialog(this, 1, "Validator", strError);
+            DialogUtils.showDialog(this, 1, "Validator", strError);
         }
     }
 

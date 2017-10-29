@@ -14,6 +14,10 @@ public class Constant {
 
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
+    public static final String DATE_SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
+    public static final String DATE_FORMAT_DMY = "dd-MM-yyyy";
+
     public static String REGEX_URL = "((http)[s]?(://).*)";
 
     public static final String API_OK = "200";

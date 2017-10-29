@@ -19,8 +19,10 @@ import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Favorite;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
@@ -79,7 +81,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     public void onFetchFailure(AppError error) {
         hideLoading();
-        Utils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
     }
 
     @Override
@@ -138,7 +140,11 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                         }
                     }));
         } else {
-            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position).getId());
+            Partner partner = new Partner();
+            partner.setId(lstFavorites.get(position).getId());
+            partner.setPicture(lstFavorites.get(position).getPicture());
+            partner.setName(lstFavorites.get(position).getName());
+            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
             dialog.show(mFragmentManager, TAG);
         }
 

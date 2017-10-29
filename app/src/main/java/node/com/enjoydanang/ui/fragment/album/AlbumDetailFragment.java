@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.helper.SpacesItemDecoration;
 
@@ -37,10 +38,11 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
     private ArrayList<PartnerAlbum> images;
 
-    public static AlbumDetailFragment newInstance(int partnerId) {
+
+    public static AlbumDetailFragment newInstance(Partner partner) {
         AlbumDetailFragment fragment = new AlbumDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TAG, partnerId);
+        bundle.putSerializable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,9 +70,11 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
         mvpPresenter = createPresenter();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int partnerId = bundle.getInt(TAG);
-            showLoading();
-            mvpPresenter.getAlbum(partnerId);
+            Partner partner = (Partner) bundle.getSerializable(TAG);
+            if (partner != null) {
+                showLoading();
+                mvpPresenter.getAlbum(partner.getId());
+            }
         }
     }
 

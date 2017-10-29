@@ -37,6 +37,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
@@ -124,20 +125,19 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
             initData();
-            Toast.makeText(getActivity(), "Câp nhật thành công", Toast.LENGTH_SHORT).show();
+            DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.update_profile_success));
         }
     }
 
     @Override
     public void onUpdateFailure(AppError error) {
-        Utils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
     }
 
     @OnClick({R.id.btnUpdate, R.id.txtTakeAPhoto, R.id.txtUploadFrGallery})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnUpdate:
-                //// TODO: Handle something here !!! btnUpdate onClick
                     if(!TextUtils.isEmpty(base64Image)){
                     mvpPresenter.updateProfile(userInfo.getUserId(),
                                 String.valueOf(edtFullname.getText()),
@@ -167,7 +167,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 if (imgFile.exists()) {
                     updateAvatar(imgFile);
                 } else {
-                    Toast.makeText(getActivity(), "Không tìm thấy ảnh", Toast.LENGTH_SHORT).show();
+                   DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
                 }
 
                 break;

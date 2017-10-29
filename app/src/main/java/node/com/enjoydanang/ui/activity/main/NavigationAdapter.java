@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import node.com.enjoydanang.R;
@@ -69,13 +71,6 @@ public class NavigationAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         NavigationItem menuItem = lstItem.get(position);
-        boolean nextIsHeader = false;
-        int nextIndex = position + 1;
-        if(position != 0 && nextIndex < lstItem.size()){
-            if(lstItem.get(nextIndex).isHeader()){
-                nextIsHeader = true;
-            }
-        }
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -97,8 +92,8 @@ public class NavigationAdapter extends BaseAdapter {
                 holder.imgIcon.setImageResource(menuItem.getIcon());
             }
         }
-        if (holder.span != null) {
-            if (nextIsHeader){
+        if(holder.span != null){
+            if(position == lstItem.size() - 1){
                 holder.span.setVisibility(View.INVISIBLE);
             }
         }
@@ -110,4 +105,5 @@ public class NavigationAdapter extends BaseAdapter {
         public TextView txtTitleMenu;
         public View span;
     }
+
 }

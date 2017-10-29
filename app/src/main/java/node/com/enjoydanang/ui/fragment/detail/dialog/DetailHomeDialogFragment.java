@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
 import node.com.enjoydanang.utils.Utils;
 
@@ -32,7 +33,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class DetailHomeDialogFragment extends DialogFragment implements TabLayout.OnTabSelectedListener{
+public class DetailHomeDialogFragment extends DialogFragment implements TabLayout.OnTabSelectedListener {
     private static final String TAG = DetailHomeDialogFragment.class.getSimpleName();
 
     private Toolbar mToolbar;
@@ -41,10 +42,12 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private TabLayout mTabLayout;
 
-    public static DetailHomeDialogFragment newInstance(int partnerId) {
+    private Partner partner = null;
+
+    public static DetailHomeDialogFragment newInstance(Partner partner) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TAG, partnerId);
+        bundle.putSerializable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,7 +70,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         // creating the fullscreen dialog
-        final Dialog dialog = new Dialog(getActivity(), getTheme()){
+        final Dialog dialog = new Dialog(getActivity(), getTheme()) {
             @Override
             public void onBackPressed() {
                 dismiss();
@@ -81,19 +84,19 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     }
 
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.detail_tab_name)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.review_tab_name)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.schedule_tab_name)));
         mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.album_tab_name)));
         setEvents();
         //Creating our pager adapter
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int parterId = bundle.getInt(TAG);
-            DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), parterId);
+            partner = (Partner) bundle.getSerializable(TAG);
+            DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner);
             mViewPager.setAdapter(adapter);
         }
     }
@@ -101,7 +104,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     @Override
     public void onStart() {
         super.onStart();
-        if(getDialog() == null) return;
+        if (getDialog() == null) return;
         getDialog().getWindow().getAttributes().windowAnimations = R.style.dialog_animation_fade;
     }
 
@@ -134,7 +137,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         }
     }
 
-    private void setEvents(){
+    private void setEvents() {
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

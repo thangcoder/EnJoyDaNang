@@ -26,7 +26,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.refactor.lib.colordialog.ColorDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
@@ -38,7 +40,10 @@ import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
+import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
+import node.com.enjoydanang.ui.fragment.review.write.WriteReviewFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -55,6 +60,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private final int CHANGE_PROFILE = 6;
     private final int CHANGE_PASSWORD = 7;
     private final int LOGOUT = 8;
+    private final int LOGIN = 4;
     private boolean isOpen;
     private final String IS_OPEN = "IS_OPEN";
     @BindView(R.id.toolbar)
@@ -127,6 +133,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         settingLeftMenu(Utils.hasLogin());
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +143,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 addFr(HomeFragment.class.getName(), 0);
 
             }
-        }else{
+        } else {
             addFr(HomeFragment.class.getName(), 0);
         }
 
@@ -147,6 +154,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         outState.putSerializable(IS_OPEN, true);
         super.onSaveInstanceState(outState);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -260,9 +268,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         switch (item.getItemId()) {
             case R.id.menu_search:
-                FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
                 addFragment(R.id.container_fragment, SearchFragment.class.getName(), true, null, transitionInfo);
                 break;
             case R.id.menu_scan:
@@ -334,30 +342,65 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        switch (position) {
-            case 0:
-                break;
-            case INTRODUCTION:
-                addFr(IntroductionFragment.class.getName(), position);
-                break;
-            case CONTACT_US:
-                addFr(ContactUsFragment.class.getName(), position);
-                break;
-            case FAVORITE:
-                addFr(FavoriteFragment.class.getName(), position);
-                break;
-            case LOG_CHECKIN:
-                break;
-            case 5:
-                break;
-            case CHANGE_PROFILE:
-                addFr(ProfileFragment.class.getName(), position);
-                break;
-            case CHANGE_PASSWORD:
-                addFr(ChangePwdFragment.class.getName(), position);
-                break;
-            case LOGOUT:
-                break;
+        if (Utils.hasLogin()) {
+            switch (position) {
+                case 0:
+                    break;
+                case INTRODUCTION:
+                    addFr(IntroductionFragment.class.getName(), position);
+                    break;
+                case CONTACT_US:
+                    addFr(ContactUsFragment.class.getName(), position);
+                    break;
+                case FAVORITE:
+                    addFr(FavoriteFragment.class.getName(), position);
+                    break;
+                case LOG_CHECKIN:
+                    break;
+                case 5:
+                    break;
+                case CHANGE_PROFILE:
+                    addFr(ProfileFragment.class.getName(), position);
+                    break;
+                case CHANGE_PASSWORD:
+                    addFr(ChangePwdFragment.class.getName(), position);
+                    break;
+                case LOGOUT:
+                    DialogUtils.showDialogConfirm(this, Utils.getString(R.string.logout),
+                            Utils.getString(R.string.msg_confirm_logout),
+                            Utils.getString(android.R.string.ok),
+                            Utils.getString(android.R.string.no),
+                            new ColorDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    GlobalApplication.setUserInfo(null);
+                                    finish();
+                                    overridePendingTransition( 0, 0);
+                                    startActivity(getIntent());
+                                    overridePendingTransition( 0, 0);
+                                }
+                            }, new ColorDialog.OnNegativeListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    colorDialog.dismiss();
+                                }
+                            });
+                    break;
+            }
+        } else {
+            switch (position) {
+                case 0:
+                    break;
+                case INTRODUCTION:
+                    addFr(IntroductionFragment.class.getName(), position);
+                    break;
+                case CONTACT_US:
+                    addFr(ContactUsFragment.class.getName(), position);
+                    break;
+                case LOGIN:
+                    finish();
+                    break;
+            }
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }

@@ -22,6 +22,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Contact;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 
 import static node.com.enjoydanang.R.id.edtAriaContent;
@@ -88,12 +89,12 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     public void sendContactSuccess() {
         Utils.clearForm(edtName, edtEmail, edtPhone, edtTitle, edtAriaContent);
-        Utils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.msg_send_contact_success));
+        DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.msg_send_contact_success));
     }
 
     @Override
     public void sendContactFailure(AppError error) {
-        Utils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
     }
 
     @Override

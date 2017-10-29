@@ -14,4 +14,12 @@
         android:orderInCategory="200"
         android:title="@string/action_scan"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:visible="false"
+        android:id="@+id/menu_add_write_review"
+        android:icon="@drawable/ic_add_white_36dp"
+        android:orderInCategory="300"
+        android:title="@string/action_write_review"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -7,7 +7,7 @@
     android:weightSum="1">
 
     <ImageView
-        android:id="@+id/imgProduct"
+        android:id="@+id/imgPartner"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".3"
@@ -75,9 +75,9 @@
 
                 <View
                     android:id="@+id/span"
-                    android:layout_centerVertical="true"
                     android:layout_width="@dimen/_1sdp"
                     android:layout_height="@dimen/_20sdp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/txtCountReviews"
                     android:background="@color/material_grey_500" />

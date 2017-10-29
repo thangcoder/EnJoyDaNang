@@ -15,6 +15,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Introduction;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 
 /**
@@ -91,6 +92,6 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
 
     @Override
     public void onLoadFailure(AppError error) {
-        Utils.showDialog(getContext(), 4, Constant.TITLE_WARNING, error.getMessage());
+        DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, error.getMessage());
     }
 }

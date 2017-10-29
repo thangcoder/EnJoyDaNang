@@ -9,6 +9,10 @@ import android.widget.EditText;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import cn.refactor.lib.colordialog.PromptDialog;
@@ -133,31 +137,11 @@ public class Utils {
     }
 
     public static String getIframeVideoPlay(String videoId, int height) {
-        return "<iframe class=\"youtube-player\" " + "style=\"border: 0; width: 100%; height: "+height+";"
+        return "<iframe class=\"youtube-player\" " + "style=\"border: 0; width: 100%; height: " + height + ";"
                 + "padding:0px; margin:0px\" " + "id=\"ytplayer\" type=\"text/html\" "
                 + "src=\"http://www.youtube.com/embed/" + videoId
                 + "?&theme=dark&autohide=2&modestbranding=1&showinfo=0&autoplay=1\fs=0\" frameborder=\"0\" "
                 + "allowfullscreen </iframe>\n";
-    }
-
-    /**
-     * @param context Context
-     * @param type    {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
-     * @param title   Title dialog
-     * @param msg     Message want to display
-     */
-    public static void showDialog(Context context, int type, String title, String msg) {
-        new PromptDialog(context)
-                .setDialogType(type)
-                .setAnimationEnable(true)
-                .setTitleText(title)
-                .setContentText(msg)
-                .setPositiveListener(getString(android.R.string.ok), new PromptDialog.OnPositiveListener() {
-                    @Override
-                    public void onClick(PromptDialog dialog) {
-                        dialog.dismiss();
-                    }
-                }).show();
     }
 
     public static void clearForm(EditText... editTexts) {
@@ -185,23 +169,37 @@ public class Utils {
         return StringUtils.isNotEmpty(firstName) || StringUtils.isNotEmpty(lastName) ? (firstName.trim() + " " + lastName.trim()).trim() : StringUtils.EMPTY;
     }
 
-    public static String getImageNormalOrSocial(String url){
-        if(StringUtils.isNotEmpty(url) && url.matches(Constant.REGEX_URL)){
+    public static String getImageNormalOrSocial(String url) {
+        if (StringUtils.isNotEmpty(url) && url.matches(Constant.REGEX_URL)) {
             return url;
         }
         return StringUtils.isNotEmpty(url) ? Constant.URL_HOST_IMAGE + url : url;
     }
 
-    public static UserInfo getUserInfo(){
+    public static UserInfo getUserInfo() {
         return GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
-    public static boolean hasLogin(){
-       return GlobalApplication.getUserInfo() != null;
+    public static boolean hasLogin() {
+        return GlobalApplication.getUserInfo() != null;
+    }
+
+    public static String formatDate(String patternInput, String patternOutput, String dateTime) {
+        if (StringUtils.isNotEmpty(dateTime)) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(patternInput, Locale.getDefault());
+            try {
+                Date date = simpleDateFormat.parse(dateTime);
+                simpleDateFormat.applyPattern(patternOutput);
+                return simpleDateFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return StringUtils.EMPTY;
     }
 }

@@ -30,6 +30,7 @@ import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
@@ -45,8 +46,8 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    @BindView(R.id.toolbar)
-    public Toolbar toolbar;
+//    @BindView(R.id.toolbar)
+//    public Toolbar toolbar;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -73,7 +74,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void init() {
-        setTitle(Utils.getString(R.string.Login_Screen_Title));
+//        setTitle(Utils.getString(R.string.Login_Screen_Title));
         LoginFactory loginFactory = new LoginFactory();
         loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this, this);
         loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this, this);
@@ -83,7 +84,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaFacebook.init();
         loginViaGoogle.init();
         setPresenter();
-        initToolbar(toolbar);
+//        initToolbar(toolbar);
     }
 
     @Override
@@ -97,13 +98,13 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void setEvent() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransitionExit();
-            }
-        });
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//                overridePendingTransitionExit();
+//            }
+//        });
     }
 
 
@@ -218,7 +219,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void onLoginFailure(AppError error) {
         hideLoading();
-        Utils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
+        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
     }
 
     @Override

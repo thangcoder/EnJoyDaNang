@@ -35,6 +35,7 @@ import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
@@ -46,7 +47,6 @@ import static node.com.enjoydanang.R.id.fabFavorite;
 
 /**
  * Created by chien on 10/8/17.
- *
  */
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
@@ -120,7 +120,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_500),VERTICAL_ITEM_SPACE));
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_500), VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setAdapter(mPartnerAdapter);
         rcvPartner.setHasFixedSize(false);
@@ -146,11 +146,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         mvpPresenter.getListHome(user.getUserId());
-        mvpPresenter.getAllCategories();
         mvpPresenter.getBanner();
+        loadmorePartner.setCategoryId(-1);
+        if (!Utils.hasLogin()) {
 //        mvpPresenter.getWeather();
 //        mvpPresenter.getExchangeRate();
-        loadmorePartner.setCategoryId(-1);
+            gridView.setVisibility(View.GONE);
+        } else {
+            mvpPresenter.getAllCategories();
+        }
     }
 
     @Override
@@ -336,14 +340,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                 fabFavorite.setImageResource(isFavorite ? R.drawable.unfollow : R.drawable.follow);
                 lstPartner.get(position).setFavorite(isFavorite ? 0 : 1);
             } else {
-                Utils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
+                DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
             }
 
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position).getId());
+                    DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
                     dialog.show(mFragmentManager, TAG);
                 }
             }, 50);
@@ -357,7 +361,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void addFavoriteFailure(AppError error) {
         Log.e(TAG, "onError: " + error.getMessage());
-        Utils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
     }
 
     private void clearFirstTimeData() {

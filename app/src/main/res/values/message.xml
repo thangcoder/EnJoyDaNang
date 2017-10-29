@@ -14,4 +14,13 @@
     <string name="msg_valid_old_new_pwd">New password not match!</string>
 
     <string name="msg_send_contact_success">Your contact sent</string>
+
+    <string name="update_profile_success">Profile Updated</string>
+
+    <string name="image_not_found">Image not found !</string>
+
+
+    <string name="review_empty">No reviews yet!</string>
+
+    <string name="enter_full_field">Please enter all fields !</string>
 </resources>

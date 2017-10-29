@@ -14,6 +14,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 
@@ -84,13 +85,13 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
         }
         Utils.clearForm(edtOldPwd, edtNewPwd, edtReEnterNewPwd);
         hideLoading();
-        Utils.showDialog(getContext(), 2, Constant.TITLE_SUCCESS, Utils.getString(R.string.password_updated));
+        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_SUCCESS, Utils.getString(R.string.password_updated));
     }
 
     @Override
     public void onChangeFailure(AppError error) {
         hideLoading();
-        Utils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
     }
 
     @OnClick(R.id.btnSave)
@@ -110,7 +111,7 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
             showLoading();
             mvpPresenter.changePwd(userInfo.getUserId(), oldPwd, newPwd);
         } else {
-            Utils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.msg_valid_old_new_pwd));
+            DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.msg_valid_old_new_pwd));
         }
     }
 

@@ -16,6 +16,7 @@ import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
@@ -140,6 +141,30 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("GlobalApi.asmx/SearchApp")
     Observable<Repository<Partner>> searchWithQuery(@Field("query") String query);
+
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/List")
+    Observable<Repository<Review>> getListReviewByPartnerId(@Field("partnerId") int partnerId, @Field("page") int page);
+
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/WriteReview")
+    Observable<Repository> writeReview(@Field("customerId") long customerId,
+                                                   @Field("partnerId") int partnerId,
+                                                   @Field("star") int star,
+                                                   @Field("title") String title,
+                                                   @Field("name") String name,
+                                                   @Field("content") String content);
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/ListReplyReview")
+    Observable<Repository> getReplyByReviewId(@Field("page") int page, @Field("reviewId") int reviewId);
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/ListReplyReviewAll")
+    Observable<Repository> getListReplyByReviewId(@Field("reviewId") int reviewId);
+
 
 //    @FormUrlEncoded
 //    @POST("/login")

@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -111,7 +115,13 @@ public class SlideshowDialogFragment extends DialogFragment {
             View view = layoutInflater.inflate(R.layout.image_fullscreen_preview, container, false);
 
             ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
+            DisplayMetrics display = getActivity().getResources().getDisplayMetrics();
 
+            int width = display.widthPixels;
+            int height = ((display.heightPixels * 80) / 100);
+            RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(width, height);
+            parms.addRule(RelativeLayout.CENTER_VERTICAL);
+            imageViewPreview.setLayoutParams(parms);
             PartnerAlbum model = images.get(position);
 
             Glide.with(getActivity()).load(model.getPicture())

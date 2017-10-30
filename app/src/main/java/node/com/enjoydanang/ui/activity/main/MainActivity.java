@@ -44,6 +44,8 @@ import node.com.enjoydanang.ui.fragment.favorite.FavoriteFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
+import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryAdapter;
+import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
@@ -440,6 +442,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     addFr(FavoriteFragment.class.getName(), position);
                     break;
                 case LOG_CHECKIN:
+                    addFr(CheckinHistoryFragment.class.getName(), position);
                     break;
                 case 5:
                     break;

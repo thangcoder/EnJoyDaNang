@@ -399,4 +399,19 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     }
 
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (mWebView != null) {
+                mWebView.resumeTimers();
+                mWebView.onResume();
+            }
+        } else {
+            if (mWebView != null) {
+                mWebView.pauseTimers();
+                mWebView.onPause();
+            }
+        }
+    }
 }

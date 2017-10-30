@@ -15,16 +15,37 @@
         android:scaleType="fitXY"
         android:src="@drawable/bg_drink_temp" />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:weightSum="1"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/txtAddReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:drawableLeft="@drawable/ic_rate_review_36dp"
-        android:gravity="center_vertical"
-        android:layout_margin="5dp"
-        android:text="Write Your Review" />
+        <TextView
+            android:id="@+id/txtPartnerName"
+            android:layout_weight=".95"
+            android:layout_width="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/_16ssp"
+            android:paddingLeft="5dp"
+            android:textColor="@color/black32"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/txtAddReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight=".05"
+            android:drawableLeft="@drawable/ic_rate_review_36dp"
+            android:gravity="center_vertical"
+            android:text="@string/hint_write_your_review" />
+
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/txtEmpty"

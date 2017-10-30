@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -144,7 +145,12 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 alertDialog.dismiss();
             }
         });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(alertDialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         alertDialog.show();
+        alertDialog.getWindow().setAttributes(lp);
     }
 
     @Override

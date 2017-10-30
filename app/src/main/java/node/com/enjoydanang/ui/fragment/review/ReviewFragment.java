@@ -47,6 +47,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @BindView(R.id.txtEmpty)
     TextView txtEmpty;
 
+    @BindView(R.id.txtPartnerName)
+    TextView txtPartnerName;
+
     private ReviewAdapter mAdapter;
 
     private final int START_PAGE = 0;
@@ -91,6 +94,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         if (bundle != null) {
             partner = (Partner) bundle.getSerializable(TAG);
             if (partner != null) {
+                txtPartnerName.setText(partner.getName());
                 showLoading();
                 mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
                 ImageUtils.loadImageNoRadius(getContext(), imgPartner, partner.getPicture());

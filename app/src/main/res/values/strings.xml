@@ -190,6 +190,7 @@
 
 
     <string name="password_updated">Your password updated !</string>
+    <string name="exit">Bấm lần nữa để thoát</string>
 
 </resources>
 

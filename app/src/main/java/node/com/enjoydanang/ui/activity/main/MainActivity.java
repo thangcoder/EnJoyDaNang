@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -199,14 +201,39 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
-            int countFragment = getSupportFragmentManager().getBackStackEntryCount();
-            if (countFragment > 0) {
-                this.getSupportFragmentManager().popBackStack();
-                setStateFragment();
-            } else {
-                finish();
+            if (!popFragment()) {
+                if (exit) {
+                    finish();
+                } else {
+                    Toast.makeText(this, getString(R.string.exit),
+                            Toast.LENGTH_SHORT).show();
+                    exit = true;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            exit = false;
+                        }
+                    }, 2500);
+                }
             }
         }
+    }
+    private Boolean exit = false;
+     boolean popFragment() {
+        boolean isPop = false;
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            Fragment fragment = getActiveFragment();
+            if(fragment.getTag().equals(HomeFragment.class.getName())){
+                currentTab= HomeTab.None;
+            }else{
+                currentTab = HomeTab.Home;
+            }
+            isPop = true;
+            getSupportFragmentManager().popBackStack();
+            setStateTabSelected();
+        }
+        return isPop;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -239,8 +266,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     if (fragment == null) {
                         addFrMenu(HomeFragment.class.getName(),true);
                     } else {
-                        resurfaceFragment(HomeFragment.class.getName());
+                        backToFragment(fragment);
                     }
+
                 }
                 currentTab = HomeTab.Home;
                 break;
@@ -249,12 +277,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
             case R.id.ll_profile:
                 if(currentTab != HomeTab.Profile){
-                    Fragment fragment  = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
-                    if(fragment== null){
-                        addFrMenu(ProfileMenuFragment.class.getName(),true);
-                    }else{
-                        resurfaceFragment(ProfileMenuFragment.class.getName());
-                    }
+                    addFr(ProfileMenuFragment.class.getName(),0);
                 }
                 currentTab = HomeTab.Profile;
                 break;
@@ -300,7 +323,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case R.id.menu_scan:
                 return true;
             case R.id.menu_edit:
-                addFr(ProfileFragment.class.getName(),5);
+                addFr(ProfileFragment.class.getName(),6);
                 currentTab = HomeTab.None;
                 return true;
             case android.R.id.home:
@@ -311,6 +334,81 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+    }
+
+    @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
+    private void requestCodeQRCodePermissions() {
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (!EasyPermissions.hasPermissions(this, perms)) {
+            EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (position) {
+            case 0:
+                break;
+            case INTRODUCTION:
+                addFr(IntroductionFragment.class.getName(), position);
+                break;
+            case CONTACT_US:
+                addFr(ContactUsFragment.class.getName(), position);
+                break;
+            case FAVORITE:
+                addFr(FavoriteFragment.class.getName(), position);
+                break;
+            case LOG_CHECKIN:
+                break;
+            case 5:
+                break;
+            case CHANGE_PROFILE:
+                addFr(ProfileFragment.class.getName(),position);
+                break;
+            case CHANGE_PASSWORD:
+                addFr(ChangePwdFragment.class.getName(), position);
+                break;
+            case LOGOUT:
+                break;
+        }
+        currentTab = HomeTab.None;
+        setStateTabSelected();
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    public Fragment getTopFragment() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return null;
+        }
+        String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+        return getSupportFragmentManager().findFragmentByTag(fragmentTag);
+    }
+    private void setStateFragment(){
+        String tag =getTopFragment().getTag();
+        if(tag.equals(HomeFragment.class.getName())) {
+            currentTab = HomeTab.Home;
+        }
+        else if(tag.equals(ProfileMenuFragment.class.getName())) {
+            currentTab = HomeTab.Profile;
+        }
+        else {
+            currentTab = HomeTab.None;
+        }
+        setStateTabSelected();
+
+        }
     public void setStateTabSelected() {
         switch (currentTab) {
             case Home:
@@ -342,30 +440,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-    }
-
-    @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
-    private void requestCodeQRCodePermissions() {
-        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (!EasyPermissions.hasPermissions(this, perms)) {
-            EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
-        }
-    }
-
-    private void replaceFr(String fragmentTag) {
+    private void replaceFr(String fragmentTag,int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        lvDrawerNav.setItemChecked(position, true);
         replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
     }
     private void addFrMenu(String fragmentTag, boolean isBackStack) {
@@ -376,7 +453,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private void addFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         lvDrawerNav.setItemChecked(position, true);
-        addFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+        Fragment fragment = getActiveFragment();
+        String tag =fragment.getTag();
+        if(tag.equals(HomeFragment.class.getName())){
+            addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+        }else{
+            replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+        }
     }
     public boolean resurfaceFragment(String tag){
         FragmentManager manager = getSupportFragmentManager();
@@ -394,69 +477,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         return false;
     }
-
-
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        switch (position) {
-            case 0:
-                break;
-            case INTRODUCTION:
-                addFr(IntroductionFragment.class.getName(), position);
-                break;
-            case CONTACT_US:
-                addFr(ContactUsFragment.class.getName(), position);
-                break;
-            case FAVORITE:
-                addFr(FavoriteFragment.class.getName(), position);
-                break;
-            case LOG_CHECKIN:
-                break;
-            case 5:
-                break;
-            case CHANGE_PROFILE:
-                addFr(ProfileFragment.class.getName(),position);
-                break;
-            case CHANGE_PASSWORD:
-                addFr(ChangePwdFragment.class.getName(), position);
-                break;
-            case LOGOUT:
-                break;
-        }
-        if(position==5){
-            currentTab = HomeTab.Profile;
-        }else {
-            currentTab = HomeTab.None;
-        }
-        setStateTabSelected();
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+    public void backToFragment(final Fragment fragment) {
+        getSupportFragmentManager().popBackStack(
+                fragment.getClass().getName(), 0);
     }
-    public void setCurrentTab(HomeTab homeTab){
-        currentTab = homeTab;
-        setStateTabSelected();
-    }
-    public Fragment getTopFragment() {
+    public Fragment getActiveFragment() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             return null;
         }
-        String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-        return getSupportFragmentManager().findFragmentByTag(fragmentTag);
+        String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+        return getSupportFragmentManager().findFragmentByTag(tag);
     }
-    private void setStateFragment(){
-        String tag =getTopFragment().getTag();
-        if(tag.equals(HomeFragment.class.getName())) {
-            currentTab = HomeTab.Home;
-        }
-        else if(tag.equals(ProfileMenuFragment.class.getName())) {
-            currentTab = HomeTab.Profile;
-        }
-        else {
-            currentTab = HomeTab.None;
-        }
-        setStateTabSelected();
-
-        }
-
-
 }

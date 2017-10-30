@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -77,7 +79,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     EditText edtEmail;
 
     @BindView(R.id.imgAvatarUser)
-    CircleImageView imgAvatarUser;
+//    CircleImageView imgAvatarUser;
+     SimpleDraweeView imgAvatarUser;
 
     private UserInfo userInfo;
 
@@ -170,9 +173,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onResume() {
         super.onResume();
-        MainActivity activity = (MainActivity) mMainActivity;
-        activity.setCurrentTab(HomeTab.Profile);
-        activity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
     }
 
     @Override
@@ -202,7 +203,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
     private void updateAvatar(File file) {
         base64Image = ImageUtils.encodeTobase64(file);
-        ImageUtils.loadImageFromFile(mMainActivity,imgAvatarUser,file);
+        Uri uri = Uri.fromFile(file);
+        ImageUtils.loadImageWithFresoURI(imgAvatarUser,uri );
     }
     private void initData(){
         mPhotoHelper = PhotoHelper.newInstance(this);
@@ -210,6 +212,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
         edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
         edtPhone.setText(StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone());
-        ImageUtils.loadImageNoRadius(getContext(), imgAvatarUser, userInfo.getImage());
+//        ImageUtils.loadImageNoRadius(getContext(), imgAvatarUser, userInfo.getImage());
+        ImageUtils.loadImageWithFreso(imgAvatarUser, userInfo.getImage());
     }
 }

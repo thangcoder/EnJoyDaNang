@@ -1,31 +1,20 @@
 package node.com.enjoydanang.ui.fragment.profile;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,13 +26,12 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -85,6 +73,16 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        editItem.setVisible(false);
+        scanItem.setVisible(false);
+
+    }
+
+    @Override
     public void unKnownError() {
 
     }
@@ -101,6 +99,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     protected void init(View view) {
+        setHasOptionsMenu(true);
         userInfo = Utils.getUserInfo();
         initData();
     }
@@ -138,14 +137,14 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnUpdate:
-                    if(!TextUtils.isEmpty(base64Image)){
+                if (!TextUtils.isEmpty(base64Image)) {
                     mvpPresenter.updateProfile(userInfo.getUserId(),
-                                String.valueOf(edtFullname.getText()),
-                                String.valueOf(edtPhone.getText()),
-                                String.valueOf(edtEmail.getText()),
-                                base64Image);
-                    }
-                break;
+                            String.valueOf(edtFullname.getText()),
+                            String.valueOf(edtPhone.getText()),
+                            String.valueOf(edtEmail.getText()),
+                            base64Image);
+                    break;
+                }
             case R.id.txtTakeAPhoto:
                 mPhotoHelper.openCamera();
                 break;
@@ -155,6 +154,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity activity = (MainActivity) mMainActivity;
+        activity.setCurrentTab(HomeTab.Profile);
+        activity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -167,7 +173,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 if (imgFile.exists()) {
                     updateAvatar(imgFile);
                 } else {
-                   DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
+                    DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
                 }
 
                 break;
@@ -181,11 +187,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 break;
         }
     }
+
     private void updateAvatar(File file) {
         base64Image = ImageUtils.encodeTobase64(file);
-        ImageUtils.loadImageFromFile(mMainActivity,imgAvatarUser,file);
+        ImageUtils.loadImageFromFile(mMainActivity, imgAvatarUser, file);
     }
-    private void initData(){
+
+    private void initData() {
         mPhotoHelper = PhotoHelper.newInstance(this);
         edtUserName.setText(userInfo.getUserName());
         edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());

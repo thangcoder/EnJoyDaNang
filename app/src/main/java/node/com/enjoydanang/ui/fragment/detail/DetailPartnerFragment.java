@@ -66,7 +66,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> implements iDetailPartnerView,
         OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback,
-        OnFindLastLocationCallback{
+        OnFindLastLocationCallback {
     private static final String TAG = DetailPartnerFragment.class.getSimpleName();
     private static final int REQUEST_PERMISSION_RESULT = 0x2;
     private static final float INIT_ZOOM_LEVEL = 17.0f;
@@ -279,10 +279,10 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mWebView.setVisibility(View.GONE);
         } else {
             String videoId = url.substring(url.lastIndexOf("/") + 1);
-            if(StringUtils.isNotBlank(videoId)){
+            if (StringUtils.isNotBlank(videoId)) {
                 String frameVideo = Utils.getIframeVideoPlay(videoId, 300);
                 mWebView.loadData(frameVideo, "text/html", "utf-8");
-            }else{
+            } else {
                 mWebView.setVisibility(View.GONE);
             }
         }
@@ -360,12 +360,20 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 LatLng partnerPoint = new LatLng(latitude, longtitude);
                 LatLng currentPoint = getCurrentLocation();
                 if (currentPoint != null) {
-                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
-                    locationHelper.downloadAndParse(url);
+                    startIntentMapsView(partnerPoint, currentPoint);
+//                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
+//                    locationHelper.downloadAndParse(url);
                 }
                 return true;
             }
         });
+    }
+
+    private void startIntentMapsView(LatLng partnerLocation, LatLng currentLocation) {
+        if (partnerLocation != null && currentLocation != null) {
+            String url = Utils.getUriMapsDirection(currentLocation.latitude, currentLocation.longitude, partnerLocation.latitude, partnerLocation.longitude);
+            Utils.startIntentMap(getContext(), url);
+        }
     }
 
 

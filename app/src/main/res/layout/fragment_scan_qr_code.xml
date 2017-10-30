@@ -3,24 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <cn.bingoogolapple.qrcode.zxing.ZXingView
-        android:id="@+id/zxingview"
+    <include layout="@layout/include_toolbar" />
+
+    <cn.bingoogolapple.qrcode.zbar.ZBarView
+        android:id="@+id/zbarview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/activity_horizontal_margin"
         app:qrcv_animTime="1000"
         app:qrcv_borderColor="@android:color/white"
         app:qrcv_borderSize="1dp"
         app:qrcv_cornerColor="@color/colorPrimaryDark"
-        app:qrcv_cornerLength="20dp"
-        app:qrcv_cornerSize="3dp"
-        app:qrcv_isCenterVertical="false"
-        app:qrcv_maskColor="#33FFFFFF"
-        app:qrcv_rectWidth="@dimen/_200sdp"
-        app:qrcv_scanLineColor="@color/colorPrimaryDark"
-        app:qrcv_scanLineSize="1dp"
-        app:qrcv_tipBackgroundColor="@color/white"
-        app:qrcv_topOffset="90dp" />
+        app:qrcv_isCenterVertical="true"
+        app:qrcv_isOnlyDecodeScanBoxArea="true"
+        app:qrcv_isShowDefaultGridScanLineDrawable="false"
+        app:qrcv_isShowTipTextAsSingleLine="false"
+        app:qrcv_isTipTextBelowRect="false" />
 
 </LinearLayout>

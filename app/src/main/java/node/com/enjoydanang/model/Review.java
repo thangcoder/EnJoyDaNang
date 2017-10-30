@@ -3,8 +3,6 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 /**
  * Author: Tavv
  * Created on 29/10/2017
@@ -31,6 +29,8 @@ public class Review {
     @SerializedName("Date")
     @Expose
     private String date;
+
+    private boolean isExpanded;
 
     public int getId() {
         return id;
@@ -80,4 +80,11 @@ public class Review {
         this.date = date;
     }
 
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
 }

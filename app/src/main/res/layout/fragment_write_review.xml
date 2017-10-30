@@ -6,26 +6,31 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <RatingBar
+    <!--<android.support.v7.widget.AppCompatRatingBar-->
+        <!--android:id="@+id/ratingBar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:isIndicator="false"-->
+        <!--android:numStars="5"-->
+        <!--android:stepSize="1"-->
+        <!--android:theme="@style/RatingBar"/>-->
+
+    <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/ratingBar"
-        style="?attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:stepSize="1"
         android:theme="@style/RatingBar"
-        android:transformPivotX="0dp"
-        android:transformPivotY="0dp" />
+        android:layout_marginLeft="20dp"
+        android:gravity="center"
+        android:isIndicator="false"
+        android:stepSize="1"/>
 
     <LinearLayout
         android:layout_width="@dimen/button_login_social_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -120,6 +125,7 @@
         android:layout_gravity="right|end"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginRight="20dp"
+        android:visibility="gone"
         android:background="@drawable/ic_add_a_photo_36dp" />
 
     <android.support.v7.widget.AppCompatButton

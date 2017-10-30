@@ -23,4 +23,6 @@
     <string name="review_empty">No reviews yet!</string>
 
     <string name="enter_full_field">Please enter all fields !</string>
+
+    <string name="order_success">Order success !</string>
 </resources>

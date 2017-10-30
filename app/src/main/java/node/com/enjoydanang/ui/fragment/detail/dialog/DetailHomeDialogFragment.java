@@ -58,6 +58,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         View rootView = inflater.inflate(R.layout.fragment_detail_home, container, false);
         initToolbar(rootView);
         mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         return rootView;
@@ -98,6 +99,8 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
             partner = (Partner) bundle.getSerializable(TAG);
             DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner);
             mViewPager.setAdapter(adapter);
+            int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
+            mViewPager.setOffscreenPageLimit(limit);
         }
     }
 

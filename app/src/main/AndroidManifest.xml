@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".GlobalApplication"
@@ -39,8 +39,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
         <activity android:name=".ui.activity.splash.ScreenSplashActivity">
@@ -50,28 +49,32 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.login.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
-        <activity android:name=".ui.activity.main.MainActivity"
-            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".ui.activity.main.MainActivity"
+            android:configChanges="orientation|screenSize" />
 
-        <activity android:name=".ui.activity.signup.SignUpActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"/>
+        <activity
+            android:name=".ui.activity.signup.SignUpActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
         <activity android:name=".ui.activity.start.StartActivity" />
 
 
-        <!--<provider-->
-            <!--android:name="android.support.v4.content.Provider"-->
-            <!--android:authorities="${applicationId}.provider"-->
-            <!--android:exported="false"-->
-            <!--android:grantUriPermissions="true">-->
-            <!--<meta-data-->
-                <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
-                <!--android:resource="@xml/provider_paths"/>-->
-        <!--</provider>-->
+        <activity android:name=".ui.activity.scan.ScanActivity" />
 
+        <!--<provider-->
+        <!--android:name="android.support.v4.content.Provider"-->
+        <!--android:authorities="${applicationId}.provider"-->
+        <!--android:exported="false"-->
+        <!--android:grantUriPermissions="true">-->
+        <!--<meta-data-->
+        <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--android:resource="@xml/provider_paths"/>-->
+        <!--</provider>-->
 
 
     </application>

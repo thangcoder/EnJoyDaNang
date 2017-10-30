@@ -52,9 +52,14 @@
 
     <dimen name="button_login_social_width">350dp</dimen>
 
-    <dimen name="button_login_social_height">45dp</dimen>
+    <dimen name="button_login_social_height">40dp</dimen>
 
     <dimen name="text_size_name_social">@dimen/_14ssp</dimen>
 
-    <dimen name="logo_app_hight_default">120dp</dimen>
+    <dimen name="logo_app_hight_default">100dp</dimen>
+
+    <item type="dimen" name="dialog_min_width_major">65%</item>
+
+    <item type="dimen" name="dialog_min_width_minor">95%</item>
+
 </resources>

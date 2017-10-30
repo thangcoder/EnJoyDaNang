@@ -12,6 +12,8 @@ public class Constant {
     public static final String URL_HOST = "http://enjoyindanang.com/API/";
     public static final String URL_HOST_IMAGE = "http://enjoyindanang.com";
 
+    public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
+
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
     public static final String DATE_SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";

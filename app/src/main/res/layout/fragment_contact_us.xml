@@ -273,6 +273,7 @@
             android:id="@+id/btnSendContact"
             android:layout_width="@dimen/button_login_social_width"
             android:layout_height="@dimen/button_login_social_height"
+            android:layout_marginBottom="15dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@color/color_button_login"

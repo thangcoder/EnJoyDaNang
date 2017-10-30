@@ -1,11 +1,9 @@
 package node.com.enjoydanang.ui.fragment.review;
 
-import android.media.Image;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,24 +13,18 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import node.com.enjoydanang.MvpFragment;
-import node.com.enjoydanang.MvpFragmentWithToolbar;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
-import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Review;
-import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
-import node.com.enjoydanang.ui.fragment.review.write.WriteReviewFragment;
 import node.com.enjoydanang.utils.ImageUtils;
-import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 
@@ -127,6 +119,14 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     void onClick(View view){
         if (partner != null) {
             WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    dialog.dismiss();
+                    showLoading();
+                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                }
+            });
             dialog.show(mFragmentManager, TAG);
         }
 
@@ -154,11 +154,13 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchReviews(List<Review> models) {
-        if (CollectionUtils.isEmpty(models)) {
+        if (CollectionUtils.isEmpty(models) && currentPage == 0) {
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
         }
         updateItems(models);
+        txtEmpty.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -187,5 +189,4 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     public void onClick(View view, int position) {
         Toast.makeText(mMainActivity, "Reply Click", Toast.LENGTH_SHORT).show();
     }
-
 }

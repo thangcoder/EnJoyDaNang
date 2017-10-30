@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -109,7 +110,7 @@
         <item name="android:layout_marginBottom">@dimen/_minus5sdp</item>
     </style>
 
-    <style name="RatingBar" parent="Theme.AppCompat">
+    <style name="RatingBar" parent="android:style/Widget.Material.RatingBar.Small">
         <item name="colorControlNormal">@color/material_yellow_500</item>
         <item name="colorControlActivated">@color/material_grey_200</item>
     </style>
@@ -142,8 +143,7 @@
     </style>
 
 
-    <style
-        name="dialog_animation_fade" >
+    <style name="dialog_animation_fade">
         <item name="android:windowEnterAnimation">@anim/slide_from_left</item>
         <item name="android:windowExitAnimation">@anim/slide_to_right</item>
     </style>
@@ -156,5 +156,12 @@
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:scrollHorizontally">true</item>
     </style>
+
+
+    <style name="MyDialog">
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+    </style>
+
 
 </resources>

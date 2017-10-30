@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Created by chientruong on 3/27/17.
@@ -24,7 +26,7 @@ public class MainPresenter extends BasePresenter<MainView> {
         super(view);
     }
 
-    void loadInfoUserMenu(Context context, ImageView imgAvatar, TextView fullName, TextView email) {
+    void loadInfoUserMenu(Context context, SimpleDraweeView imgAvatar, TextView fullName, TextView email) {
         UserInfo userInfo = GlobalApplication.getUserInfo();
         if (userInfo != null) {
             if (StringUtils.isEmpty(userInfo.getFullName())) {
@@ -37,10 +39,11 @@ public class MainPresenter extends BasePresenter<MainView> {
             } else {
                 email.setText(userInfo.getEmail());
             }
-            Picasso.with(context).load(userInfo.getImage()).
-                    placeholder(R.drawable.ic_no_user).
-                    fit().
-                    into(imgAvatar);
+//            Picasso.with(context).load(userInfo.getImage()).
+//                    placeholder(R.drawable.ic_no_user).
+//                    fit().
+//                    into(imgAvatar);
+            ImageUtils.loadImageWithFreso(imgAvatar,userInfo.getImage());
         } else {
             fullName.setVisibility(View.GONE);
             email.setVisibility(View.GONE);

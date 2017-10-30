@@ -2,8 +2,6 @@ package node.com.enjoydanang.api;
 
 import android.support.annotation.NonNull;
 
-import org.json.JSONObject;
-
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
@@ -21,14 +19,11 @@ import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
-import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import retrofit2.http.Streaming;
-import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -164,6 +159,28 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReviewAll")
     Observable<Repository> getListReplyByReviewId(@Field("reviewId") int reviewId);
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/DetailByQRCode")
+    Observable<Repository<Partner>> getInforByQRCode(@Field("qrCode") String qrCode);
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/CheckIn")
+    Observable<Repository> checkIn(@Field("partnerId") int partnerId, @Field("customerId") long customerId, @Field("amount") int amount);
+
+    @FormUrlEncoded
+    @POST("GlobalApi.asmx/HistoryCheckIn")
+    Observable<Repository> historyCheckIn(@Field("customerId") long customerId, @Field("fromDate") String fromDate, @Field("toDate") String toDate);
+
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/ListPicture")
+    Observable<Repository> getListImageByReviewId(@Field("reviewId") long reviewId);
+
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/ListReplyReviewAll")
+    Observable<Repository> getListReplyByReviewId(@Field("reviewId") long reviewId);
 
 
 //    @FormUrlEncoded

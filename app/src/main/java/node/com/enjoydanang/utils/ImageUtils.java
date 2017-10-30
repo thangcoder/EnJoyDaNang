@@ -3,15 +3,19 @@ package node.com.enjoydanang.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.ImageView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URLEncoder;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.utils.helper.RoundedTransformation;
@@ -71,7 +75,10 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
-
+    public static void loadImageWithFreso(SimpleDraweeView imgView, String url) {
+        Uri  imageUri = Uri.parse(decodeURL(url));
+        imgView.setImageURI(imageUri);
+    }
     public static String encodeTobase64( File file ) {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
         if (bitmap != null) {
@@ -87,5 +94,15 @@ public class ImageUtils {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+    public static String decodeURL(String url) {
+        String link = null;
+        String image = null;
+        if (!TextUtils.isEmpty(url)) {
+            link = url.substring(0, url.lastIndexOf('/') + 1);
+            image = URLEncoder.encode(url.substring(link.length(), url.length()));
+        }
+        return link + image;
+    }
+
 
 }

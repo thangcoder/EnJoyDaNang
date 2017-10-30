@@ -9,11 +9,11 @@
     <!--<include layout="@layout/include_toolbar" />-->
 
     <ImageView
-        android:layout_marginTop="20dp"
         android:id="@+id/imageView3"
         android:layout_width="@dimen/button_login_social_width"
         android:layout_height="@dimen/logo_app_hight_default"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_logo_app" />
 
     <LinearLayout
@@ -163,8 +163,8 @@
     <LinearLayout
         android:layout_width="@dimen/button_login_social_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -173,9 +173,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
-            android:textSize="@dimen/_13ssp"
             android:text="@string/create_account"
             android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
 
 
@@ -186,9 +186,9 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:textSize="@dimen/_13ssp"
             android:text="@string/forgot_pwd"
             android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -202,7 +202,6 @@
         android:gravity="center_horizontal"
         android:text="@string/continue_hint"
         android:textColor="@color/bg_login_button"
-        android:textSize="@dimen/_20ssp"
-        android:textStyle="bold" />
+        android:textSize="@dimen/_20ssp" />
 
 </LinearLayout>

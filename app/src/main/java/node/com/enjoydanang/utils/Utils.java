@@ -1,7 +1,10 @@
 package node.com.enjoydanang.utils;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -9,13 +12,11 @@ import android.widget.EditText;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
@@ -201,5 +202,22 @@ public class Utils {
             }
         }
         return StringUtils.EMPTY;
+    }
+
+    public static String getUriMapsDirection(double latitudeFirst, double longtitudeFirst, double latitudeSecond, double longtitudeSecond){
+        return "http://maps.google.com/maps?f=d&hl=en&saddr="+latitudeFirst+","+longtitudeFirst+"&daddr="+latitudeSecond+","+longtitudeSecond;
+    }
+
+
+    public static void startIntentMap(Context context, String url){
+        Intent navigationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(Intent.createChooser(navigationIntent, "Select an application"));
+    }
+
+    public static void startIntentMaps(Context context, String url){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setComponent(new ComponentName("com.google.android.apps.maps",
+                "com.google.android.maps.MapsActivity"));
+        context.startActivity(intent);
     }
 }

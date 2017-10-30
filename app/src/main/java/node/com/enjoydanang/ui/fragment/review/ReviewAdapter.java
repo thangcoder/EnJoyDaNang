@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.fragment.review;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,9 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Review;
-import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-
-import static android.R.attr.animation;
 
 /**
  * Author: Tavv
@@ -39,7 +34,6 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private List<Review> lstReviews;
     private Context context;
     private OnItemClickListener onItemClickListener;
-    private boolean isExpand;
 
     public ReviewAdapter(Context context, List<Review> lstReviews, OnItemClickListener onItemClickListener) {
         this.context = context;
@@ -97,7 +91,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ReviewViewHolder) {
-            Review model = lstReviews.get(position);
+            final Review model = lstReviews.get(position);
             ((ReviewViewHolder) holder).txtContentReview.setText(model.getContent());
             ((ReviewViewHolder) holder).txtNumRate.setText(String.valueOf(model.getStar()));
             ((ReviewViewHolder) holder).txtReviewerName.setText(model.getName());
@@ -108,12 +102,14 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 ((ReviewViewHolder) holder).imgExpanCollapseContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(isExpand){
+                        if(model.isExpanded()){
+                            model.setExpanded(false);
                             expand(((ReviewViewHolder) holder).txtContentReview, false);
-                            ((ReviewViewHolder) holder).imgExpanCollapseContent.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
-                        }else{
-                            expand(((ReviewViewHolder) holder).txtContentReview, true);
                             ((ReviewViewHolder) holder).imgExpanCollapseContent.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                        }else{
+                            model.setExpanded(true);
+                            expand(((ReviewViewHolder) holder).txtContentReview, true);
+                            ((ReviewViewHolder) holder).imgExpanCollapseContent.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
                         }
                     }
                 });
@@ -146,13 +142,11 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private void expand(TextView textView, boolean collapse) {
         ObjectAnimator animation = null;
         if (collapse) {
-            isExpand = true;
             animation= ObjectAnimator.ofInt(
                     textView,
                     "maxLines",
                     10);
         } else {
-            isExpand = false;
             animation = ObjectAnimator.ofInt(
                     textView,
                     "maxLines",

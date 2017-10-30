@@ -31,7 +31,7 @@
         <item name="android:fitsSystemWindows">true</item>
     </style>
 
-    <style name="RatingBar"  parent="android:style/Widget.Material.RatingBar.Small">
+    <style name="RatingBar" parent="android:style/Widget.Material.RatingBar.Small">
         <item name="colorControlNormal">@color/material_grey_500</item>
         <item name="colorControlActivated">@color/material_yellow_500</item>
     </style>
@@ -49,4 +49,10 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+    <style name="RatingBarFeed" parent="android:style/Widget.Material.RatingBar.Indicator">
+        <item name="colorControlActivated">@color/material_yellow_500</item>
+        <item name="colorControlNormal">@color/material_yellow_500</item>
+    </style>
+
 </resources>

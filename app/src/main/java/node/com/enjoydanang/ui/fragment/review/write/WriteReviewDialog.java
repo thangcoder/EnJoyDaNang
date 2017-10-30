@@ -1,15 +1,13 @@
 package node.com.enjoydanang.ui.fragment.review.write;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,13 +23,13 @@ import org.apache.commons.lang3.StringUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
@@ -40,8 +38,6 @@ import node.com.enjoydanang.utils.Utils;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static android.R.attr.data;
 
 /**
  * Author: Tavv
@@ -69,6 +65,12 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private Partner partner;
 
+    private DialogInterface.OnDismissListener onDismissListener;
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
     public static WriteReviewDialog newInstance(Partner partner) {
         WriteReviewDialog fragment = new WriteReviewDialog();
         Bundle bundle = new Bundle();
@@ -80,6 +82,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getDialog().setTitle("Write Review");
         return inflater.inflate(R.layout.fragment_write_review, container, false);
     }
 
@@ -111,25 +114,25 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         }
     }
 
-//    @NonNull
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        final RelativeLayout root = new RelativeLayout(getActivity());
-//        root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//
-//        // creating the fullscreen dialog
-//        final Dialog dialog = new Dialog(getActivity(), getTheme()) {
-//            @Override
-//            public void onBackPressed() {
-//                dismiss();
-//            }
-//        };
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(root);
-//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        return dialog;
-//    }
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final RelativeLayout root = new RelativeLayout(getActivity());
+        root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // creating the fullscreen dialog
+        final Dialog dialog = new Dialog(getActivity(), getTheme()) {
+            @Override
+            public void onBackPressed() {
+                dismiss();
+            }
+        };
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(root);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        return dialog;
+    }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -152,10 +155,10 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             DialogUtils.showDialog(getActivity(), 2, Constant.TITLE_ERROR, Utils.getString(R.string.enter_full_field));
             return;
         }
-        if (Utils.hasLogin() && partner != null) {
-
+        if (partner != null) {
+            long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
-            new CompositeSubscription().add(apiStores.writeReview(userInfo.getUserId(), partner.getId(), (int) ratingCount, title, name, content)
+            new CompositeSubscription().add(apiStores.writeReview(userId, partner.getId(), (int) ratingCount, title, name, content)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
@@ -165,8 +168,13 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                                 DialogUtils.showDialog(getActivity(), 2, Constant.TITLE_ERROR, model.getMessage());
                                 return;
                             }
-                            DialogUtils.showDialog(getActivity(), 3, Constant.TITLE_SUCCESS, "Review sent");
-                            getActivity().onBackPressed();
+                            DialogUtils.showDialog(getActivity(), 3, Constant.TITLE_SUCCESS, "Review sent", new PromptDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(PromptDialog promptDialog) {
+                                    promptDialog.dismiss();
+                                   dismiss();
+                                }
+                            });
                         }
 
                         @Override
@@ -179,6 +187,14 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
                         }
                     }));
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
         }
     }
 }

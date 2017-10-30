@@ -62,12 +62,12 @@ public class DrawerAdapter extends BaseAdapter {
         switch (type) {
             case Group:
                 view = mInflater.inflate(R.layout.drawer_nav_item_group, viewGroup, false);
-                TextView txtTitle = (TextView) view.findViewById(R.id.txt_group_item_title);
+                TextView txtTitle = (TextView) view.findViewById(R.id.txt_title);
                 txtTitle.setText(titles[i]);
                 return view;
             case Normal:
                 view = mInflater.inflate(R.layout.drawer_nav_item, viewGroup, false);
-                TextView txtTitleNormal = (TextView) view.findViewById(R.id.txt_normal_title);
+                TextView txtTitleNormal = (TextView) view.findViewById(R.id.txt_title);
                 ImageView image = (ImageView) view.findViewById(R.id.img_icon);
                 View span = (View) view.findViewById(R.id.span);
                 hideSpan(span, i, titles);

@@ -75,7 +75,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     }
 
     private void openMainActivity() {
-        Intent i = new Intent(ScreenSplashActivity.this, StartActivity.class);
+        Intent i = new Intent(ScreenSplashActivity.this, LoginActivity.class);
         startActivity(i);
         finish();
     }

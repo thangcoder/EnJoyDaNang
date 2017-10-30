@@ -1,10 +1,14 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
 import android.Manifest;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -19,14 +23,16 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,9 +49,10 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
-import node.com.enjoydanang.utils.ScreenUtils;
 import node.com.enjoydanang.utils.Utils;
-import pub.devrel.easypermissions.AfterPermissionGranted;
+import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
+import node.com.enjoydanang.utils.helper.LocationHelper;
+import node.com.enjoydanang.utils.widget.CustomMapView;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -56,10 +63,13 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 
 public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> implements iDetailPartnerView,
-        OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
+        OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback,
+        OnFindLastLocationCallback{
     private static final String TAG = DetailPartnerFragment.class.getSimpleName();
     private static final int REQUEST_PERMISSION_RESULT = 0x2;
-    public static final float INIT_ZOOM_LEVEL = 17.0f;
+    private static final float INIT_ZOOM_LEVEL = 17.0f;
+    private static final int DURATION_SLIDE = 3000;
 
     @BindView(R.id.txtTitle)
     TextView txtTitle;
@@ -80,10 +90,18 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     SliderLayout slider;
 
     @BindView(R.id.mapView)
-    MapView mMapView;
+    CustomMapView mMapView;
 
+    @BindView(R.id.scrollDetailPartner)
+    NestedScrollView scrollDetailPartner;
+
+    private GoogleMap mGoogleMap;
 
     private DetailPartner partner;
+
+    private Location mLastLocation;
+
+    private LocationHelper locationHelper;
 
     public static DetailPartnerFragment newInstance(int partnerId) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
@@ -101,7 +119,10 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @Override
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getString(R.string.Detail_Screen_Title));
-
+//        initGoogleClient();
+        locationHelper = new LocationHelper(getActivity(), this);
+        locationHelper.checkpermission();
+        locationHelper.buildGoogleApiClient(this, this);
     }
 
 
@@ -126,6 +147,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
+            mMapView.setViewParent(scrollDetailPartner);
         }
 
         Bundle bundle = getArguments();
@@ -151,13 +173,14 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     public void showToast(String desc) {
-
+        Toast.makeText(mMainActivity, desc, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void unKnownError() {
 
     }
+
 
     @Override
     public void onFetchDetailPartnerSuccess(Repository<DetailPartner> data) {
@@ -202,36 +225,42 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         slider.setPresetTransformer(SliderLayout.Transformer.Accordion);
         slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         slider.setCustomAnimation(new DescriptionAnimation());
-        slider.setDuration(3000);
+        slider.setDuration(DURATION_SLIDE);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
+        mGoogleMap = googleMap;
+        locationHelper.setGoogleMap(mGoogleMap);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        drawRouteToPartner();
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             loadMapView(partner, googleMap);
         } else {
-            requestPermissions();
+            locationHelper.checkpermission();
         }
     }
 
     @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        Log.i(TAG, "onPermissionsGranted " + requestCode);
-        Log.i(TAG, "onPermissionsGranted " + perms);
+    public void onConnected(@Nullable Bundle bundle) {
+        mLastLocation = locationHelper.getLocation();
     }
 
     @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Log.i(TAG, "onPermissionsDenied " + requestCode);
+    public void onConnectionSuspended(int i) {
+
     }
 
-    @AfterPermissionGranted(REQUEST_PERMISSION_RESULT)
-    private void requestPermissions() {
-        String[] perm = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-        EasyPermissions.requestPermissions(this, "The application request permission to showing location", REQUEST_PERMISSION_RESULT, perm);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        locationHelper.connectApiClient();
+    }
+
+    @Override
+    public void onFound(Location location) {
+        mLastLocation = location;
     }
 
     private class WebClient extends WebViewClient {
@@ -246,8 +275,13 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         if (StringUtils.isBlank(url)) {
             mWebView.setVisibility(View.GONE);
         } else {
-            String frameVideo = Utils.reFormatYoutubeUrl(ScreenUtils.getScreenWidth() / 3, 300, url);
-            mWebView.loadData(frameVideo, "text/html", "utf-8");
+            String videoId = url.substring(url.lastIndexOf("/") + 1);
+            if(StringUtils.isNotBlank(videoId)){
+                String frameVideo = Utils.getIframeVideoPlay(videoId, 300);
+                mWebView.loadData(frameVideo, "text/html", "utf-8");
+            }else{
+                mWebView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -276,6 +310,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         mMapView.onResume();
         mWebView.resumeTimers();
         mWebView.onResume();
+        locationHelper.checkPlayServices();
     }
 
 
@@ -307,5 +342,50 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         mWebView = null;
         super.onDestroy();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    private void drawRouteToPartner() {
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                double longtitude = Double.parseDouble(StringUtils.trim(partner.getGeoLng()));
+                double latitude = Double.parseDouble(StringUtils.trim(partner.getGeoLat()));
+                LatLng partnerPoint = new LatLng(latitude, longtitude);
+                LatLng currentPoint = getCurrentLocation();
+                if (currentPoint != null) {
+                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
+                    locationHelper.downloadAndParse(url);
+                }
+                return true;
+            }
+        });
+    }
+
+
+    private LatLng getCurrentLocation() {
+        mLastLocation = locationHelper.getLocation();
+        if (mLastLocation != null) {
+            double latitude = mLastLocation.getLatitude();
+            double longitude = mLastLocation.getLongitude();
+            return new LatLng(latitude, longitude);
+        } else {
+            showToast("Couldn't get the location. Make sure location is enabled on the device");
+            return null;
+        }
+    }
+
+    // Permission check functions
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        // redirects to utils
+        locationHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    }
+
 
 }

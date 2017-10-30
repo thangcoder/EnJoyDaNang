@@ -22,7 +22,6 @@
         android:background="@android:color/transparent"
         android:layout_gravity="left|center"
         android:text="@string/google_login"
-        android:textStyle="bold"
         android:textSize="@dimen/text_size_name_social"
         android:textAllCaps="false"
         android:textColor="@color/white" />

@@ -1,7 +1,9 @@
 package node.com.enjoydanang.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -130,13 +132,12 @@ public class Utils {
         return StringUtils.EMPTY;
     }
 
-    public static String getHtmlfromVideoId(String videoId) {
-        String html = "<iframe class=\"youtube-player\" " + "style=\"border: 0; width: 100%; height: 96%;"
+    public static String getIframeVideoPlay(String videoId, int height) {
+        return "<iframe class=\"youtube-player\" " + "style=\"border: 0; width: 100%; height: "+height+";"
                 + "padding:0px; margin:0px\" " + "id=\"ytplayer\" type=\"text/html\" "
                 + "src=\"http://www.youtube.com/embed/" + videoId
                 + "?&theme=dark&autohide=2&modestbranding=1&showinfo=0&autoplay=1\fs=0\" frameborder=\"0\" "
-                + "allowfullscreen autobuffer " + "controls onclick=\"this.play()\">\n" + "</iframe>\n";
-        return html;
+                + "allowfullscreen </iframe>\n";
     }
 
     /**
@@ -193,5 +194,14 @@ public class Utils {
 
     public static UserInfo getUserInfo(){
         return GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public static boolean hasLogin(){
+       return GlobalApplication.getUserInfo() != null;
     }
 }

@@ -10,17 +10,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <!--<com.makeramen.roundedimageview.RoundedImageView-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/img_partner_photo"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/_125sdp"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:src="@drawable/ic_category_temp"-->
+            <!--app:riv_corner_radius_bottom_left="0dp"-->
+            <!--app:riv_corner_radius_bottom_right="0dp"-->
+            <!--app:riv_corner_radius_top_left="0dp"-->
+            <!--app:riv_corner_radius_top_right="0dp" />-->
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_marginTop="@dimen/_16sdp"
             android:id="@+id/img_partner_photo"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_125sdp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_category_temp"
-            app:riv_corner_radius_bottom_left="0dp"
-            app:riv_corner_radius_bottom_right="0dp"
-            app:riv_corner_radius_top_left="0dp"
-            app:riv_corner_radius_top_right="0dp" />
+            app:placeholderImageScaleType="centerCrop"
+            app:placeholderImage="@drawable/placeholder"
+            app:progressBarAutoRotateInterval="1000"
+            app:progressBarImage="@drawable/loading"
+            app:progressBarImageScaleType="centerInside"
+            />
+
 
         <TextView
             android:id="@+id/tv_partner_name"

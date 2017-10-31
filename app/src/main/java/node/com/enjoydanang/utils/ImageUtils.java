@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URI;
 import java.net.URLEncoder;
 
 import node.com.enjoydanang.R;
@@ -78,6 +79,9 @@ public class ImageUtils {
     public static void loadImageWithFreso(SimpleDraweeView imgView, String url) {
         Uri  imageUri = Uri.parse(decodeURL(url));
         imgView.setImageURI(imageUri);
+    }
+    public static void loadImageWithFresoURI(SimpleDraweeView imgView, Uri uri) {
+        imgView.setImageURI(uri);
     }
     public static String encodeTobase64( File file ) {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());

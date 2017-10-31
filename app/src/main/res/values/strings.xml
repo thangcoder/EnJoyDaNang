@@ -212,6 +212,7 @@
 
 
     <string name="password_updated">Your password updated !</string>
+    <string name="exit">Bấm lần nữa để thoát</string>
 
 
     <string name="search_partner_hint">Search partner</string>

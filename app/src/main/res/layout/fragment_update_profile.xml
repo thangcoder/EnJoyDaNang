@@ -10,23 +10,37 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingTop="@dimen/_10sdp"
         android:weightSum="1">
 
         <LinearLayout
+            android:paddingTop="@dimen/_10sdp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".3"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                <!--android:id="@+id/imgAvatarUser"-->
+                <!--android:layout_width="@dimen/_90sdp"-->
+                <!--android:layout_height="@dimen/_90sdp"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginLeft="@dimen/_10sdp"-->
+                <!--android:src="@drawable/ic_no_user"-->
+                <!--app:civ_fill_color="@color/material_grey_200" />-->
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_10sdp"
                 android:id="@+id/imgAvatarUser"
                 android:layout_width="@dimen/_90sdp"
                 android:layout_height="@dimen/_90sdp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:src="@drawable/ic_no_user"
-                app:civ_fill_color="@color/material_grey_200" />
+                app:placeholderImageScaleType="centerCrop"
+                app:placeholderImage="@drawable/ic_no_user"
+                app:progressBarAutoRotateInterval="1000"
+                app:progressBarImage="@drawable/loading"
+                app:progressBarImageScaleType="centerInside"
+                app:roundAsCircle="true"/>
+
 
 
             <LinearLayout

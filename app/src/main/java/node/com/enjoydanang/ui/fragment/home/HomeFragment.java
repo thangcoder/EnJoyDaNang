@@ -249,8 +249,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onResume() {
         super.onResume();
-        MainActivity activity = (MainActivity) mMainActivity;
-        activity.setCurrentTab(HomeTab.Home);
+
     }
 
     @Override

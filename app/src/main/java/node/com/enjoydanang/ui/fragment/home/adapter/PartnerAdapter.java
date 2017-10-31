@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -70,7 +72,7 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
-            ImageUtils.loadImageNoRadius(mContext, ((ViewHolder) holder).imgPhoto, partner.getPicture());
+            ImageUtils.loadImageWithFreso( ((ViewHolder) holder).imgPhoto, partner.getPicture());
             boolean isFavorite = partner.getFavorite() > 0;
             ((ViewHolder) holder).fabFavorite.setImageResource(isFavorite ? R.drawable.follow : R.drawable.unfollow);
             ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +109,8 @@ public class PartnerAdapter extends RecyclerView.Adapter {
 //        public SimpleDraweeView imgPhoto;
         public final View mView;
         @BindView(R.id.img_partner_photo)
-        ImageView imgPhoto;
+//        ImageView imgPhoto;
+        SimpleDraweeView imgPhoto;
         @BindView(R.id.tv_partner_name)
         TextView tvTitle;
         @BindView(R.id.fabFavorite)

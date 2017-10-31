@@ -2,9 +2,11 @@ package node.com.enjoydanang.ui.activity.signup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,11 +18,15 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.AppLanguage;
+import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -45,6 +51,12 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     EditText edtPhoneNum;
     @BindView(R.id.edtFullName)
     EditText edtFullName;
+
+    @BindView(R.id.btnSignUp)
+    AppCompatButton btnSignUp;
+
+    @BindView(R.id.txtBackToSignIn)
+    TextView txtBackToSignIn;
 
     private ValidUtils validator;
 
@@ -107,6 +119,16 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @Override
     public void unKnownError() {
 
+    }
+
+    @Override
+    public void initViewLabel() {
+        edtFullName.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.FullName));
+        edtEmail.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Email));
+        edtPassWord.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Password));
+        edtPhoneNum.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Phone));
+        btnSignUp.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Register));
+        txtBackToSignIn.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Login));
     }
 
     @Override

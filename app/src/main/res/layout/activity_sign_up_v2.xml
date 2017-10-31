@@ -53,14 +53,14 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="-1dp"
-                    android:textCursorDrawable="@null"
                     android:layout_weight="1"
                     android:background="@drawable/leftroundborder"
                     android:hint="@string/user_name_hint"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -87,13 +87,13 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="-1dp"
                     android:layout_weight="1"
-                    android:textCursorDrawable="@null"
                     android:background="@drawable/leftroundborder"
                     android:hint="@string/pwd_hint"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -120,12 +120,12 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="-1dp"
                     android:layout_weight="1"
-                    android:textCursorDrawable="@null"
                     android:background="@drawable/leftroundborder"
                     android:hint="@string/label_full_name"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -158,8 +158,8 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textCursorDrawable="@null"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -189,10 +189,10 @@
                     android:background="@drawable/leftroundborder"
                     android:hint="@string/label_phone"
                     android:inputType="phone"
-                    android:textCursorDrawable="@null"
                     android:maxLines="1"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
             <android.support.v7.widget.AppCompatButton

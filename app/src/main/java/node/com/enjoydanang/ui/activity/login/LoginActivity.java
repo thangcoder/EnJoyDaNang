@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.internal.CallbackManagerImpl;
@@ -27,6 +29,7 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.AppLanguage;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
@@ -34,6 +37,7 @@ import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
 import static node.com.enjoydanang.R.string.exit;
@@ -57,6 +61,15 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @BindView(R.id.edtPassWord)
     EditText edtPassword;
+
+    @BindView(R.id.btnLoginNormal)
+    AppCompatButton btnLoginNormal;
+
+    @BindView(R.id.txtCreateAccount)
+    TextView txtCreateAccount;
+
+    @BindView(R.id.txtForgotPwd)
+    TextView txtForgotPwd;
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -110,6 +123,15 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 //                overridePendingTransitionExit();
 //            }
 //        });
+    }
+
+    @Override
+    public void initViewLabel() {
+        edtPassword.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Password));
+        btnLoginNormal.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Login));
+        txtCreateAccount.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Register));
+        txtForgotPwd.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_ForgotPassword));
+
     }
 
 
@@ -261,4 +283,5 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             }, 2500);
         }
     }
+
 }

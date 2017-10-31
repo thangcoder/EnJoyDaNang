@@ -24,6 +24,7 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 import static node.com.enjoydanang.R.id.edtAriaContent;
 import static node.com.enjoydanang.R.id.edtPhone;
@@ -58,14 +59,26 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @BindView(R.id.txtNameLabel)
     TextView txtNameLabel;
 
+    @BindView(R.id.txtAddress)
+    TextView txtAddress;
+    @BindView(R.id.txtEmail)
+    TextView txtEmail;
+    @BindView(R.id.txtPhone)
+    TextView txtPhone;
     @BindView(R.id.txtContactAddress)
     TextView txtContactAddress;
-
     @BindView(R.id.txtContactEmail)
     TextView txtContactEmail;
-
     @BindView(R.id.txtContactPhone)
     TextView txtContactPhone;
+    @BindView(R.id.lbPhone)
+    TextView lbPhone;
+    @BindView(R.id.lbEmail)
+    TextView lbEmail;
+    @BindView(R.id.lbTitle)
+    TextView lbTitle;
+    @BindView(R.id.lbContent)
+    TextView lbContent;
 
 
     @Override
@@ -140,6 +153,15 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     public void bindView(View view) {
         ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        try {
+            LanguageHelper.getValueByViewId(txtAddress, txtEmail, txtPhone, txtNameLabel, lbPhone, lbEmail, lbTitle, lbContent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

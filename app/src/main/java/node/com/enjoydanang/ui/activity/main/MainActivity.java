@@ -50,6 +50,7 @@ import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -174,7 +175,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         int[] icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
 
-        String[] titles = hasLogin ? getResources().getStringArray(R.array.item_menu) : getResources().getStringArray(R.array.item_no_sign_in);
+        String[] titles = hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
 
         NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,
                 NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles));

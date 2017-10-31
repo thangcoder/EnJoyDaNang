@@ -12,4 +12,5 @@ public interface iBaseView {
     void showLoading();
 
     void hideLoading();
+
 }

@@ -1,7 +1,9 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
 import android.Manifest;
+import android.app.Activity;
 import android.location.Location;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -45,6 +48,7 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.Partner;
@@ -136,7 +140,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadWithOverviewMode(true);
-        mWebView.setWebViewClient(new WebClient());
+        mWebView.setWebViewClient(new WebClient(getActivity()));
         webSettings.setBuiltInZoomControls(true);
     }
 
@@ -267,6 +271,17 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     }
 
     private class WebClient extends WebViewClient {
+        private Activity activity;
+
+        public WebClient(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            Common.onSslError(activity, view, handler, error);
+        }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             return false;
@@ -367,6 +382,20 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 return true;
             }
         });
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                double longtitude = Double.parseDouble(StringUtils.trim(partner.getGeoLng()));
+                double latitude = Double.parseDouble(StringUtils.trim(partner.getGeoLat()));
+                LatLng partnerPoint = new LatLng(latitude, longtitude);
+                LatLng currentPoint = getCurrentLocation();
+                if (currentPoint != null) {
+                    startIntentMapsView(partnerPoint, currentPoint);
+//                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
+//                    locationHelper.downloadAndParse(url);
+                }
+            }
+        });
     }
 
     private void startIntentMapsView(LatLng partnerLocation, LatLng currentLocation) {
@@ -414,4 +443,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             }
         }
     }
+
+
 }

@@ -2,14 +2,11 @@ package node.com.enjoydanang.ui.fragment.logcheckin;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,23 +19,17 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.HistoryCheckin;
-import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
-
-import static node.com.enjoydanang.R.id.edtToDate;
-import static node.com.enjoydanang.R.id.rcvFavorite;
 
 /**
  * Author: Tavv
@@ -52,11 +43,11 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     private static final String TAG = CheckinHistoryFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 5;
 
-    @BindView(R.id.edtFromDate)
-    EditText edtFromDate;
+    @BindView(R.id.txtFromDate)
+    TextView txtFromDate;
 
-    @BindView(R.id.edtToDate)
-    EditText edtToDate;
+    @BindView(R.id.txtToDate)
+    TextView txtToDate;
 
     @BindView(R.id.rcvHistoryCheckin)
     RecyclerView rcvHistoryCheckin;
@@ -94,59 +85,10 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         rcvHistoryCheckin.setAdapter(mAdapter);
     }
 
+
+
     @Override
     protected void setEvent(View view) {
-        edtFromDate.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String strToDate = edtToDate.getText().toString();
-                if (editable != null) {
-                    String fromDate = editable.toString();
-                    if (StringUtils.isNotEmpty(strToDate) && StringUtils.isNotEmpty(fromDate)) {
-                        if (Utils.hasLogin()) {
-                            UserInfo userInfo = GlobalApplication.getUserInfo();
-                            mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
-                        }
-                    }
-                }
-            }
-        });
-
-        edtToDate.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String strFromDate = edtFromDate.getText().toString();
-                if (editable != null) {
-                    String toDate = editable.toString();
-                    if (StringUtils.isNotEmpty(strFromDate) && StringUtils.isNotEmpty(toDate)) {
-                        if (Utils.hasLogin()) {
-                            UserInfo userInfo = GlobalApplication.getUserInfo();
-                            mvpPresenter.getListHistory(userInfo.getUserId(), strFromDate, toDate);
-                        }
-                    }
-                }
-            }
-        });
 
     }
 
@@ -160,19 +102,33 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         ButterKnife.bind(this, view);
     }
 
-    @OnFocusChange({R.id.edtFromDate, R.id.edtToDate})
+    @OnClick({R.id.txtFromDate, R.id.txtToDate})
     public void onClick(View view) {
+        String strToDate = String.valueOf(txtToDate.getText());
+        String fromDate = String.valueOf(txtFromDate.getText());
         switch (view.getId()) {
-            case R.id.edtFromDate:
-                initDatePicker(edtFromDate);
+            case R.id.txtFromDate:
+                initDatePicker(txtFromDate);
+                if (StringUtils.isNotEmpty(strToDate) && StringUtils.isNotEmpty(fromDate)) {
+                    if (Utils.hasLogin()) {
+                        UserInfo userInfo = GlobalApplication.getUserInfo();
+                        mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
+                    }
+                }
                 break;
-            case R.id.edtToDate:
-                initDatePicker(edtToDate);
+            case R.id.txtToDate:
+                initDatePicker(txtToDate);
+                if (StringUtils.isNotEmpty(fromDate) && StringUtils.isNotEmpty(strToDate)) {
+                    if (Utils.hasLogin()) {
+                        UserInfo userInfo = GlobalApplication.getUserInfo();
+                        mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
+                    }
+                }
                 break;
         }
     }
 
-    private void initDatePicker(final EditText editText) {
+    private void initDatePicker(final TextView textView) {
         final Calendar myCalendar = Calendar.getInstance();
 
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -183,7 +139,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel(myCalendar, editText);
+                updateLabel(myCalendar, textView);
             }
 
         };
@@ -192,10 +148,10 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
 
     }
 
-    private void updateLabel(Calendar calendar, EditText editText) {
+    private void updateLabel(Calendar calendar, TextView textView) {
         String myFormat = "dd-MM-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-        editText.setText(sdf.format(calendar.getTime()));
+        textView.setText(sdf.format(calendar.getTime()));
     }
 
 

@@ -14,6 +14,8 @@ public class Constant {
 
     public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
 
+    public static final String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
+
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
     public static final String DATE_SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";

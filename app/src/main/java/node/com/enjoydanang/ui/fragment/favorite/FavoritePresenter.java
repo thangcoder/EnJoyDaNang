@@ -4,7 +4,7 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.model.Favorite;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.Utils;
 
 /**
@@ -21,15 +21,14 @@ public class FavoritePresenter extends BasePresenter<FavoriteView>{
     }
 
     void getFavorite(long userId){
-        addSubscription(apiStores.getFavoriteByUserId(userId), new ApiCallback<Repository<Favorite>>(){
+        addSubscription(apiStores.getFavoriteByUserId(userId), new ApiCallback<Repository<Partner>>(){
 
             @Override
-            public void onSuccess(Repository<Favorite> model) {
-                if(Utils.isNotEmptyContent(model)){
-                    mvpView.onFetchFavorite(model.getData());
-                }else{
+            public void onSuccess(Repository<Partner> model) {
+                if (Utils.isResponseError(model)){
                     mvpView.onFetchFailure(new AppError(new Throwable(model.getMessage())));
                 }
+                mvpView.onFetchFavorite(model.getData());
             }
 
             @Override

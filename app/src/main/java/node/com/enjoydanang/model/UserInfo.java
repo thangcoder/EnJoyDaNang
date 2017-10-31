@@ -19,7 +19,7 @@ public class UserInfo {
 
     @SerializedName("id")
     @Expose
-    private long userId = -1;
+    private long userId = 0;
 
     @SerializedName("username")
     @Expose

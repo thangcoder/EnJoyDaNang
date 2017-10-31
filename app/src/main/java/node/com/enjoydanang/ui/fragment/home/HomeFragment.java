@@ -35,7 +35,6 @@ import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
@@ -110,6 +109,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         scanItem.setVisible(true);
 
     }
+
     @Override
     public void showToast(String desc) {
 
@@ -162,13 +162,10 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         mvpPresenter.getListHome(user.getUserId());
         mvpPresenter.getBanner();
         loadmorePartner.setCategoryId(-1);
-        if (!Utils.hasLogin()) {
+        gridView.setVisibility(View.VISIBLE);
 //        mvpPresenter.getWeather();
 //        mvpPresenter.getExchangeRate();
-            gridView.setVisibility(View.GONE);
-        } else {
-            mvpPresenter.getAllCategories();
-        }
+        mvpPresenter.getAllCategories();
     }
 
     @Override
@@ -319,7 +316,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             showLoading();
             loadmorePartner.setCategoryId(category.getId());
             hasLoadmore = false;
-            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId() == -1 ? 0 : user.getUserId());
+            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId());
             bannerSlider.setVisibility(View.GONE);
         }
     }
@@ -346,14 +343,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private void onRetryGetPartner(int page, int categoryId) {
         if (categoryId != -1) {
-            mvpPresenter.getPartnerByCategory(categoryId, page, user.getUserId() == -1 ? 0 : user.getUserId());
+            mvpPresenter.getPartnerByCategory(categoryId, page, user.getUserId());
         }
     }
 
     @Override
     public void onClick(View view, final int position) {
         if (view.getId() == fabFavorite) {
-            if (user.getUserId() != -1) {
+            if (user.getUserId() != 0) {
                 FloatingActionButton fabFavorite = (FloatingActionButton) view;
                 mvpPresenter.addFavorite(user.getUserId(), lstPartner.get(position).getId());
                 boolean isFavorite = lstPartner.get(position).getFavorite() > 0;

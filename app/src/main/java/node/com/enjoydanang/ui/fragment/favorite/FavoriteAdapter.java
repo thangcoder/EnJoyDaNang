@@ -16,7 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.Favorite;
+import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 
@@ -29,11 +29,11 @@ import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.FavoriteViewHolder> {
 
-    private List<Favorite> lstFavorites;
+    private List<Partner> lstFavorites;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public FavoriteAdapter(List<Favorite> lstFavorites, Context context, OnItemClickListener onItemClickListener) {
+    public FavoriteAdapter(List<Partner> lstFavorites, Context context, OnItemClickListener onItemClickListener) {
         this.lstFavorites = lstFavorites;
         this.context = context;
         this.onItemClickListener = onItemClickListener;
@@ -47,7 +47,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
 
     @Override
     public void onBindViewHolder(FavoriteViewHolder holder, final int position) {
-        Favorite favorite = lstFavorites.get(position);
+        Partner favorite = lstFavorites.get(position);
         if (favorite != null) {
             holder.txtPartnerName.setText(favorite.getName());
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, favorite.getPicture());

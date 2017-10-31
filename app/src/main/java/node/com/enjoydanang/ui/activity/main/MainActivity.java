@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -46,7 +44,6 @@ import node.com.enjoydanang.ui.fragment.favorite.FavoriteFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
-import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryAdapter;
 import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
@@ -215,24 +212,42 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (!popFragment()) {
-                if (exit) {
-                    finish();
+                if (Utils.hasLogin()) {
+                    DialogUtils.showDialogConfirm(MainActivity.this, Constant.TITLE_WARNING, Utils.getString(R.string.logout_current_user_confirm),
+                            Utils.getString(android.R.string.yes), Utils.getString(android.R.string.cancel),
+                            new ColorDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    GlobalApplication.setUserInfo(null);
+                                    finish();
+                                }
+                            }, new ColorDialog.OnNegativeListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    colorDialog.dismiss();
+                                }
+                            });
                 } else {
-                    Toast.makeText(this, getString(R.string.exit),
-                            Toast.LENGTH_SHORT).show();
-                    exit = true;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            exit = false;
-                        }
-                    }, 2500);
+                    GlobalApplication.setUserInfo(null);
+                    finish();
                 }
+
+//                if (exit) {
+//                    finish();
+//                } else {
+//                    Toast.makeText(this, getString(R.string.exit),
+//                            Toast.LENGTH_SHORT).show();
+//                    exit = true;
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            exit = false;
+//                        }
+//                    }, 2500);
+//                }
             }
         }
     }
-
-    private Boolean exit = false;
 
     boolean popFragment() {
         boolean isPop = false;
@@ -300,7 +315,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
             case R.id.ll_profile:
                 if (currentTab != HomeTab.Profile && Utils.hasLogin()) {
-                    addFr(ProfileFragment.class.getName(), 10);
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileFragment.class.getName());
+                    if (fragment == null) {
+                        addFrMenu(ProfileFragment.class.getName(), true);
+                    } else {
+                        resurfaceFragment(ProfileFragment.class.getName());
+                    }
                     currentTab = HomeTab.Profile;
                 } else {
                     DialogUtils.showDialog(MainActivity.this, 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
@@ -390,7 +410,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
 
     @Override
-
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (Utils.hasLogin()) {
             switch (position) {
@@ -424,11 +443,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                             new ColorDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(ColorDialog colorDialog) {
+                                    mDrawerLayout.closeDrawer(GravityCompat.START);
                                     GlobalApplication.setUserInfo(null);
                                     finish();
-                                    overridePendingTransition(0, 0);
-                                    startActivity(getIntent());
-                                    overridePendingTransition(0, 0);
+                                    overridePendingTransitionExit();
+//                                    startActivity(getIntent());
+//                                    overridePendingTransition(0, 0);
                                 }
                             }, new ColorDialog.OnNegativeListener() {
                                 @Override

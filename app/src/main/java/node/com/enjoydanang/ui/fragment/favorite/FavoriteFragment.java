@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
@@ -18,7 +21,6 @@ import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.Favorite;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
@@ -46,11 +48,14 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @BindView(R.id.rcvFavorite)
     RecyclerView rcvFavorite;
 
+    @BindView(R.id.txtEmpty)
+    TextView txtEmpty;
+
     private UserInfo userInfo;
 
     private FavoriteAdapter mAdapter;
 
-    private List<Favorite> lstFavorites;
+    private List<Partner> lstFavorites;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -71,8 +76,16 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     }
 
     @Override
-    public void onFetchFavorite(List<Favorite> lstFavorites) {
+    public void onFetchFavorite(List<Partner> lstFavorites) {
+        if(CollectionUtils.isEmpty(lstFavorites)){
+            txtEmpty.setVisibility(View.VISIBLE);
+            rcvFavorite.setVisibility(View.GONE);
+            hideLoading();
+            return;
+        }
         this.lstFavorites = lstFavorites;
+        txtEmpty.setVisibility(View.GONE);
+        rcvFavorite.setVisibility(View.VISIBLE);
         mAdapter = new FavoriteAdapter(lstFavorites, getContext(), this);
         rcvFavorite.setAdapter(mAdapter);
         hideLoading();
@@ -141,10 +154,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                     }));
         } else {
             Partner partner = new Partner();
-            partner.setId(lstFavorites.get(position).getId());
-            partner.setPicture(lstFavorites.get(position).getPicture());
-            partner.setName(lstFavorites.get(position).getName());
-            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+//            partner.setId(lstFavorites.get(position).getId());
+//            partner.setPicture(lstFavorites.get(position).getPicture());
+//            partner.setName(lstFavorites.get(position).getName());
+            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position));
             dialog.show(mFragmentManager, TAG);
         }
 

@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
-import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 
@@ -41,7 +42,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @BindView(R.id.rcv_review)
     RecyclerView recyclerView;
 
-    @BindView(R.id.imgPartner)
+    @BindView(R.id.imgPartner2)
     ImageView imgPartner;
 
     @BindView(R.id.txtEmpty)
@@ -84,21 +85,25 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         lstReviews = new ArrayList<>();
         mAdapter = new ReviewAdapter(getContext(), lstReviews, this);
         recyclerView.setAdapter(mAdapter);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            partner = (Partner) bundle.getSerializable(TAG);
+            if (partner != null) {
+                Glide.with(getActivity()).load(partner.getPicture()).crossFade()
+                        .skipMemoryCache(false).placeholder(R.drawable.placeholder)
+                        .into(imgPartner);
+                txtPartnerName.setText(partner.getName());
+            }
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            partner = (Partner) bundle.getSerializable(TAG);
-            if (partner != null) {
-                txtPartnerName.setText(partner.getName());
-                showLoading();
-                mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
-                ImageUtils.loadImageNoRadius(getContext(), imgPartner, partner.getPicture());
-            }
+        if (partner != null) {
+            showLoading();
+            mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
         }
     }
 
@@ -120,7 +125,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     }
 
     @OnClick(R.id.txtAddReview)
-    void onClick(View view){
+    void onClick(View view) {
         if (partner != null) {
             WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -161,6 +166,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         if (CollectionUtils.isEmpty(models) && currentPage == 0) {
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
+            return;
         }
         updateItems(models);
         txtEmpty.setVisibility(View.GONE);

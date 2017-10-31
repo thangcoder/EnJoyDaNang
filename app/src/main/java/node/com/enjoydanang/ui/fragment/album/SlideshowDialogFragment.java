@@ -6,17 +6,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
@@ -37,6 +36,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private MyViewPagerAdapter myViewPagerAdapter;
     private TextView lblCount, lblTitle, lblDate;
     private int selectedPosition = 0;
+
 
     static SlideshowDialogFragment newInstance() {
         return new SlideshowDialogFragment();
@@ -101,7 +101,8 @@ public class SlideshowDialogFragment extends DialogFragment {
     }
 
     //  adapter
-    public class MyViewPagerAdapter extends PagerAdapter {
+    public class MyViewPagerAdapter extends PagerAdapter{
+
 
         private LayoutInflater layoutInflater;
 
@@ -116,9 +117,8 @@ public class SlideshowDialogFragment extends DialogFragment {
 
             ImageView imageViewPreview = (ImageView) view.findViewById(R.id.image_preview);
             DisplayMetrics display = getActivity().getResources().getDisplayMetrics();
-
             int width = display.widthPixels;
-            int height = ((display.heightPixels * 80) / 100);
+            int height = ((display.heightPixels * 75) / 100);
             RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(width, height);
             parms.addRule(RelativeLayout.CENTER_VERTICAL);
             imageViewPreview.setLayoutParams(parms);
@@ -127,11 +127,12 @@ public class SlideshowDialogFragment extends DialogFragment {
             Glide.with(getActivity()).load(model.getPicture())
                     .thumbnail(0.5f)
                     .crossFade()
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .dontTransform()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageViewPreview);
 
             container.addView(view);
-
             return view;
         }
 

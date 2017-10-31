@@ -50,8 +50,8 @@
             android:layout_weight=".8"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/edtFromDate"
+            <TextView
+                android:id="@+id/txtFromDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_edittext_normal"
@@ -64,8 +64,8 @@
                 android:textColor="@color/secondary_text"
                 android:textCursorDrawable="@null" />
 
-            <EditText
-                android:id="@+id/edtToDate"
+            <TextView
+                android:id="@+id/txtToDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_edittext_normal"

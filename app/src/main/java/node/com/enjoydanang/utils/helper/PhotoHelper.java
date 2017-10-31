@@ -1,7 +1,6 @@
 package node.com.enjoydanang.utils.helper;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,8 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,9 +27,7 @@ import java.util.List;
 
 import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
-import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Author: Tavv
@@ -223,7 +218,8 @@ public class PhotoHelper {
 
             File photoFile = null;
             try {
-                photoFile = createNewImageFile();
+                photoFile = createImageFile();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

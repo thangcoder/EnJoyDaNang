@@ -4,7 +4,7 @@ import java.util.List;
 
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.iBaseView;
-import node.com.enjoydanang.model.Favorite;
+import node.com.enjoydanang.model.Partner;
 
 /**
  * Author: Tavv
@@ -15,7 +15,7 @@ import node.com.enjoydanang.model.Favorite;
 
 public interface FavoriteView extends iBaseView {
 
-    void onFetchFavorite(List<Favorite> lstFavorites);
+    void onFetchFavorite(List<Partner> lstFavorites);
 
     void onFetchFailure(AppError error);
 }

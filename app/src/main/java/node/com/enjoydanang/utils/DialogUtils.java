@@ -60,6 +60,16 @@ public class DialogUtils {
                 .setPositiveListener(getString(android.R.string.ok), positiveListener).show();
     }
 
+    /**
+     *
+     * @param context Context
+     * @param title title dialog
+     * @param content content dialog
+     * @param titleBtnPositive title button Positive
+     * @param titleBtnNegative title button Negative
+     * @param onPositiveListener Event positive click
+     * @param onNegativeListener Event negative click
+     */
     public static void showDialogConfirm(Context context, String title, String content,
                                          String titleBtnPositive, String titleBtnNegative,
                                          ColorDialog.OnPositiveListener onPositiveListener,
@@ -73,6 +83,17 @@ public class DialogUtils {
     }
 
 
+    /**
+     *
+     * @param context Context
+     * @param title title dialog
+     * @param content content dialog
+     * @param titleBtnPositive title button Positive
+     * @param titleBtnNegative title button Negative
+     * @param image image
+     * @param onPositiveListener Event positive click
+     * @param onNegativeListener Event negative click
+     */
     public static void showDialogConfirm(Context context, String title, String content,
                                          String titleBtnPositive, String titleBtnNegative,
                                          Drawable image,
@@ -88,6 +109,16 @@ public class DialogUtils {
         colorDialog.show();
     }
 
+    /**
+     * @param context Context
+     * @param layoutId layout resource id
+     * @param title title dialog
+     * @param btnOkRes button Ok resource id
+     * @param btnCancelRes button Cancel resource id
+     * @param okListener Event positive click
+     * @param cancelListener Event negative click
+     * @param hasTitle boolean hasTitle
+     */
     public static void showAlertDialogCustom(Context context, @LayoutRes int layoutId, String title,
                                              @IdRes int btnOkRes, @IdRes int btnCancelRes,
                                              View.OnClickListener okListener,

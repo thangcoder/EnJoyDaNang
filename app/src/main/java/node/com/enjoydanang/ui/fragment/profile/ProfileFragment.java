@@ -21,15 +21,12 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.ui.fragment.home.HomeTab;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
@@ -64,7 +61,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @BindView(R.id.imgAvatarUser)
 //    CircleImageView imgAvatarUser;
-     SimpleDraweeView imgAvatarUser;
+            SimpleDraweeView imgAvatarUser;
 
     private UserInfo userInfo;
 
@@ -149,7 +146,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                     break;
                 }
             case R.id.txtTakeAPhoto:
-                mPhotoHelper.openCamera();
+                mPhotoHelper.cameraIntent();
                 break;
             case R.id.txtUploadFrGallery:
                 mPhotoHelper.openGallery();
@@ -170,13 +167,14 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         }
         switch (requestCode) {
             case PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE:
-                File imgFile = new File(uriImageCapture);
-                if (imgFile.exists()) {
-                    updateAvatar(imgFile);
-                } else {
-                    DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
+                if (StringUtils.isNotBlank(mPhotoHelper.getCurrentPhotoPath())) {
+                    File imgFile = new File(mPhotoHelper.getCurrentPhotoPath());
+                    if (imgFile.exists()) {
+                        updateAvatar(imgFile);
+                    } else {
+                        DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
+                    }
                 }
-
                 break;
             case PhotoHelper.SELECT_FROM_GALLERY_CODE:
                 if (data != null) {
@@ -192,7 +190,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     private void updateAvatar(File file) {
         base64Image = ImageUtils.encodeTobase64(file);
         Uri uri = Uri.fromFile(file);
-        ImageUtils.loadImageWithFresoURI(imgAvatarUser,uri );
+        ImageUtils.loadImageWithFresoURI(imgAvatarUser, uri);
     }
 
     private void initData() {

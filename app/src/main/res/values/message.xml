@@ -9,7 +9,7 @@
 
     <string name="full_name_empty">Name not be empty!</string>
 
-    <string name="must_login">You must login !</string>
+    <string name="must_login">You need login into app!</string>
 
     <string name="msg_valid_old_new_pwd">New password not match!</string>
 
@@ -25,4 +25,7 @@
     <string name="enter_full_field">Please enter all fields !</string>
 
     <string name="order_success">Order success !</string>
+
+    <string name="logout_current_user_confirm">Do you want logout with current user!</string>
+
 </resources>

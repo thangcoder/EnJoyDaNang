@@ -82,7 +82,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             public void run() {
                 mScannerView.resumeCameraPreview(ScanActivity.this);
             }
-        }, 2000);
+        }, 500);
     }
 
     @Override
@@ -130,8 +130,10 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 }
                 if (amount != 0) {
                     if (Utils.hasLogin()) {
+                        v.setEnabled(false);
                         mvpPresenter.requestOrder(partner.getId(), userInfo.getUserId(), amount);
                     } else {
+                        v.setEnabled(false);
                         mvpPresenter.requestOrder(partner.getId(), 0, amount);
                     }
                 } else {
@@ -148,7 +150,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(alertDialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         alertDialog.show();
         alertDialog.getWindow().setAttributes(lp);
     }

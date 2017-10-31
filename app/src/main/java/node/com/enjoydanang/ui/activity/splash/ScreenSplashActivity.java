@@ -3,25 +3,23 @@ package node.com.enjoydanang.ui.activity.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import org.json.JSONObject;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.ui.activity.start.StartActivity;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
-import node.com.enjoydanang.constant.AppError;
 
 
 public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> implements SplashScreenView {
     private static final String TAG = ScreenSplashActivity.class.getSimpleName();
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 1000;
 
 
     @Override
@@ -101,7 +99,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     @Override
     public void onLoadFailre(AppError appError) {
-        Log.e(TAG, "onLoadFailre: " + appError.getMessage());
+        DialogUtils.showDialog(ScreenSplashActivity.this, 2, Constant.TITLE_ERROR, appError.getMessage());
     }
 
 }

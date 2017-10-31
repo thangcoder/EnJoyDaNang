@@ -1,8 +1,9 @@
 package node.com.enjoydanang.ui.activity.login;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,6 +27,7 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
@@ -34,6 +36,7 @@ import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
+import static node.com.enjoydanang.R.string.exit;
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
 /**
@@ -59,6 +62,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     private LoginViaGoogle loginViaGoogle;
     private LoginViaKakaoTalk loginViaKakaoTalk;
     private LoginPresenter loginPresenter;
+
+    private boolean isExit;
 
 
     @Override
@@ -130,7 +135,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 intent = new Intent(this, SignUpActivity.class);
                 break;
             case R.id.txtForgotPwd:
-                //TODO : redirect to web forgot
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constant.URL_FORGOT_PWD));
                 break;
             case R.id.txtContinue:
                 intent = new Intent(this, MainActivity.class);
@@ -238,8 +243,22 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-        overridePendingTransitionExit();
+        if (isExit) {
+            finish();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(exit),
+                    Toast.LENGTH_SHORT).show();
+            isExit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isExit = false;
+                }
+            }, 2500);
+        }
     }
 }

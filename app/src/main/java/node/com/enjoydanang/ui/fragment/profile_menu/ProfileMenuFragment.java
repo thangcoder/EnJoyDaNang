@@ -1,11 +1,9 @@
 package node.com.enjoydanang.ui.fragment.profile_menu;
 
-import android.support.design.widget.TextInputLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +35,6 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
     TextView tvPhone;
     @BindView(R.id.tv_menthod)
     TextView tvMenthod;
-    @BindView(R.id.tv_last_login)
-    TextView tvLastLogin;
 
     @BindView(R.id.img_avatar)
     SimpleDraweeView imgAvatar;

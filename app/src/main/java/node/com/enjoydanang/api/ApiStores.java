@@ -9,7 +9,6 @@ import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.ExchangeRate;
-import node.com.enjoydanang.model.Favorite;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
@@ -107,7 +106,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/Favorite")
-    Observable<Repository<Favorite>> getFavoriteByUserId(@Field("customerId") long userId);
+    Observable<Repository<Partner>> getFavoriteByUserId(@Field("customerId") long userId);
 
 
     @FormUrlEncoded

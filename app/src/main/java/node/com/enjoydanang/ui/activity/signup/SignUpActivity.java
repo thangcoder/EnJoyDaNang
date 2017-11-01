@@ -19,8 +19,6 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.AppLanguage;
-import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -84,7 +82,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @Override
     public void setValue(Bundle savedInstanceState) {
         initToolbar(toolbar);
-        setTitle(getResources().getString(R.string.sign_up).toUpperCase());
+        setTitle(Utils.getLanguageByResId(R.string.Home_Account_Register).toUpperCase());
     }
 
     @OnClick({R.id.txtBackToSignIn, R.id.btnSignUp})
@@ -154,7 +152,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void onRegisterFailure(AppError error) {
-        DialogUtils.showDialog(this, 1, Utils.getString(R.string.sign_up), error.getMessage());
+        DialogUtils.showDialog(this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     private void register() {
@@ -169,19 +167,19 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
             showLoading();
             mvpPresenter.normalRegister(userInfo);
         } else {
-            DialogUtils.showDialog(this, 1, "Validator", strError);
+            DialogUtils.showDialog(this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), strError);
         }
     }
 
     private String getStrErrorInValid(String userName, String pwd, String email, String fullName) {
         if (isUserNameAndPwdInValid(userName, pwd)) {
-            return Utils.getString(R.string.user_or_pwd_not_empty);
+            return Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty);
         }
         if (!validator.isValidEmail(email)) {
-            return Utils.getString(R.string.email_invalid);
+            return Utils.getLanguageByResId(R.string.Home_Account_InvalidEmail);
         }
         if(StringUtils.isEmpty(fullName)){
-            return Utils.getString(R.string.full_name_empty);
+            return Utils.getLanguageByResId(R.string.Message_NameEmpty);
         }
         return StringUtils.EMPTY;
     }

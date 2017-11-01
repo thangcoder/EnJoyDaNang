@@ -1,14 +1,11 @@
 package node.com.enjoydanang.ui.fragment.review.write;
 
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,8 +22,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
-
-import static android.R.attr.data;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -49,6 +45,17 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
 
     @BindView(R.id.edtAriaContent)
     EditText edtAriaContent;
+
+
+    @BindView(R.id.lblFullName)
+    TextView lblFullName;
+    @BindView(R.id.lblTitle)
+    TextView lblTitle;
+    @BindView(R.id.lblContent)
+    TextView lblContent;
+
+    @BindView(R.id.btnSubmitReview)
+    TextView btnSubmitReview;
 
     private UserInfo userInfo;
 
@@ -157,4 +164,9 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
         }
     }
 
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(lblFullName, lblTitle, lblContent, btnSubmitReview);
+    }
 }

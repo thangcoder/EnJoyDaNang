@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:paddingTop="10dp"
+        android:orientation="horizontal"
         android:paddingBottom="10dp"
-        android:orientation="horizontal">
+        android:paddingTop="10dp">
 
         <ImageView
             android:id="@+id/imgPartner"
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:text="@string/hint_partner_name" />
+                android:text="@string/Partner" />
 
             <TextView
                 android:id="@+id/txtDiscount"

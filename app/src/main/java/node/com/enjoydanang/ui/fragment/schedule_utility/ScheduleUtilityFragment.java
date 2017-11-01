@@ -19,6 +19,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.ui.fragment.schedule_utility.adapter.ScheduleAdapter;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -128,5 +129,11 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
             lrlContent.setVisibility(View.GONE);
             txtEmptyData.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtEmptyData);
     }
 }

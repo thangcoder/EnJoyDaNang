@@ -36,18 +36,6 @@ public class Constant {
     public static final String MSG_WARNING = "warning";
     public static final String MSG_FAILURE = "fail";
 
-    public enum ReportResult {
-        NULL,
-        REPORTED,
-        NOREPORT;
-    }
-
-    public enum CheckRollCall {
-        NULL,
-        ROLLCALLED,
-        NOROLLCALL;
-    }
-
     public static final int CONNECT_TIME_OUT = 15000;
 
     public static final String FILE_NAME_LANGUAGE = "language.json";

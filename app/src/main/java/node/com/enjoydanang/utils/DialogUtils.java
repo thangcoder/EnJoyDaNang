@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
+import node.com.enjoydanang.R;
 
 import static node.com.enjoydanang.utils.Utils.getString;
 
@@ -139,5 +142,23 @@ public class DialogUtils {
         btnOk.setOnClickListener(okListener);
         btnCancel.setOnClickListener(cancelListener);
         alertDialog.show();
+    }
+
+    /**
+     * @param type type : 1 - Success, 2 - Warning, 3 - Wrong
+     * @return String title
+     */
+
+    public static String getTitleDialog(int type){
+        switch (type){
+            case 1 :
+                return Utils.getLanguageByResId(R.string.Dialog_Title_Success);
+            case 2 :
+                return Utils.getLanguageByResId(R.string.Dialog_Title_Warning);
+            case 3 :
+                return Utils.getLanguageByResId(R.string.Dialog_Title_Wrong);
+            default:
+                return StringUtils.EMPTY;
+        }
     }
 }

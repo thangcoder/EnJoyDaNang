@@ -29,7 +29,6 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.AppLanguage;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
@@ -40,7 +39,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
-import static node.com.enjoydanang.R.string.exit;
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
 /**
@@ -65,11 +63,17 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @BindView(R.id.btnLoginNormal)
     AppCompatButton btnLoginNormal;
 
+    @BindView(R.id.txtOr)
+    TextView txtOr;
+
     @BindView(R.id.txtCreateAccount)
     TextView txtCreateAccount;
 
     @BindView(R.id.txtForgotPwd)
     TextView txtForgotPwd;
+
+    @BindView(R.id.txtContinue)
+    TextView txtContinue;
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -127,11 +131,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void initViewLabel() {
-        edtPassword.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Password));
-        btnLoginNormal.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Login));
-        txtCreateAccount.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Register));
-        txtForgotPwd.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_ForgotPassword));
-
+        LanguageHelper.getValueByViewId(edtUserName, edtPassword, txtOr, txtCreateAccount, txtForgotPwd, btnLoginNormal, txtContinue);
     }
 
 
@@ -193,7 +193,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 loginViaGoogle.getTokenGoogle(result);
             }
         } else {
-            Toast.makeText(mActivity, "Login Failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, Utils.getLanguageByResId(R.string.Message_Login_Failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -246,7 +246,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void onLoginFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
+        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     @Override
@@ -272,7 +272,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             intent.addCategory(Intent.CATEGORY_HOME);
             startActivity(intent);
         } else {
-            Toast.makeText(this, getString(exit),
+            Toast.makeText(this, Utils.getLanguageByResId(R.string.Action_DoubleTap),
                     Toast.LENGTH_SHORT).show();
             isExit = true;
             new Handler().postDelayed(new Runnable() {

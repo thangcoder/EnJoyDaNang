@@ -29,6 +29,7 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
@@ -39,7 +40,7 @@ import node.com.enjoydanang.utils.helper.SeparatorDecoration;
  */
 
 public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter> implements CheckinHistoryView,
-        OnItemClickListener {
+        OnItemClickListener, DatePickerDialog.OnDateSetListener {
     private static final String TAG = CheckinHistoryFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 5;
 
@@ -49,6 +50,12 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     @BindView(R.id.txtToDate)
     TextView txtToDate;
 
+    @BindView(R.id.lblToDate)
+    TextView lblToDate;
+
+    @BindView(R.id.lblFromDate)
+    TextView lblFromDate;
+
     @BindView(R.id.rcvHistoryCheckin)
     RecyclerView rcvHistoryCheckin;
 
@@ -57,6 +64,10 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     private List<HistoryCheckin> mLstHistoryCheckins;
 
     private DatePickerDialog mDatePickerDialog;
+
+    private Calendar mCalender;
+
+    private boolean isTextFromDateClick;
 
     @Override
     public void showToast(String desc) {
@@ -75,7 +86,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
 
     @Override
     protected void init(View view) {
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Log_Check_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_LogCheck_in));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvHistoryCheckin.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvHistoryCheckin.setLayoutManager(layoutManager);
@@ -83,8 +94,8 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         mLstHistoryCheckins = new ArrayList<>();
         mAdapter = new CheckinHistoryAdapter(mLstHistoryCheckins, getContext(), this);
         rcvHistoryCheckin.setAdapter(mAdapter);
+        mCalender = Calendar.getInstance();
     }
-
 
 
     @Override
@@ -104,61 +115,33 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
 
     @OnClick({R.id.txtFromDate, R.id.txtToDate})
     public void onClick(View view) {
-        String strToDate = String.valueOf(txtToDate.getText());
-        String fromDate = String.valueOf(txtFromDate.getText());
         switch (view.getId()) {
             case R.id.txtFromDate:
-                initDatePicker(txtFromDate);
-                if (StringUtils.isNotEmpty(strToDate) && StringUtils.isNotEmpty(fromDate)) {
-                    if (Utils.hasLogin()) {
-                        UserInfo userInfo = GlobalApplication.getUserInfo();
-                        mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
-                    }
-                }
+                isTextFromDateClick = true;
+                initDatePicker();
                 break;
             case R.id.txtToDate:
-                initDatePicker(txtToDate);
-                if (StringUtils.isNotEmpty(fromDate) && StringUtils.isNotEmpty(strToDate)) {
-                    if (Utils.hasLogin()) {
-                        UserInfo userInfo = GlobalApplication.getUserInfo();
-                        mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
-                    }
-                }
+                isTextFromDateClick = false;
+                initDatePicker();
                 break;
         }
     }
 
-    private void initDatePicker(final TextView textView) {
-        final Calendar myCalendar = Calendar.getInstance();
-
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel(myCalendar, textView);
-            }
-
-        };
-        mDatePickerDialog = new DatePickerDialog(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_DARK, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-        mDatePickerDialog.show();
-
-    }
-
-    private void updateLabel(Calendar calendar, TextView textView) {
-        String myFormat = "dd-MM-yyyy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-        textView.setText(sdf.format(calendar.getTime()));
+    private void initDatePicker() {
+        if (mDatePickerDialog == null) {
+            mDatePickerDialog = new DatePickerDialog(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_DARK, this, mCalender.get(Calendar.YEAR),
+                    mCalender.get(Calendar.MONTH), mCalender.get(Calendar.DAY_OF_MONTH));
+        }
+        if (!mDatePickerDialog.isShowing()) {
+            mDatePickerDialog.show();
+        }
     }
 
 
     @Override
     public void onFetchHistorySuccess(List<HistoryCheckin> lstHistoryCheckins) {
         updateItems(lstHistoryCheckins);
-        if(mDatePickerDialog.isShowing()){
+        if (mDatePickerDialog.isShowing()) {
             mDatePickerDialog.dismiss();
         }
     }
@@ -174,11 +157,42 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     }
 
     public void updateItems(List<HistoryCheckin> lstHistories) {
-        int oldSize = this.mLstHistoryCheckins.size();
-        int newSize = lstHistories.size();
-        this.mLstHistoryCheckins.addAll(lstHistories);
-        mAdapter.notifyItemRangeChanged(0, oldSize + newSize);
+        mLstHistoryCheckins.clear();
+        mLstHistoryCheckins.addAll(lstHistories);
+        mAdapter.notifyItemRangeChanged(0, lstHistories.size());
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(lblFromDate, lblToDate);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        mCalender.set(Calendar.YEAR, year);
+        mCalender.set(Calendar.MONTH, monthOfYear);
+        mCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateLabel();
+    }
+
+
+    private void updateLabel() {
+        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+        if (isTextFromDateClick) {
+            txtFromDate.setText(sdf.format(mCalender.getTime()));
+        } else {
+            txtToDate.setText(sdf.format(mCalender.getTime()));
+        }
+        String strToDate = String.valueOf(txtToDate.getText());
+        String fromDate = String.valueOf(txtFromDate.getText());
+        if (StringUtils.isNotEmpty(strToDate) && StringUtils.isNotEmpty(fromDate)) {
+            if (Utils.hasLogin()) {
+                UserInfo userInfo = GlobalApplication.getUserInfo();
+                mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
+            }
+        }
+    }
 }

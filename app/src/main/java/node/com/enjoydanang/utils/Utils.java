@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -219,5 +221,9 @@ public class Utils {
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
                 "com.google.android.maps.MapsActivity"));
         context.startActivity(intent);
+    }
+
+    public static String getLanguageByResId(@StringRes int strResId){
+        return LanguageHelper.getValueByKey(getString(strResId));
     }
 }

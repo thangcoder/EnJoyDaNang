@@ -20,18 +20,28 @@
             android:orientation="vertical">
 
 
-            <ss.com.bannerslider.views.BannerSlider
-                android:layout_marginTop="10dp"
+            <!--<ss.com.bannerslider.views.BannerSlider-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:id="@+id/carouselView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="180dp"-->
+                <!--android:layout_marginBottom="@dimen/_3sdp"-->
+                <!--android:paddingLeft="@dimen/_5sdp"-->
+                <!--android:paddingRight="@dimen/_5sdp"-->
+                <!--app:animateIndicators="true"-->
+                <!--app:defaultIndicators="circle"-->
+                <!--app:interval="5000"-->
+                <!--app:loopSlides="true" />-->
+
+            <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/carouselView"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="200dp"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:paddingLeft="@dimen/_5sdp"
-                android:paddingRight="@dimen/_5sdp"
-                app:animateIndicators="true"
-                app:defaultIndicators="circle"
-                app:interval="5000"
-                app:loopSlides="true" />
+                app:auto_cycle="true"
+                app:indicator_visibility="visible"
+                app:pager_animation="Accordion"
+                app:pager_animation_span="1100" />
 
             <View
                 android:id="@+id/view_below"

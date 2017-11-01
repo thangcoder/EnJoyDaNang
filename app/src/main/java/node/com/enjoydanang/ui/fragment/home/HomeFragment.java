@@ -16,10 +16,16 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,7 +34,6 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
@@ -43,8 +48,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
-import ss.com.bannerslider.banners.RemoteBanner;
-import ss.com.bannerslider.views.BannerSlider;
 
 import static node.com.enjoydanang.R.id.fabFavorite;
 
@@ -55,6 +58,7 @@ import static node.com.enjoydanang.R.id.fabFavorite;
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 8;
+    private static final int DURATION_SLIDE = 3000;
 
     @BindView(R.id.rcv_partner)
     RecyclerView rcvPartner;
@@ -77,8 +81,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
 
+//    @BindView(R.id.carouselView)
+//    BannerSlider bannerSlider;
+
     @BindView(R.id.carouselView)
-    BannerSlider bannerSlider;
+    SliderLayout bannerSlider;
 
 
     private CategoryAdapter mCategoryAdapter;
@@ -128,7 +135,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         /**
          * Init Data
          */
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home));
         mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
@@ -145,7 +152,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         gridView.setAdapter(mCategoryAdapter);
 
 //        rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
-        bannerSlider.setLoopSlides(true);
+//        bannerSlider.setLoopSlides(true);
     }
 
     @Override
@@ -180,13 +187,23 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
 
     @Override
-    public void onGetBannerSuccess(List<Banner> data) {
-        List<ss.com.bannerslider.banners.Banner> banners = new ArrayList<>();
-        int length = data.size();
+    public void onGetBannerSuccess(List<Banner> images) {
+        HashMap<String, String> sources = new HashMap<>();
+        int length = images.size();
         for (int i = 0; i < length; i++) {
-            banners.add(new RemoteBanner(data.get(i).getPicture()));
+            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
         }
-        bannerSlider.setBanners(banners);
+        for (String name : sources.keySet()) {
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
+            textSliderView
+                    .image(sources.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            bannerSlider.addSlider(textSliderView);
+        }
+        bannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        bannerSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        bannerSlider.setCustomAnimation(new DescriptionAnimation());
+        bannerSlider.setDuration(DURATION_SLIDE);
     }
 
     @Override
@@ -357,7 +374,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                 fabFavorite.setImageResource(isFavorite ? R.drawable.unfollow : R.drawable.follow);
                 lstPartner.get(position).setFavorite(isFavorite ? 0 : 1);
             } else {
-                DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
+                DialogUtils.showDialog(getContext(), 4, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
         } else {
@@ -378,7 +395,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void addFavoriteFailure(AppError error) {
         Log.e(TAG, "onError: " + error.getMessage());
-        DialogUtils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 1, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     private void clearFirstTimeData() {

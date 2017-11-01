@@ -19,7 +19,7 @@
         android:background="@drawable/search_location_drawable"
         app:iconifiedByDefault="false"
         app:goIcon="@drawable/ic_arrow_forward_black_24dp"
-        app:queryHint="@string/search_partner_hint"
+        app:queryHint="@string/Search.Keyword"
         app:closeIcon="@drawable/ic_close_black_24dp"
         app:searchIcon="@drawable/ic_search_primary_36dp" />
 

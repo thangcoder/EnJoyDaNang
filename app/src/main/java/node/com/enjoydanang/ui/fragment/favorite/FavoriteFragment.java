@@ -20,7 +20,6 @@ import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
@@ -94,7 +93,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     public void onFetchFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
@@ -105,7 +104,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Favorite_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Favorite));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvFavorite.setLayoutManager(layoutManager);

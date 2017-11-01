@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_gray_start"
+    android:clickable="true"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -15,27 +15,27 @@
         android:orientation="vertical">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:layout_marginTop="@dimen/_16sdp"
-            android:layout_centerHorizontal="true"
             android:id="@+id/img_avatar"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="@dimen/_120sdp"
-            fresco:placeholderImageScaleType="centerCrop"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_16sdp"
             fresco:placeholderImage="@drawable/placeholder"
+            fresco:placeholderImageScaleType="centerCrop"
             fresco:progressBarAutoRotateInterval="1000"
             fresco:progressBarImage="@drawable/loading"
             fresco:progressBarImageScaleType="centerInside"
-            fresco:roundAsCircle="true"/>
+            fresco:roundAsCircle="true" />
 
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerInParent="true"
             android:layout_gravity="bottom|center"
             android:layout_marginBottom="@dimen/_16sdp"
-            android:text="Truong Dinh Chien"
             android:textSize="@dimen/_20ssp"
             android:textStyle="normal" />
 
@@ -61,10 +61,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/lblUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="Username:" />
+                    android:text="@string/UserName" />
 
                 <TextView
                     android:id="@+id/tv_username"
@@ -81,10 +82,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/lblEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="Email:" />
+                    android:text="@string/Email" />
 
                 <TextView
                     android:id="@+id/tv_email"
@@ -101,10 +103,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/lblPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="Phone:" />
+                    android:text="@string/Phone" />
 
                 <TextView
                     android:id="@+id/tv_phone"
@@ -121,10 +124,11 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/lblMethodLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:text="Menthod Login:" />
+                    android:text="@string/Login.Method"/>
 
                 <TextView
                     android:id="@+id/tv_menthod"
@@ -146,11 +150,12 @@
             android:background="@drawable/border_button"
             android:orientation="vertical"
             android:padding="@dimen/_8sdp">
+
             <TextView
                 android:id="@+id/tv_login_checking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Login Checkin"
+                android:text="@string/Home.Account.LogCheck_in"
                 android:textColor="@color/color_button_login" />
         </LinearLayout>
     </LinearLayout>

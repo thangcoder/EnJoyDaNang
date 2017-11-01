@@ -1,7 +1,9 @@
 package node.com.enjoydanang.ui.fragment.change_password;
 
+import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,11 +14,11 @@ import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -36,6 +38,19 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
 
     @BindView(R.id.edtReEnterPwd)
     EditText edtReEnterNewPwd;
+
+    @BindView(R.id.lblOldPwd)
+    TextView lblOldPwd;
+
+    @BindView(R.id.lblNewPwd)
+    TextView lblNewPwd;
+
+    @BindView(R.id.lblReNew)
+    TextView lblReNew;
+
+    @BindView(R.id.btnSave)
+    AppCompatButton btnSave;
+
 
     private UserInfo userInfo;
 
@@ -57,7 +72,7 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
 
     @Override
     protected void init(View view) {
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Change_Pwd_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_ChangePassword));
         userInfo = Utils.getUserInfo();
         validator = new ValidUtils();
     }
@@ -85,13 +100,13 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
         }
         Utils.clearForm(edtOldPwd, edtNewPwd, edtReEnterNewPwd);
         hideLoading();
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_SUCCESS, Utils.getString(R.string.password_updated));
+        DialogUtils.showDialog(getContext(), 3, Utils.getLanguageByResId(R.string.Dialog_Title_Success), Utils.getLanguageByResId(R.string.Update_Success));
     }
 
     @Override
     public void onChangeFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     @OnClick(R.id.btnSave)
@@ -111,11 +126,17 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
             showLoading();
             mvpPresenter.changePwd(userInfo.getUserId(), oldPwd, newPwd);
         } else {
-            DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.msg_valid_old_new_pwd));
+            DialogUtils.showDialog(getContext(), 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning), Utils.getLanguageByResId(R.string.Home_Account_Password_NotContain));
         }
     }
 
     private boolean isPwdMatched(String pwd, String confirmPwd) {
         return !(StringUtils.isEmpty(pwd) || StringUtils.isEmpty(confirmPwd)) && validator.isValidConfirmPasswrod(confirmPwd, pwd);
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(lblOldPwd, lblNewPwd, lblReNew, btnSave);
     }
 }

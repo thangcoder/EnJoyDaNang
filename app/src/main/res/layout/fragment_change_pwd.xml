@@ -14,10 +14,11 @@
         android:paddingRight="10dp">
 
         <TextView
+            android:id="@+id/lblOldPwd"
             style="@style/LabelProfileStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_old_pwd" />
+            android:text="@string/Home.Account.ChangePassword.Old" />
 
         <EditText
             android:id="@+id/edtOldPwd"
@@ -29,10 +30,11 @@
             android:padding="8dp" />
 
         <TextView
+            android:id="@+id/lblNewPwd"
             style="@style/LabelProfileStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_new_pwd" />
+            android:text="@string/Home.Account.ChangePassword.New" />
 
         <EditText
             android:id="@+id/edtPwd"
@@ -44,10 +46,11 @@
             android:padding="8dp" />
 
         <TextView
+            android:id="@+id/lblReNew"
             style="@style/LabelProfileStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_reinput_pwd" />
+            android:text="@string/Home.Account.ChangePassword.ReNew" />
 
         <EditText
             android:id="@+id/edtReEnterPwd"
@@ -66,7 +69,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@color/color_button_login"
-            android:text="@string/label_save" />
+            android:text="@string/Action.Save" />
 
     </LinearLayout>
 </LinearLayout>

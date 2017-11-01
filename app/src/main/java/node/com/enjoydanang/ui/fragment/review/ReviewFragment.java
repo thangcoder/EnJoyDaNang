@@ -28,6 +28,7 @@ import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -50,6 +51,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @BindView(R.id.txtPartnerName)
     TextView txtPartnerName;
+
+    @BindView(R.id.txtAddReview)
+    TextView txtAddReview;
 
     private ReviewAdapter mAdapter;
 
@@ -198,5 +202,11 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onClick(View view, int position) {
         Toast.makeText(mMainActivity, "Reply Click", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtAddReview);
     }
 }

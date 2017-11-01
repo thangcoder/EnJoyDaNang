@@ -30,7 +30,6 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -152,7 +151,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         String content = String.valueOf(edtAriaContent.getText());
         float ratingCount = ratingBar.getRating();
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
-            DialogUtils.showDialog(getActivity(), 2, Constant.TITLE_ERROR, Utils.getString(R.string.enter_full_field));
+            DialogUtils.showDialog(getActivity(), 2, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
             return;
         }
         if (partner != null) {
@@ -165,10 +164,10 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                         @Override
                         public void onSuccess(Repository model) {
                             if (Utils.isResponseError(model)) {
-                                DialogUtils.showDialog(getActivity(), 2, Constant.TITLE_ERROR, model.getMessage());
+                                DialogUtils.showDialog(getActivity(), 2, DialogUtils.getTitleDialog(3), model.getMessage());
                                 return;
                             }
-                            DialogUtils.showDialog(getActivity(), 3, Constant.TITLE_SUCCESS, "Review sent", new PromptDialog.OnPositiveListener() {
+                            DialogUtils.showDialog(getActivity(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(PromptDialog promptDialog) {
                                     promptDialog.dismiss();

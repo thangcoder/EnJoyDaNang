@@ -51,7 +51,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements ScanQRCodeView, ZXingScannerView.ResultHandler{
+public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements ScanQRCodeView, ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
 
@@ -116,7 +116,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         TextView txtDiscount = (TextView) dialogView.findViewById(R.id.txtDiscount);
         final EditText edtAmount = (EditText) dialogView.findViewById(R.id.edtAmount);
         txtPartnerName.setText(String.format(Locale.getDefault(), formatPartnerName, partner.getName()));
-        txtDiscount.setText("Discount : " + partner.getDiscount() + " (%)");
+        txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + partner.getDiscount() + " (%)");
         ImageUtils.loadImageNoRadius(ScanActivity.this, imgPartner, partner.getPicture());
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +125,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 try {
                     amount = Integer.valueOf(edtAmount.getText().toString());
                 } catch (Exception e) {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Constant.TITLE_WARNING, "Enter correct amount");
+                    DialogUtils.showDialog(ScanActivity.this, 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                            Utils.getLanguageByResId(R.string.Message_Wrong_Amount));
                     return;
                 }
                 if (amount != 0) {
@@ -137,7 +138,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                         mvpPresenter.requestOrder(partner.getId(), 0, amount);
                     }
                 } else {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Constant.TITLE_WARNING, "Plz enter amount to order");
+                    DialogUtils.showDialog(ScanActivity.this, 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                            Utils.getLanguageByResId(R.string.Message_Wrong_Amount_Empty));
                 }
             }
         });
@@ -162,25 +164,26 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
     @Override
     public void onRequestOrderSuccess(Repository repository) {
-        DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.order_success), new PromptDialog.OnPositiveListener() {
-            @Override
-            public void onClick(PromptDialog promptDialog) {
-                promptDialog.dismiss();
-                if(alertDialog != null && alertDialog.isShowing()){
-                    alertDialog.dismiss();
-                }
-            }
-        });
+        DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS,
+                Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success), new PromptDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(PromptDialog promptDialog) {
+                        promptDialog.dismiss();
+                        if (alertDialog != null && alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onFetchError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Constant.TITLE_ERROR, appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override
     public void onRequestOrderSuccessError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Constant.TITLE_ERROR, appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override

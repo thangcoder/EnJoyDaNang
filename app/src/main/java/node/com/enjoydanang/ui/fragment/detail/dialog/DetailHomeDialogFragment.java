@@ -25,6 +25,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -88,10 +89,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.detail_tab_name)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.review_tab_name)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.schedule_tab_name)));
-        mTabLayout.addTab(mTabLayout.newTab().setText(getString(R.string.album_tab_name)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail))));
+        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Review))));
+        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Schedule))));
+        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Album))));
         setEvents();
         //Creating our pager adapter
         Bundle bundle = getArguments();
@@ -126,7 +127,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private void initToolbar(View rootView) {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        toolbar.setTitle(Utils.getString(R.string.Detail_Screen_Title));
+        toolbar.setTitle(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)));
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 

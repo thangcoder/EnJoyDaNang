@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.fragment.profile;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -25,11 +27,11 @@ import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 
 import static android.app.Activity.RESULT_OK;
@@ -59,9 +61,23 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @BindView(R.id.edtEmail)
     EditText edtEmail;
 
+    @BindView(R.id.txtTakeAPhoto)
+    TextView txtTakeAPhoto;
+    @BindView(R.id.txtUploadFrGallery)
+    TextView txtUploadFrGallery;
+    @BindView(R.id.lblUserName)
+    TextView lblUserName;
+    @BindView(R.id.lblFullName)
+    TextView lblFullName;
+    @BindView(R.id.lblPhone)
+    TextView lblPhone;
+    @BindView(R.id.lblEmail)
+    TextView lblEmail;
+    @BindView(R.id.btnUpdate)
+    AppCompatButton btnUpdate;
+
     @BindView(R.id.imgAvatarUser)
-//    CircleImageView imgAvatarUser;
-            SimpleDraweeView imgAvatarUser;
+    SimpleDraweeView imgAvatarUser;
 
     private UserInfo userInfo;
 
@@ -124,13 +140,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
             initData();
-            DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.update_profile_success));
+            DialogUtils.showDialog(getContext(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Update_Success));
         }
     }
 
     @Override
     public void onUpdateFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), 2, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @OnClick({R.id.btnUpdate, R.id.txtTakeAPhoto, R.id.txtUploadFrGallery})
@@ -172,7 +188,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                     if (imgFile.exists()) {
                         updateAvatar(imgFile);
                     } else {
-                        DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, Utils.getString(R.string.image_not_found));
+                        DialogUtils.showDialog(getContext(), 4, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Image_Not_Found));
                     }
                 }
                 break;
@@ -201,5 +217,11 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         edtPhone.setText(StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone());
 //        ImageUtils.loadImageNoRadius(getContext(), imgAvatarUser, userInfo.getImage());
         ImageUtils.loadImageWithFreso(imgAvatarUser, userInfo.getImage());
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtTakeAPhoto, txtUploadFrGallery, lblUserName, lblFullName, lblPhone, lblEmail, btnUpdate);
     }
 }

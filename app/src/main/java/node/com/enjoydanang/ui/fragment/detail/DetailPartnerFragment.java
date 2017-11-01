@@ -123,7 +123,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     protected void init(View view) {
-        mBaseActivity.setTitle(Utils.getString(R.string.Detail_Screen_Title));
+        mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
 //        initGoogleClient();
         locationHelper = new LocationHelper(getActivity(), this);
         locationHelper.checkpermission();

@@ -35,14 +35,13 @@
 
         <TextView
             android:id="@+id/txtIntroductName"
-            android:text="Enjoy in da nang 소개"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:textSize="@dimen/_20ssp"
+            android:layout_weight=".15"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/_20sdp"
             android:textColor="@color/black"
-            android:layout_weight=".15" />
+            android:textSize="@dimen/_20ssp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -55,6 +54,9 @@
                 android:id="@+id/txtContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_10sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_10sdp"
                 android:scrollbars="vertical" />
 
         </ScrollView>

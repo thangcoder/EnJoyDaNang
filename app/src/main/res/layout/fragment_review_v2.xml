@@ -40,7 +40,7 @@
             android:layout_weight=".05"
             android:drawableLeft="@drawable/ic_rate_review_36dp"
             android:gravity="center_vertical"
-            android:text="@string/hint_write_your_review" />
+            android:text="@string/WriteReview" />
 
 
     </LinearLayout>

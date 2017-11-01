@@ -166,7 +166,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/CheckIn")
-    Observable<Repository> checkIn(@Field("partnerId") int partnerId, @Field("customerId") long customerId, @Field("amount") int amount);
+    Observable<Repository<HistoryCheckin>> checkIn(@Field("partnerId") int partnerId, @Field("customerId") long customerId, @Field("amount") int amount);
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/HistoryCheckIn")

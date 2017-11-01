@@ -4,6 +4,7 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.HistoryCheckin;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.Utils;
 
@@ -20,15 +21,15 @@ public class ScanQRCodePresenter extends BasePresenter<ScanQRCodeView> {
     }
 
     void requestOrder(int partnerId, long customerId, int amount) {
-        addSubscription(apiStores.checkIn(partnerId, customerId, amount), new ApiCallback<Repository>() {
+        addSubscription(apiStores.checkIn(partnerId, customerId, amount), new ApiCallback<Repository<HistoryCheckin>>() {
 
             @Override
-            public void onSuccess(Repository response) {
+            public void onSuccess(Repository<HistoryCheckin> response) {
                 if (Utils.isResponseError(response)) {
                     mvpView.onRequestOrderSuccessError(new AppError(new Throwable(response.getMessage())));
                     return;
                 }
-                mvpView.onRequestOrderSuccess(response);
+                mvpView.onRequestOrderSuccess(response.getData().get(0));
             }
 
             @Override

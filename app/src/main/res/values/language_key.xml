@@ -150,4 +150,8 @@
     <string name="Validate.Message.All.Field.Empty">Validate.Message.All.Field.Empty</string>
     <string name="Login.Continue">Login.Continue</string>
     <string name="Login.CreateAccount">Login.CreateAccount</string>
+    <string name="Message.Payment.Success">Message.Payment.Success</string>
+    <string name="Payment.Placeholder.Money">Payment.Placeholder.Money</string>
+    <string name="Amount">Amount</string>
+    <string name="Action.Payment">Action.Payment</string>
 </resources>

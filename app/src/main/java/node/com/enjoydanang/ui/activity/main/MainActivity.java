@@ -363,7 +363,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         switch (item.getItemId()) {
             case R.id.menu_scan:
                 if(Utils.hasLogin()){

@@ -163,8 +163,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 intent = new Intent(this, MainActivity.class);
                 break;
         }
+        hideLoading();
         if (intent != null) {
-            hideLoading();
             startActivity(intent);
             overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         }
@@ -260,6 +260,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
             showLoading();
             mvpPresenter.normalLogin(userName, password);
+        } else {
+            DialogUtils.showDialog(LoginActivity.this, 2, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));
         }
     }
 

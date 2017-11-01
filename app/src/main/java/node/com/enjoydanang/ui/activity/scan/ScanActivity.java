@@ -25,6 +25,8 @@ import com.google.zxing.Result;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.NumberFormat;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -38,11 +40,16 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.HistoryCheckin;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.widget.NumberTextWatcher;
+
+import static node.com.enjoydanang.R.id.edtName;
 
 /**
  * Author: Tavv
@@ -102,7 +109,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
 
     private void showDialogInfo(@NonNull final Partner partner) {
-        final String formatPartnerName = "Name: %s";
+        final String formatPartnerName = Utils.getLanguageByResId(R.string.Name).concat(": %s");
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_scan_qr_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ScanActivity.this);
@@ -115,6 +122,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         ImageView imgPartner = (ImageView) dialogView.findViewById(R.id.imgPartner);
         TextView txtDiscount = (TextView) dialogView.findViewById(R.id.txtDiscount);
         final EditText edtAmount = (EditText) dialogView.findViewById(R.id.edtAmount);
+        LanguageHelper.getValueByViewId(edtAmount, txtPartnerName, txtDiscount, btnCancel, btnOk);
+        edtAmount.addTextChangedListener(new NumberTextWatcher(edtAmount));
         txtPartnerName.setText(String.format(Locale.getDefault(), formatPartnerName, partner.getName()));
         txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + partner.getDiscount() + " (%)");
         ImageUtils.loadImageNoRadius(ScanActivity.this, imgPartner, partner.getPicture());
@@ -163,9 +172,17 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     }
 
     @Override
-    public void onRequestOrderSuccess(Repository repository) {
+    public void onRequestOrderSuccess(HistoryCheckin response) {
+        String resultPattern = "%s\n%s: %s\n%s: %s%s\n%s: %s";
+        String strAmount = NumberFormat.getInstance().format(response.getAmount());
+        String strPayment = NumberFormat.getInstance().format(response.getPayment());
+        String result = String.format(Locale.getDefault(), resultPattern,
+                Utils.getLanguageByResId(R.string.Message_Payment_Success),
+                Utils.getLanguageByResId(R.string.Amount), strAmount,
+                Utils.getLanguageByResId(R.string.Discount), response.getDiscount(), "%",
+                Utils.getLanguageByResId(R.string.Action_Payment), strPayment);
         DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS,
-                Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success), new PromptDialog.OnPositiveListener() {
+                result, new PromptDialog.OnPositiveListener() {
                     @Override
                     public void onClick(PromptDialog promptDialog) {
                         promptDialog.dismiss();

@@ -23,6 +23,9 @@ import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.widget.NumberTextWatcher;
+
+import static node.com.enjoydanang.R.id.editText;
 
 /**
  * Author: Tavv

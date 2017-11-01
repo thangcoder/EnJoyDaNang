@@ -181,12 +181,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onGetBannerSuccess(List<Banner> data) {
-        List<ss.com.bannerslider.banners.Banner> banners = new ArrayList<>();
-        int length = data.size();
-        for (int i = 0; i < length; i++) {
-            banners.add(new RemoteBanner(data.get(i).getPicture()));
-        }
-        bannerSlider.setBanners(banners);
+//        List<ss.com.bannerslider.banners.Banner> banners = new ArrayList<>();
+//        int length = data.size();
+//        for (int i = 0; i < length; i++) {
+//            banners.add(new RemoteBanner(data.get(i).getPicture()));
+//        }
+//        bannerSlider.setBanners(banners);
     }
 
     @Override

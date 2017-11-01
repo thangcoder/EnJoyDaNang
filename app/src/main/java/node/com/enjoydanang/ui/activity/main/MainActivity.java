@@ -231,36 +231,29 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     GlobalApplication.setUserInfo(null);
                     finish();
                 }
-
-//                if (exit) {
-//                    finish();
-//                } else {
-//                    Toast.makeText(this, getString(R.string.exit),
-//                            Toast.LENGTH_SHORT).show();
-//                    exit = true;
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            exit = false;
-//                        }
-//                    }, 2500);
-//                }
             }
         }
     }
 
     boolean popFragment() {
         boolean isPop = false;
+        FragmentManager fm = getSupportFragmentManager();
+        int i = fm.getBackStackEntryCount();
 
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            Fragment fragment = getActiveFragment();
-            if (fragment.getTag().equals(HomeFragment.class.getName())) {
+        if (fm.getBackStackEntryCount() > 1) {
+            Fragment fragment = fm.findFragmentById(R.id.container_fragment);
+            if (fragment.getTag() == null) {
                 currentTab = HomeTab.None;
             } else {
-                currentTab = HomeTab.Home;
+                if ((fragment.getTag().equals(HomeFragment.class.getName()))) {
+                    currentTab = HomeTab.None;
+                } else {
+                    currentTab = HomeTab.Home;
+                }
             }
             isPop = true;
-            getSupportFragmentManager().popBackStack();
+            fm.popBackStack();
+            fm.executePendingTransactions();
             setStateTabSelected();
         }
         return isPop;
@@ -291,40 +284,29 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_home:
+                FragmentManager fm = getSupportFragmentManager();
                 if (currentTab != HomeTab.Home) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(HomeFragment.class.getName(), true);
-                    } else {
-                        backToFragment(fragment);
-                    }
-
+                    addFrMenu(HomeFragment.class.getName(), true);
                 }
                 currentTab = HomeTab.Home;
                 break;
             case R.id.img_search:
                 if (currentTab != HomeTab.Search) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(SearchFragment.class.getName(), true);
-                    } else {
-                        resurfaceFragment(SearchFragment.class.getName());
-                    }
+                    addFr(SearchFragment.class.getName(), 0);
+
                 }
                 currentTab = HomeTab.Search;
                 break;
             case R.id.ll_profile:
-                if (currentTab != HomeTab.Profile && Utils.hasLogin()) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(ProfileFragment.class.getName(), true);
-                    } else {
-                        resurfaceFragment(ProfileFragment.class.getName());
-                    }
-                    currentTab = HomeTab.Profile;
-                } else {
+                if (!Utils.hasLogin()) {
                     DialogUtils.showDialog(MainActivity.this, 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
+
+                } else {
+                    if (currentTab != HomeTab.Profile) {
+                        addFr(ProfileMenuFragment.class.getName(), 0);
+                    }
                 }
+                currentTab = HomeTab.Profile;
                 break;
         }
         setStateTabSelected();
@@ -536,27 +518,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private void replaceFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        lvDrawerNav.setItemChecked(position, true);
-        replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
+//        lvDrawerNav.setItemChecked(position, true);
+        replaceFragment(R.id.container_fragment, fragmentTag, true, null, null);
     }
 
     private void addFrMenu(String fragmentTag, boolean isBackStack) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, transitionInfo);
+        replaceFragment(R.id.container_fragment, fragmentTag, false, null, null);
     }
 
     private void addFr(String fragmentTag, int position) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         if (position <= LOGOUT) {
             lvDrawerNav.setItemChecked(position, true);
         }
-        Fragment fragment = getActiveFragment();
-        String tag = fragment.getTag();
-        if (tag.equals(HomeFragment.class.getName())) {
-            addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
-        } else {
-            replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
-        }
+        replaceFragment(R.id.container_fragment, fragmentTag, false, null, null);
     }
 
     public boolean resurfaceFragment(String tag) {
@@ -576,9 +551,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         return false;
     }
 
-    public void backToFragment(final Fragment fragment) {
+    public void backToFragment(Fragment fragment) {
         getSupportFragmentManager().popBackStack(
-                fragment.getClass().getName(), 0);
+                fragment.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public Fragment getActiveFragment() {

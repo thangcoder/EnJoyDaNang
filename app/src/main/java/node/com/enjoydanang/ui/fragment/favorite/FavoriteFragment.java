@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
@@ -93,7 +94,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     public void onFetchFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(getContext(), 2, DialogUtils.getTitleDialog(3), error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override

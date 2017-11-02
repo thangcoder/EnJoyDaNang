@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -79,7 +80,6 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        showLoading();
         mvpPresenter.getInformation();
     }
 
@@ -96,12 +96,12 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     public void sendContactSuccess() {
         Utils.clearForm(edtName, edtEmail, edtPhone, edtTitle, edtAriaContent);
-        DialogUtils.showDialog(getContext(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success));
+        DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success));
     }
 
     @Override
     public void sendContactFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, DialogUtils.getTitleDialog(3), error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override

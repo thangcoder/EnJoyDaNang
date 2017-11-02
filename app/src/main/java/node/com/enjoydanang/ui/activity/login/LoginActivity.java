@@ -27,6 +27,7 @@ import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
@@ -268,7 +269,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             showLoading();
             mvpPresenter.normalLogin(userName, password);
         } else {
-            DialogUtils.showDialog(LoginActivity.this, 2, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));
+            DialogUtils.showDialog(LoginActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));
         }
     }
 

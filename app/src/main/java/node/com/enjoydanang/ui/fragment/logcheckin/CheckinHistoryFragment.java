@@ -2,10 +2,13 @@ package node.com.enjoydanang.ui.fragment.logcheckin;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +26,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.HistoryCheckin;
@@ -43,6 +48,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         OnItemClickListener, DatePickerDialog.OnDateSetListener {
     private static final String TAG = CheckinHistoryFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 5;
+    private static final int DATE_CONDITION = 5;
 
     @BindView(R.id.txtFromDate)
     TextView txtFromDate;
@@ -56,6 +62,12 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     @BindView(R.id.lblFromDate)
     TextView lblFromDate;
 
+    @BindView(R.id.lrlContentLog)
+    LinearLayout lrlContentLog;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
     @BindView(R.id.rcvHistoryCheckin)
     RecyclerView rcvHistoryCheckin;
 
@@ -68,6 +80,8 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     private Calendar mCalender;
 
     private boolean isTextFromDateClick;
+
+    private UserInfo userInfo;
 
     @Override
     public void showToast(String desc) {
@@ -86,6 +100,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
 
     @Override
     protected void init(View view) {
+        userInfo = GlobalApplication.getUserInfo();
         mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_LogCheck_in).toUpperCase());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvHistoryCheckin.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
@@ -94,9 +109,26 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         mLstHistoryCheckins = new ArrayList<>();
         mAdapter = new CheckinHistoryAdapter(mLstHistoryCheckins, getContext(), this);
         rcvHistoryCheckin.setAdapter(mAdapter);
-        mCalender = Calendar.getInstance();
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mvpPresenter = createPresenter();
+        mCalender = Calendar.getInstance();
+        initData();
+    }
+
+    private void initData(){
+        Map<String, String> maps = Utils.getStartEndDateOfCurrentMonth(DATE_CONDITION);
+        if (maps != null) {
+            String fromDate = maps.get(Constant.FROM_DATE);
+            String toDate = maps.get(Constant.TO_DATE);
+            txtFromDate.setText(fromDate);
+            txtToDate.setText(toDate);
+            mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, toDate);
+        }
+    }
 
     @Override
     protected void setEvent(View view) {
@@ -141,14 +173,14 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     @Override
     public void onFetchHistorySuccess(List<HistoryCheckin> lstHistoryCheckins) {
         updateItems(lstHistoryCheckins);
-        if (mDatePickerDialog.isShowing()) {
+        if (mDatePickerDialog != null && mDatePickerDialog.isShowing()) {
             mDatePickerDialog.dismiss();
         }
     }
 
     @Override
     public void onFetchFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), error.getMessage());
     }
 
     @Override
@@ -161,6 +193,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         mLstHistoryCheckins.addAll(lstHistories);
         mAdapter.notifyItemRangeChanged(0, lstHistories.size());
         mAdapter.notifyDataSetChanged();
+        setEnableView(true);
     }
 
     @Override
@@ -190,9 +223,19 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
         String fromDate = String.valueOf(txtFromDate.getText());
         if (StringUtils.isNotEmpty(strToDate) && StringUtils.isNotEmpty(fromDate)) {
             if (Utils.hasLogin()) {
-                UserInfo userInfo = GlobalApplication.getUserInfo();
+                setEnableView(false);
                 mvpPresenter.getListHistory(userInfo.getUserId(), fromDate, strToDate);
             }
         }
+    }
+
+    private void setEnableView(boolean isShowContent){
+        if(isShowContent){
+            lrlContentLog.setVisibility(View.VISIBLE);
+            prgLoading.setVisibility(View.GONE);
+            return;
+        }
+        lrlContentLog.setVisibility(View.GONE);
+        prgLoading.setVisibility(View.VISIBLE);
     }
 }

@@ -22,7 +22,6 @@ public class IntroductionPresenter extends BasePresenter<IntroductionView>{
     }
 
     void getIntroduction(){
-        mvpView.showLoading();
         addSubscription(apiStores.getIntroduction(), new ApiCallback<Repository<Introduction>>(){
 
             @Override
@@ -43,7 +42,7 @@ public class IntroductionPresenter extends BasePresenter<IntroductionView>{
 
             @Override
             public void onFinish() {
-                mvpView.hideLoading();
+
             }
         });
     }

@@ -36,6 +36,7 @@ import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.HistoryCheckin;
@@ -130,7 +131,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 try {
                     amount = Integer.parseInt(getNumber(edtAmount.getText().toString()));
                 } catch (Exception e) {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                    DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
                             Utils.getLanguageByResId(R.string.Message_Wrong_Amount));
                     return;
                 }
@@ -143,7 +144,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                         mvpPresenter.requestOrder(partner.getId(), 0, amount);
                     }
                 } else {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                    DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
                             Utils.getLanguageByResId(R.string.Message_Wrong_Amount_Empty));
                 }
             }
@@ -176,7 +177,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 Utils.getLanguageByResId(R.string.Message_Payment_Success),
                 Utils.getLanguageByResId(R.string.Amount), strAmount,
                 Utils.getLanguageByResId(R.string.Discount), response.getDiscount(), "%",
-                Utils.getLanguageByResId(R.string.Payment), strPayment);
+                Utils.getLanguageByResId(R.string.Message_Payment_Paid), strPayment);
         DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS,
                 result, new PromptDialog.OnPositiveListener() {
                     @Override
@@ -198,12 +199,12 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
     @Override
     public void onFetchError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override
     public void onRequestOrderSuccessError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override

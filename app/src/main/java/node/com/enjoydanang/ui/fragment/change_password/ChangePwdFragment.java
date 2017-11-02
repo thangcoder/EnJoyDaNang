@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -100,13 +101,13 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
         }
         Utils.clearForm(edtOldPwd, edtNewPwd, edtReEnterNewPwd);
         hideLoading();
-        DialogUtils.showDialog(getContext(), 3, Utils.getLanguageByResId(R.string.Dialog_Title_Success), Utils.getLanguageByResId(R.string.Update_Success));
+        DialogUtils.showDialog(getContext(), DialogType.SUCCESS, Utils.getLanguageByResId(R.string.Dialog_Title_Success), Utils.getLanguageByResId(R.string.Update_Success));
     }
 
     @Override
     public void onChangeFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(getContext(), 2, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     @OnClick(R.id.btnSave)
@@ -126,7 +127,7 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
             showLoading();
             mvpPresenter.changePwd(userInfo.getUserId(), oldPwd, newPwd);
         } else {
-            DialogUtils.showDialog(getContext(), 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning), Utils.getLanguageByResId(R.string.Home_Account_Password_NotContain));
+            DialogUtils.showDialog(getContext(), DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning), Utils.getLanguageByResId(R.string.Home_Account_Password_NotContain));
         }
     }
 

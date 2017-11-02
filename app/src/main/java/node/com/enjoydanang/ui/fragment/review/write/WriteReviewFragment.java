@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
@@ -127,16 +128,16 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
     @Override
     public void onSubmitSuccess(Repository data) {
         if(Utils.isResponseError(data)){
-            DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, data.getMessage());
+            DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), data.getMessage());
             return;
         }
-        DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, "Review sent");
+        DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success));
         mBaseActivity.onBackPressed();
     }
 
     @Override
     public void onSubmitFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
@@ -156,7 +157,7 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
         String content = String.valueOf(edtAriaContent.getText());
         float ratingCount = ratingBar.getRating();
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
-            DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, Utils.getString(R.string.enter_full_field));
+            DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
             return;
         }
         if (Utils.hasLogin() && partner != null) {

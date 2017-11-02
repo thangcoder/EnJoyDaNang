@@ -154,4 +154,8 @@
     <string name="Payment.Placeholder.Money">Payment.Placeholder.Money</string>
     <string name="Amount">Amount</string>
     <string name="Action.Payment">Action.Payment</string>
+    <string name="Message.Payment.Paid">Message.Payment.Paid</string>
+    <string name="Message.Confirm.Change.Password">Message.Confirm.Change.Password</string>
+    <string name="Message.Register.Success">Message.Register.Success</string>
+    <string name="Message.No.Internet">Message.No.Internet</string>
 </resources>

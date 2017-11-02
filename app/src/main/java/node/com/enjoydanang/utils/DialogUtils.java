@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -15,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 
+import static android.R.attr.type;
 import static node.com.enjoydanang.utils.Utils.getString;
 
 /**
@@ -28,12 +31,12 @@ import static node.com.enjoydanang.utils.Utils.getString;
 public class DialogUtils {
 
     /**
-     * @param context Context
-     * @param type    {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
-     * @param title   Title dialog
-     * @param msg     Message want to display
+     * @param context    Context
+     * @param type {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
+     * @param title      Title dialog
+     * @param msg        Message want to display
      */
-    public static void showDialog(Context context, int type, String title, String msg) {
+    public static void showDialog(Context context,@DialogType int type, String title, String msg) {
         new PromptDialog(context)
                 .setDialogType(type)
                 .setAnimationEnable(true)
@@ -64,12 +67,11 @@ public class DialogUtils {
     }
 
     /**
-     *
-     * @param context Context
-     * @param title title dialog
-     * @param content content dialog
-     * @param titleBtnPositive title button Positive
-     * @param titleBtnNegative title button Negative
+     * @param context            Context
+     * @param title              title dialog
+     * @param content            content dialog
+     * @param titleBtnPositive   title button Positive
+     * @param titleBtnNegative   title button Negative
      * @param onPositiveListener Event positive click
      * @param onNegativeListener Event negative click
      */
@@ -87,13 +89,12 @@ public class DialogUtils {
 
 
     /**
-     *
-     * @param context Context
-     * @param title title dialog
-     * @param content content dialog
-     * @param titleBtnPositive title button Positive
-     * @param titleBtnNegative title button Negative
-     * @param image image
+     * @param context            Context
+     * @param title              title dialog
+     * @param content            content dialog
+     * @param titleBtnPositive   title button Positive
+     * @param titleBtnNegative   title button Negative
+     * @param image              image
      * @param onPositiveListener Event positive click
      * @param onNegativeListener Event negative click
      */
@@ -113,27 +114,27 @@ public class DialogUtils {
     }
 
     /**
-     * @param context Context
-     * @param layoutId layout resource id
-     * @param title title dialog
-     * @param btnOkRes button Ok resource id
-     * @param btnCancelRes button Cancel resource id
-     * @param okListener Event positive click
+     * @param context        Context
+     * @param layoutId       layout resource id
+     * @param title          title dialog
+     * @param btnOkRes       button Ok resource id
+     * @param btnCancelRes   button Cancel resource id
+     * @param okListener     Event positive click
      * @param cancelListener Event negative click
-     * @param hasTitle boolean hasTitle
+     * @param hasTitle       boolean hasTitle
      */
     public static void showAlertDialogCustom(Context context, @LayoutRes int layoutId, String title,
                                              @IdRes int btnOkRes, @IdRes int btnCancelRes,
                                              View.OnClickListener okListener,
-                                             View.OnClickListener cancelListener, boolean hasTitle){
+                                             View.OnClickListener cancelListener, boolean hasTitle) {
         AlertDialog alertDialog = null;
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(layoutId, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(dialogView);
-        if(hasTitle){
+        if (hasTitle) {
             builder.setTitle(title);
-        }else{
+        } else {
             alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
         alertDialog = builder.create();
@@ -149,13 +150,13 @@ public class DialogUtils {
      * @return String title
      */
 
-    public static String getTitleDialog(int type){
-        switch (type){
-            case 1 :
+    public static String getTitleDialog(int type) {
+        switch (type) {
+            case 1:
                 return Utils.getLanguageByResId(R.string.Dialog_Title_Success);
-            case 2 :
+            case 2:
                 return Utils.getLanguageByResId(R.string.Dialog_Title_Warning);
-            case 3 :
+            case 3:
                 return Utils.getLanguageByResId(R.string.Dialog_Title_Wrong);
             default:
                 return StringUtils.EMPTY;

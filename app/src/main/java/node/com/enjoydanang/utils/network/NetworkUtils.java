@@ -246,7 +246,7 @@ public class NetworkUtils {
     }
 
     public static boolean isNetworkContented(Context context) {
-        return isConnected(context) == NetState.NET_UNKNOWN ? false : true;
+        return isConnected(context) != NetState.NET_UNKNOWN;
     }
 
 

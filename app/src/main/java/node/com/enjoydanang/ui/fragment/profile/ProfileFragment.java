@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -140,13 +141,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
             initData();
-            DialogUtils.showDialog(getContext(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Update_Success));
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Update_Success));
         }
     }
 
     @Override
     public void onUpdateFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, DialogUtils.getTitleDialog(3), error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @OnClick({R.id.btnUpdate, R.id.txtTakeAPhoto, R.id.txtUploadFrGallery})
@@ -188,7 +189,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                     if (imgFile.exists()) {
                         updateAvatar(imgFile);
                     } else {
-                        DialogUtils.showDialog(getContext(), 4, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Image_Not_Found));
+                        DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Image_Not_Found));
                     }
                 }
                 break;

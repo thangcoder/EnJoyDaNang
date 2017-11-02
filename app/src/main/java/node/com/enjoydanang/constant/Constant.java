@@ -57,4 +57,7 @@ public class Constant {
     public static final Integer[] INDEX_HEADER_NORMAL = new Integer[]{0, 5};
 
     public static final Integer[] INDEX_HEADER_NO_LOGIN = new Integer[]{0, 3};
+
+    public static final String FROM_DATE  = "FromDate";
+    public static final String TO_DATE  = "ToDate";
 }

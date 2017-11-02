@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Banner;
@@ -392,7 +393,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                 fabFavorite.setImageResource(isFavorite ? R.drawable.unfollow : R.drawable.follow);
                 lstPartner.get(position).setFavorite(isFavorite ? 0 : 1);
             } else {
-                DialogUtils.showDialog(getContext(), 4, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
         } else {
@@ -413,7 +414,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void addFavoriteFailure(AppError error) {
         Log.e(TAG, "onError: " + error.getMessage());
-        DialogUtils.showDialog(getContext(), 1, DialogUtils.getTitleDialog(3), error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override

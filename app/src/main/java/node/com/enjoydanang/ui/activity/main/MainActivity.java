@@ -35,6 +35,7 @@ import cn.refactor.lib.colordialog.ColorDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
@@ -324,7 +325,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                     currentTab = HomeTab.Profile;
                 } else {
-                    DialogUtils.showDialog(MainActivity.this, 4, Constant.TITLE_WARNING, Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 break;
         }
@@ -369,7 +370,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     startActivity(new Intent(MainActivity.this, ScanActivity.class));
                     overridePendingTransitionEnter();
                 }else{
-                    DialogUtils.showDialog(MainActivity.this, 4, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 return true;
             case R.id.menu_edit:

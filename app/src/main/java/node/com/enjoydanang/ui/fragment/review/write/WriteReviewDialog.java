@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
@@ -151,7 +152,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         String content = String.valueOf(edtAriaContent.getText());
         float ratingCount = ratingBar.getRating();
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
-            DialogUtils.showDialog(getActivity(), 2, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
             return;
         }
         if (partner != null) {
@@ -164,7 +165,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                         @Override
                         public void onSuccess(Repository model) {
                             if (Utils.isResponseError(model)) {
-                                DialogUtils.showDialog(getActivity(), 2, DialogUtils.getTitleDialog(3), model.getMessage());
+                                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
                                 return;
                             }
                             DialogUtils.showDialog(getActivity(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {

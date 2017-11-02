@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Introduction;
@@ -34,6 +37,12 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
     @BindView(R.id.txtContent)
     TextView txtContent;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
+    @BindView(R.id.lrlIntroContent)
+    LinearLayout lrlIntroContent;
+
 
     @Override
     protected IntroductionPresenter createPresenter() {
@@ -44,7 +53,6 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        showLoading();
         mvpPresenter.getIntroduction();
     }
 
@@ -88,10 +96,12 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
             spanned = Html.fromHtml(introduction.getContent());
         }
         txtContent.setText(spanned);
+        lrlIntroContent.setVisibility(View.VISIBLE);
+        prgLoading.setVisibility(View.GONE);
     }
 
     @Override
     public void onLoadFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 4, Constant.TITLE_WARNING, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), error.getMessage());
     }
 }

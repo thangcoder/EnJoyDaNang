@@ -22,4 +22,6 @@ public interface iDetailPartnerView extends iBaseView {
     void onFetchFailure(AppError appError);
 
     void onFetchSlideSuccess(List<PartnerAlbum> images);
+
+    void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum);
 }

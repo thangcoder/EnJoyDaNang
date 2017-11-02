@@ -29,7 +29,6 @@ public class ScheduleUtilityPresenter extends BasePresenter<ScheduleUtilityView>
 
             @Override
             public void onSuccess(Repository<Schedule> model) {
-                mvpView.hideLoading();
                 if(Utils.isNotEmptyContent(model)){
                     List<Schedule> schedules = model.getData();
                     Collections.sort(schedules, new ScheduleComparator());
@@ -41,7 +40,6 @@ public class ScheduleUtilityPresenter extends BasePresenter<ScheduleUtilityView>
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onFetchFailure(new AppError(new Throwable(msg)));
             }
 

@@ -173,7 +173,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onResume() {
         super.onResume();
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title).toUpperCase());
     }
 
     @Override

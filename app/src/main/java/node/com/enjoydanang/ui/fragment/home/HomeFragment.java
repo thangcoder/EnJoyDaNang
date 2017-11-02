@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
@@ -64,6 +66,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     RecyclerView rcvPartner;
     @BindView(R.id.grv_menu)
     GridView gridView;
+
+
+    @BindView(R.id.lrlContentHome)
+    LinearLayout lrlContentHome;
+
+
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
 
 //    @BindView(R.id.rcv_weather)
 //    RecyclerView rcvWeather;
@@ -135,7 +145,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         /**
          * Init Data
          */
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home).toUpperCase());
         mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
@@ -166,13 +176,21 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        mvpPresenter.getListHome(user.getUserId());
-        mvpPresenter.getBanner();
+
+
+        prgLoading.post(new Runnable() {
+            public void run() {
+                mvpPresenter.getAllDataHome(user.getUserId());
+            }
+        });
+//        mvpPresenter.getAllDataHome(user.getUserId());
+//        mvpPresenter.getListHome(user.getUserId());
+//        mvpPresenter.getBanner();
         loadmorePartner.setCategoryId(-1);
         gridView.setVisibility(View.VISIBLE);
 //        mvpPresenter.getWeather();
 //        mvpPresenter.getExchangeRate();
-        mvpPresenter.getAllCategories();
+//        mvpPresenter.getAllCategories();
     }
 
     @Override
@@ -398,6 +416,20 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         DialogUtils.showDialog(getContext(), 1, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
+    @Override
+    public void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories) {
+        setDataBanner(banners);
+        setDataPartner(partners);
+        setDataCategory(categories);
+        prgLoading.setVisibility(View.GONE);
+        lrlContentHome.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onFetchFailure(AppError error) {
+        Log.e(TAG, "onFetchFailure " + error.getMessage());
+    }
+
     private void clearFirstTimeData() {
         if (CollectionUtils.isNotEmpty(lstPartner)) {
             int size = this.lstPartner.size();
@@ -405,4 +437,38 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             mPartnerAdapter.notifyItemRangeChanged(0, size);
         }
     }
+
+
+    private void setDataBanner(List<Banner> images) {
+        HashMap<String, String> sources = new HashMap<>();
+        int length = images.size();
+        for (int i = 0; i < length; i++) {
+            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
+        }
+        for (String name : sources.keySet()) {
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
+            textSliderView
+                    .image(sources.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            bannerSlider.addSlider(textSliderView);
+        }
+        bannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        bannerSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        bannerSlider.setCustomAnimation(new DescriptionAnimation());
+        bannerSlider.setDuration(DURATION_SLIDE);
+    }
+
+    private void setDataCategory(List<Category> categories) {
+        lstCategories.addAll(categories);
+        mCategoryAdapter.notifyDataSetChanged();
+    }
+
+    private void setDataPartner(List<Partner> partners) {
+        if (CollectionUtils.isEmpty(partners)) {
+            rcvPartner.setVisibility(View.GONE);
+            return;
+        }
+        updateItemNoLoadmore(partners);
+    }
+
 }

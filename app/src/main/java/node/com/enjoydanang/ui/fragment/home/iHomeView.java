@@ -45,4 +45,8 @@ public interface iHomeView  extends iBaseView {
 
     void addFavoriteFailure(AppError error);
 
+    void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories);
+
+    void onFetchFailure(AppError error);
+
 }

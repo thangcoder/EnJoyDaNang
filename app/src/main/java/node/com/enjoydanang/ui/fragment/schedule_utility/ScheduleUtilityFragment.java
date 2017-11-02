@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,8 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
     @BindView(R.id.txtEmpty)
     TextView txtEmptyData;
 
-    private Partner partner = null;
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
 
     public static ScheduleUtilityFragment newInstance(Partner partner) {
         ScheduleUtilityFragment fragment = new ScheduleUtilityFragment();
@@ -73,8 +75,7 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
         mvpPresenter = createPresenter();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            partner = (Partner) bundle.getSerializable(TAG);
-            showLoading();
+            Partner partner = (Partner) bundle.getSerializable(TAG);
             mvpPresenter.getSchedule(partner.getId());
 //            mvpPresenter.getUtility(partnerId);
         }
@@ -112,6 +113,8 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
         setVisibleContent(true);
         ScheduleAdapter adapter = new ScheduleAdapter(getContext(), schedules);
         lvSchedule.setAdapter(adapter);
+        prgLoading.setVisibility(View.GONE);
+        lvSchedule.setVisibility(View.VISIBLE);
     }
 
     @Override

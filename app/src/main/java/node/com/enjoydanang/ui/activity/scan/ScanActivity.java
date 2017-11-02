@@ -26,7 +26,6 @@ import com.google.zxing.Result;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.NumberFormat;
-import java.util.LinkedList;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -37,7 +36,6 @@ import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.HistoryCheckin;
@@ -48,8 +46,6 @@ import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.widget.NumberTextWatcher;
-
-import static node.com.enjoydanang.R.id.edtName;
 
 /**
  * Author: Tavv
@@ -89,7 +85,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             public void run() {
                 mScannerView.resumeCameraPreview(ScanActivity.this);
             }
-        }, 500);
+        }, 1000);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             public void onClick(View v) {
                 int amount;
                 try {
-                    amount = Integer.valueOf(edtAmount.getText().toString());
+                    amount = Integer.parseInt(getNumber(edtAmount.getText().toString()));
                 } catch (Exception e) {
                     DialogUtils.showDialog(ScanActivity.this, 4, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
                             Utils.getLanguageByResId(R.string.Message_Wrong_Amount));
@@ -180,7 +176,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                 Utils.getLanguageByResId(R.string.Message_Payment_Success),
                 Utils.getLanguageByResId(R.string.Amount), strAmount,
                 Utils.getLanguageByResId(R.string.Discount), response.getDiscount(), "%",
-                Utils.getLanguageByResId(R.string.Action_Payment), strPayment);
+                Utils.getLanguageByResId(R.string.Payment), strPayment);
         DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS,
                 result, new PromptDialog.OnPositiveListener() {
                     @Override
@@ -191,6 +187,13 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                         }
                     }
                 });
+    }
+
+    private String getNumber(String value) {
+        if (!value.contains(".") && !value.contains(",")) {
+            return value;
+        }
+        return value.replaceAll("\\.|,", "");
     }
 
     @Override

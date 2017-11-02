@@ -5,9 +5,6 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Review;
-import node.com.enjoydanang.utils.Utils;
-
-import static com.kakao.auth.StringSet.msg;
 
 /**
  * Author: Tavv
@@ -37,7 +34,6 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
 
             @Override
             public void onFinish() {
-                mvpView.hideLoading();
             }
         });
     }

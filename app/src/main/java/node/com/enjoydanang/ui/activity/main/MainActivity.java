@@ -513,19 +513,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home).toUpperCase());
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Search));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
@@ -545,8 +545,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     private void addFrMenu(String fragmentTag, boolean isBackStack) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, transitionInfo);
+//        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, null);
     }
 
     private void addFr(String fragmentTag, int position) {

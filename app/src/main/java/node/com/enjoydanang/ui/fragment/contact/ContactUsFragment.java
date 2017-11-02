@@ -23,9 +23,6 @@ import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.widget.NumberTextWatcher;
-
-import static node.com.enjoydanang.R.id.editText;
 
 /**
  * Author: Tavv
@@ -128,7 +125,7 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
 
     @Override
     protected void init(View view) {
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Contact));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Contact).toUpperCase());
         String lblNameRequire = String.format(Locale.getDefault(), LABEL_REQUIRE_TEMPLATE, Utils.getLanguageByResId(R.string.Name));
         if (Build.VERSION.SDK_INT >= 24) {
             txtNameLabel.setText(Html.fromHtml(lblNameRequire, Html.FROM_HTML_MODE_LEGACY));

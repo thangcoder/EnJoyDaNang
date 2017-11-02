@@ -79,7 +79,7 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
 
     @Override
     public void onResume() {
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
         super.onResume();
     }
 

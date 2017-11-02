@@ -14,13 +14,27 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true" />
 
 
-            <!--<ss.com.bannerslider.views.BannerSlider-->
+            <LinearLayout
+                android:id="@+id/lrlContentHome"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--<ss.com.bannerslider.views.BannerSlider-->
                 <!--android:layout_marginTop="10dp"-->
                 <!--android:id="@+id/carouselView"-->
                 <!--android:layout_width="match_parent"-->
@@ -33,43 +47,46 @@
                 <!--app:interval="5000"-->
                 <!--app:loopSlides="true" />-->
 
-            <com.daimajia.slider.library.SliderLayout
-                android:id="@+id/carouselView"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                app:auto_cycle="true"
-                app:indicator_visibility="visible"
-                app:pager_animation="Accordion"
-                app:pager_animation_span="1100" />
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/carouselView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    app:auto_cycle="true"
+                    app:indicator_visibility="visible"
+                    app:pager_animation="Accordion"
+                    app:pager_animation_span="1100" />
 
-            <View
-                android:id="@+id/view_below"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_1sdp"
-                android:background="@color/fifty_percent_transparency_grey_400" />
+                <View
+                    android:id="@+id/view_below"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_1sdp"
+                    android:background="@color/fifty_percent_transparency_grey_400" />
 
-            <GridView
-                android:id="@+id/grv_menu"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
-                android:background="@color/white"
-                android:gravity="center"
-                android:horizontalSpacing="@dimen/_1sdp"
-                android:minHeight="@dimen/_16sdp"
-                android:numColumns="4"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="@dimen/_1sdp" />
+                <GridView
+                    android:id="@+id/grv_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_150sdp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:horizontalSpacing="@dimen/_1sdp"
+                    android:minHeight="@dimen/_16sdp"
+                    android:numColumns="4"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="@dimen/_1sdp" />
 
-            <!--<include layout="@layout/include_widget" />-->
+                <!--<include layout="@layout/include_widget" />-->
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcv_partner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:descendantFocusability="blocksDescendants"
-                android:focusableInTouchMode="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-        </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcv_partner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="blocksDescendants"
+                    android:focusableInTouchMode="true"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            </LinearLayout>
+        </FrameLayout>
+
+
     </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

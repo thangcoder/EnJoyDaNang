@@ -18,6 +18,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -96,6 +99,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @BindView(R.id.mapView)
     CustomMapView mMapView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
+    @BindView(R.id.lrlContentDetail)
+    LinearLayout lrlContentDetail;
 
     @BindView(R.id.scrollDetailPartner)
     NestedScrollView scrollDetailPartner;
@@ -157,11 +166,16 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Partner partner = (Partner) bundle.getSerializable(TAG);
+            final Partner partner = (Partner) bundle.getSerializable(TAG);
             if (partner != null) {
-                showLoading();
-                mvpPresenter.getDetailPartner(partner.getId());
-                mvpPresenter.getSlideByPartnerId(partner.getId());
+                prgLoading.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mvpPresenter.getAllDataHome(partner.getId());
+                    }
+                });
+//                mvpPresenter.getDetailPartner(partner.getId());
+//                mvpPresenter.getSlideByPartnerId(partner.getId());
             }
         }
 
@@ -233,6 +247,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         slider.setCustomAnimation(new DescriptionAnimation());
         slider.setDuration(DURATION_SLIDE);
+    }
+
+    @Override
+    public void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum) {
+        setDataAlbum(lstAlbum);
+        setDataDetail(lstDetailPartner);
     }
 
     @Override
@@ -320,6 +340,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mMapView.setVisibility(View.GONE);
             ex.printStackTrace();
         }
+        prgLoading.setVisibility(View.GONE);
+        lrlContentDetail.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -444,5 +466,43 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         }
     }
 
+    private void setDataAlbum(List<PartnerAlbum> images) {
+        HashMap<String, String> sources = new HashMap<>();
+        int length = images.size();
+        for (int i = 0; i < length; i++) {
+            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
+        }
+        for (String name : sources.keySet()) {
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
+            textSliderView
+                    .image(sources.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            slider.addSlider(textSliderView);
+        }
+        slider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        slider.setCustomAnimation(new DescriptionAnimation());
+        slider.setDuration(DURATION_SLIDE);
+    }
+
+    private void setDataDetail(List<DetailPartner> lstDetailPartner) {
+        if (CollectionUtils.isNotEmpty(lstDetailPartner)) {
+            mMapView.getMapAsync(this);
+            DetailPartner detailPartner = lstDetailPartner.get(0);
+            partner = detailPartner;
+            txtTitle.setText(detailPartner.getName());
+            ImageUtils.loadImageNoRadius(getContext(), imgPartner, detailPartner.getPicture());
+            if (Build.VERSION.SDK_INT >= 24) {
+                txtContent.setText(Html.fromHtml(detailPartner.getDescription(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                txtContent.setText(Html.fromHtml(detailPartner.getDescription()));
+            }
+            ratingBar.setRating(detailPartner.getStarReview());
+            ratingBar.setFocusable(false);
+
+            loadVideo(detailPartner.getVideo());
+        }
+
+    }
 
 }

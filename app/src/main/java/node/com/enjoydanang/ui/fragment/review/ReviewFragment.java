@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,12 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @BindView(R.id.txtAddReview)
     TextView txtAddReview;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
+    @BindView(R.id.lrlContentReview)
+    LinearLayout lrlContentReview;
+
     private ReviewAdapter mAdapter;
 
     private final int START_PAGE = 0;
@@ -66,6 +74,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     private Partner partner;
 
     private List<Review> lstReviews;
+
 
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
@@ -106,7 +115,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         if (partner != null) {
-            showLoading();
             mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
         }
     }
@@ -168,6 +176,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onFetchReviews(List<Review> models) {
         if (CollectionUtils.isEmpty(models) && currentPage == 0) {
+            lrlContentReview.setVisibility(View.VISIBLE);
+            prgLoading.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
             return;
@@ -175,6 +185,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         updateItems(models);
         txtEmpty.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        lrlContentReview.setVisibility(View.VISIBLE);
+        prgLoading.setVisibility(View.GONE);
     }
 
     @Override

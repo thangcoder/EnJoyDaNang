@@ -127,7 +127,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private void initToolbar(View rootView) {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        toolbar.setTitle(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)));
+        toolbar.setTitle(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)).toUpperCase());
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 

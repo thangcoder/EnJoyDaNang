@@ -72,7 +72,6 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
         if (bundle != null) {
             Partner partner = (Partner) bundle.getSerializable(TAG);
             if (partner != null) {
-                showLoading();
                 mvpPresenter.getAlbum(partner.getId());
             }
         }

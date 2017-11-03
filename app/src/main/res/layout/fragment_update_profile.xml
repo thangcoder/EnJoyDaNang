@@ -26,17 +26,18 @@
         <!--app:civ_fill_color="@color/material_grey_200" />-->
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatarUser"
-            app:placeholderImage="@drawable/ic_no_user"
-            app:placeholderImageScaleType="centerCrop"
-            app:progressBarAutoRotateInterval="1000"
-            app:progressBarImage="@drawable/loading"
-            app:progressBarImageScaleType="centerInside"
-            app:roundAsCircle="true"
             android:layout_width="@dimen/_90sdp"
             android:layout_height="@dimen/_90sdp"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_10sdp" />
+            android:layout_marginStart="@dimen/_10sdp"
+            app:placeholderImage="@drawable/ic_no_user"
+            app:placeholderImageScaleType="centerCrop"
+            android:scaleType="centerCrop"
+            app:progressBarAutoRotateInterval="1000"
+            app:progressBarImage="@drawable/loading"
+            app:progressBarImageScaleType="centerInside"
+            app:roundAsCircle="true" />
 
 
         <LinearLayout

@@ -40,6 +40,10 @@ public class HistoryCheckin {
     @Expose
     private double payment;
 
+    @SerializedName("Date")
+    @Expose
+    private String date;
+
     public int getId() {
         return id;
     }
@@ -104,4 +108,11 @@ public class HistoryCheckin {
         this.payment = payment;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

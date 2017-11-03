@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 
-import static android.R.attr.type;
 import static node.com.enjoydanang.utils.Utils.getString;
 
 /**

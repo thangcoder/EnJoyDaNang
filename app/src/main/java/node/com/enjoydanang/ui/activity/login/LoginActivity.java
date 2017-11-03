@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
@@ -49,7 +52,7 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
  * Version : 1.0
  */
 
-public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack {
+public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
 //    @BindView(R.id.toolbar)
@@ -75,6 +78,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @BindView(R.id.txtContinue)
     TextView txtContinue;
+
+    @BindView(R.id.lrlLogin)
+    LinearLayout lrlLogin;
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -128,6 +134,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 //                overridePendingTransitionExit();
 //            }
 //        });
+        lrlLogin.setOnTouchListener(this);
     }
 
     @Override
@@ -238,6 +245,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
             GlobalApplication.setUserInfo(userInfo);
+            SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
             hideLoading();
             redirectMain();
@@ -294,4 +302,12 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         }
     }
 
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.lrlLogin) {
+            SoftKeyboardManager.hideSoftKeyboard(this, v.getWindowToken(), 0);
+        }
+        return true;
+    }
 }

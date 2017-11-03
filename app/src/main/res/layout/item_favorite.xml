@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/_2sdp"
+    android:orientation="horizontal"
     android:paddingBottom="@dimen/_2sdp"
-    android:paddingTop="@dimen/_2sdp"
-    android:orientation="horizontal">
+    android:paddingLeft="@dimen/_2sdp"
+    android:paddingTop="@dimen/_2sdp">
 
     <ImageView
         android:id="@+id/imgPartner"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center_vertical"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_no_user" />
 
@@ -22,16 +23,36 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <TextView
-            android:id="@+id/txtPartnerName"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
             android:layout_weight=".8"
-            android:gravity="center_vertical"
-            android:textColor="@color/material_grey_700"
-            android:textStyle="bold" />
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/txtPartnerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:textColor="@color/material_grey_700"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtPartnerName"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/material_grey_700" />
+
+        </RelativeLayout>
+
 
         <ImageView
             android:id="@+id/btnDelete"

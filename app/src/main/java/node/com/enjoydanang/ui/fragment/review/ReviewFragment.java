@@ -219,6 +219,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void initViewLabel(View view) {
         super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(txtAddReview);
+        LanguageHelper.getValueByViewId(txtAddReview, txtEmpty);
     }
 }

@@ -6,6 +6,7 @@ import android.text.Html;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 
 /**
  * Author: Tavv
@@ -32,12 +34,15 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Version 1.0
  */
 
-public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener {
+public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener{
 
     private final String LABEL_REQUIRE_TEMPLATE = "%s (<font color=#e51c23>*</font>)";
 
     @BindView(R.id.edtName)
     EditText edtName;
+
+    @BindView(R.id.lrlContactUs)
+    LinearLayout lrlContactUs;
 
     @BindView(R.id.edtPhone)
     EditText edtPhone;
@@ -137,6 +142,7 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     protected void setEvent(View view) {
         edtAriaContent.setOnTouchListener(this);
+        lrlContactUs.setOnTouchListener(this);
     }
 
     @Override
@@ -156,11 +162,15 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        v.getParent().requestDisallowInterceptTouchEvent(true);
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-                break;
+        if (v.getId() == R.id.lrlContactUs) {
+            SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
+        }else{
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
         }
         return false;
     }
@@ -182,4 +192,5 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
             mvpPresenter.sendContact(name, phone, email, title, content);
         }
     }
+
 }

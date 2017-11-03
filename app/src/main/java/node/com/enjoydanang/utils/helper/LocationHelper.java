@@ -5,14 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,7 +31,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,18 +45,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import node.com.enjoydanang.api.ApiStores;
-import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.PermissionUtils;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
-import retrofit2.Call;
-import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -191,11 +183,9 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
     public String getFullInfoByAddress(Address address) {
         if (address != null) {
-            // Format the first line of address (if available), city, and country name.
-            return String.format("%s, %s, %s",
-                    address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
-                    address.getLocality(),
-                    address.getCountryName());
+            String  addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";
+            String  locality = StringUtils.isNotBlank(address.getLocality()) ? address.getLocality().concat(", ") : "";
+            return addressLine + locality + address.getCountryName();
         }
         return StringUtils.EMPTY;
     }

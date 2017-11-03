@@ -2,17 +2,14 @@ package node.com.enjoydanang.ui.activity.main;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.GlobalApplication;
-import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
 
@@ -39,10 +36,6 @@ public class MainPresenter extends BasePresenter<MainView> {
             } else {
                 email.setText(userInfo.getEmail());
             }
-//            Picasso.with(context).load(userInfo.getImage()).
-//                    placeholder(R.drawable.ic_no_user).
-//                    fit().
-//                    into(imgAvatar);
             ImageUtils.loadImageWithFreso(imgAvatar,userInfo.getImage());
         } else {
             fullName.setVisibility(View.GONE);

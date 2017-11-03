@@ -286,7 +286,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
                 rcvSearchResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
                 mMapView.setVisibility(isShow ? View.GONE : View.VISIBLE);
             }
-        }, 50);
+        }, 500);
     }
 
     @Override

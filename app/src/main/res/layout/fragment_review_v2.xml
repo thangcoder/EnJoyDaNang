@@ -62,7 +62,7 @@
             android:layout_height="0dp"
             android:layout_weight=".7"
             android:gravity="center"
-            android:text="@string/review_empty"
+            android:text="@string/Review.Empty.Data"
             android:textColor="@color/red"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"

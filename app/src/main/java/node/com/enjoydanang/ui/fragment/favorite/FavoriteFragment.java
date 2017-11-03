@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,9 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @BindView(R.id.txtEmpty)
     TextView txtEmpty;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
     private UserInfo userInfo;
 
     private FavoriteAdapter mAdapter;
@@ -61,8 +65,12 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        showLoading();
-        mvpPresenter.getFavorite(userInfo.getUserId());
+        prgLoading.post(new Runnable() {
+            @Override
+            public void run() {
+                mvpPresenter.getFavorite(userInfo.getUserId());
+            }
+        });
     }
 
     @Override
@@ -77,10 +85,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
 
     @Override
     public void onFetchFavorite(List<Partner> lstFavorites) {
+        prgLoading.setVisibility(View.GONE);
         if(CollectionUtils.isEmpty(lstFavorites)){
             txtEmpty.setVisibility(View.VISIBLE);
             rcvFavorite.setVisibility(View.GONE);
-            hideLoading();
             return;
         }
         this.lstFavorites = lstFavorites;
@@ -88,12 +96,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
         rcvFavorite.setVisibility(View.VISIBLE);
         mAdapter = new FavoriteAdapter(lstFavorites, getContext(), this);
         rcvFavorite.setAdapter(mAdapter);
-        hideLoading();
     }
 
     @Override
     public void onFetchFailure(AppError error) {
-        hideLoading();
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
@@ -153,10 +159,6 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                         }
                     }));
         } else {
-            Partner partner = new Partner();
-//            partner.setId(lstFavorites.get(position).getId());
-//            partner.setPicture(lstFavorites.get(position).getPicture());
-//            partner.setName(lstFavorites.get(position).getName());
             DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position));
             dialog.show(mFragmentManager, TAG);
         }

@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,7 @@ import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 
 /**
  * Author: Tavv
@@ -35,11 +38,14 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Version : 1.0
  */
 
-public class SignUpActivity extends MvpActivity<SignUpPresenter> implements SignUpView {
+public class SignUpActivity extends MvpActivity<SignUpPresenter> implements SignUpView, View.OnTouchListener {
     private static final String TAG = SignUpActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
+
+    @BindView(R.id.lrlSignUp)
+    FrameLayout lrlSignUp;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -109,6 +115,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
                 overridePendingTransitionExit();
             }
         });
+        lrlSignUp.setOnTouchListener(this);
     }
 
     @Override
@@ -144,6 +151,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void onRegisterSuccess(Repository<UserInfo> resultCallBack) {
+        SoftKeyboardManager.hideSoftKeyboard(this, btnSignUp.getWindowToken(), 0);
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
             GlobalApplication.setUserInfo(userInfo);
@@ -188,15 +196,23 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
         if (!validator.isValidEmail(email)) {
             return Utils.getLanguageByResId(R.string.Home_Account_InvalidEmail);
         }
-        if(StringUtils.isEmpty(fullName)){
+        if (StringUtils.isEmpty(fullName)) {
             return Utils.getLanguageByResId(R.string.Message_NameEmpty);
         }
         return StringUtils.EMPTY;
     }
 
-    private void clearFormAfterSuccess(){
+    private void clearFormAfterSuccess() {
         Utils.clearForm(edtUserName, edtPassWord, edtFullName, edtEmail, edtPhoneNum);
     }
 
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.lrlSignUp) {
+            SoftKeyboardManager.hideSoftKeyboard(this, v.getWindowToken(), 0);
+        }
+        return true;
+    }
 
 }

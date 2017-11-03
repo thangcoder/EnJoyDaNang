@@ -12,9 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
@@ -27,7 +25,10 @@ import java.util.List;
 
 import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
-import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.utils.Utils;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Author: Tavv
@@ -39,6 +40,7 @@ import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 public class PhotoHelper {
     public static final int CAPTURE_IMAGE_REQUEST_CODE = 89;
     public static final int SELECT_FROM_GALLERY_CODE = 98;
+    public static final int PERMISSION_READ_EXTERNAL_CODE = 96;
 
     private Fragment fragment;
 
@@ -105,14 +107,6 @@ public class PhotoHelper {
         return null;
     }
 
-//
-//    public String convertResultToBase64(Bitmap bitmap) {
-//        if (bitmap != null) {
-//            return ImageUtils.encodeTobase64(bitmap);
-//        }
-//        return StringUtils.EMPTY;
-//    }
-
 
     public Bitmap getBitmapSelectFromGallery(Intent data) {
         Bitmap bm = null;
@@ -126,6 +120,7 @@ public class PhotoHelper {
         }
         return null;
     }
+
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -207,11 +202,7 @@ public class PhotoHelper {
     }
 
 
-
     public void cameraIntent() {
-       /* Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);*/
-
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (takePicture.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
@@ -271,33 +262,15 @@ public class PhotoHelper {
         return i;
     }
 
-    public void openCamera() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp + ".jpg";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        ProfileFragment.uriImageCapture  = storageDir.getAbsolutePath() + "/" + imageFileName;
-        File file = new File(ProfileFragment.uriImageCapture);
-        Uri outputFileUri = Uri.fromFile(file);
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        fragment.startActivityForResult(cameraIntent, CAPTURE_IMAGE_REQUEST_CODE);
-    }
+    @AfterPermissionGranted(PERMISSION_READ_EXTERNAL_CODE)
     public void openGallery() {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(fragment.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(fragment.getActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                    ActivityCompat.requestPermissions(fragment.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FROM_GALLERY_CODE);
-                } else {
-                    ActivityCompat.requestPermissions(fragment.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, SELECT_FROM_GALLERY_CODE);
-                }
-            } else {
+            if (EasyPermissions.hasPermissions(fragment.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 fragment.startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
+            } else {
+                EasyPermissions.requestPermissions(fragment, Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_READ_EXTERNAL_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
             }
         } else {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -305,10 +278,12 @@ public class PhotoHelper {
             fragment.startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
         }
     }
+
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = fragment.getActivity().getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
+
 }

@@ -120,7 +120,7 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     }
 
     private void initData(){
-        Map<String, String> maps = Utils.getStartEndDateOfCurrentMonth(DATE_CONDITION);
+        Map<String, String> maps = Utils.getStartEndDateOfCurrentMonth();
         if (maps != null) {
             String fromDate = maps.get(Constant.FROM_DATE);
             String toDate = maps.get(Constant.TO_DATE);

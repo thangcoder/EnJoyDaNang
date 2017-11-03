@@ -51,11 +51,14 @@ import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        EasyPermissions.PermissionCallbacks, OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
@@ -204,7 +207,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
-    protected MainPresenter createPresenter() {
+    public MainPresenter createPresenter() {
         return new MainPresenter(this);
     }
 
@@ -215,8 +218,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         } else {
             if (!popFragment()) {
                 if (Utils.hasLogin()) {
-                    DialogUtils.showDialogConfirm(MainActivity.this, Constant.TITLE_WARNING, Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
-                            Utils.getString(android.R.string.yes), Utils.getString(android.R.string.cancel),
+                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
                             new ColorDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(ColorDialog colorDialog) {
@@ -233,20 +238,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     GlobalApplication.setUserInfo(null);
                     finish();
                 }
-
-//                if (exit) {
-//                    finish();
-//                } else {
-//                    Toast.makeText(this, getString(R.string.exit),
-//                            Toast.LENGTH_SHORT).show();
-//                    exit = true;
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            exit = false;
-//                        }
-//                    }, 2500);
-//                }
             }
         }
     }
@@ -443,8 +434,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 case LOGOUT:
                     DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
                             Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
-                            Utils.getString(android.R.string.ok),
-                            Utils.getString(android.R.string.no),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
                             new ColorDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(ColorDialog colorDialog) {
@@ -452,8 +443,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                                     GlobalApplication.setUserInfo(null);
                                     finish();
                                     overridePendingTransitionExit();
-//                                    startActivity(getIntent());
-//                                    overridePendingTransition(0, 0);
                                 }
                             }, new ColorDialog.OnNegativeListener() {
                                 @Override
@@ -592,5 +581,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
         return getSupportFragmentManager().findFragmentByTag(tag);
+    }
+
+    @Override
+    public void refreshHeader() {
+        mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
     }
 }

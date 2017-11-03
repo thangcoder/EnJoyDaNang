@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -245,5 +247,26 @@ public class Utils {
         dateMap.put(Constant.FROM_DATE, sdf.format(calander.getTime()));
         return dateMap;
     }
+
+    public static Map<String, String> getStartEndDateOfCurrentMonth() {
+        Map<String, String> dateMap = new HashMap<>();
+        Calendar calander = Calendar.getInstance();
+        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+        dateMap.put(Constant.TO_DATE, sdf.format(calander.getTime()));
+        int cMonth = calander.get(Calendar.MONTH);
+        int cYear = calander.get(Calendar.YEAR);
+        calander.set(Calendar.YEAR, cYear);
+        calander.set(Calendar.MONTH, cMonth);
+        calander.set(Calendar.DAY_OF_MONTH, 1);
+        dateMap.put(Constant.FROM_DATE, sdf.format(calander.getTime()));
+        return dateMap;
+    }
+
+    public static String formatCurrency(@Nullable String pattern, double input) {
+        DecimalFormat dfnd = new DecimalFormat(StringUtils.isBlank(pattern) ? "#,###" : pattern);
+        return dfnd.format(input);
+    }
+
 
 }

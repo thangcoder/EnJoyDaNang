@@ -1,8 +1,10 @@
 package node.com.enjoydanang.ui.fragment.change_password;
 
 import android.support.v7.widget.AppCompatButton;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +22,7 @@ import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 
 /**
  * Author: Tavv
@@ -28,11 +31,14 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Version 1.0
  */
 
-public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implements ChangePwdView {
+public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implements ChangePwdView, View.OnTouchListener {
     private ValidUtils validator;
 
     @BindView(R.id.edtOldPwd)
     EditText edtOldPwd;
+
+    @BindView(R.id.lrlChangePwd)
+    LinearLayout lrlChangePwd;
 
     @BindView(R.id.edtPwd)
     EditText edtNewPwd;
@@ -80,7 +86,7 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
 
     @Override
     protected void setEvent(View view) {
-
+        lrlChangePwd.setOnTouchListener(this);
     }
 
     @Override
@@ -139,5 +145,13 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
     public void initViewLabel(View view) {
         super.initViewLabel(view);
         LanguageHelper.getValueByViewId(lblOldPwd, lblNewPwd, lblReNew, btnSave);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.lrlChangePwd) {
+            SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
+        }
+        return true;
     }
 }

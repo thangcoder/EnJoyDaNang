@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,6 +36,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -67,8 +69,16 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private DialogInterface.OnDismissListener onDismissListener;
 
+    private OnBackFragmentListener onBackListener;
+
+    private boolean isBack;
+
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
+    }
+
+    public void setOnBackListener(OnBackFragmentListener onBackListener) {
+        this.onBackListener = onBackListener;
     }
 
     public static WriteReviewDialog newInstance(Partner partner) {
@@ -82,7 +92,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().setTitle("Write Review");
+        getDialog().setTitle(Utils.getLanguageByResId(R.string.WriteReview));
         return inflater.inflate(R.layout.fragment_write_review, container, false);
     }
 
@@ -120,10 +130,11 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         final RelativeLayout root = new RelativeLayout(getActivity());
         root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // creating the fullscreen dialog
+//         creating the fullscreen dialog
         final Dialog dialog = new Dialog(getActivity(), getTheme()) {
             @Override
             public void onBackPressed() {
+                isBack = true;
                 dismiss();
             }
         };
@@ -193,8 +204,13 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss(dialog);
+//        if (onDismissListener != null) {
+//            onDismissListener.onDismiss(dialog);
+//        }
+        if(onBackListener != null){
+            onBackListener.onDismiss(dialog, isBack);
         }
+
     }
+
 }

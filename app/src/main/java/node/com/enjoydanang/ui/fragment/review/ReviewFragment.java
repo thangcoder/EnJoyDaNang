@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
+import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -140,12 +142,29 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     void onClick(View view) {
         if (partner != null) {
             WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialog) {
+//                    prgLoading.setVisibility(View.VISIBLE);
+//                    lrlContentReview.setVisibility(View.GONE);
+//                    dialog.dismiss();
+//                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+//                }
+//            });
+            dialog.setOnBackListener(new OnBackFragmentListener() {
                 @Override
-                public void onDismiss(DialogInterface dialog) {
+                public void onBack(boolean isBack) {
+
+                }
+
+                @Override
+                public void onDismiss(DialogInterface dialog, boolean isBack) {
+                    if (!isBack) {
+                        prgLoading.setVisibility(View.VISIBLE);
+                        lrlContentReview.setVisibility(View.GONE);
+                        mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                    }
                     dialog.dismiss();
-                    showLoading();
-                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
                 }
             });
             dialog.show(mFragmentManager, TAG);
@@ -221,4 +240,5 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         super.initViewLabel(view);
         LanguageHelper.getValueByViewId(txtAddReview, txtEmpty);
     }
+
 }

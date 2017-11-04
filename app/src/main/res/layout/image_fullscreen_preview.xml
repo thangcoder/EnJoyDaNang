@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <ImageView
+    <node.com.enjoydanang.utils.widget.TouchImageView
         android:id="@+id/image_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

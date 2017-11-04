@@ -1,5 +1,7 @@
 package node.com.enjoydanang.utils.event;
 
+import android.content.DialogInterface;
+
 /**
  * Author: Tavv
  * Created on 23/10/2017.
@@ -9,4 +11,5 @@ package node.com.enjoydanang.utils.event;
 
 public interface OnBackFragmentListener {
     void onBack(boolean isBack);
+    void onDismiss(DialogInterface dialogInterface, boolean isBack);
 }

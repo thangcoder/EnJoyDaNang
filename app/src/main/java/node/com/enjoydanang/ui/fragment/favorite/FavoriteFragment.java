@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,12 +16,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
@@ -51,6 +52,9 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @BindView(R.id.txtEmpty)
     TextView txtEmpty;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
     private UserInfo userInfo;
 
     private FavoriteAdapter mAdapter;
@@ -61,8 +65,12 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        showLoading();
-        mvpPresenter.getFavorite(userInfo.getUserId());
+        prgLoading.post(new Runnable() {
+            @Override
+            public void run() {
+                mvpPresenter.getFavorite(userInfo.getUserId());
+            }
+        });
     }
 
     @Override
@@ -77,10 +85,10 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
 
     @Override
     public void onFetchFavorite(List<Partner> lstFavorites) {
+        prgLoading.setVisibility(View.GONE);
         if(CollectionUtils.isEmpty(lstFavorites)){
             txtEmpty.setVisibility(View.VISIBLE);
             rcvFavorite.setVisibility(View.GONE);
-            hideLoading();
             return;
         }
         this.lstFavorites = lstFavorites;
@@ -88,13 +96,11 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
         rcvFavorite.setVisibility(View.VISIBLE);
         mAdapter = new FavoriteAdapter(lstFavorites, getContext(), this);
         rcvFavorite.setAdapter(mAdapter);
-        hideLoading();
     }
 
     @Override
     public void onFetchFailure(AppError error) {
-        hideLoading();
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
@@ -105,7 +111,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Favorite_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Favorite).toUpperCase());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvFavorite.setLayoutManager(layoutManager);
@@ -153,10 +159,6 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                         }
                     }));
         } else {
-            Partner partner = new Partner();
-//            partner.setId(lstFavorites.get(position).getId());
-//            partner.setPicture(lstFavorites.get(position).getPicture());
-//            partner.setName(lstFavorites.get(position).getName());
             DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position));
             dialog.show(mFragmentManager, TAG);
         }

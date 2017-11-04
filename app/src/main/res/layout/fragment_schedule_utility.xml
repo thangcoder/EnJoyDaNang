@@ -10,35 +10,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/empty_data_schedule_utility"
+        android:text="@string/Schedule.Empty.Data"
         android:textColor="@color/red"
         android:textSize="@dimen/_13ssp"
         android:textStyle="bold"
         android:visibility="gone" />
+
 
     <LinearLayout
         android:id="@+id/schedule_utility_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
+        android:gravity="center"
         android:orientation="vertical">
+
+        <include layout="@layout/include_normal_progress_bar" />
 
         <ListView
             android:id="@+id/lvSchedule"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
         <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingLeft="10dp"-->
-            <!--android:text="@string/utility_title"-->
-            <!--android:textColor="@color/primary_text"-->
-            <!--android:textSize="@dimen/text_title_video" />-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:text="@string/utility_title"-->
+        <!--android:textColor="@color/primary_text"-->
+        <!--android:textSize="@dimen/text_title_video" />-->
 
         <!--<ListView-->
-            <!--android:id="@+id/lvUtility"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+        <!--android:id="@+id/lvUtility"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
     </LinearLayout>
 </LinearLayout>

@@ -37,6 +37,11 @@ public class Partner implements Serializable{
     @Expose
     private int favorite;
 
+    @SerializedName("Date")
+    @Expose
+    private String date;
+
+
     public int getId() {
         return id;
     }
@@ -99,5 +104,13 @@ public class Partner implements Serializable{
 
     public void setFavorite(int favorite) {
         this.favorite = favorite;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

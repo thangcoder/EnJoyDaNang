@@ -25,7 +25,6 @@ public class AlbumDetailPresenter extends BasePresenter<iAlbumView>{
 
             @Override
             public void onSuccess(Repository<PartnerAlbum> model) {
-                mvpView.hideLoading();
                 if(Utils.isNotEmptyContent(model)){
                     mvpView.onFetchAlbumSuccess(model.getData());
                 }else{
@@ -35,7 +34,6 @@ public class AlbumDetailPresenter extends BasePresenter<iAlbumView>{
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onFetchFail(new AppError(new Throwable(msg)));
             }
 

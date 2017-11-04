@@ -26,17 +26,18 @@
         <!--app:civ_fill_color="@color/material_grey_200" />-->
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatarUser"
-            app:placeholderImage="@drawable/ic_no_user"
-            app:placeholderImageScaleType="centerCrop"
-            app:progressBarAutoRotateInterval="1000"
-            app:progressBarImage="@drawable/loading"
-            app:progressBarImageScaleType="centerInside"
-            app:roundAsCircle="true"
             android:layout_width="@dimen/_90sdp"
             android:layout_height="@dimen/_90sdp"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_10sdp" />
+            android:layout_marginStart="@dimen/_10sdp"
+            app:placeholderImage="@drawable/ic_no_user"
+            app:placeholderImageScaleType="centerCrop"
+            android:scaleType="centerCrop"
+            app:progressBarAutoRotateInterval="1000"
+            app:progressBarImage="@drawable/loading"
+            app:progressBarImageScaleType="centerInside"
+            app:roundAsCircle="true" />
 
 
         <LinearLayout
@@ -50,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="@string/take_a_photo"
+                android:text="@string/Profile.Take.Photo"
                 android:textColor="@color/color_button_login"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="bold" />
@@ -95,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="@string/upload_from_gallery"
+                android:text="@string/Profile.Upload.Photo"
                 android:textColor="@color/color_button_login"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="bold" />
@@ -120,11 +121,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/lblUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
-                android:text="@string/label_user_name"
+                android:text="@string/UserName"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -149,12 +151,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txtNameLabel"
+                android:id="@+id/lblFullName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
-                android:text="@string/label_full_name"
+                android:text="@string/FullName"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -178,11 +180,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/lblPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
-                android:text="@string/lbPhoneContact"
+                android:text="@string/Phone"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -206,11 +209,12 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/lblEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
-                android:text="@string/lbEmailContact"
+                android:text="@string/Email"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -233,7 +237,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_15sdp"
             android:background="@color/color_button_login"
-            android:text="@string/btnUpdateProfile" />
+            android:text="@string/Update" />
     </LinearLayout>
 
 

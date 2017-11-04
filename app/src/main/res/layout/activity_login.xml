@@ -27,7 +27,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:contentDescription="@null"
-            android:src="@drawable/ic_logo_app" />
+            android:src="@drawable/ic_logo_app_v1" />
 
         <LinearLayout
             android:layout_width="match_parent"

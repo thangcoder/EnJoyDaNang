@@ -4,8 +4,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +29,10 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
+import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -51,6 +56,15 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @BindView(R.id.txtPartnerName)
     TextView txtPartnerName;
 
+    @BindView(R.id.txtAddReview)
+    TextView txtAddReview;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
+    @BindView(R.id.lrlContentReview)
+    LinearLayout lrlContentReview;
+
     private ReviewAdapter mAdapter;
 
     private final int START_PAGE = 0;
@@ -62,6 +76,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     private Partner partner;
 
     private List<Review> lstReviews;
+
 
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
@@ -102,7 +117,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         if (partner != null) {
-            showLoading();
             mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
         }
     }
@@ -128,12 +142,29 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     void onClick(View view) {
         if (partner != null) {
             WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialog) {
+//                    prgLoading.setVisibility(View.VISIBLE);
+//                    lrlContentReview.setVisibility(View.GONE);
+//                    dialog.dismiss();
+//                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+//                }
+//            });
+            dialog.setOnBackListener(new OnBackFragmentListener() {
                 @Override
-                public void onDismiss(DialogInterface dialog) {
+                public void onBack(boolean isBack) {
+
+                }
+
+                @Override
+                public void onDismiss(DialogInterface dialog, boolean isBack) {
+                    if (!isBack) {
+                        prgLoading.setVisibility(View.VISIBLE);
+                        lrlContentReview.setVisibility(View.GONE);
+                        mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                    }
                     dialog.dismiss();
-                    showLoading();
-                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
                 }
             });
             dialog.show(mFragmentManager, TAG);
@@ -164,6 +195,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onFetchReviews(List<Review> models) {
         if (CollectionUtils.isEmpty(models) && currentPage == 0) {
+            lrlContentReview.setVisibility(View.VISIBLE);
+            prgLoading.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
             return;
@@ -171,6 +204,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         updateItems(models);
         txtEmpty.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        lrlContentReview.setVisibility(View.VISIBLE);
+        prgLoading.setVisibility(View.GONE);
     }
 
     @Override
@@ -199,4 +234,11 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     public void onClick(View view, int position) {
         Toast.makeText(mMainActivity, "Reply Click", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtAddReview, txtEmpty);
+    }
+
 }

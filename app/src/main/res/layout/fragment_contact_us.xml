@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
+        android:id="@+id/lrlContactUs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -35,32 +36,35 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:paddingLeft="20dp"
-                    android:text="@string/contact_address_label"
+                    android:text="@string/Home.Address"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:paddingLeft="20dp"
-                    android:text="@string/contact_email_label"
+                    android:text="@string/Email"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:paddingLeft="20dp"
-                    android:text="@string/contact_phone_label"
+                    android:text="@string/Phone"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
@@ -130,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="@string/lbNameContact"
+                    android:text="@string/Name"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -141,9 +145,9 @@
                     android:background="@drawable/border_edittext_normal"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textCursorDrawable="@null"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -155,11 +159,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/lbPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="@string/lbPhoneContact"
+                    android:text="@string/Phone"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -170,9 +175,9 @@
                     android:background="@drawable/border_edittext_normal"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:textCursorDrawable="@null"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
             <LinearLayout
@@ -183,11 +188,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/lbEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="@string/lbEmailContact"
+                    android:text="@string/Email"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -198,9 +204,9 @@
                     android:background="@drawable/border_edittext_normal"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:textCursorDrawable="@null"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
 
@@ -212,11 +218,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/lbTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="@string/lbTitleContact"
+                    android:text="@string/Title"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -227,9 +234,9 @@
                     android:background="@drawable/border_edittext_normal"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:textCursorDrawable="@null"
                     android:padding="8dp"
-                    android:textColor="@color/secondary_text" />
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
             <LinearLayout
@@ -240,11 +247,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/lbContent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:text="@string/lbContentContact"
+                    android:text="@string/Content"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -256,14 +264,14 @@
                     android:gravity="top|left"
                     android:inputType="textMultiLine"
                     android:lines="6"
-                    android:textCursorDrawable="@null"
-                    android:padding="8dp"
                     android:overScrollMode="always"
+                    android:padding="8dp"
                     android:scrollHorizontally="false"
                     android:scrollbarStyle="insideInset"
-                    android:textColor="@color/secondary_text"
                     android:scrollbars="vertical"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/secondary_text"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
 
         </LinearLayout>

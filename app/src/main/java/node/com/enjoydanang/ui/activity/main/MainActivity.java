@@ -35,6 +35,7 @@ import cn.refactor.lib.colordialog.ColorDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
@@ -50,10 +51,14 @@ import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener, NavigationView.OnNavigationItemSelectedListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        EasyPermissions.PermissionCallbacks, OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
@@ -174,7 +179,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         int[] icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
 
-        String[] titles = hasLogin ? getResources().getStringArray(R.array.item_menu) : getResources().getStringArray(R.array.item_no_sign_in);
+        String[] titles = hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
 
         NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,
                 NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles));
@@ -202,7 +207,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
-    protected MainPresenter createPresenter() {
+    public MainPresenter createPresenter() {
         return new MainPresenter(this);
     }
 
@@ -213,8 +218,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         } else {
             if (!popFragment()) {
                 if (Utils.hasLogin()) {
-                    DialogUtils.showDialogConfirm(MainActivity.this, Constant.TITLE_WARNING, Utils.getString(R.string.logout_current_user_confirm),
-                            Utils.getString(android.R.string.yes), Utils.getString(android.R.string.cancel),
+                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
                             new ColorDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(ColorDialog colorDialog) {
@@ -231,20 +238,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     GlobalApplication.setUserInfo(null);
                     finish();
                 }
-
-//                if (exit) {
-//                    finish();
-//                } else {
-//                    Toast.makeText(this, getString(R.string.exit),
-//                            Toast.LENGTH_SHORT).show();
-//                    exit = true;
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            exit = false;
-//                        }
-//                    }, 2500);
-//                }
             }
         }
     }
@@ -315,15 +308,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
             case R.id.ll_profile:
                 if (currentTab != HomeTab.Profile && Utils.hasLogin()) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileFragment.class.getName());
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
                     if (fragment == null) {
-                        addFrMenu(ProfileFragment.class.getName(), true);
+                        addFrMenu(ProfileMenuFragment.class.getName(), true);
                     } else {
-                        resurfaceFragment(ProfileFragment.class.getName());
+                        resurfaceFragment(ProfileMenuFragment.class.getName());
                     }
                     currentTab = HomeTab.Profile;
                 } else {
-                    DialogUtils.showDialog(MainActivity.this, 4, Constant.TITLE_WARNING, Utils.getString(R.string.must_login));
+                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 break;
         }
@@ -362,11 +355,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         switch (item.getItemId()) {
             case R.id.menu_scan:
-                startActivity(new Intent(MainActivity.this, ScanActivity.class));
-                overridePendingTransitionEnter();
+                if(Utils.hasLogin()){
+                    startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                    overridePendingTransitionEnter();
+                }else{
+                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
                 return true;
             case R.id.menu_edit:
                 addFr(ProfileFragment.class.getName(), 6);
@@ -436,10 +432,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     addFr(ChangePwdFragment.class.getName(), position);
                     break;
                 case LOGOUT:
-                    DialogUtils.showDialogConfirm(this, Utils.getString(R.string.logout),
-                            Utils.getString(R.string.msg_confirm_logout),
-                            Utils.getString(android.R.string.ok),
-                            Utils.getString(android.R.string.no),
+                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
                             new ColorDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(ColorDialog colorDialog) {
@@ -447,8 +443,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                                     GlobalApplication.setUserInfo(null);
                                     finish();
                                     overridePendingTransitionExit();
-//                                    startActivity(getIntent());
-//                                    overridePendingTransition(0, 0);
                                 }
                             }, new ColorDialog.OnNegativeListener() {
                                 @Override
@@ -509,19 +503,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getString(R.string.Home_Screen_Title));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home).toUpperCase());
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getString(R.string.action_search));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
@@ -541,8 +535,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     private void addFrMenu(String fragmentTag, boolean isBackStack) {
-        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
-        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, transitionInfo);
+//        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
+        addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, null);
     }
 
     private void addFr(String fragmentTag, int position) {
@@ -587,5 +581,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
         return getSupportFragmentManager().findFragmentByTag(tag);
+    }
+
+    @Override
+    public void refreshHeader() {
+        mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
     }
 }

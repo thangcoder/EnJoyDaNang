@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.ui.fragment.schedule_utility.adapter.ScheduleAdapter;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -41,7 +43,8 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
     @BindView(R.id.txtEmpty)
     TextView txtEmptyData;
 
-    private Partner partner = null;
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
 
     public static ScheduleUtilityFragment newInstance(Partner partner) {
         ScheduleUtilityFragment fragment = new ScheduleUtilityFragment();
@@ -72,8 +75,7 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
         mvpPresenter = createPresenter();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            partner = (Partner) bundle.getSerializable(TAG);
-            showLoading();
+            Partner partner = (Partner) bundle.getSerializable(TAG);
             mvpPresenter.getSchedule(partner.getId());
 //            mvpPresenter.getUtility(partnerId);
         }
@@ -111,6 +113,8 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
         setVisibleContent(true);
         ScheduleAdapter adapter = new ScheduleAdapter(getContext(), schedules);
         lvSchedule.setAdapter(adapter);
+        prgLoading.setVisibility(View.GONE);
+        lvSchedule.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -128,5 +132,11 @@ public class ScheduleUtilityFragment extends MvpFragment<ScheduleUtilityPresente
             lrlContent.setVisibility(View.GONE);
             txtEmptyData.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtEmptyData);
     }
 }

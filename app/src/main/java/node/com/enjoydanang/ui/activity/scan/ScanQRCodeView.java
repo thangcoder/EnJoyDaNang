@@ -3,6 +3,7 @@ package node.com.enjoydanang.ui.activity.scan;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.iBaseView;
+import node.com.enjoydanang.model.HistoryCheckin;
 import node.com.enjoydanang.model.Partner;
 
 /**
@@ -16,7 +17,7 @@ public interface ScanQRCodeView extends iBaseView {
 
     void onFetchInfoSuccess(Partner partner);
 
-    void onRequestOrderSuccess(Repository repository);
+    void onRequestOrderSuccess(HistoryCheckin response);
 
     void onFetchError(AppError appError);
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Enjoy In 다낭</string>
+    <string name="app_name">EnjoyIn다낭</string>
     <string name="loading">Loading</string>
     <string name="title_activity_main2">Main2Activity</string>
 
@@ -35,7 +35,7 @@
     <string name="idea_connect">or</string>
 
 
-    <string name="forgot_pwd">Forgot Password ?</string>
+    <string name="forgot_pwd">Forgot Password</string>
 
     <string name="create_account">Create Account</string>
 

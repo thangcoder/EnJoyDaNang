@@ -10,7 +10,7 @@
         android:layout_height="@dimen/logo_app_hight_default"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_logo_app" />
+        android:src="@drawable/ic_logo_app_v1" />
 
     <LinearLayout
         android:layout_marginTop="20dp"

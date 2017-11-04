@@ -18,6 +18,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -97,16 +100,24 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @BindView(R.id.mapView)
     CustomMapView mMapView;
 
+    @BindView(R.id.progress_bar)
+    ProgressBar prgLoading;
+
+    @BindView(R.id.lrlContentDetail)
+    LinearLayout lrlContentDetail;
+
     @BindView(R.id.scrollDetailPartner)
     NestedScrollView scrollDetailPartner;
 
     private GoogleMap mGoogleMap;
 
-    private DetailPartner partner;
+    private DetailPartner detailPartner;
 
     private Location mLastLocation;
 
     private LocationHelper locationHelper;
+
+    private Partner partner;
 
     public static DetailPartnerFragment newInstance(Partner partner) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
@@ -123,11 +134,13 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     protected void init(View view) {
-        mBaseActivity.setTitle(Utils.getString(R.string.Detail_Screen_Title));
+        mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
 //        initGoogleClient();
-        locationHelper = new LocationHelper(getActivity(), this);
-        locationHelper.checkpermission();
-        locationHelper.buildGoogleApiClient(this, this);
+        if (mMapView != null) {
+            mMapView.onCreate(null);
+            mMapView.onResume();
+            mMapView.setViewParent(scrollDetailPartner);
+        }
     }
 
 
@@ -148,23 +161,22 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        initWebView();
-        if (mMapView != null) {
-            mMapView.onCreate(null);
-            mMapView.onResume();
-            mMapView.setViewParent(scrollDetailPartner);
-        }
-
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            Partner partner = (Partner) bundle.getSerializable(TAG);
-            if (partner != null) {
-                showLoading();
-                mvpPresenter.getDetailPartner(partner.getId());
-                mvpPresenter.getSlideByPartnerId(partner.getId());
+        prgLoading.post(new Runnable() {
+            @Override
+            public void run() {
+                initWebView();
+                locationHelper = new LocationHelper(getActivity(), DetailPartnerFragment.this);
+                locationHelper.checkpermission();
+                locationHelper.buildGoogleApiClient(DetailPartnerFragment.this, DetailPartnerFragment.this);
+                Bundle bundle = getArguments();
+                if (bundle != null) {
+                    partner = (Partner) bundle.getSerializable(TAG);
+                    if (partner != null) {
+                        mvpPresenter.getAllDataHome(partner.getId());
+                    }
+                }
             }
-        }
-
+        });
     }
 
     @Override
@@ -194,7 +206,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         if (Utils.isNotEmptyContent(data)) {
             mMapView.getMapAsync(this);
             DetailPartner detailPartner = data.getData().get(0);
-            partner = detailPartner;
+            this.detailPartner = detailPartner;
             txtTitle.setText(detailPartner.getName());
             ImageUtils.loadImageNoRadius(getContext(), imgPartner, detailPartner.getPicture());
             if (Build.VERSION.SDK_INT >= 24) {
@@ -207,7 +219,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
             loadVideo(detailPartner.getVideo());
         }
-        hideLoading();
     }
 
     @Override
@@ -236,6 +247,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     }
 
     @Override
+    public void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum) {
+        setDataAlbum(lstAlbum);
+        setDataDetail(lstDetailPartner);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
@@ -244,7 +261,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         drawRouteToPartner();
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            loadMapView(partner, googleMap);
+            loadMapView(detailPartner, googleMap);
         } else {
             locationHelper.checkpermission();
         }
@@ -320,44 +337,66 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mMapView.setVisibility(View.GONE);
             ex.printStackTrace();
         }
+        prgLoading.setVisibility(View.GONE);
+        lrlContentDetail.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
-        mWebView.resumeTimers();
-        mWebView.onResume();
-        locationHelper.checkPlayServices();
+        if (mMapView != null) {
+            mMapView.onResume();
+        }
+        if (mWebView != null) {
+            mWebView.resumeTimers();
+            mWebView.onResume();
+        }
+        if (locationHelper != null) {
+            locationHelper.checkPlayServices();
+        }
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        mWebView.onPause();
-        mWebView.pauseTimers();
-        mMapView.onPause();
+        if (mWebView != null) {
+            mWebView.onPause();
+            mWebView.pauseTimers();
+        }
+        if (mMapView != null) {
+            mMapView.onPause();
+        }
+
+
     }
 
     @Override
     public void onStop() {
-        slider.stopAutoCycle();
+        if(slider != null){
+            slider.stopAutoCycle();
+        }
         super.onStop();
-        mMapView.onStop();
+        if(mMapView != null){
+            mMapView.onStop();
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+        if(mMapView != null){
+            mMapView.onLowMemory();
+        }
     }
 
     @Override
     public void onDestroy() {
-        mWebView.loadUrl("about:blank");
-        mWebView.destroy();
-        mWebView = null;
+        if(mWebView != null){
+            mWebView.loadUrl("about:blank");
+            mWebView.destroy();
+            mWebView = null;
+        }
         super.onDestroy();
     }
 
@@ -370,8 +409,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                double longtitude = Double.parseDouble(StringUtils.trim(partner.getGeoLng()));
-                double latitude = Double.parseDouble(StringUtils.trim(partner.getGeoLat()));
+                double longtitude = Double.parseDouble(StringUtils.trim(detailPartner.getGeoLng()));
+                double latitude = Double.parseDouble(StringUtils.trim(detailPartner.getGeoLat()));
                 LatLng partnerPoint = new LatLng(latitude, longtitude);
                 LatLng currentPoint = getCurrentLocation();
                 if (currentPoint != null) {
@@ -385,8 +424,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                double longtitude = Double.parseDouble(StringUtils.trim(partner.getGeoLng()));
-                double latitude = Double.parseDouble(StringUtils.trim(partner.getGeoLat()));
+                double longtitude = Double.parseDouble(StringUtils.trim(detailPartner.getGeoLng()));
+                double latitude = Double.parseDouble(StringUtils.trim(detailPartner.getGeoLat()));
                 LatLng partnerPoint = new LatLng(latitude, longtitude);
                 LatLng currentPoint = getCurrentLocation();
                 if (currentPoint != null) {
@@ -444,5 +483,43 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         }
     }
 
+    private void setDataAlbum(List<PartnerAlbum> images) {
+        HashMap<String, String> sources = new HashMap<>();
+        int length = images.size();
+        for (int i = 0; i < length; i++) {
+            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
+        }
+        for (String name : sources.keySet()) {
+            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
+            textSliderView
+                    .image(sources.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            slider.addSlider(textSliderView);
+        }
+        slider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        slider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        slider.setCustomAnimation(new DescriptionAnimation());
+        slider.setDuration(DURATION_SLIDE);
+    }
+
+    private void setDataDetail(List<DetailPartner> lstDetailPartner) {
+        if (CollectionUtils.isNotEmpty(lstDetailPartner)) {
+            mMapView.getMapAsync(this);
+            DetailPartner detailPartner = lstDetailPartner.get(0);
+            this.detailPartner = detailPartner;
+            txtTitle.setText(detailPartner.getName());
+            ImageUtils.loadImageNoRadius(getContext(), imgPartner, detailPartner.getPicture());
+            if (Build.VERSION.SDK_INT >= 24) {
+                txtContent.setText(Html.fromHtml(detailPartner.getDescription(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                txtContent.setText(Html.fromHtml(detailPartner.getDescription()));
+            }
+            ratingBar.setRating(detailPartner.getStarReview());
+            ratingBar.setFocusable(false);
+
+            loadVideo(detailPartner.getVideo());
+        }
+
+    }
 
 }

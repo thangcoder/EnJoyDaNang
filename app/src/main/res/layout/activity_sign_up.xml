@@ -22,7 +22,7 @@
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_weight=".3"
             android:contentDescription="@null"
-            android:src="@drawable/ic_logo_app" />
+            android:src="@drawable/ic_logo_app_v1" />
 
         <LinearLayout
             android:layout_width="match_parent"

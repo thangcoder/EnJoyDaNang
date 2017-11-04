@@ -111,5 +111,13 @@ public class AppLanguage {
         public static final String Customer_NotExits = "Customer.NotExits";
         public static final String Review_NotExits = "Review.NotExits";
 
+        public static final String Information = "Information";
+        public static final String Persional = "Persional";
+        public static final String Introduction = "Introduction";
+        public static final String Favorite = "Favorite";
+        public static final String Contact_Us = "Contact.Us";
+        public static final String Account_Already_Have = "Account.Already.Have";
+
+
     }
 }

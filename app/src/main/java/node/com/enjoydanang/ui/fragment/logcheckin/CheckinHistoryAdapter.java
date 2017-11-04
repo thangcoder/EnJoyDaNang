@@ -16,10 +16,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.Favorite;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.HistoryCheckin;
-import node.com.enjoydanang.ui.fragment.favorite.FavoriteAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
@@ -52,9 +52,11 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
         HistoryCheckin model = lstHistoryCheckin.get(position);
         if (model != null) {
             holder.txtPartnerName.setText(model.getPartnerName());
+            String strPayment = Utils.formatCurrency("", model.getPayment());
+            holder.txtDate.setText(Utils.getLanguageByResId(R.string.Payment_Date) + ": " + Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, model.getDate()));
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, model.getPicture());
-            holder.txtDiscount.setText("Discount: "+model.getDiscount()+"%");
-            holder.txtPayment.setText(model.getPayment() + " VND");
+            holder.txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + model.getDiscount() + "%");
+            holder.txtPayment.setText(Utils.getLanguageByResId(R.string.Payment) + ": " + strPayment + " VND");
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,6 +85,9 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
         @BindView(R.id.txtDiscount)
         TextView txtDiscount;
 
+        @BindView(R.id.txtDate)
+        TextView txtDate;
+
         public View view;
 
         public CheckinViewHolder(View itemView) {
@@ -93,7 +98,7 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
     }
 
     public void removeItemAtPosition(ArrayList<Integer> pos) {
-        for (int j = pos.size()-1; j >= 0; j--) {
+        for (int j = pos.size() - 1; j >= 0; j--) {
             int position = pos.get(j);
             lstHistoryCheckin.remove(position);
             notifyDataSetChanged();

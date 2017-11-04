@@ -2,11 +2,11 @@ package node.com.enjoydanang.ui.fragment.contact;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.text.Html;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,15 +19,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
-
-import static node.com.enjoydanang.R.id.edtAriaContent;
-import static node.com.enjoydanang.R.id.edtPhone;
-import static node.com.enjoydanang.R.id.txtContent;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 
 /**
  * Author: Tavv
@@ -36,12 +34,15 @@ import static node.com.enjoydanang.R.id.txtContent;
  * Version 1.0
  */
 
-public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener {
+public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener{
 
     private final String LABEL_REQUIRE_TEMPLATE = "%s (<font color=#e51c23>*</font>)";
 
     @BindView(R.id.edtName)
     EditText edtName;
+
+    @BindView(R.id.lrlContactUs)
+    LinearLayout lrlContactUs;
 
     @BindView(R.id.edtPhone)
     EditText edtPhone;
@@ -58,21 +59,32 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @BindView(R.id.txtNameLabel)
     TextView txtNameLabel;
 
+    @BindView(R.id.txtAddress)
+    TextView txtAddress;
+    @BindView(R.id.txtEmail)
+    TextView txtEmail;
+    @BindView(R.id.txtPhone)
+    TextView txtPhone;
     @BindView(R.id.txtContactAddress)
     TextView txtContactAddress;
-
     @BindView(R.id.txtContactEmail)
     TextView txtContactEmail;
-
     @BindView(R.id.txtContactPhone)
     TextView txtContactPhone;
+    @BindView(R.id.lbPhone)
+    TextView lbPhone;
+    @BindView(R.id.lbEmail)
+    TextView lbEmail;
+    @BindView(R.id.lbTitle)
+    TextView lbTitle;
+    @BindView(R.id.lbContent)
+    TextView lbContent;
 
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mvpPresenter =  createPresenter();
-        showLoading();
+        mvpPresenter = createPresenter();
         mvpPresenter.getInformation();
     }
 
@@ -89,17 +101,17 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     public void sendContactSuccess() {
         Utils.clearForm(edtName, edtEmail, edtPhone, edtTitle, edtAriaContent);
-        DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.msg_send_contact_success));
+        DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success));
     }
 
     @Override
     public void sendContactFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 1, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
     public void onGetInformation(Contact contact) {
-        if(contact != null){
+        if (contact != null) {
             txtContactAddress.setText(contact.getAddress());
             txtContactEmail.setText(contact.getEmail());
             txtContactPhone.setText(contact.getPhone());
@@ -118,8 +130,8 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
 
     @Override
     protected void init(View view) {
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Contact_Screen_Title));
-        String lblNameRequire = String.format(Locale.getDefault(), LABEL_REQUIRE_TEMPLATE, "Name");
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Contact).toUpperCase());
+        String lblNameRequire = String.format(Locale.getDefault(), LABEL_REQUIRE_TEMPLATE, Utils.getLanguageByResId(R.string.Name));
         if (Build.VERSION.SDK_INT >= 24) {
             txtNameLabel.setText(Html.fromHtml(lblNameRequire, Html.FROM_HTML_MODE_LEGACY));
         } else {
@@ -130,6 +142,7 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     @Override
     protected void setEvent(View view) {
         edtAriaContent.setOnTouchListener(this);
+        lrlContactUs.setOnTouchListener(this);
     }
 
     @Override
@@ -143,18 +156,27 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     }
 
     @Override
+    public void initViewLabel(View view) {
+        LanguageHelper.getValueByViewId(txtAddress, txtEmail, txtPhone, lbPhone, lbEmail, lbTitle, lbContent);
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
-        v.getParent().requestDisallowInterceptTouchEvent(true);
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-                break;
+        if (v.getId() == R.id.lrlContactUs) {
+            SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
+        }else{
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
         }
         return false;
     }
 
     @OnClick(R.id.btnSendContact)
-     void onClick(View view) {
+    void onClick(View view) {
         sendContact();
     }
 
@@ -165,9 +187,10 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
         String title = edtTitle.getText().toString().trim();
         String content = edtAriaContent.getText().toString().trim();
         if (StringUtils.isEmpty(name)) {
-            Toast.makeText(mMainActivity, Utils.getString(R.string.full_name_empty), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mMainActivity, Utils.getLanguageByResId(R.string.Message_NameEmpty), Toast.LENGTH_SHORT).show();
         } else {
             mvpPresenter.sendContact(name, phone, email, title, content);
         }
     }
+
 }

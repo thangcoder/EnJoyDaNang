@@ -25,6 +25,7 @@ import com.google.zxing.Result;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -35,14 +36,17 @@ import me.dm7.barcodescanner.core.ViewFinderView;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.HistoryCheckin;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.widget.NumberTextWatcher;
 
 /**
  * Author: Tavv
@@ -51,7 +55,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements ScanQRCodeView, ZXingScannerView.ResultHandler{
+public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements ScanQRCodeView, ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
 
@@ -82,7 +86,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             public void run() {
                 mScannerView.resumeCameraPreview(ScanActivity.this);
             }
-        }, 500);
+        }, 1000);
     }
 
     @Override
@@ -102,7 +106,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
 
     private void showDialogInfo(@NonNull final Partner partner) {
-        final String formatPartnerName = "Name: %s";
+        final String formatPartnerName = Utils.getLanguageByResId(R.string.Name).concat(": %s");
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_scan_qr_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(ScanActivity.this);
@@ -115,17 +119,20 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         ImageView imgPartner = (ImageView) dialogView.findViewById(R.id.imgPartner);
         TextView txtDiscount = (TextView) dialogView.findViewById(R.id.txtDiscount);
         final EditText edtAmount = (EditText) dialogView.findViewById(R.id.edtAmount);
+        LanguageHelper.getValueByViewId(edtAmount, txtPartnerName, txtDiscount, btnCancel, btnOk);
+        edtAmount.addTextChangedListener(new NumberTextWatcher(edtAmount));
         txtPartnerName.setText(String.format(Locale.getDefault(), formatPartnerName, partner.getName()));
-        txtDiscount.setText("Discount : " + partner.getDiscount() + " (%)");
+        txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + partner.getDiscount() + " (%)");
         ImageUtils.loadImageNoRadius(ScanActivity.this, imgPartner, partner.getPicture());
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int amount;
                 try {
-                    amount = Integer.valueOf(edtAmount.getText().toString());
+                    amount = Integer.parseInt(getNumber(edtAmount.getText().toString()));
                 } catch (Exception e) {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Constant.TITLE_WARNING, "Enter correct amount");
+                    DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                            Utils.getLanguageByResId(R.string.Message_Wrong_Amount));
                     return;
                 }
                 if (amount != 0) {
@@ -137,7 +144,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                         mvpPresenter.requestOrder(partner.getId(), 0, amount);
                     }
                 } else {
-                    DialogUtils.showDialog(ScanActivity.this, 4, Constant.TITLE_WARNING, "Plz enter amount to order");
+                    DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
+                            Utils.getLanguageByResId(R.string.Message_Wrong_Amount_Empty));
                 }
             }
         });
@@ -161,26 +169,42 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     }
 
     @Override
-    public void onRequestOrderSuccess(Repository repository) {
-        DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS, Utils.getString(R.string.order_success), new PromptDialog.OnPositiveListener() {
-            @Override
-            public void onClick(PromptDialog promptDialog) {
-                promptDialog.dismiss();
-                if(alertDialog != null && alertDialog.isShowing()){
-                    alertDialog.dismiss();
-                }
-            }
-        });
+    public void onRequestOrderSuccess(HistoryCheckin response) {
+        String resultPattern = "%s\n%s: %s\n%s: %s%s\n%s: %s";
+        String strAmount = NumberFormat.getInstance().format(response.getAmount());
+        String strPayment = NumberFormat.getInstance().format(response.getPayment());
+        String result = String.format(Locale.getDefault(), resultPattern,
+                Utils.getLanguageByResId(R.string.Message_Payment_Success),
+                Utils.getLanguageByResId(R.string.Amount), strAmount,
+                Utils.getLanguageByResId(R.string.Discount), response.getDiscount(), "%",
+                Utils.getLanguageByResId(R.string.Message_Payment_Paid), strPayment);
+        DialogUtils.showDialog(ScanActivity.this, 3, Constant.TITLE_SUCCESS,
+                result, new PromptDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(PromptDialog promptDialog) {
+                        promptDialog.dismiss();
+                        if (alertDialog != null && alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                        }
+                    }
+                });
+    }
+
+    private String getNumber(String value) {
+        if (!value.contains(".") && !value.contains(",")) {
+            return value;
+        }
+        return value.replaceAll("\\.|,", "");
     }
 
     @Override
     public void onFetchError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Constant.TITLE_ERROR, appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override
     public void onRequestOrderSuccessError(AppError appError) {
-        DialogUtils.showDialog(ScanActivity.this, 1, Constant.TITLE_ERROR, appError.getMessage());
+        DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
     }
 
     @Override

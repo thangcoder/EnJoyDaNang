@@ -50,6 +50,7 @@ public abstract class BaseFragment extends Fragment {
         bindView(view);
         init(view);
         setEvent(view);
+        initViewLabel(view);
         executeBase();
         return view;
     }
@@ -61,6 +62,8 @@ public abstract class BaseFragment extends Fragment {
     public abstract int getRootLayoutId();
 
     public abstract void bindView(View view);
+
+    public void initViewLabel(View view){}
 
     protected void executeBase() {
     }

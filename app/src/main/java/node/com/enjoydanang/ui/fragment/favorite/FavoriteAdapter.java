@@ -16,8 +16,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
@@ -50,6 +52,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         Partner favorite = lstFavorites.get(position);
         if (favorite != null) {
             holder.txtPartnerName.setText(favorite.getName());
+            holder.txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, favorite.getDate()));
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, favorite.getPicture());
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -81,6 +84,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
 
         @BindView(R.id.btnDelete)
         ImageView btnDelete;
+
+        @BindView(R.id.txtDate)
+        TextView txtDate;
 
         public View view;
 

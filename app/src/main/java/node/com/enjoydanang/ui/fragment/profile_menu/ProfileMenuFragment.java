@@ -5,7 +5,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -19,6 +18,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Created by chientruong on 1/5/17.
@@ -35,6 +35,21 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
     TextView tvPhone;
     @BindView(R.id.tv_menthod)
     TextView tvMenthod;
+
+    @BindView(R.id.lblUserName)
+    TextView lblUserName;
+
+    @BindView(R.id.lblPhone)
+    TextView lblPhone;
+
+    @BindView(R.id.lblEmail)
+    TextView lblEmail;
+
+    @BindView(R.id.lblMethodLogin)
+    TextView lblMethodLogin;
+
+    @BindView(R.id.tv_login_checking)
+    TextView lblLogCheckin;
 
     @BindView(R.id.img_avatar)
     SimpleDraweeView imgAvatar;
@@ -64,7 +79,7 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
 
     @Override
     public void onResume() {
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title));
+        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
         super.onResume();
     }
 
@@ -117,7 +132,6 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
     @OnClick(R.id.tv_login_checking)
     public void checking() {
         // TODO submit data to server...
-        Toast.makeText(mMainActivity, "API ", Toast.LENGTH_SHORT).show();
     }
 
     private void initData(){
@@ -126,5 +140,11 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
         tvPhone.setText((StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone()));
         tvMenthod.setText((StringUtils.isEmpty(userInfo.getType()) ? "" : userInfo.getType()));
         ImageUtils.loadImageWithFreso( imgAvatar, userInfo.getImage());
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(lblUserName, lblPhone, lblEmail, lblMethodLogin, lblLogCheckin);
     }
 }

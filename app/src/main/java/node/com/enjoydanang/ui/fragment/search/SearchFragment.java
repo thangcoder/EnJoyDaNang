@@ -43,6 +43,7 @@ import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -103,7 +104,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     protected void init(View view) {
-        mBaseActivity.setTitle(Utils.getString(R.string.Search_Screen_Title));
+        mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Home_Search));
         showLoading();
         try {
             if (mMapView != null) {
@@ -285,6 +286,12 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
                 rcvSearchResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
                 mMapView.setVisibility(isShow ? View.GONE : View.VISIBLE);
             }
-        }, 50);
+        }, 500);
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(searchView);
     }
 }

@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/lrlLogin"
+    android:gravity="center_vertical"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -13,13 +15,12 @@
         android:layout_width="@dimen/button_login_social_width"
         android:layout_height="@dimen/logo_app_hight_default"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
         android:src="@drawable/ic_logo_app" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -68,11 +69,12 @@
             android:background="@color/material_grey_500" />
 
         <TextView
+            android:id="@+id/txtOr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".30"
             android:gravity="center_horizontal"
-            android:text="@string/idea_connect"
+            android:text="@string/Or"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_common"
@@ -110,7 +112,7 @@
             android:layout_marginLeft="-1dp"
             android:layout_weight="1"
             android:background="@drawable/leftroundborder"
-            android:hint="@string/user_name_hint"
+            android:hint="@string/UserName"
             android:inputType="text"
             android:maxLines="1"
             android:padding="8dp"
@@ -142,7 +144,7 @@
             android:layout_marginLeft="-1dp"
             android:layout_weight="1"
             android:background="@drawable/leftroundborder"
-            android:hint="@string/pwd_hint"
+            android:hint="@string/Password"
             android:inputType="textPassword"
             android:maxLines="1"
             android:padding="8dp"
@@ -157,7 +159,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_12sdp"
         android:background="@color/color_button_login"
-        android:text="@string/login" />
+        android:text="@string/Home.Account.Login" />
 
 
     <LinearLayout
@@ -173,7 +175,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
-            android:text="@string/create_account"
+            android:text="@string/Login.CreateAccount"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -186,7 +188,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="@string/forgot_pwd"
+            android:text="@string/Home.Account.ForgotPassword"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -196,11 +198,11 @@
 
     <TextView
         android:id="@+id/txtContinue"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/button_login_social_width"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/btn_sign_in_margin"
-        android:gravity="center_horizontal"
-        android:text="@string/continue_hint"
+        android:gravity="right|end|bottom"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/Login.Continue"
         android:textColor="@color/bg_login_button"
         android:textSize="@dimen/_20ssp" />
 

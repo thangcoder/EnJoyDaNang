@@ -12,6 +12,7 @@ import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.utils.network.NetworkUtils;
 
 /**
  * Author: Tavv
@@ -56,4 +57,5 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView>{
             }
         });
     }
+
 }

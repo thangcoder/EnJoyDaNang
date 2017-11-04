@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -12,15 +14,20 @@ import android.widget.EditText;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -204,20 +211,62 @@ public class Utils {
         return StringUtils.EMPTY;
     }
 
-    public static String getUriMapsDirection(double latitudeFirst, double longtitudeFirst, double latitudeSecond, double longtitudeSecond){
-        return "http://maps.google.com/maps?f=d&hl=en&saddr="+latitudeFirst+","+longtitudeFirst+"&daddr="+latitudeSecond+","+longtitudeSecond;
+    public static String getUriMapsDirection(double latitudeFirst, double longtitudeFirst, double latitudeSecond, double longtitudeSecond) {
+        return "http://maps.google.com/maps?f=d&hl=en&saddr=" + latitudeFirst + "," + longtitudeFirst + "&daddr=" + latitudeSecond + "," + longtitudeSecond;
     }
 
 
-    public static void startIntentMap(Context context, String url){
+    public static void startIntentMap(Context context, String url) {
         Intent navigationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         context.startActivity(Intent.createChooser(navigationIntent, "Select an application"));
     }
 
-    public static void startIntentMaps(Context context, String url){
+    public static void startIntentMaps(Context context, String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.setComponent(new ComponentName("com.google.android.apps.maps",
                 "com.google.android.maps.MapsActivity"));
         context.startActivity(intent);
     }
+
+    public static String getLanguageByResId(@StringRes int strResId) {
+        return LanguageHelper.getValueByKey(getString(strResId));
+    }
+
+    public static Map<String, String> getStartEndDateOfCurrentMonth(int dayCondition) {
+        Map<String, String> dateMap = new HashMap<>();
+        Calendar calander = Calendar.getInstance();
+        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+        dateMap.put(Constant.TO_DATE, sdf.format(calander.getTime()));
+        int date = calander.get(Calendar.DAY_OF_MONTH);
+        int cMonth = calander.get(Calendar.MONTH) + 1;
+        int cYear = calander.get(Calendar.YEAR);
+        calander.set(Calendar.YEAR, cYear);
+        calander.set(Calendar.MONTH, date < dayCondition ? cMonth - 2 : cMonth - 1);
+        calander.set(Calendar.DAY_OF_MONTH, 1);
+        dateMap.put(Constant.FROM_DATE, sdf.format(calander.getTime()));
+        return dateMap;
+    }
+
+    public static Map<String, String> getStartEndDateOfCurrentMonth() {
+        Map<String, String> dateMap = new HashMap<>();
+        Calendar calander = Calendar.getInstance();
+        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+        dateMap.put(Constant.TO_DATE, sdf.format(calander.getTime()));
+        int cMonth = calander.get(Calendar.MONTH);
+        int cYear = calander.get(Calendar.YEAR);
+        calander.set(Calendar.YEAR, cYear);
+        calander.set(Calendar.MONTH, cMonth);
+        calander.set(Calendar.DAY_OF_MONTH, 1);
+        dateMap.put(Constant.FROM_DATE, sdf.format(calander.getTime()));
+        return dateMap;
+    }
+
+    public static String formatCurrency(@Nullable String pattern, double input) {
+        DecimalFormat dfnd = new DecimalFormat(StringUtils.isBlank(pattern) ? "#,###" : pattern);
+        return dfnd.format(input);
+    }
+
+
 }

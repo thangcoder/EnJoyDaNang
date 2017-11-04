@@ -73,11 +73,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView();
         bindViews();
         init();
+        initViewLabel();
         setValue(savedInstanceState);
         setEvent();
         setTranslucentStatusBar();
-
-
     }
 
     @Override
@@ -154,6 +153,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract void setEvent();
 
+
+    public void initViewLabel(){}
 
     //-------------------------------------------------------------------------------------------------------------------
 

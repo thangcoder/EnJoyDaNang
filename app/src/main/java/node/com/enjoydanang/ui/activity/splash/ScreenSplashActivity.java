@@ -9,11 +9,14 @@ import org.json.JSONObject;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
+import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.network.NetworkUtils;
 
 
 public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> implements SplashScreenView {
@@ -30,8 +33,13 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mvpPresenter = createPresenter();
-        mvpPresenter.loadLanguage();
+        if (NetworkUtils.isNetworkContented(ScreenSplashActivity.this)) {
+            mvpPresenter = createPresenter();
+            mvpPresenter.loadLanguage();
+        } else {
+            DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_No_Internet));
+        }
+
     }
 
     @Override
@@ -99,7 +107,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     @Override
     public void onLoadFailre(AppError appError) {
-        DialogUtils.showDialog(ScreenSplashActivity.this, 2, Constant.TITLE_ERROR, appError.getMessage());
+        DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
     }
 
 }

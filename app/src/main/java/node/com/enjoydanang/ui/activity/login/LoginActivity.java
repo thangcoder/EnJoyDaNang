@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.internal.CallbackManagerImpl;
@@ -25,6 +29,7 @@ import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
@@ -34,9 +39,10 @@ import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
 
-import static node.com.enjoydanang.R.string.exit;
 import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 
 /**
@@ -46,7 +52,7 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
  * Version : 1.0
  */
 
-public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack {
+public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
 //    @BindView(R.id.toolbar)
@@ -57,6 +63,24 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @BindView(R.id.edtPassWord)
     EditText edtPassword;
+
+    @BindView(R.id.btnLoginNormal)
+    AppCompatButton btnLoginNormal;
+
+    @BindView(R.id.txtOr)
+    TextView txtOr;
+
+    @BindView(R.id.txtCreateAccount)
+    TextView txtCreateAccount;
+
+    @BindView(R.id.txtForgotPwd)
+    TextView txtForgotPwd;
+
+    @BindView(R.id.txtContinue)
+    TextView txtContinue;
+
+    @BindView(R.id.lrlLogin)
+    LinearLayout lrlLogin;
 
     private LoginViaFacebook loginViaFacebook;
     private LoginViaGoogle loginViaGoogle;
@@ -110,6 +134,12 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 //                overridePendingTransitionExit();
 //            }
 //        });
+        lrlLogin.setOnTouchListener(this);
+    }
+
+    @Override
+    public void initViewLabel() {
+        LanguageHelper.getValueByViewId(edtUserName, edtPassword, txtOr, txtCreateAccount, txtForgotPwd, btnLoginNormal, txtContinue);
     }
 
 
@@ -141,8 +171,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 intent = new Intent(this, MainActivity.class);
                 break;
         }
+        hideLoading();
         if (intent != null) {
-            hideLoading();
             startActivity(intent);
             overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
         }
@@ -171,7 +201,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 loginViaGoogle.getTokenGoogle(result);
             }
         } else {
-            Toast.makeText(mActivity, "Login Failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, Utils.getLanguageByResId(R.string.Message_Login_Failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -215,6 +245,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
             GlobalApplication.setUserInfo(userInfo);
+            SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
             hideLoading();
             redirectMain();
@@ -222,9 +253,16 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
     @Override
+    protected void redirectMain() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        overridePendingTransitionEnter();
+    }
+
+    @Override
     public void onLoginFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getString(R.string.login), error.getMessage());
+        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     @Override
@@ -238,6 +276,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
             showLoading();
             mvpPresenter.normalLogin(userName, password);
+        } else {
+            DialogUtils.showDialog(LoginActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));
         }
     }
 
@@ -250,7 +290,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             intent.addCategory(Intent.CATEGORY_HOME);
             startActivity(intent);
         } else {
-            Toast.makeText(this, getString(exit),
+            Toast.makeText(this, Utils.getLanguageByResId(R.string.Action_DoubleTap),
                     Toast.LENGTH_SHORT).show();
             isExit = true;
             new Handler().postDelayed(new Runnable() {
@@ -260,5 +300,14 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 }
             }, 2500);
         }
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.lrlLogin) {
+            SoftKeyboardManager.hideSoftKeyboard(this, v.getWindowToken(), 0);
+        }
+        return true;
     }
 }

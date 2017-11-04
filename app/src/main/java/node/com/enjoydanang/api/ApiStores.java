@@ -9,6 +9,7 @@ import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Contact;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.ExchangeRate;
+import node.com.enjoydanang.model.HistoryCheckin;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
@@ -165,11 +166,11 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/CheckIn")
-    Observable<Repository> checkIn(@Field("partnerId") int partnerId, @Field("customerId") long customerId, @Field("amount") int amount);
+    Observable<Repository<HistoryCheckin>> checkIn(@Field("partnerId") int partnerId, @Field("customerId") long customerId, @Field("amount") int amount);
 
     @FormUrlEncoded
     @POST("GlobalApi.asmx/HistoryCheckIn")
-    Observable<Repository> historyCheckIn(@Field("customerId") long customerId, @Field("fromDate") String fromDate, @Field("toDate") String toDate);
+    Observable<Repository<HistoryCheckin>> historyCheckIn(@Field("customerId") long customerId, @Field("fromDate") String fromDate, @Field("toDate") String toDate);
 
 
     @FormUrlEncoded

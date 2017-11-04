@@ -1,14 +1,11 @@
 package node.com.enjoydanang.ui.fragment.review.write;
 
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +15,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
@@ -25,8 +23,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
-
-import static android.R.attr.data;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -49,6 +46,17 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
 
     @BindView(R.id.edtAriaContent)
     EditText edtAriaContent;
+
+
+    @BindView(R.id.lblFullName)
+    TextView lblFullName;
+    @BindView(R.id.lblTitle)
+    TextView lblTitle;
+    @BindView(R.id.lblContent)
+    TextView lblContent;
+
+    @BindView(R.id.btnSubmitReview)
+    TextView btnSubmitReview;
 
     private UserInfo userInfo;
 
@@ -120,16 +128,16 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
     @Override
     public void onSubmitSuccess(Repository data) {
         if(Utils.isResponseError(data)){
-            DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, data.getMessage());
+            DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), data.getMessage());
             return;
         }
-        DialogUtils.showDialog(getContext(), 3, Constant.TITLE_SUCCESS, "Review sent");
+        DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Message_Submit_Contact_Success));
         mBaseActivity.onBackPressed();
     }
 
     @Override
     public void onSubmitFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
@@ -149,7 +157,7 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
         String content = String.valueOf(edtAriaContent.getText());
         float ratingCount = ratingBar.getRating();
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
-            DialogUtils.showDialog(getContext(), 2, Constant.TITLE_ERROR, Utils.getString(R.string.enter_full_field));
+            DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
             return;
         }
         if (Utils.hasLogin() && partner != null) {
@@ -157,4 +165,9 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
         }
     }
 
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(lblFullName, lblTitle, lblContent, btnSubmitReview);
+    }
 }

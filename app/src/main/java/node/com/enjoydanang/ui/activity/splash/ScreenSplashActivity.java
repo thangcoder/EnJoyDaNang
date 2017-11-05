@@ -3,9 +3,13 @@ package node.com.enjoydanang.ui.activity.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
@@ -16,14 +20,19 @@ import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.network.NetworkUtils;
+
+import static node.com.enjoydanang.constant.Constant.SPLASH_TIME_OUT;
 
 
 public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> implements SplashScreenView {
     private static final String TAG = ScreenSplashActivity.class.getSimpleName();
-    // Splash screen timer
-    private static int SPLASH_TIME_OUT = 1000;
 
+    @BindView(R.id.txtLoadingContent)
+    TextView txtLoadingContent;
+
+    private boolean hasTextContent;
 
     @Override
     protected SplashScreenPresenter createPresenter() {
@@ -54,7 +63,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     @Override
     public void bindViews() {
-
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -101,6 +110,9 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
         if (json != null) {
             FileUtils.saveFilePrivateMode(Constant.FILE_NAME_LANGUAGE, json.toString());
             GlobalApplication.getGlobalApplicationContext().setJsLanguage(json);
+            if(!hasTextContent){
+                LanguageHelper.getValueByViewId(txtLoadingContent);
+            }
             start();
         }
     }
@@ -110,4 +122,9 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
         DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
     }
 
+    @Override
+    public void initViewLabel() {
+        LanguageHelper.getValueByViewId(txtLoadingContent);
+        hasTextContent = StringUtils.isNotEmpty(txtLoadingContent.getText());
+    }
 }

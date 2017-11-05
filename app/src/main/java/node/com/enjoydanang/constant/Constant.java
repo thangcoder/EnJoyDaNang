@@ -20,6 +20,8 @@ public class Constant {
 
     public static final String DATE_SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
+    public static final int SPLASH_TIME_OUT = 1000;
+
     public static final String DATE_FORMAT_DMY = "dd-MM-yyyy";
 
     public static String REGEX_URL = "((http)[s]?(://).*)";

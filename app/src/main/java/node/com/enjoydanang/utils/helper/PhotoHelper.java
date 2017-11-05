@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 
@@ -26,8 +27,11 @@ import java.util.List;
 import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -285,5 +289,6 @@ public class PhotoHelper {
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
+
 
 }

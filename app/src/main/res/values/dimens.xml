@@ -56,7 +56,7 @@
 
     <dimen name="text_size_name_social">@dimen/_14ssp</dimen>
 
-    <dimen name="logo_app_hight_default">130dp</dimen>
+    <dimen name="logo_app_hight_default">@dimen/_110sdp</dimen>
 
     <item type="dimen" name="dialog_min_width_major">65%</item>
 

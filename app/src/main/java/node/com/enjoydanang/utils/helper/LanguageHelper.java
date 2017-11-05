@@ -41,22 +41,38 @@ public class LanguageHelper {
     public static void getValueByViewId(View... views) {
         JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
         if (views != null) {
-            try {
-                for (View view : views) {
-                    if (view instanceof EditText || view instanceof AppCompatEditText) {
-                        ((EditText) view).setHint(js.getString(((EditText) view).getHint() + ""));
-                    } else if (view instanceof TextView || view instanceof AppCompatTextView) {
-                        ((TextView) view).setText(js.getString(((TextView) view).getText() + ""));
-                    } else if (view instanceof AppCompatButton || view instanceof Button) {
-                        ((AppCompatButton) view).setText(js.getString(((AppCompatButton) view).getText() + ""));
-                    } else if (view instanceof SearchView) {
-                        ((SearchView) view).setQueryHint(js.getString(((SearchView) view).getQueryHint() + ""));
+            for (View view : views) {
+                String value;
+                if (view instanceof EditText) {
+                    try {
+                        value = js.getString(((EditText) view).getHint() + "".trim());
+                    } catch (Exception e) {
+                        value = StringUtils.EMPTY;
                     }
+                    ((EditText) view).setHint(value);
+                } else if (view instanceof Button) {
+                    try {
+                        value = js.getString(((Button) view).getText() + "".trim());
+                    } catch (Exception e) {
+                        value = StringUtils.EMPTY;
+                    }
+                    ((Button) view).setText(value);
+                } else if (view instanceof TextView) {
+                    try {
+                        value = js.getString(((TextView) view).getText() + "".trim());
+                    } catch (Exception e) {
+                        value = StringUtils.EMPTY;
+                    }
+                    ((TextView) view).setText(value);
+                } else if (view instanceof SearchView) {
+                    try {
+                        value = js.getString(js.getString(((SearchView) view).getQueryHint() + "".trim()));
+                    } catch (Exception e) {
+                        value = StringUtils.EMPTY;
+                    }
+                    ((SearchView) view).setQueryHint(value);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
         }
     }
 

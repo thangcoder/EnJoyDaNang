@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lrlChangePwd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/lrlChangePwd"
     android:orientation="vertical">
 
     <LinearLayout
@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="30dp"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp">
 
         <TextView
             android:id="@+id/lblOldPwd"
@@ -26,8 +26,8 @@
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:background="@drawable/border_edittext_normal"
+            android:inputType="textPassword"
             android:padding="8dp" />
 
         <TextView
@@ -42,8 +42,8 @@
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:background="@drawable/border_edittext_normal"
+            android:inputType="textPassword"
             android:padding="8dp" />
 
         <TextView
@@ -58,15 +58,15 @@
             style="@style/EditTextProfileStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:background="@drawable/border_edittext_normal"
+            android:inputType="textPassword"
             android:padding="8dp" />
 
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnSave"
-            android:layout_width="@dimen/button_login_social_width"
-            android:layout_height="@dimen/button_login_social_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@color/color_button_login"

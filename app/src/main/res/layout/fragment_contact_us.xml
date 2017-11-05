@@ -1,130 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lrlContactUs"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/lbBasicInfor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/Contact.Basic.Information"
+        android:textColor="@color/color_button_login"
+        android:textSize="@dimen/_16ssp"
+        android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/lrlContactUs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10sdp"
-            android:text="Basic Information"
-            android:textColor="@color/color_button_login"
-            android:textSize="@dimen/_16ssp"
-            android:textStyle="bold" />
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:background="@drawable/border_info_contact"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:background="@drawable/border_info_contact"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".2"
-                android:gravity="center"
-                android:orientation="vertical">
+            <TextView
+                android:id="@+id/txtAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingLeft="20dp"
+                android:text="@string/Home.Address"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingLeft="20dp"
-                    android:text="@string/Home.Address"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/txtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingLeft="20dp"
+                android:text="@string/Email"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingLeft="20dp"
-                    android:text="@string/Email"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingLeft="20dp"
-                    android:text="@string/Phone"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".8"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/txtContactAddress"
-                    style="@style/AutoScrollTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:textColor="@color/color_title_category"
-                    android:textSize="@dimen/_10ssp" />
-
-                <TextView
-                    android:id="@+id/txtContactEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:textColor="@color/color_title_category"
-                    android:textSize="@dimen/_10ssp" />
-
-                <TextView
-                    android:id="@+id/txtContactPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:textColor="@color/color_title_category"
-                    android:textSize="@dimen/_10ssp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:paddingLeft="20dp"
+                android:text="@string/Phone"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10sdp"
-            android:text="Contact for me"
-            android:textColor="@color/color_button_login"
-            android:textSize="@dimen/_12ssp"
-            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".8"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtContactAddress"
+                style="@style/AutoScrollTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/color_title_category"
+                android:textSize="@dimen/_10ssp" />
+
+            <TextView
+                android:id="@+id/txtContactEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/color_title_category"
+                android:textSize="@dimen/_10ssp" />
+
+            <TextView
+                android:id="@+id/txtContactPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textColor="@color/color_title_category"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lbContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/Contact.For.Me"
+        android:textColor="@color/color_button_login"
+        android:textSize="@dimen/_12ssp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
             <LinearLayout
-                android:layout_width="@dimen/button_login_social_width"
-                android:layout_height="wrap_content"
+                style="@style/EdittextSignUp"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -152,8 +152,7 @@
 
 
             <LinearLayout
-                android:layout_width="@dimen/button_login_social_width"
-                android:layout_height="wrap_content"
+                style="@style/EdittextSignUp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
@@ -181,8 +180,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="@dimen/button_login_social_width"
-                android:layout_height="wrap_content"
+                style="@style/EdittextSignUp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
@@ -211,8 +209,7 @@
 
 
             <LinearLayout
-                android:layout_width="@dimen/button_login_social_width"
-                android:layout_height="wrap_content"
+                style="@style/EdittextSignUp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
@@ -240,8 +237,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="@dimen/button_login_social_width"
-                android:layout_height="wrap_content"
+                style="@style/EdittextSignUp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
@@ -274,19 +270,18 @@
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnSendContact"
+                style="@style/ButtonLoginSocial"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/color_button_login"
+                android:text="@string/Submit" />
+
         </LinearLayout>
 
+    </ScrollView>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnSendContact"
-            android:layout_width="@dimen/button_login_social_width"
-            android:layout_height="@dimen/button_login_social_height"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:background="@color/color_button_login"
-            android:text="@string/btnSubmitContact" />
 
-    </LinearLayout>
-
-</ScrollView>
+</LinearLayout>

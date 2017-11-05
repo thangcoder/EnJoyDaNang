@@ -58,6 +58,9 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @BindView(R.id.edtFullName)
     EditText edtFullName;
 
+    @BindView(R.id.txtAlreadyAcc)
+    TextView txtAlreadyAcc;
+
     @BindView(R.id.btnSignUp)
     AppCompatButton btnSignUp;
 
@@ -130,12 +133,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
 
     @Override
     public void initViewLabel() {
-        edtFullName.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.FullName));
-        edtEmail.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Email));
-        edtPassWord.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Password));
-        edtPhoneNum.setHint(LanguageHelper.getValueByKey(AppLanguage.Key.Phone));
-        btnSignUp.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Register));
-        txtBackToSignIn.setText(LanguageHelper.getValueByKey(AppLanguage.Key.Home_Account_Login));
+        LanguageHelper.getValueByViewId(edtUserName, edtFullName, edtPassWord, edtEmail, edtPhoneNum, txtAlreadyAcc, txtBackToSignIn, btnSignUp);
     }
 
     @Override

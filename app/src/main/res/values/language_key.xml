@@ -129,7 +129,7 @@
     <string name="Message.Confirm.Submit.Contact">Message.Confirm.Submit.Contact</string>
     <string name="Message.Submit.Contact.Success">Message.Submit.Contact.Success</string>
     <string name="Message.Submit.Contact.Failed">Message.Submit.Contact.Failed</string>
-    <string name="Send">Send </string>
+    <string name="Send">Send</string>
     <string name="Partner.Name">Partner.Name</string>
     <string name="Discount">Discount</string>
     <string name="Action.Save">Action.Save</string>
@@ -165,4 +165,10 @@
     <string name="Request.Permission.Camera">Request.Permission.Camera</string>
     <string name="Message.Confirm.Ok">Message.Confirm.Ok</string>
     <string name="Message.Confirm.Cancel">Message.Confirm.Cancel</string>
+    <string name="Permission.Request.CAMERA.WRITE.READ">Permission.Request.CAMERA.WRITE.READ</string>
+    <string name="Permisstion.Title">Permisstion.Title</string>
+    <string name="Permission.Request.Content">Permission.Request.Content</string>
+    <string name="Splash.LoadingLanguage">Splash.LoadingLanguage</string>
+    <string name="Contact.For.Me">Contact.For.Me</string>
+    <string name="Contact.Basic.Information">Contact.Basic.Information</string>
 </resources>

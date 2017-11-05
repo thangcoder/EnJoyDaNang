@@ -21,7 +21,8 @@
         android:layout_height="@dimen/_60sdp"/>
 
     <TextView
-        android:text="Loading Language..."
+        android:id="@+id/txtLoadingContent"
+        android:text="@string/Splash.LoadingLanguage"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

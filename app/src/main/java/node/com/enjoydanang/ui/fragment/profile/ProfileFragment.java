@@ -1,9 +1,11 @@
 package node.com.enjoydanang.ui.fragment.profile;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +43,11 @@ import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.R.attr.data;
+import static android.R.attr.fragment;
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -50,8 +57,9 @@ import static android.app.Activity.RESULT_OK;
  * Version 1.0
  */
 
-public class ProfileFragment extends MvpFragment<ProfilePresenter> implements ProfileView {
+public class ProfileFragment extends MvpFragment<ProfilePresenter> implements ProfileView, EasyPermissions.PermissionCallbacks {
     private static final String TAG = ProfileFragment.class.getSimpleName();
+    public static final int PERMISSION_CAMERA = 200;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -77,6 +85,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     TextView lblPhone;
     @BindView(R.id.lblEmail)
     TextView lblEmail;
+    @BindView(R.id.txtOr)
+    TextView txtOr;
     @BindView(R.id.btnUpdate)
     AppCompatButton btnUpdate;
 
@@ -171,11 +181,22 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 }
                 break;
             case R.id.txtTakeAPhoto:
-                mPhotoHelper.cameraIntent();
+                startCamera();
                 break;
             case R.id.txtUploadFrGallery:
                 mPhotoHelper.openGallery();
                 break;
+        }
+    }
+
+    @AfterPermissionGranted(PERMISSION_CAMERA)
+    private void startCamera() {
+        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.CAMERA)) {
+            mPhotoHelper.cameraIntent();
+        } else {
+            EasyPermissions.requestPermissions(getActivity(),
+                    Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_CAMERA,
+                    Manifest.permission.CAMERA);
         }
     }
 
@@ -229,8 +250,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     public void initViewLabel(View view) {
-        super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(txtTakeAPhoto, txtUploadFrGallery, lblUserName, lblFullName, lblPhone, lblEmail, btnUpdate);
+        LanguageHelper.getValueByViewId(txtTakeAPhoto, txtUploadFrGallery, lblUserName, lblFullName, lblPhone, lblEmail, btnUpdate, txtOr);
     }
 
     @Override
@@ -247,5 +267,24 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     public void onDetach() {
         super.onDetach();
         mMainActivity = null;
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(getActivity(), perms)) {
+            DialogUtils.showDialog(getContext(), DialogType.WARNING,
+                    Utils.getLanguageByResId(R.string.Permisstion_Title),
+                    Utils.getLanguageByResId(R.string.Permission_Request_Content));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 }

@@ -177,21 +177,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-
-
         prgLoading.post(new Runnable() {
             public void run() {
                 mvpPresenter.getAllDataHome(user.getUserId());
             }
         });
-//        mvpPresenter.getAllDataHome(user.getUserId());
-//        mvpPresenter.getListHome(user.getUserId());
-//        mvpPresenter.getBanner();
         loadmorePartner.setCategoryId(-1);
         gridView.setVisibility(View.VISIBLE);
-//        mvpPresenter.getWeather();
-//        mvpPresenter.getExchangeRate();
-//        mvpPresenter.getAllCategories();
     }
 
     @Override

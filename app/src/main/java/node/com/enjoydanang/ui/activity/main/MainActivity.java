@@ -1,14 +1,20 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.refactor.lib.colordialog.ColorDialog;
+import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
@@ -56,12 +63,14 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
-        NavigationView.OnNavigationItemSelectedListener,
-        EasyPermissions.PermissionCallbacks, OnUpdateProfileSuccess {
+        NavigationView.OnNavigationItemSelectedListener,OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final int REQUEST_CODE_QRCODE_PERMISSIONS = 1;
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
     private final int FAVORITE = 3;
@@ -137,7 +146,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setStateTabSelected();
 
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
-        requestCodeQRCodePermissions();
+        if (!checkPermission()) {
+            requestPermission();
+        }
 
         settingLeftMenu(Utils.hasLogin());
     }
@@ -357,10 +368,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_scan:
-                if(Utils.hasLogin()){
+                if (Utils.hasLogin()) {
                     startActivity(new Intent(MainActivity.this, ScanActivity.class));
                     overridePendingTransitionEnter();
-                }else{
+                } else {
                     DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 return true;
@@ -374,29 +385,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         setStateTabSelected();
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-    }
-
-    @AfterPermissionGranted(REQUEST_CODE_QRCODE_PERMISSIONS)
-    private void requestCodeQRCodePermissions() {
-        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (!EasyPermissions.hasPermissions(this, perms)) {
-            EasyPermissions.requestPermissions(this, "Scanning a two-dimensional code requires permission to open the camera and the astigmatism", REQUEST_CODE_QRCODE_PERMISSIONS, perms);
-        }
     }
 
     private void replaceFr(String fragmentTag) {
@@ -586,5 +574,63 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void refreshHeader() {
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
+    }
+
+
+    private boolean checkPermission() {
+        int resultCamera = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
+        int resultWrite = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int resultRead = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        return resultCamera == PackageManager.PERMISSION_GRANTED &&
+                resultWrite == PackageManager.PERMISSION_GRANTED && resultRead == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccepted && writeAccepted && readAccepted) {
+                        //TODO : do nothing
+                    } else {
+                        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2),
+                                Utils.getLanguageByResId(R.string.Permission_Request_CAMERA_WRITE_READ));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                                DialogUtils.showDialog(MainActivity.this,
+                                        DialogType.INFO,
+                                        Utils.getLanguageByResId(R.string.Permisstion_Title),
+                                        Utils.getLanguageByResId(R.string.Permission_Request_Content),
+                                        new PromptDialog.OnPositiveListener() {
+                                            @Override
+                                            public void onClick(PromptDialog promptDialog) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermission();
+                                                }
+                                            }
+                                        }
+                                );
+                                return;
+                            }
+                        }
+
+                    }
+                }
+
+                break;
+        }
     }
 }

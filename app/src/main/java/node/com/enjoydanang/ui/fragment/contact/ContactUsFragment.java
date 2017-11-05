@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.fragment.contact;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.text.Html;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,7 +35,7 @@ import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
  * Version 1.0
  */
 
-public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener{
+public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implements ContactUsView, View.OnTouchListener {
 
     private final String LABEL_REQUIRE_TEMPLATE = "%s (<font color=#e51c23>*</font>)";
 
@@ -79,6 +80,15 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
     TextView lbTitle;
     @BindView(R.id.lbContent)
     TextView lbContent;
+
+    @BindView(R.id.lbBasicInfor)
+    TextView lbBasicInfor;
+
+    @BindView(R.id.lbContact)
+    TextView lbContact;
+
+    @BindView(R.id.btnSendContact)
+    AppCompatButton btnSendContact;
 
 
     @Override
@@ -157,14 +167,15 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
 
     @Override
     public void initViewLabel(View view) {
-        LanguageHelper.getValueByViewId(txtAddress, txtEmail, txtPhone, lbPhone, lbEmail, lbTitle, lbContent);
+        LanguageHelper.getValueByViewId(txtAddress, txtEmail, txtPhone, lbPhone, lbEmail, lbTitle,
+                lbContent, lbBasicInfor, lbContact, btnSendContact);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v.getId() == R.id.lrlContactUs) {
             SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
-        }else{
+        } else {
             v.getParent().requestDisallowInterceptTouchEvent(true);
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_UP:

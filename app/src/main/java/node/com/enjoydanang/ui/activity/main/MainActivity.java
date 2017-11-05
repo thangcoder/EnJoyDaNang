@@ -13,6 +13,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -204,6 +205,34 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void setEvent() {
         lvDrawerNav.setOnItemClickListener(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment fragment = getActiveFragment();
+                if(fragment!= null){
+                    String tag = fragment.getTag();
+                    if (tag.equals(HomeFragment.class.getName())){
+                            currentTab = HomeTab.Home;
+                        lvDrawerNav.clearChoices();
+                    }else if(tag.equals(SearchFragment.class.getName())){
+                        currentTab = HomeTab.Search;
+                        lvDrawerNav.clearChoices();
+                    }else if(tag.equals(ProfileMenuFragment.class.getName())){
+                        currentTab = HomeTab.Profile;
+                        lvDrawerNav.clearChoices();
+                    }else{
+                        currentTab = HomeTab.None;
+                        if (tag.equals(ProfileFragment.class.getName())){
+                            lvDrawerNav.setSelection(7);
+                        }
+                    }
+                    setStateTabSelected();
+                    lvDrawerNav.requestLayout();
+                }
+
+                Log.d(TAG, "onBackStackChanged: "+getActiveFragment().getTag());
+            }
+        });
     }
 
     @Override
@@ -215,8 +244,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            if (!popFragment()) {
+        }else {
+
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                getSupportFragmentManager().popBackStack();
+            } else {
                 if (Utils.hasLogin()) {
                     DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
                             Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
@@ -293,7 +326,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
 
                 }
-                currentTab = HomeTab.Home;
                 break;
             case R.id.img_search:
                 if (currentTab != HomeTab.Search) {
@@ -304,24 +336,22 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         resurfaceFragment(SearchFragment.class.getName());
                     }
                 }
-                currentTab = HomeTab.Search;
                 break;
             case R.id.ll_profile:
-                if (currentTab != HomeTab.Profile && Utils.hasLogin()) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(ProfileMenuFragment.class.getName(), true);
+                if (currentTab != HomeTab.Profile ) {
+                    if (Utils.hasLogin()) {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
+                        if (fragment == null) {
+                            addFrMenu(ProfileMenuFragment.class.getName(), true);
+                        } else {
+                            resurfaceFragment(ProfileMenuFragment.class.getName());
+                        }
                     } else {
-                        resurfaceFragment(ProfileMenuFragment.class.getName());
+                        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                     }
-                    currentTab = HomeTab.Profile;
-                } else {
-                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 break;
         }
-        setStateTabSelected();
-
     }
 
     @Override
@@ -527,7 +557,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
 
     }
-
     private void replaceFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         lvDrawerNav.setItemChecked(position, true);

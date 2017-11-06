@@ -21,6 +21,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     void loginViaSocial(User user) {
+        mvpView.showLoading();
         addSubscription(apiStores.doSignOrRegisterViaSocial(user.getId(), user.getAccessToken(),
                 user.getType(), user.getPicture().getData().getImage(), user.getFullName(), user.getEmail()), new ApiCallback<Repository<UserInfo>>() {
 
@@ -46,6 +47,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     void normalLogin(String userName, String password) {
+        mvpView.showLoading();
         addSubscription(apiStores.normalLogin(userName, password), new ApiCallback<Repository<UserInfo>>() {
 
             @Override
@@ -64,6 +66,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
             @Override
             public void onFinish() {
+                mvpView.hideLoading();
             }
         });
     }

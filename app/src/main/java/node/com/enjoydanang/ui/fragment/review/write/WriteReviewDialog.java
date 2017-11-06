@@ -2,12 +2,19 @@ package node.com.enjoydanang.ui.fragment.review.write;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatRatingBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,14 +24,20 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.refactor.lib.colordialog.PromptDialog;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -32,14 +45,20 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
+import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.PhotoHelper;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Author: Tavv
@@ -52,7 +71,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     private static final String TAG = WriteReviewDialog.class.getSimpleName();
 
     @BindView(R.id.ratingBar)
-    RatingBar ratingBar;
+    AppCompatRatingBar ratingBar;
 
     @BindView(R.id.edtName)
     EditText edtName;
@@ -63,15 +82,34 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @BindView(R.id.edtAriaContent)
     EditText edtAriaContent;
 
+    @BindView(R.id.rcvAttachImgPreview)
+    RecyclerView rcvAttachImgPreview;
+
+    @BindView(R.id.lblFullName)
+    TextView lbFullName;
+
+    @BindView(R.id.lblTitle)
+    TextView lblTitle;
+
+    @BindView(R.id.btnSubmitReview)
+    AppCompatButton btnSubmitReview;
+
+    @BindView(R.id.lblContent)
+    TextView lblContent;
+
     private UserInfo userInfo;
 
     private Partner partner;
+
+    private PhotoHelper mPhotoHelper;
 
     private DialogInterface.OnDismissListener onDismissListener;
 
     private OnBackFragmentListener onBackListener;
 
     private boolean isBack;
+
+    private ImagePreviewAdapter mPreviewAdapter;
 
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
@@ -92,7 +130,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getDialog().setTitle(Utils.getLanguageByResId(R.string.WriteReview));
+        getDialog().setTitle(Utils.getLanguageByResId(R.string.WriteReview).toUpperCase());
         return inflater.inflate(R.layout.fragment_write_review, container, false);
     }
 
@@ -100,6 +138,11 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        mPhotoHelper = PhotoHelper.newInstance(this);
+        initLabelView();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rcvAttachImgPreview.setLayoutManager(layoutManager);
+        rcvAttachImgPreview.setHasFixedSize(false);
         userInfo = GlobalApplication.getUserInfo();
         if (Utils.hasLogin()) {
             edtName.setText(userInfo.getFullName());
@@ -119,7 +162,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                 submitWriteReview();
                 break;
             case R.id.btnAttachImage:
-                //TODO : new feature
+                mPhotoHelper.startGalleryIntent();
                 break;
         }
     }
@@ -183,7 +226,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                                 @Override
                                 public void onClick(PromptDialog promptDialog) {
                                     promptDialog.dismiss();
-                                   dismiss();
+                                    dismiss();
                                 }
                             });
                         }
@@ -204,13 +247,23 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-//        if (onDismissListener != null) {
-//            onDismissListener.onDismiss(dialog);
-//        }
-        if(onBackListener != null){
+        if (onBackListener != null) {
             onBackListener.onDismiss(dialog, isBack);
         }
-
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
+                && null != data) {
+            List<ImageData> images = mPhotoHelper.parseGalleryResult(data);
+            mPreviewAdapter = new ImagePreviewAdapter(images, getContext());
+            rcvAttachImgPreview.setAdapter(mPreviewAdapter);
+        }
+    }
+
+    private void initLabelView() {
+        LanguageHelper.getValueByViewId(lbFullName, lblContent, lblTitle, btnSubmitReview);
+    }
 }

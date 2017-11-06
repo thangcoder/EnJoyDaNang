@@ -68,6 +68,15 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
+
+
+    public static void loadImageFromUri(Context context, ImageView imgView, Uri uri) {
+        Picasso.with(context).load(uri).error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .fit()
+                .into(imgView);
+    }
+
     public static void loadImageFromFile(Context context, ImageView imgView, File file) {
         Picasso.with(context).load(file)
                 .error(R.drawable.placeholder)
@@ -75,15 +84,17 @@ public class ImageUtils {
                 .fit()
                 .into(imgView);
     }
+
     public static void loadImageWithFreso(SimpleDraweeView imgView, String url) {
-        Uri  imageUri = Uri.parse(decodeURL(url));
+        Uri imageUri = Uri.parse(decodeURL(url));
         imgView.setImageURI(imageUri);
     }
+
     public static void loadImageWithFresoURI(SimpleDraweeView imgView, Uri uri) {
         imgView.setImageURI(uri);
     }
 
-    public static String encodeTobase64( File file ) {
+    public static String encodeTobase64(File file) {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
         if (bitmap != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -98,6 +109,7 @@ public class ImageUtils {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+
     public static String decodeURL(String url) {
         String link = null;
         String image = null;

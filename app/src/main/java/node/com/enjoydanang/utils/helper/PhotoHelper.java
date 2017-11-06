@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,14 +14,19 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.util.TypedValue;
+
+import com.facebook.internal.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +34,14 @@ import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.R.attr.data;
 
 /**
  * Author: Tavv
@@ -45,6 +54,8 @@ public class PhotoHelper {
     public static final int CAPTURE_IMAGE_REQUEST_CODE = 89;
     public static final int SELECT_FROM_GALLERY_CODE = 98;
     public static final int PERMISSION_READ_EXTERNAL_CODE = 96;
+
+    private static final float SCALE_WIDTH = 100f;
 
     private Fragment fragment;
 
@@ -71,11 +82,15 @@ public class PhotoHelper {
         fragment.startActivityForResult(intent, CAPTURE_IMAGE_REQUEST_CODE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void startGalleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
+
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        fragment.startActivityForResult(Intent.createChooser(intent, "Select photo"), SELECT_FROM_GALLERY_CODE);
+        fragment.startActivityForResult(Intent.createChooser(intent, "android.intent.action.SEND_MULTIPLE"), SELECT_FROM_GALLERY_CODE);
     }
 
     public Bitmap getCaptureImageResult(Intent data) {
@@ -290,5 +305,44 @@ public class PhotoHelper {
         return cursor.getString(idx);
     }
 
+    public List<ImageData> parseGalleryResult(Intent intent) {
+        if (intent != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
+                List<ImageData> images = new ArrayList<>();
+                if(intent.getClipData() != null){
+                    int numberOfImages = intent.getClipData().getItemCount();
+                    try {
+                        for (int i = 0; i < numberOfImages; i++) {
+
+                            ImageData imageData = new ImageData();
+                            imageData.setUri(intent.getClipData().getItemAt(i).getUri());
+
+                            Bitmap bitmap = getBitmap(intent.getClipData().getItemAt(i).getUri());
+                            imageData.setIcon(Bitmap.createScaledBitmap(bitmap, getPixelsFromDP(SCALE_WIDTH), getPixelsFromDP(SCALE_WIDTH), false));
+                            images.add(imageData);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    images.add(new ImageData(null, intent.getData()));
+                }
+                return images;
+            }
+        }
+        return null;
+    }
+
+    private int getPixelsFromDP(float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
+    }
+
+    private Bitmap getBitmap(Uri uri) {
+        try {
+            return MediaStore.Images.Media.getBitmap(GlobalApplication.getGlobalApplicationContext().getContentResolver(), uri);
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

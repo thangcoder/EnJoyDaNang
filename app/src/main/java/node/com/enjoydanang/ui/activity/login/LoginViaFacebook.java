@@ -113,6 +113,7 @@ public class LoginViaFacebook implements ILogin<AccessToken, User> {
     @Override
     public void pushToServer(User user) {
         if (user != null) {
+
             mLoginPresenter.loginViaSocial(user);
         }
     }

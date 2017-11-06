@@ -110,6 +110,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                 txtPartnerName.setText(partner.getName());
             }
         }
+
     }
 
     @Override

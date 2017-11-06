@@ -3,4 +3,10 @@
     <bool name="fitsSystemWindows">false</bool>
     <dimen name="navigation_drawer_header_margin">41dp</dimen>
     <dimen name="status_bar_height">25dp</dimen>
+    <declare-styleable name="ExpandableLayout">
+        <attr name="el_duration" format="integer" />
+        <attr name="el_expanded" format="boolean" />
+        <attr name="el_parallax" format="float" />
+        <attr name="android:orientation"/>
+    </declare-styleable>
 </resources>

@@ -1,34 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:background="@color/white"
+    android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <!--<android.support.v7.widget.AppCompatRatingBar-->
-        <!--android:id="@+id/ratingBar"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="20dp"-->
-        <!--android:isIndicator="false"-->
-        <!--android:numStars="5"-->
-        <!--android:stepSize="1"-->
-        <!--android:theme="@style/RatingBar"/>-->
 
     <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/RatingBar"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="@dimen/_15sdp"
         android:gravity="center"
+        android:numStars="5"
+        android:stepSize="1"
         android:isIndicator="false"
-        android:stepSize="1"/>
+        app:theme="@style/RatingBar" />
 
     <LinearLayout
-        android:layout_width="@dimen/button_login_social_width"
-        android:layout_height="wrap_content"
+        style="@style/EdittextSignUp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
@@ -57,8 +49,7 @@
 
 
     <LinearLayout
-        android:layout_width="@dimen/button_login_social_width"
-        android:layout_height="wrap_content"
+        style="@style/EdittextSignUp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:orientation="vertical">
@@ -86,8 +77,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="@dimen/button_login_social_width"
-        android:layout_height="wrap_content"
+        style="@style/EdittextSignUp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
         android:orientation="vertical">
@@ -125,10 +115,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|end"
-        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginRight="20dp"
-        android:visibility="gone"
-        android:background="@drawable/ic_add_a_photo_36dp" />
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/ic_add_a_photo_36dp"
+        android:contentDescription="@null"
+        android:visibility="visible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvAttachImgPreview"
+        style="@style/EdittextSignUp" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSubmitReview"
@@ -137,6 +132,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_15sdp"
         android:background="@color/color_button_login"
-        android:text="@string/Send" />
+        android:text="@string/Submit" />
 
 </LinearLayout>

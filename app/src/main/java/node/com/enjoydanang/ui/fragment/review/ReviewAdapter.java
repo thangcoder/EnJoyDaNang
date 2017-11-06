@@ -18,6 +18,7 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.widget.BetterRecyclerView;
 
 /**
  * Author: Tavv
@@ -50,6 +51,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         TextView txtDate;
         ImageView imgExpanCollapseContent;
         ImageView imgReply;
+        BetterRecyclerView rcvImgReview;
 
         ReviewViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +63,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             txtDate = (TextView) itemView.findViewById(R.id.txtDate);
             imgExpanCollapseContent = (ImageView) itemView.findViewById(R.id.imgExpanCollapseContent);
             imgReply = (ImageView) itemView.findViewById(R.id.btnReply);
+            rcvImgReview = (BetterRecyclerView) itemView.findViewById(R.id.rcvImageReview);
         }
     }
 

@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.AppLanguage;
+import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.utils.FileUtils;
 
 /**
  * Author: Tavv
@@ -26,7 +28,9 @@ import node.com.enjoydanang.constant.AppLanguage;
 public class LanguageHelper {
 
     public static String getValueByKey(String key) {
-        JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
+        JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage() != null
+                ? GlobalApplication.getGlobalApplicationContext().getJsLanguage()
+                : FileUtils.readFile(Constant.FILE_NAME_LANGUAGE);
         if (js != null) {
             try {
                 return js.getString(key);

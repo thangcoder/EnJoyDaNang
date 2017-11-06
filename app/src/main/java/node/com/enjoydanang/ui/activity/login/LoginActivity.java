@@ -247,7 +247,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             GlobalApplication.setUserInfo(userInfo);
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
-            hideLoading();
             redirectMain();
         }
     }
@@ -274,7 +273,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         String userName = edtUserName.getText().toString();
         String password = edtPassword.getText().toString();
         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
-            showLoading();
             mvpPresenter.normalLogin(userName, password);
         } else {
             DialogUtils.showDialog(LoginActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));

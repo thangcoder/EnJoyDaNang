@@ -124,7 +124,10 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     @Override
     public void initViewLabel() {
-        LanguageHelper.getValueByViewId(txtLoadingContent);
-        hasTextContent = StringUtils.isNotEmpty(txtLoadingContent.getText());
+        String value = LanguageHelper.getValueByKey(txtLoadingContent.getText().toString().trim());
+        if(StringUtils.isNotEmpty(value)){
+            txtLoadingContent.setText(value);
+            hasTextContent = true;
+        }
     }
 }

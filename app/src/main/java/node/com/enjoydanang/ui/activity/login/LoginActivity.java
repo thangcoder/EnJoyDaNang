@@ -146,7 +146,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
             , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
     public void onLoginClick(View view) {
-        showLoading();
         Intent intent = null;
         switch (view.getId()) {
             case R.id.btnLoginFb:
@@ -171,7 +170,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 intent = new Intent(this, MainActivity.class);
                 break;
         }
-        hideLoading();
         if (intent != null) {
             startActivity(intent);
             overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
@@ -248,6 +246,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
             redirectMain();
+            hideLoading();
         }
     }
 
@@ -273,6 +272,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         String userName = edtUserName.getText().toString();
         String password = edtPassword.getText().toString();
         if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
+            showLoading();
             mvpPresenter.normalLogin(userName, password);
         } else {
             DialogUtils.showDialog(LoginActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_UserName_Pwd_Empty));

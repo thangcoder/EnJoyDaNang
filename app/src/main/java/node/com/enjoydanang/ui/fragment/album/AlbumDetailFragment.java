@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +17,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.helper.SpacesItemDecoration;
 
 /**
@@ -119,15 +118,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
 
     @Override
     public void onClick(View view, int position) {
-        if (CollectionUtils.isNotEmpty(images)) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("images", images);
-            bundle.putInt("position", position);
-
-            SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
-            newFragment.setArguments(bundle);
-            newFragment.show(mFragmentManager, "slideshow");
-        }
+        DialogUtils.showDialogAlbum(mFragmentManager, images, position);
     }
 
     @Override

@@ -39,6 +39,7 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -46,8 +47,6 @@ import node.com.enjoydanang.utils.helper.PhotoHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.R.attr.data;
-import static android.R.attr.fragment;
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -226,7 +225,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             case PhotoHelper.SELECT_FROM_GALLERY_CODE:
                 if (data != null) {
                     Uri uri = data.getData();
-                    File file = new File(mPhotoHelper.getRealPathFromURI(uri));
+                    File file = new File(FileUtils.getFilePath(getContext(), uri));
                     base64Image = ImageUtils.encodeTobase64(file);
                     updateAvatar(file);
                 }

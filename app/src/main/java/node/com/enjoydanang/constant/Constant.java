@@ -62,4 +62,6 @@ public class Constant {
 
     public static final String FROM_DATE  = "FromDate";
     public static final String TO_DATE  = "ToDate";
+
+    public static final int MAX_SIZE_GALLERY_SELECT = 3;
 }

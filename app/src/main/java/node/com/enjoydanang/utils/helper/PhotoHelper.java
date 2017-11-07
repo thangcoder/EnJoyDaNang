@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,13 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
-import android.util.TypedValue;
-
-import com.facebook.internal.Logger;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,15 +29,12 @@ import java.util.List;
 import node.com.enjoydanang.BuildConfig;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.model.ImageData;
-import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.R.attr.data;
+import static node.com.enjoydanang.utils.ScreenUtils.getPixelsFromDP;
 
 /**
  * Author: Tavv
@@ -305,19 +298,19 @@ public class PhotoHelper {
         return cursor.getString(idx);
     }
 
-    public List<ImageData> parseGalleryResult(Intent intent) {
+    public List<ImageData> parseGalleryResult(Intent intent, int limitSize) {
         if (intent != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
                 List<ImageData> images = new ArrayList<>();
+                boolean isOverMaxSize = false;
                 if(intent.getClipData() != null){
                     int numberOfImages = intent.getClipData().getItemCount();
+                    isOverMaxSize = numberOfImages > limitSize;
+                    numberOfImages = isOverMaxSize ? limitSize : numberOfImages;
                     try {
-                        for (int i = 0; i < numberOfImages; i++) {
-
+                        for (int i = 0; i < numberOfImages ; i++) {
                             ImageData imageData = new ImageData();
                             imageData.setUri(intent.getClipData().getItemAt(i).getUri());
-
                             Bitmap bitmap = getBitmap(intent.getClipData().getItemAt(i).getUri());
                             imageData.setIcon(Bitmap.createScaledBitmap(bitmap, getPixelsFromDP(SCALE_WIDTH), getPixelsFromDP(SCALE_WIDTH), false));
                             images.add(imageData);
@@ -326,16 +319,15 @@ public class PhotoHelper {
                         e.printStackTrace();
                     }
                 }else{
-                    images.add(new ImageData(null, intent.getData()));
+                    images.add(new ImageData(null, intent.getData(), null));
+                }
+                if(isOverMaxSize){
+                    Toast.makeText(fragment.getContext(), Utils.getLanguageByResId(R.string.Message_Over_Size_Select), Toast.LENGTH_SHORT).show();
                 }
                 return images;
             }
         }
         return null;
-    }
-
-    private int getPixelsFromDP(float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
     }
 
     private Bitmap getBitmap(Uri uri) {

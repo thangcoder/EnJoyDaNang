@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.picasso.Picasso;
 
@@ -69,6 +70,22 @@ public class ImageUtils {
                 .into(imgView);
     }
 
+    public static void loadResizeImage(Context context, ImageView imgView, Uri uri, float width, float height) {
+        Picasso.with(context).load(uri).error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .resize(ScreenUtils.dp2px(width), ScreenUtils.dp2px(height))
+                .into(imgView);
+    }
+
+
+    public static void loadResizeImage(Context context, ImageView imgView, String imgUrl, int width, int height) {
+        Glide.with(context).load(imgUrl)
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .override(width, height)
+                .into(imgView);
+    }
+
 
     public static void loadImageFromUri(Context context, ImageView imgView, Uri uri) {
         Picasso.with(context).load(uri).error(R.drawable.placeholder)
@@ -119,6 +136,5 @@ public class ImageUtils {
         }
         return link + image;
     }
-
 
 }

@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.review.write;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,21 +16,20 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.RatingBar;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.refactor.lib.colordialog.PromptDialog;
-import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -45,15 +44,19 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.FileUtils;
+import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -69,6 +72,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class WriteReviewDialog extends DialogFragment implements View.OnTouchListener {
     private static final String TAG = WriteReviewDialog.class.getSimpleName();
+
+    @BindView(R.id.lrlWriteReview)
+    LinearLayout lrlWriteReview;
 
     @BindView(R.id.ratingBar)
     AppCompatRatingBar ratingBar;
@@ -103,17 +109,13 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private PhotoHelper mPhotoHelper;
 
-    private DialogInterface.OnDismissListener onDismissListener;
-
     private OnBackFragmentListener onBackListener;
 
     private boolean isBack;
 
     private ImagePreviewAdapter mPreviewAdapter;
 
-    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
-        this.onDismissListener = onDismissListener;
-    }
+    private ProgressDialog prgLoading;
 
     public void setOnBackListener(OnBackFragmentListener onBackListener) {
         this.onBackListener = onBackListener;
@@ -152,6 +154,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             partner = (Partner) bundle.getSerializable(TAG);
         }
         edtAriaContent.setOnTouchListener(this);
+        lrlWriteReview.setOnTouchListener(this);
     }
 
 
@@ -190,11 +193,15 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        v.getParent().requestDisallowInterceptTouchEvent(true);
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-                break;
+        if (v.getId() == R.id.lrlWriteReview) {
+            SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
+        } else {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
         }
         return false;
     }
@@ -210,9 +217,22 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             return;
         }
         if (partner != null) {
+            showSending();
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
+            List<String> lstImageBase64 = new ArrayList<>();
+            if (mPreviewAdapter != null) {
+                if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
+                    for (ImageData item : mPreviewAdapter.getImages()) {
+                        if (item.getUri() != null) {
+                            File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                            String strConvert = ImageUtils.encodeTobase64(file);
+                            lstImageBase64.add(strConvert);
+                        }
+                    }
+                }
+            }
             ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
-            new CompositeSubscription().add(apiStores.writeReview(userId, partner.getId(), (int) ratingCount, title, name, content)
+            new CompositeSubscription().add(apiStores.writeReview(userId, partner.getId(), (int) ratingCount, title, name, content, lstImageBase64)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
@@ -222,9 +242,10 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                                 DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
                                 return;
                             }
-                            DialogUtils.showDialog(getActivity(), 3, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
+                            DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(PromptDialog promptDialog) {
+                                    hideSending();
                                     promptDialog.dismiss();
                                     dismiss();
                                 }
@@ -233,12 +254,12 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
                         @Override
                         public void onFailure(String msg) {
-                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            hideSending();
+                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
                         }
 
                         @Override
                         public void onFinish() {
-
                         }
                     }));
         }
@@ -257,7 +278,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
                 && null != data) {
-            List<ImageData> images = mPhotoHelper.parseGalleryResult(data);
+            List<ImageData> images = mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT);
             mPreviewAdapter = new ImagePreviewAdapter(images, getContext());
             rcvAttachImgPreview.setAdapter(mPreviewAdapter);
         }
@@ -265,5 +286,25 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private void initLabelView() {
         LanguageHelper.getValueByViewId(lbFullName, lblContent, lblTitle, btnSubmitReview);
+    }
+
+    private void showSending() {
+        if (prgLoading == null) {
+            prgLoading = new ProgressDialog(getActivity());
+            prgLoading.setMessage(Utils.getLanguageByResId(R.string.Sending));
+            prgLoading.show();
+        } else {
+            if (!prgLoading.isShowing()) {
+                prgLoading.show();
+            }
+        }
+    }
+
+    private void hideSending() {
+        if (prgLoading != null) {
+            if (prgLoading.isShowing()) {
+                prgLoading.dismiss();
+            }
+        }
     }
 }

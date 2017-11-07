@@ -345,7 +345,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             loadmorePartner.setCategoryId(category.getId());
             hasLoadmore = false;
             mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId());
-            bannerSlider.setVisibility(View.GONE);
+//            bannerSlider.setVisibility(View.GONE);
         }
     }
 

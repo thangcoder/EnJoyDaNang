@@ -1,7 +1,6 @@
 package node.com.enjoydanang.ui.fragment.review.reply;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.ImageData;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
 
 /**
@@ -27,13 +29,29 @@ import node.com.enjoydanang.utils.ImageUtils;
 
 public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapter.ImagePreviewHolder> {
 
+    private static final int SIZE_IMAGE_THUMB = 50;
+
+    private static final int SIZE_IMAGE_PREVIEW = 70;
+
     private Context context;
 
     private List<ImageData> images;
 
+    public interface OnImageReviewClickListener {
+        void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> images);
+    }
+
+    private OnImageReviewClickListener onImageReviewClickListener;
+
     public ImagePreviewAdapter(List<ImageData> images, Context context) {
         this.images = images;
         this.context = context;
+    }
+
+    public ImagePreviewAdapter(List<ImageData> images, Context context, OnImageReviewClickListener onImageReviewClickListener) {
+        this.context = context;
+        this.images = images;
+        this.onImageReviewClickListener = onImageReviewClickListener;
     }
 
     @Override
@@ -45,13 +63,24 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
     @Override
     public void onBindViewHolder(ImagePreviewHolder holder, final int position) {
         final ImageData image = images.get(position);
-        ImageUtils.loadImageFromUri(context, holder.imgPreview, image.getUri());
-        holder.removeChoose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                removeItem(position);
-            }
-        });
+        if (image.getUri() != null) {
+            ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUri(), SIZE_IMAGE_PREVIEW, SIZE_IMAGE_PREVIEW);
+            holder.removeChoose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeItem(position);
+                }
+            });
+        } else if (StringUtils.isNotBlank(image.getUrl())) {
+            ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUrl(), SIZE_IMAGE_THUMB, SIZE_IMAGE_THUMB);
+            holder.removeChoose.setVisibility(View.GONE);
+            holder.imgPreview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onImageReviewClickListener.onImageClick(view, position, image.getUrl(), getListImage());
+                }
+            });
+        }
     }
 
     @Override
@@ -87,4 +116,22 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
         }
     }
 
+    private ArrayList<PartnerAlbum> getListImage() {
+        ArrayList<PartnerAlbum> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(images)) {
+            int size = images.size();
+            for (int i = 0; i < size; i++) {
+                PartnerAlbum partnerAlbum = new PartnerAlbum();
+                partnerAlbum.setTitle(StringUtils.EMPTY);
+                partnerAlbum.setPicture(images.get(i).getUrl());
+                result.add(partnerAlbum);
+            }
+        }
+        return result;
+    }
+
+
+    public List<ImageData> getImages() {
+        return images;
+    }
 }

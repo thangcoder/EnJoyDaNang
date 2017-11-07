@@ -42,7 +42,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private TouchImageView imgPhoto;
 
 
-    static SlideshowDialogFragment newInstance() {
+    public static SlideshowDialogFragment newInstance() {
         return new SlideshowDialogFragment();
     }
 

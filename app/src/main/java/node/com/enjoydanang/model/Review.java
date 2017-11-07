@@ -3,6 +3,8 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Author: Tavv
  * Created on 29/10/2017
@@ -11,6 +13,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Review {
+
     @SerializedName("Id")
     @Expose
     private int id;
@@ -30,7 +33,17 @@ public class Review {
     @Expose
     private String date;
 
+    @SerializedName("Image")
+    @Expose
+    private List<String> images;
+
+    @SerializedName("Avatar")
+    @Expose
+    private String avatar;
+
     private boolean isExpanded;
+
+
 
     public int getId() {
         return id;
@@ -86,5 +99,13 @@ public class Review {
 
     public void setExpanded(boolean expanded) {
         isExpanded = expanded;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

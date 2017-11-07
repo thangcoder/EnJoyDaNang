@@ -13,13 +13,15 @@ import android.net.Uri;
 public class ImageData {
     private Bitmap icon;
     private Uri uri;
+    private String url;
 
     public ImageData() {
     }
 
-    public ImageData(Bitmap icon, Uri uri) {
+    public ImageData(Bitmap icon, Uri uri, String url) {
         this.icon = icon;
         this.uri = uri;
+        this.url = url;
     }
 
     public Bitmap getIcon() {
@@ -36,5 +38,13 @@ public class ImageData {
 
     public void setUri(Uri uri) {
         this.uri = uri;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

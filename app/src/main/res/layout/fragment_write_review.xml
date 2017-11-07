@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lrlWriteReview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="vertical">
-
 
     <android.support.v7.widget.AppCompatRatingBar
         android:id="@+id/ratingBar"
@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_15sdp"
         android:gravity="center"
+        android:isIndicator="false"
         android:numStars="5"
         android:stepSize="1"
-        android:isIndicator="false"
         app:theme="@style/RatingBar" />
 
     <LinearLayout
@@ -99,7 +99,7 @@
             android:background="@drawable/border_edittext_normal"
             android:gravity="top|left"
             android:inputType="textMultiLine"
-            android:lines="6"
+            android:lines="4"
             android:overScrollMode="always"
             android:padding="8dp"
             android:scrollHorizontally="false"
@@ -127,8 +127,7 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSubmitReview"
-        android:layout_width="@dimen/button_login_social_width"
-        android:layout_height="@dimen/button_login_social_height"
+        style="@style/ButtonLoginSocial"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/_15sdp"
         android:background="@color/color_button_login"

@@ -99,6 +99,7 @@ public class LoginViaKakaoTalk implements ILogin<UserProfile, User> {
     @Override
     public void pushToServer(User user) {
         if(user != null){
+            mLoginPresenter.showLoading();
             mLoginPresenter.loginViaSocial(user);
         }
     }

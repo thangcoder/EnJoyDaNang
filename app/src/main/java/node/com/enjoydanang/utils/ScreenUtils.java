@@ -2,6 +2,7 @@ package node.com.enjoydanang.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -201,5 +202,10 @@ public class ScreenUtils {
      */
     public static int getScreenViewRightHeight(View view) {
         return view.getRight();
+    }
+
+
+    public static int getPixelsFromDP(float dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
     }
 }

@@ -171,4 +171,6 @@
     <string name="Splash.LoadingLanguage">Splash.LoadingLanguage</string>
     <string name="Contact.For.Me">Contact.For.Me</string>
     <string name="Contact.Basic.Information">Contact.Basic.Information</string>
+    <string name="Message.Over.Size.Select">Message.Over.Size.Select</string>
+    <string name="Sending">Sending</string>
 </resources>

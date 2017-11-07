@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.fragment.review;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Review;
+import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.widget.BetterRecyclerView;
@@ -36,13 +42,23 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private Context context;
     private OnItemClickListener onItemClickListener;
 
+    private ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick;
+
+
     public ReviewAdapter(Context context, List<Review> lstReviews, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.lstReviews = lstReviews;
         this.onItemClickListener = onItemClickListener;
     }
 
-    public class ReviewViewHolder extends RecyclerView.ViewHolder {
+    public ReviewAdapter(List<Review> lstReviews, Context context, OnItemClickListener onItemClickListener, ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick) {
+        this.lstReviews = lstReviews;
+        this.context = context;
+        this.onItemClickListener = onItemClickListener;
+        this.onImagePreviewClick = onImagePreviewClick;
+    }
+
+    public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         CircleImageView imgAvatar;
         TextView txtReviewerName;
         TextView txtNumRate;
@@ -125,7 +141,17 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                     onItemClickListener.onClick(view, position);
                 }
             });
-//            ImageUtils.loadImageNoRadius(context, ((ReviewViewHolder) holder).imgAvatar, model.getAvatar());
+            final List<ImageData> images = new ArrayList<>();
+            for(String url : model.getImages()){
+                images.add(new ImageData(null, null, url));
+            }
+            if(CollectionUtils.isNotEmpty(images)){
+                initAdapterImage(((ReviewViewHolder) holder).rcvImgReview);
+                ImagePreviewAdapter reviewAdapter = new ImagePreviewAdapter(images, context, onImagePreviewClick);
+                ((ReviewViewHolder) holder).rcvImgReview.setAdapter(reviewAdapter);
+            }else{
+                ((ReviewViewHolder) holder).rcvImgReview.setVisibility(View.GONE);
+            }
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -157,5 +183,11 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         }
         animation.setDuration(500);
         animation.start();
+    }
+
+    private void initAdapterImage(BetterRecyclerView recyclerView){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(false);
     }
 }

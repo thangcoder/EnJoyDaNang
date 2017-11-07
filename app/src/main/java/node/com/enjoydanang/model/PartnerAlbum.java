@@ -6,9 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang3.StringUtils;
-
-import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -38,7 +36,7 @@ public class PartnerAlbum implements Parcelable{
     }
 
     public String getPicture() {
-        return StringUtils.isNotBlank(picture) ? Constant.URL_HOST_IMAGE + picture : picture;
+        return Utils.getImageNormalOrSocial(picture);
     }
 
     public void setPicture(String picture) {

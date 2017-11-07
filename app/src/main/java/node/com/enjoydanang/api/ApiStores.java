@@ -2,6 +2,8 @@ package node.com.enjoydanang.api;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
@@ -146,11 +148,12 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("ReviewApi.asmx/WriteReview")
     Observable<Repository> writeReview(@Field("customerId") long customerId,
-                                                   @Field("partnerId") int partnerId,
-                                                   @Field("star") int star,
-                                                   @Field("title") String title,
-                                                   @Field("name") String name,
-                                                   @Field("content") String content);
+                                       @Field("partnerId") int partnerId,
+                                       @Field("star") int star,
+                                       @Field("title") String title,
+                                       @Field("name") String name,
+                                       @Field("content") String content,
+                                       @Field("images") List<String> images);
 
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReview")

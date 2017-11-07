@@ -2,20 +2,27 @@ package node.com.enjoydanang.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
 
 import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.ui.fragment.album.SlideshowDialogFragment;
 
 import static node.com.enjoydanang.utils.Utils.getString;
 
@@ -158,6 +165,18 @@ public class DialogUtils {
                 return Utils.getLanguageByResId(R.string.Dialog_Title_Wrong);
             default:
                 return StringUtils.EMPTY;
+        }
+    }
+
+    public static void showDialogAlbum(FragmentManager mFragmentManager, ArrayList<PartnerAlbum> images, int position){
+        if (CollectionUtils.isNotEmpty(images)) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("images", images);
+            bundle.putInt("position", position);
+
+            SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
+            newFragment.setArguments(bundle);
+            newFragment.show(mFragmentManager, "slideshow");
         }
     }
 }

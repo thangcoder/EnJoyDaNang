@@ -4,13 +4,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -24,11 +22,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Review;
+import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
+import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
@@ -41,7 +44,8 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Version : 1.0
  */
 
-public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iReviewView, OnItemClickListener {
+public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iReviewView, OnItemClickListener,
+        ImagePreviewAdapter.OnImageReviewClickListener {
     private static final String TAG = ReviewFragment.class.getSimpleName();
 
     @BindView(R.id.rcv_review)
@@ -98,7 +102,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         lstReviews = new ArrayList<>();
-        mAdapter = new ReviewAdapter(getContext(), lstReviews, this);
+        mAdapter = new ReviewAdapter(lstReviews, getContext(), this, this);
         recyclerView.setAdapter(mAdapter);
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -141,8 +145,10 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @OnClick(R.id.txtAddReview)
     void onClick(View view) {
-        if (partner != null) {
-            WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
+        if(Utils.hasLogin()){
+
+            if (partner != null) {
+                WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
 //            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 //                @Override
 //                public void onDismiss(DialogInterface dialog) {
@@ -152,25 +158,27 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 //                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
 //                }
 //            });
-            dialog.setOnBackListener(new OnBackFragmentListener() {
-                @Override
-                public void onBack(boolean isBack) {
+                dialog.setOnBackListener(new OnBackFragmentListener() {
+                    @Override
+                    public void onBack(boolean isBack) {
 
-                }
-
-                @Override
-                public void onDismiss(DialogInterface dialog, boolean isBack) {
-                    if (!isBack) {
-                        prgLoading.setVisibility(View.VISIBLE);
-                        lrlContentReview.setVisibility(View.GONE);
-                        mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
                     }
-                    dialog.dismiss();
-                }
-            });
-            dialog.show(mFragmentManager, TAG);
-        }
 
+                    @Override
+                    public void onDismiss(DialogInterface dialog, boolean isBack) {
+                        if (!isBack) {
+                            prgLoading.setVisibility(View.VISIBLE);
+                            lrlContentReview.setVisibility(View.GONE);
+                            mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show(mFragmentManager, TAG);
+            }
+        }else {
+            DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+        }
     }
 
     @Override
@@ -211,7 +219,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchFailure(AppError error) {
-
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     @Override
@@ -233,7 +241,11 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onClick(View view, int position) {
-        Toast.makeText(mMainActivity, "Reply Click", Toast.LENGTH_SHORT).show();
+        if(!Utils.hasLogin()){
+            DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+            return;
+        }
+
     }
 
     @Override
@@ -242,4 +254,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         LanguageHelper.getValueByViewId(txtAddReview, txtEmpty);
     }
 
+    @Override
+    public void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> lstModel) {
+        DialogUtils.showDialogAlbum(mFragmentManager, lstModel, position);
+    }
 }

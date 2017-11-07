@@ -18,7 +18,6 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -31,7 +30,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Project Name: EnjoyDaNang
  * Version 1.0
  */
-
+@Deprecated
 public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> implements WriteReviewView, View.OnTouchListener {
     private static final String TAG = WriteReviewFragment.class.getSimpleName();
 
@@ -161,7 +160,7 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
             return;
         }
         if (Utils.hasLogin() && partner != null) {
-            mvpPresenter.writeReview(userInfo.getUserId(), partner.getId(), (int) ratingCount, title, name, content);
+            mvpPresenter.writeReview(userInfo.getUserId(), partner.getId(), (int) ratingCount, title, name, content, null);
         }
     }
 

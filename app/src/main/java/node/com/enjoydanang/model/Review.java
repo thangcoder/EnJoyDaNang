@@ -1,5 +1,7 @@
 package node.com.enjoydanang.model;
 
+import android.animation.TimeInterpolator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -37,13 +39,19 @@ public class Review {
     @Expose
     private List<String> images;
 
+    @SerializedName("Replies")
+    @Expose
+    private List<Reply> replies;
+
     @SerializedName("Avatar")
     @Expose
     private String avatar;
 
     private boolean isExpanded;
 
+    private boolean isExpandedComment;
 
+    private  TimeInterpolator interpolator;
 
     public int getId() {
         return id;
@@ -107,5 +115,37 @@ public class Review {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public boolean isExpandedComment() {
+        return isExpandedComment;
+    }
+
+    public void setExpandedComment(boolean expandedComment) {
+        isExpandedComment = expandedComment;
+    }
+
+    public TimeInterpolator getInterpolator() {
+        return interpolator;
+    }
+
+    public void setInterpolator(TimeInterpolator interpolator) {
+        this.interpolator = interpolator;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Reply> replies) {
+        this.replies = replies;
     }
 }

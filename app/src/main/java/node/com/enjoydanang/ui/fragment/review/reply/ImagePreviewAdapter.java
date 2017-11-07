@@ -20,6 +20,9 @@ import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
 
+import static android.R.attr.width;
+import static node.com.enjoydanang.R.id.imageView;
+
 /**
  * Author: Tavv
  * Created on 06/11/2017
@@ -29,7 +32,7 @@ import node.com.enjoydanang.utils.ImageUtils;
 
 public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapter.ImagePreviewHolder> {
 
-    private static final int SIZE_IMAGE_THUMB = 50;
+    private static final int SIZE_IMAGE_THUMB = 120;
 
     private static final int SIZE_IMAGE_PREVIEW = 70;
 
@@ -64,6 +67,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
     public void onBindViewHolder(ImagePreviewHolder holder, final int position) {
         final ImageData image = images.get(position);
         if (image.getUri() != null) {
+            setSizeImage(holder.imgPreview, SIZE_IMAGE_PREVIEW, SIZE_IMAGE_PREVIEW);
             ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUri(), SIZE_IMAGE_PREVIEW, SIZE_IMAGE_PREVIEW);
             holder.removeChoose.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -72,6 +76,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
                 }
             });
         } else if (StringUtils.isNotBlank(image.getUrl())) {
+            setSizeImage(holder.imgPreview, SIZE_IMAGE_THUMB, SIZE_IMAGE_THUMB);
             ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUrl(), SIZE_IMAGE_THUMB, SIZE_IMAGE_THUMB);
             holder.removeChoose.setVisibility(View.GONE);
             holder.imgPreview.setOnClickListener(new View.OnClickListener() {
@@ -130,8 +135,14 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
         return result;
     }
 
-
     public List<ImageData> getImages() {
         return images;
+    }
+
+    private void setSizeImage(ImageView imageView, int width, int height){
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        imageView.setLayoutParams(layoutParams);
     }
 }

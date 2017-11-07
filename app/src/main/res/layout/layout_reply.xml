@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lrlReply"
+    android:layout_below="@+id/rcvReply"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_marginTop="@dimen/_5sdp"
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/_5sdp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:weightSum="1">

@@ -3,21 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <com.github.aakira.expandablelayout.ExpandableLinearLayout
-        android:id="@+id/expandableLayout"
+    <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+        android:id="@+id/expandableReview"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_100sdp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:ael_duration="400"
-        app:ael_expanded="false">
+        app:ael_duration="400">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvReply"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
-    </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+        <include layout="@layout/layout_reply"/>
+    </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
 </LinearLayout>

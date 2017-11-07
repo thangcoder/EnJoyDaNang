@@ -126,5 +126,6 @@
             android:layout_marginTop="5dp"
             android:textColor="@color/black32" />
 
+        <include layout="@layout/include_layout_reply"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

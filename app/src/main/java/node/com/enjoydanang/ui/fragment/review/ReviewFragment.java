@@ -145,7 +145,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @OnClick(R.id.txtAddReview)
     void onClick(View view) {
-        if(Utils.hasLogin()){
+        if (Utils.hasLogin()) {
 
             if (partner != null) {
                 WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
@@ -176,7 +176,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                 });
                 dialog.show(mFragmentManager, TAG);
             }
-        }else {
+        } else {
             DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
         }
     }
@@ -203,14 +203,20 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchReviews(List<Review> models) {
-        if (CollectionUtils.isEmpty(models) && currentPage == 0) {
-            lrlContentReview.setVisibility(View.VISIBLE);
-            prgLoading.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            txtEmpty.setVisibility(View.VISIBLE);
-            return;
-        }
-        updateItems(models);
+//        if (CollectionUtils.isEmpty(models) && currentPage == 0) {
+//            lrlContentReview.setVisibility(View.VISIBLE);
+//            prgLoading.setVisibility(View.GONE);
+//            recyclerView.setVisibility(View.GONE);
+//            txtEmpty.setVisibility(View.VISIBLE);
+//            return;
+//        }
+//        updateItems(models);
+//        txtEmpty.setVisibility(View.GONE);
+//        recyclerView.setVisibility(View.VISIBLE);
+//        lrlContentReview.setVisibility(View.VISIBLE);
+//        prgLoading.setVisibility(View.GONE);
+
+        updateItems(DummyDataReview.dummyData());
         txtEmpty.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
         lrlContentReview.setVisibility(View.VISIBLE);
@@ -241,11 +247,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onClick(View view, int position) {
-        if(!Utils.hasLogin()){
+        if (!Utils.hasLogin()) {
             DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
-            return;
         }
-
     }
 
     @Override

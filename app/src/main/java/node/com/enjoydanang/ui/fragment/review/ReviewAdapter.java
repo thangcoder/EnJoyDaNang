@@ -11,6 +11,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.aakira.expandablelayout.ExpandableLayout;
+import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -22,6 +27,7 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
+import node.com.enjoydanang.ui.fragment.review.reply.ReplyAdapter;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.widget.BetterRecyclerView;
@@ -68,6 +74,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         ImageView imgExpanCollapseContent;
         ImageView imgReply;
         BetterRecyclerView rcvImgReview;
+        ExpandableRelativeLayout expandableLayout;
+        RecyclerView rcvReply;
 
         ReviewViewHolder(View itemView) {
             super(itemView);
@@ -80,6 +88,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             imgExpanCollapseContent = (ImageView) itemView.findViewById(R.id.imgExpanCollapseContent);
             imgReply = (ImageView) itemView.findViewById(R.id.btnReply);
             rcvImgReview = (BetterRecyclerView) itemView.findViewById(R.id.rcvImageReview);
+            expandableLayout = (ExpandableRelativeLayout) itemView.findViewById(R.id.expandableReview);
+            rcvReply = (RecyclerView) itemView.findViewById(R.id.rcvReply);
         }
     }
 
@@ -121,11 +131,11 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 ((ReviewViewHolder) holder).imgExpanCollapseContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(model.isExpanded()){
+                        if (model.isExpanded()) {
                             model.setExpanded(false);
                             expand(((ReviewViewHolder) holder).txtContentReview, false);
                             ((ReviewViewHolder) holder).imgExpanCollapseContent.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
-                        }else{
+                        } else {
                             model.setExpanded(true);
                             expand(((ReviewViewHolder) holder).txtContentReview, true);
                             ((ReviewViewHolder) holder).imgExpanCollapseContent.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
@@ -139,19 +149,32 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     onItemClickListener.onClick(view, position);
+                    onClickButton(((ReviewViewHolder) holder).expandableLayout);
                 }
             });
+            //List images preview after choose
             final List<ImageData> images = new ArrayList<>();
-            for(String url : model.getImages()){
+            for (String url : model.getImages()) {
                 images.add(new ImageData(null, null, url));
             }
-            if(CollectionUtils.isNotEmpty(images)){
-                initAdapterImage(((ReviewViewHolder) holder).rcvImgReview);
+            if (CollectionUtils.isNotEmpty(images)) {
+                initAdapter(((ReviewViewHolder) holder).rcvImgReview, LinearLayoutManager.HORIZONTAL);
                 ImagePreviewAdapter reviewAdapter = new ImagePreviewAdapter(images, context, onImagePreviewClick);
                 ((ReviewViewHolder) holder).rcvImgReview.setAdapter(reviewAdapter);
-            }else{
+            } else {
                 ((ReviewViewHolder) holder).rcvImgReview.setVisibility(View.GONE);
             }
+            //Reply
+            if (CollectionUtils.isNotEmpty(model.getReplies())) {
+                initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
+                ReplyAdapter replyAdapter = new ReplyAdapter(context, model.getReplies());
+                ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
+            } else {
+                ((ReviewViewHolder) holder).rcvReply.setVisibility(View.GONE);
+            }
+
+            //Expandable Layout
+            initExpandableLayout(holder, model);
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -171,7 +194,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private void expand(TextView textView, boolean collapse) {
         ObjectAnimator animation = null;
         if (collapse) {
-            animation= ObjectAnimator.ofInt(
+            animation = ObjectAnimator.ofInt(
                     textView,
                     "maxLines",
                     10);
@@ -185,9 +208,30 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         animation.start();
     }
 
-    private void initAdapterImage(BetterRecyclerView recyclerView){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+    private <T extends RecyclerView> void initAdapter(T recyclerView, int orientation) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, orientation, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
+    }
+
+    private void onClickButton(final ExpandableLayout expandableLayout) {
+        expandableLayout.toggle();
+    }
+
+    private void initExpandableLayout(RecyclerView.ViewHolder holder, final Review review) {
+        holder.setIsRecyclable(false);
+        ((ReviewViewHolder) holder).expandableLayout.setExpanded(false);
+        ((ReviewViewHolder) holder).expandableLayout.setInterpolator(review.getInterpolator());
+        ((ReviewViewHolder) holder).expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+            @Override
+            public void onPreOpen() {
+                review.setExpandedComment(true);
+            }
+
+            @Override
+            public void onPreClose() {
+                review.setExpandedComment(false);
+            }
+        });
     }
 }

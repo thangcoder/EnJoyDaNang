@@ -38,4 +38,24 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         });
     }
 
+    void fetchReplyByReviewId(int reviewId, int page){
+        addSubscription(apiStores.getReplyByReviewId(page, reviewId), new ApiCallback<Repository>(){
+
+            @Override
+            public void onSuccess(Repository model) {
+                mvpView.onFetchReplyByReview(model);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
 }

@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import butterknife.BindView;
-import node.com.enjoydanang.R;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -39,12 +38,12 @@ public class Reply {
 
     @SerializedName("Images")
     @Expose
-    private List<String> images;
+    private List<ReviewImage> images;
 
     public Reply() {
     }
 
-    public Reply(int id, int reviewId, String avatar, String content, List<String> images) {
+    public Reply(int id, int reviewId, String avatar, String content, List<ReviewImage> images) {
         this.id = id;
         this.reviewId = reviewId;
         this.avatar = avatar;
@@ -69,7 +68,7 @@ public class Reply {
     }
 
     public String getAvatar() {
-        return avatar;
+        return Utils.getImageNormalOrSocial(avatar);
     }
 
     public void setAvatar(String avatar) {
@@ -84,11 +83,11 @@ public class Reply {
         this.content = content;
     }
 
-    public List<String> getImages() {
+    public List<ReviewImage> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<ReviewImage> images) {
         this.images = images;
     }
 

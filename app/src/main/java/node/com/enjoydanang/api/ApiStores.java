@@ -2,8 +2,6 @@ package node.com.enjoydanang.api;
 
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
@@ -153,7 +151,9 @@ public interface ApiStores {
                                        @Field("title") String title,
                                        @Field("name") String name,
                                        @Field("content") String content,
-                                       @Field("images") List<String> images);
+                                       @Field("image1") String strImage1,
+                                       @Field("image2") String strImage2,
+                                       @Field("image3") String strImage3);
 
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReview")
@@ -184,6 +184,11 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReviewAll")
     Observable<Repository> getListReplyByReviewId(@Field("reviewId") long reviewId);
+
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/PictureReview")
+    Observable<Repository> postPictureByReviewId(@Field("reviewId") int reviewId, @Field("picture") String base64);
 
 
 //    @FormUrlEncoded

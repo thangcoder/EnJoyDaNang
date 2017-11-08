@@ -39,28 +39,30 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_3sdp"
-                android:textStyle="bold"
                 android:textColor="@color/black32"
-                android:textCursorDrawable="@null" />
+                android:textCursorDrawable="@null"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtContentReview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:maxLines="2"
+                android:paddingLeft="@dimen/_3sdp"
                 android:textColor="@color/secondary_text"
                 android:textCursorDrawable="@null" />
-        </LinearLayout>
 
+
+        </LinearLayout>
 
     </LinearLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvImageReply"
+    <TextView
+        android:id="@+id/txtNumberOfImages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/_5sdp"
-        android:visibility="visible" />
-
+        android:gravity="right|end"
+        android:paddingRight="@dimen/_5sdp"
+        android:textColor="@color/material_yellow_500"
+        android:textCursorDrawable="@null" />
 </LinearLayout>

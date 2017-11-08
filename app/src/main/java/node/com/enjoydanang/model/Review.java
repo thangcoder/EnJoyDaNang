@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import node.com.enjoydanang.utils.Utils;
+
 /**
  * Author: Tavv
  * Created on 29/10/2017
@@ -35,13 +37,9 @@ public class Review {
     @Expose
     private String date;
 
-    @SerializedName("Image")
+    @SerializedName("Images")
     @Expose
-    private List<String> images;
-
-    @SerializedName("Replies")
-    @Expose
-    private List<Reply> replies;
+    private List<ReviewImage> images;
 
     @SerializedName("Avatar")
     @Expose
@@ -109,14 +107,6 @@ public class Review {
         isExpanded = expanded;
     }
 
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
     public boolean isExpandedComment() {
         return isExpandedComment;
     }
@@ -134,18 +124,18 @@ public class Review {
     }
 
     public String getAvatar() {
-        return avatar;
+        return Utils.getImageNormalOrSocial(avatar);
     }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
-    public List<Reply> getReplies() {
-        return replies;
+    public List<ReviewImage> getImages() {
+        return images;
     }
 
-    public void setReplies(List<Reply> replies) {
-        this.replies = replies;
+    public void setImages(List<ReviewImage> images) {
+        this.images = images;
     }
 }

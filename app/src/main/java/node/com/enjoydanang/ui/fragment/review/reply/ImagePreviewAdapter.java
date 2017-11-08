@@ -20,9 +20,6 @@ import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.ImageUtils;
 
-import static android.R.attr.width;
-import static node.com.enjoydanang.R.id.imageView;
-
 /**
  * Author: Tavv
  * Created on 06/11/2017
@@ -34,7 +31,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
 
     private static final int SIZE_IMAGE_THUMB = 120;
 
-    private static final int SIZE_IMAGE_PREVIEW = 70;
+    private static final int SIZE_IMAGE_PREVIEW = 120;
 
     private Context context;
 

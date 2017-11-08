@@ -160,7 +160,7 @@ public class WriteReviewFragment extends MvpFragment<WriteReviewPresenter> imple
             return;
         }
         if (Utils.hasLogin() && partner != null) {
-            mvpPresenter.writeReview(userInfo.getUserId(), partner.getId(), (int) ratingCount, title, name, content, null);
+//            mvpPresenter.writeReview(userInfo.getUserId(), partner.getId(), (int) ratingCount, title, name, content);
         }
     }
 

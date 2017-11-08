@@ -1,7 +1,6 @@
 package node.com.enjoydanang.ui.fragment.album;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
@@ -130,17 +127,9 @@ public class SlideshowDialogFragment extends DialogFragment {
             imgPhoto.setLayoutParams(parms);
             PartnerAlbum model = images.get(position);
             Glide.with(getActivity()).load(model.getPicture())
-                    .asBitmap()
-                    .thumbnail(0.5f)
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .dontTransform()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                            imgPhoto.setImageBitmap(resource);
-                        }
-                    });
+                    .into(imgPhoto);
 
             container.addView(view);
             return view;

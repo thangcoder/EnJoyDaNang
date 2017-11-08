@@ -14,17 +14,22 @@
         android:orientation="vertical"
         android:padding="@dimen/_10sdp">
 
-        <LinearLayout
+        <LinearLayout xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imgAvatar"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ic_user_review_temp" />
+                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImageScaleType="centerCrop"
+                fresco:progressBarAutoRotateInterval="1000"
+                fresco:progressBarImage="@drawable/loading"
+                fresco:progressBarImageScaleType="centerInside"
+                fresco:roundAsCircle="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +43,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight=".85"
                     android:gravity="center_vertical"
-                    android:text="Iris LOuis"
                     android:textColor="@color/material_grey_600"
                     android:textSize="@dimen/_13ssp"
 
@@ -60,7 +64,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp">
 
             <LinearLayout
@@ -109,7 +113,7 @@
                 android:layout_below="@+id/txtContentReview"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-                android:visibility="invisible" />
+                android:visibility="gone" />
         </RelativeLayout>
 
 
@@ -123,9 +127,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|end"
-            android:layout_marginTop="5dp"
             android:textColor="@color/black32" />
 
-        <include layout="@layout/include_layout_reply"/>
+        <ProgressBar
+            android:id="@+id/prgLoadingReply"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"/>
+
+        <include layout="@layout/include_layout_reply" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

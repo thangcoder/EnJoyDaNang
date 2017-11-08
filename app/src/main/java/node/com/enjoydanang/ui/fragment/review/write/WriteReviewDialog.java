@@ -16,6 +16,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,6 +58,8 @@ import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -117,6 +120,12 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private ProgressDialog prgLoading;
 
+    private CompositeSubscription mCompositeSubscription;
+
+    private ApiStores apiStores;
+
+    private static final int START_PAGE = 0;
+
     public void setOnBackListener(OnBackFragmentListener onBackListener) {
         this.onBackListener = onBackListener;
     }
@@ -133,6 +142,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().setTitle(Utils.getLanguageByResId(R.string.WriteReview).toUpperCase());
+        mCompositeSubscription = new CompositeSubscription();
+        apiStores = AppClient.getClient().create(ApiStores.class);
         return inflater.inflate(R.layout.fragment_write_review, container, false);
     }
 
@@ -222,17 +233,23 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {
                 if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
+                    for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
+                        lstImageBase64.add(i, null);
+                    }
+                    int count = -1;
                     for (ImageData item : mPreviewAdapter.getImages()) {
                         if (item.getUri() != null) {
+                            count++;
                             File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                             String strConvert = ImageUtils.encodeTobase64(file);
-                            lstImageBase64.add(strConvert);
+                            lstImageBase64.add(count, strConvert);
                         }
                     }
                 }
             }
-            ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
-            new CompositeSubscription().add(apiStores.writeReview(userId, partner.getId(), (int) ratingCount, title, name, content, lstImageBase64)
+            mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
+                    (int) ratingCount, title, name, content,
+                    lstImageBase64.get(0), lstImageBase64.get(1), lstImageBase64.get(2))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
@@ -263,6 +280,26 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                         }
                     }));
         }
+    }
+
+    private void fetchReply(int reviewId) {
+        addSubscription(apiStores.getReplyByReviewId(START_PAGE, reviewId), new ApiCallback<Repository>() {
+
+            @Override
+            public void onSuccess(Repository model) {
+                Log.i(TAG, "onSuccess " + model);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 
     @Override
@@ -306,5 +343,29 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                 prgLoading.dismiss();
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        onUnsubscribe();
+    }
+
+    public void onUnsubscribe() {
+        if (mCompositeSubscription != null && mCompositeSubscription.hasSubscriptions()) {
+            mCompositeSubscription.clear();
+        }
+    }
+
+    public void addSubscription(Observable observable, Subscriber subscriber) {
+
+        if (mCompositeSubscription == null) {
+            mCompositeSubscription = new CompositeSubscription();
+        }
+
+        mCompositeSubscription.add(observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 }

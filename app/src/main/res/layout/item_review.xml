@@ -119,6 +119,7 @@
 
         <node.com.enjoydanang.utils.widget.BetterRecyclerView
             android:id="@+id/rcvImageReview"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -137,6 +138,95 @@
             android:indeterminate="true"
             android:visibility="gone"/>
 
-        <include layout="@layout/include_layout_reply" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                android:id="@+id/expandableReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:ael_duration="400">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvReply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/lrlReply"
+                    android:layout_below="@+id/rcvReply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_width="match_parent"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:weightSum="1">
+
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_weight=".1"
+                            fresco:placeholderImage="@drawable/placeholder"
+                            fresco:placeholderImageScaleType="centerCrop"
+                            fresco:progressBarAutoRotateInterval="1000"
+                            fresco:progressBarImage="@drawable/loading"
+                            fresco:progressBarImageScaleType="centerInside"
+                            fresco:roundAsCircle="true" />
+
+                        <EditText
+                            android:id="@+id/edtWriteReply"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".8"
+                            android:inputType="text"
+                            android:background="@drawable/border_edittext_normal"
+                            android:maxLines="1"
+                            android:padding="8dp"
+                            android:textColor="@color/secondary_text"
+                            android:textCursorDrawable="@null" />
+
+                        <ImageView
+                            android:id="@+id/btnSubmitReply"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".1"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_send_36dp" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:id="@+id/btnAttachImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:background="@drawable/ic_add_a_photo_18dp"
+                        android:contentDescription="@null"
+                        android:visibility="visible" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rcvImageReply"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -83,6 +83,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     private Partner partner;
 
     private List<Review> lstReviews;
+    private List<Reply> lstReply = new ArrayList<>();
+
+
 
     private ProgressBar prgLoadingReply;
 
@@ -110,7 +113,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         lstReviews = new ArrayList<>();
-        mAdapter = new ReviewAdapter(lstReviews, getContext(), this, this, this);
+        mAdapter = new ReviewAdapter(lstReviews,lstReply, getContext(), this, this, this);
         recyclerView.setHasFixedSize(false);
         recyclerView.setAdapter(mAdapter);
         Bundle bundle = getArguments();
@@ -235,9 +238,10 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     public void onFetchReplyByReview(Repository data) {
         //Reply
         prgLoadingReply.setVisibility(View.GONE);
-        if (replyAdapter != null) {
-            mAdapter.updateReply(replyAdapter, dummyReply());
-        }
+            List<Reply> list = dummyReply();
+            lstReply.addAll(list);
+            mAdapter.notifyDataSetChanged();
+//            mAdapter.updateReply(replyAdapter, dummyReply());
     }
 
 
@@ -290,7 +294,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 //            DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
 //            return;
 //        }
-        replyAdapter = adapter;
+//        replyAdapter = adapter;
         this.prgLoadingReply = prgLoadingReply;
         prgLoadingReply.setVisibility(View.VISIBLE);
         final Handler handler = new Handler();

@@ -50,6 +50,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private final int VIEW_TYPE_LOADING = 1;
 
     private List<Review> lstReviews;
+    private List<Reply> lstReply;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
@@ -67,7 +68,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public ReviewAdapter(List<Review> lstReviews, Context context, OnItemClickListener onItemClickListener,
+    public ReviewAdapter(List<Review> lstReviews,List<Reply> lstReply, Context context, OnItemClickListener onItemClickListener,
                          ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick,
                          OnReplyClickListener onReplyClickListener) {
         this.lstReviews = lstReviews;
@@ -75,6 +76,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onItemClickListener = onItemClickListener;
         this.onImagePreviewClick = onImagePreviewClick;
         this.onReplyClickListener = onReplyClickListener;
+        this.lstReply = lstReply;
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -194,7 +196,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             }
             // Reply
             initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
-            final ReplyAdapter replyAdapter = new ReplyAdapter(new ArrayList<Reply>(), onItemClickListener);
+            final ReplyAdapter replyAdapter = new ReplyAdapter(lstReply, onItemClickListener);
             ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
             initExpandableLayout(holder, model);
             ((ReviewViewHolder) holder).imgReply.setOnClickListener(new View.OnClickListener() {

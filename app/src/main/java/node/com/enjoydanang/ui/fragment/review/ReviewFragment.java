@@ -125,7 +125,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     protected void init(View view) {
         lstReply = new ArrayList<>();
         lstImageSelected = new ArrayList<>();
-        mPhotoHelper = PhotoHelper.newInstance(this);
+        mPhotoHelper = new PhotoHelper(this);
         recyclerView.setHasFixedSize(false);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);

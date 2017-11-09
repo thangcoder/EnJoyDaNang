@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.ImageView;
@@ -114,6 +116,7 @@ public class ImageUtils {
         imgView.setImageURI(uri);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public static String encodeTobase64(File file) {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
         if (bitmap != null) {
@@ -125,6 +128,7 @@ public class ImageUtils {
         return StringUtils.EMPTY;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     public static Bitmap decodeBase64(String input) {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
@@ -169,6 +173,7 @@ public class ImageUtils {
         return imagePath;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     public static String getRightAngleImage(String photoPath) {
         try {
             ExifInterface ei = new ExifInterface(photoPath);

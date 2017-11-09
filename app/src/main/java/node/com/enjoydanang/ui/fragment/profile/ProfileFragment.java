@@ -9,8 +9,8 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,7 +30,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -192,7 +190,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 startCamera();
                 break;
             case R.id.txtUploadFrGallery:
-                openGallery();
+                mPhotoHelper.openGallery();
                 break;
         }
     }
@@ -251,7 +249,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     private void initData() {
-        mPhotoHelper = PhotoHelper.newInstance(this);
+        mPhotoHelper = new PhotoHelper(this);
         edtUserName.setText(userInfo.getUserName());
         edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
         edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
@@ -296,6 +294,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     public MainActivity getParentActivity(){
         return mMainActivity;
     }
+
     public void cameraIntent() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -332,7 +331,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     }
                 }
-                startActivityForResult(takePicture, mPhotoHelper.CAPTURE_IMAGE_REQUEST_CODE);
+                startActivityForResult(takePicture, PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE);
             }
         }
     }
@@ -342,14 +341,14 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, mPhotoHelper.SELECT_FROM_GALLERY_CODE);
+                startActivityForResult(photoPickerIntent, PhotoHelper.SELECT_FROM_GALLERY_CODE);
             } else {
                 EasyPermissions.requestPermissions(this, Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_READ_EXTERNAL_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
             }
         } else {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
-            startActivityForResult(photoPickerIntent, mPhotoHelper.SELECT_FROM_GALLERY_CODE);
+            startActivityForResult(photoPickerIntent, PhotoHelper.SELECT_FROM_GALLERY_CODE);
         }
     }
 }

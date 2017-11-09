@@ -151,7 +151,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        mPhotoHelper = PhotoHelper.newInstance(this);
+        mPhotoHelper = new PhotoHelper(this);
         initLabelView();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rcvAttachImgPreview.setLayoutManager(layoutManager);

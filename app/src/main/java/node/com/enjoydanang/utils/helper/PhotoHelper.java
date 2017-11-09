@@ -53,20 +53,11 @@ public class PhotoHelper {
 
     private Fragment fragment;
 
-    private static PhotoHelper sInstance;
-
     private String mCurrentPhotoPath;
 
     private String fullPhotoPath;
 
-    public static PhotoHelper newInstance(Fragment fragment) {
-        if (sInstance == null) {
-            sInstance = new PhotoHelper(fragment);
-        }
-        return sInstance;
-    }
-
-    private PhotoHelper(Fragment fragment) {
+    public PhotoHelper(Fragment fragment) {
         this.fragment = fragment;
     }
 

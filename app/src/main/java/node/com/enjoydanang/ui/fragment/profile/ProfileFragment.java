@@ -1,11 +1,16 @@
 package node.com.enjoydanang.ui.fragment.profile;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,6 +31,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,6 +56,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.app.Activity.RESULT_OK;
+import static node.com.enjoydanang.utils.helper.PhotoHelper.PERMISSION_READ_EXTERNAL_CODE;
 
 /**
  * Author: Tavv
@@ -183,7 +192,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 startCamera();
                 break;
             case R.id.txtUploadFrGallery:
-                mPhotoHelper.openGallery();
+                openGallery();
                 break;
         }
     }
@@ -215,10 +224,11 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 if (StringUtils.isNotBlank(mPhotoHelper.getCurrentPhotoPath())) {
                     File imgFile = new File(mPhotoHelper.getCurrentPhotoPath());
                     if (imgFile.exists()) {
-                        base64Image = ImageUtils.encodeTobase64(imgFile);
                         updateAvatar(imgFile);
                     } else {
-                        DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Image_Not_Found));
+                        DialogUtils.showDialog(getContext(),
+                                DialogType.WARNING, DialogUtils.getTitleDialog(2),
+                                Utils.getLanguageByResId(R.string.Image_Not_Found));
                     }
                 }
                 break;
@@ -234,8 +244,10 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     private void updateAvatar(File file) {
+        ImageUtils.getRightAngleImage(file.getAbsolutePath());
         Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
         ImageUtils.loadImageWithFresoURI(imgAvatarUser, uri);
+        base64Image = ImageUtils.encodeTobase64(file);
     }
 
     private void initData() {
@@ -283,5 +295,61 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     public MainActivity getParentActivity(){
         return mMainActivity;
+    }
+    public void cameraIntent() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        if (takePicture.resolveActivity(getActivity().getPackageManager()) != null) {
+
+            File photoFile = null;
+            try {
+                photoFile = mPhotoHelper.createImageFile();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (photoFile != null) {
+                Uri u = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileprovider", photoFile);
+
+                takePicture.putExtra(MediaStore.EXTRA_OUTPUT, u);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    takePicture.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    ClipData clip =
+                            ClipData.newUri(getActivity().getContentResolver(), "A photo", u);
+
+                    takePicture.setClipData(clip);
+                    takePicture.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                } else {
+                    List<ResolveInfo> resInfoList =
+                            getActivity().getPackageManager()
+                                    .queryIntentActivities(takePicture, PackageManager.MATCH_DEFAULT_ONLY);
+
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        getActivity().grantUriPermission(packageName, u,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
+                }
+                startActivityForResult(takePicture, mPhotoHelper.CAPTURE_IMAGE_REQUEST_CODE);
+            }
+        }
+    }
+    @AfterPermissionGranted(PERMISSION_READ_EXTERNAL_CODE)
+    public void openGallery() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, mPhotoHelper.SELECT_FROM_GALLERY_CODE);
+            } else {
+                EasyPermissions.requestPermissions(this, Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_READ_EXTERNAL_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        } else {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, mPhotoHelper.SELECT_FROM_GALLERY_CODE);
+        }
     }
 }

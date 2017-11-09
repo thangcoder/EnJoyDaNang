@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,7 +26,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Reply;
@@ -32,6 +36,7 @@ import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.ReplyAdapter;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -50,14 +55,17 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private final int VIEW_TYPE_LOADING = 1;
 
     private List<Review> lstReviews;
-    private List<Reply> lstReply;
+    private List<List<Reply>> lstReply;
+    private List<List<ImageData>> lstImages;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
     private ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick;
 
     public interface OnReplyClickListener {
-        void onClick(ReplyAdapter adapter, ProgressBar prgLoading, View view, int position);
+        void onClick(ProgressBar prgLoading, View view, int position);
+
+        void onSubmitClick(View view, String content, int position);
     }
 
     private OnReplyClickListener onReplyClickListener;
@@ -68,7 +76,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public ReviewAdapter(List<Review> lstReviews,List<Reply> lstReply, Context context, OnItemClickListener onItemClickListener,
+    public ReviewAdapter(List<Review> lstReviews, List<List<Reply>> lstReply, List<List<ImageData>> lstImages,
+                         Context context, OnItemClickListener onItemClickListener,
                          ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick,
                          OnReplyClickListener onReplyClickListener) {
         this.lstReviews = lstReviews;
@@ -77,6 +86,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onImagePreviewClick = onImagePreviewClick;
         this.onReplyClickListener = onReplyClickListener;
         this.lstReply = lstReply;
+        this.lstImages = lstImages;
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -117,6 +127,21 @@ public class ReviewAdapter extends RecyclerView.Adapter {
 
         @BindView(R.id.prgLoadingReply)
         ProgressBar prgLoadingReply;
+
+        @BindView(R.id.imgAvtCurrent)
+        SimpleDraweeView imgAvtCurrent;
+
+        @BindView(R.id.edtWriteReply)
+        EditText edtWriteReply;
+
+        @BindView(R.id.btnAttachImage)
+        ImageButton btnAttachImage;
+
+        @BindView(R.id.btnSubmitReply)
+        ImageView btnSubmitReply;
+
+        @BindView(R.id.rcvImageReply)
+        RecyclerView rcvImageReply;
 
         ReviewViewHolder(View itemView) {
             super(itemView);
@@ -196,19 +221,30 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             }
             // Reply
             initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
-            final ReplyAdapter replyAdapter = new ReplyAdapter(lstReply, onItemClickListener);
+            lstReply.add(new ArrayList<Reply>());
+            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onItemClickListener);
             ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
             initExpandableLayout(holder, model);
             ((ReviewViewHolder) holder).imgReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!model.isExpandedComment()) {
-                        onReplyClickListener.onClick(replyAdapter, (((ReviewViewHolder) holder).prgLoadingReply), view, position);
-
+                        onReplyClickListener.onClick((((ReviewViewHolder) holder).prgLoadingReply), view, position);
                     }
                     onClickButton(((ReviewViewHolder) holder).expandableLayout);
                 }
             });
+            //Attach Images
+            initAdapter(((ReviewViewHolder) holder).rcvImageReply, LinearLayoutManager.HORIZONTAL);
+            lstImages.add(new ArrayList<ImageData>());
+            ImagePreviewAdapter previewAdapter = new ImagePreviewAdapter(lstImages.get(position), context, 120);
+            ((ReviewViewHolder) holder).rcvImageReply.setAdapter(previewAdapter);
+            if(CollectionUtils.isNotEmpty(lstImages.get(position))){
+                ((ReviewViewHolder) holder).rcvImageReply.setVisibility(View.VISIBLE);
+            }else{
+                ((ReviewViewHolder) holder).rcvImageReply.setVisibility(View.GONE);
+            }
+            initViewWriteReply(((ReviewViewHolder) holder), position);
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -271,9 +307,38 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         });
     }
 
-    public void updateReply(ReplyAdapter currentAdapter, List<Reply> lstReply) {
-        if (CollectionUtils.isNotEmpty(lstReply)) {
-            currentAdapter.updateDataSource(lstReply);
+
+    private void initViewWriteReply(ReviewViewHolder holder, final int position) {
+        if (Utils.hasLogin()) {
+            ImageUtils.loadImageWithFreso(holder.imgAvtCurrent, GlobalApplication.getUserInfo().getImage());
         }
+        final String content = String.valueOf(holder.edtWriteReply.getText());
+        holder.btnSubmitReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isShowWarningLogin()) {
+                    onReplyClickListener.onSubmitClick(v, content, position);
+                }
+            }
+        });
+
+        holder.btnAttachImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isShowWarningLogin()) {
+                    onReplyClickListener.onSubmitClick(v, content, position);
+                }
+            }
+        });
     }
+
+    private boolean isShowWarningLogin() {
+        if (!Utils.hasLogin()) {
+            DialogUtils.showDialog(context, DialogType.WARNING, DialogUtils.getTitleDialog(2),
+                    Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+            return true;
+        }
+        return false;
+    }
+
 }

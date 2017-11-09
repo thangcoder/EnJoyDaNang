@@ -4,7 +4,9 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv
@@ -38,12 +40,43 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         });
     }
 
-    void fetchReplyByReviewId(int reviewId, int page){
-        addSubscription(apiStores.getReplyByReviewId(page, reviewId), new ApiCallback<Repository>(){
+    void fetchReplyByReviewId(int reviewId, int page) {
+        addSubscription(apiStores.getReplyByReviewId(page, reviewId), new ApiCallback<Repository<Reply>>() {
+
+            @Override
+            public void onSuccess(Repository<Reply> model) {
+                if (Utils.isResponseError(model)) {
+                    mvpView.onFetchFailure(new AppError(new Throwable(model.getMessage())));
+                    return;
+                }
+                mvpView.onFetchReplyByReview(model);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
+    void writeReply(int reviewId, long customerId,
+                    int partnerId, String content, int start,
+                    String name, String image1, String image2, String image3) {
+        addSubscription(apiStores.writeReplyByReviewId(
+                reviewId, customerId, partnerId, start, content, name, image1, image2, image3), new ApiCallback<Repository>(){
 
             @Override
             public void onSuccess(Repository model) {
-                mvpView.onFetchReplyByReview(model);
+                if(Utils.isResponseError(model)){
+                    mvpView.onFetchFailure(new AppError(new Throwable(model.getMessage())));
+                    return;
+                }
+                mvpView.onWriteReplySuccess(model);
             }
 
             @Override

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import node.com.enjoydanang.MvpFragmentWithToolbar;
+import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -24,7 +24,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  * Created by chientruong on 1/5/17.
  */
 
-public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPresenter> implements iProfileMenuView {
+public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> implements iProfileMenuView {
 
 
     @BindView(R.id.tv_username)
@@ -120,12 +120,6 @@ public class ProfileMenuFragment extends MvpFragmentWithToolbar<ProfileMenuPrese
 
     @Override
     public void hideLoading() {
-
-    }
-
-    @Override
-    public void setupActionBar() {
-
 
     }
 

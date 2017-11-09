@@ -17,7 +17,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -28,6 +27,7 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -89,7 +89,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     TextView txtContent;
 
     @BindView(R.id.imgPartner)
-    ImageView imgPartner;
+    SimpleDraweeView imgPartner;
 
     @BindView(R.id.webview)
     WebView mWebView;
@@ -208,7 +208,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             DetailPartner detailPartner = data.getData().get(0);
             this.detailPartner = detailPartner;
             txtTitle.setText(detailPartner.getName());
-            ImageUtils.loadImageNoRadius(getContext(), imgPartner, detailPartner.getPicture());
+            ImageUtils.loadImageWithFreso(imgPartner, detailPartner.getPicture());
             if (Build.VERSION.SDK_INT >= 24) {
                 txtContent.setText(Html.fromHtml(detailPartner.getDescription(), Html.FROM_HTML_MODE_LEGACY));
             } else {
@@ -508,7 +508,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             DetailPartner detailPartner = lstDetailPartner.get(0);
             this.detailPartner = detailPartner;
             txtTitle.setText(detailPartner.getName());
-            ImageUtils.loadImageNoRadius(getContext(), imgPartner, detailPartner.getPicture());
+            ImageUtils.loadImageWithFreso(imgPartner, detailPartner.getPicture());
             if (Build.VERSION.SDK_INT >= 24) {
                 txtContent.setText(Html.fromHtml(detailPartner.getDescription(), Html.FROM_HTML_MODE_LEGACY));
             } else {

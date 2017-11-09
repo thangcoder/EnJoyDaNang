@@ -4,6 +4,7 @@ import java.util.List;
 
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.iBaseView;
+import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.constant.AppError;
 
@@ -21,8 +22,8 @@ public interface iReviewView extends iBaseView {
 
     void onFetchFailure(AppError error);
 
-    void onFetchReplyByReview(Repository data);
+    void onFetchReplyByReview(Repository<Reply> data);
 
-
+    void onWriteReplySuccess(Repository repository);
 
 }

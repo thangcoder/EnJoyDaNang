@@ -22,20 +22,27 @@
             android:indeterminate="true" />
 
 
-        <LinearLayout
+        <LinearLayout xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:id="@+id/lrlContentDetail"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imgPartner"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:contentDescription="@null"
-                android:scaleType="fitXY" />
+                fresco:fadeDuration="300"
+                fresco:placeholderImage="@color/material_grey_100"
+                fresco:failureImage="@drawable/ic_logo_app_v1"
+                fresco:progressBarAutoRotateInterval="1000"
+                fresco:progressBarImage="@drawable/loading"
+                fresco:progressBarImageScaleType="centerInside"
+                fresco:retryImageScaleType="fitXY"
+                fresco:roundAsCircle="false" />
 
 
             <android.support.v7.widget.CardView

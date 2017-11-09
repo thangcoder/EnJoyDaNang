@@ -20,36 +20,36 @@ public class Reply {
     @Expose
     private int id;
 
-    @SerializedName("ReviewId")
+    @SerializedName("ReviewParentId")
     @Expose
     private int reviewId;
 
-    @SerializedName("UserName")
+    @SerializedName("Title")
     @Expose
-    private String userName;
+    private String title;
+    @SerializedName("Name")
+    @Expose
+    private String name;
 
-    @SerializedName("Avatar")
+    @SerializedName("Star")
     @Expose
-    private String avatar;
+    private int star;
 
     @SerializedName("Content")
     @Expose
     private String content;
 
+    @SerializedName("Date")
+    @Expose
+    private String date;
+
+    @SerializedName("Avatar")
+    @Expose
+    private String avatar;
+
     @SerializedName("Images")
     @Expose
-    private List<ReviewImage> images;
-
-    public Reply() {
-    }
-
-    public Reply(int id, int reviewId, String avatar, String content, List<ReviewImage> images) {
-        this.id = id;
-        this.reviewId = reviewId;
-        this.avatar = avatar;
-        this.content = content;
-        this.images = images;
-    }
+    private List<ReviewImage> images = null;
 
     public int getId() {
         return id;
@@ -59,20 +59,28 @@ public class Reply {
         this.id = id;
     }
 
-    public int getReviewId() {
-        return reviewId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setReviewId(int reviewId) {
-        this.reviewId = reviewId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getAvatar() {
-        return Utils.getImageNormalOrSocial(avatar);
+    public String getName() {
+        return name;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getStar() {
+        return star;
+    }
+
+    public void setStar(int star) {
+        this.star = star;
     }
 
     public String getContent() {
@@ -83,6 +91,22 @@ public class Reply {
         this.content = content;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getAvatar() {
+        return Utils.getImageNormalOrSocial(avatar);
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public List<ReviewImage> getImages() {
         return images;
     }
@@ -91,11 +115,11 @@ public class Reply {
         this.images = images;
     }
 
-    public String getUserName() {
-        return userName;
+    public int getReviewId() {
+        return reviewId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setReviewId(int reviewId) {
+        this.reviewId = reviewId;
     }
 }

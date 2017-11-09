@@ -17,8 +17,7 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
-            android:layout_weight=".1"
+            android:layout_height="match_parent"
             fresco:placeholderImage="@drawable/placeholder"
             fresco:placeholderImageScaleType="centerCrop"
             fresco:progressBarAutoRotateInterval="1000"
@@ -39,7 +38,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/_3sdp"
-                android:textColor="@color/black32"
+                android:textColor="#0d54af"
                 android:textCursorDrawable="@null"
                 android:textStyle="bold" />
 
@@ -49,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:paddingLeft="@dimen/_3sdp"
-                android:textColor="@color/secondary_text"
+                android:textColor="#90949c"
                 android:textCursorDrawable="@null" />
 
 
@@ -63,6 +62,6 @@
         android:layout_height="wrap_content"
         android:gravity="right|end"
         android:paddingRight="@dimen/_5sdp"
-        android:textColor="@color/material_yellow_500"
+        android:textColor="@color/blue"
         android:textCursorDrawable="@null" />
 </LinearLayout>

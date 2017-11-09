@@ -14,6 +14,7 @@ import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
@@ -139,7 +140,7 @@ public interface ApiStores {
 
 
     @FormUrlEncoded
-    @POST("ReviewApi.asmx/List")
+    @POST("ReviewApi.asmx/ListReview")
     Observable<Repository<Review>> getListReviewByPartnerId(@Field("partnerId") int partnerId, @Field("page") int page);
 
 
@@ -157,7 +158,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReview")
-    Observable<Repository> getReplyByReviewId(@Field("page") int page, @Field("reviewId") int reviewId);
+    Observable<Repository<Reply>> getReplyByReviewId(@Field("page") int page, @Field("reviewId") int reviewId);
 
     @FormUrlEncoded
     @POST("ReviewApi.asmx/ListReplyReviewAll")
@@ -190,6 +191,17 @@ public interface ApiStores {
     @POST("ReviewApi.asmx/PictureReview")
     Observable<Repository> postPictureByReviewId(@Field("reviewId") int reviewId, @Field("picture") String base64);
 
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/WriteReviewReply")
+    Observable<Repository> writeReplyByReviewId(@Field("reviewId") int reviewId,
+                                                @Field("customerId") long customerId,
+                                                @Field("partnerId") int partnerId,
+                                                @Field("star") int star,
+                                                @Field("title") String title,
+                                                @Field("name") String name,
+                                                @Field("image1") String strImage1,
+                                                @Field("image2") String strImage2,
+                                                @Field("image3") String strImage3);
 
 //    @FormUrlEncoded
 //    @POST("/login")

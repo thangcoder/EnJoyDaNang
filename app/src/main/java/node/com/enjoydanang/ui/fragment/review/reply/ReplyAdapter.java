@@ -54,7 +54,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         Reply reply = replies.get(position);
         ImageUtils.loadImageWithFreso(holder.imgAvatar, reply.getAvatar());
         holder.txtContentReview.setText(reply.getContent());
-        holder.txtReviewerName.setText(reply.getUserName());
+        holder.txtReviewerName.setText(reply.getName());
         int size = CollectionUtils.isEmpty(reply.getImages()) ? 0 : reply.getImages().size();
         String strCountImages = String.format(Locale.getDefault(), "%d %s", size, Utils.getLanguageByResId(R.string.Image));
         holder.txtNumberOfImages.setText(strCountImages);
@@ -103,5 +103,13 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         replies.addAll(lstReply);
         notifyItemRangeChanged(0, replies.size());
         notifyDataSetChanged();
+    }
+
+    public List<Reply> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Reply> replies) {
+        this.replies = replies;
     }
 }

@@ -1,7 +1,6 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -9,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -60,10 +58,6 @@ import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener,OnUpdateProfileSuccess {
@@ -376,7 +370,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 }
                 return true;
             case R.id.menu_edit:
-                addFr(ProfileFragment.class.getName(), 6);
+                addFr(ProfileFragment.class.getName(), CHANGE_PROFILE);
                 currentTab = HomeTab.None;
                 return true;
             case android.R.id.home:

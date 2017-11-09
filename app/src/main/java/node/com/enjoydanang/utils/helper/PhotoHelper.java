@@ -2,6 +2,7 @@ package node.com.enjoydanang.utils.helper;
 
 import android.Manifest;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -276,8 +277,13 @@ public class PhotoHelper {
 
     @AfterPermissionGranted(PERMISSION_READ_EXTERNAL_CODE)
     public void openGallery() {
+        if(fragment == null || !fragment.isAdded()) return;
         if (Build.VERSION.SDK_INT >= 23) {
-            if (EasyPermissions.hasPermissions(fragment.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Context context = fragment.getContext() == null ? fragment.getActivity() : fragment.getContext();
+//            if(context == null && fragment instanceof ProfileFragment){
+//                context = ((ProfileFragment) fragment).getParentActivity();
+//            }
+            if (EasyPermissions.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 fragment.startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);

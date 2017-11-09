@@ -37,6 +37,8 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
 
     private List<ImageData> images;
 
+    private int IMAGE_SIZE;
+
     public interface OnImageReviewClickListener {
         void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> images);
     }
@@ -46,6 +48,12 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
     public ImagePreviewAdapter(List<ImageData> images, Context context) {
         this.images = images;
         this.context = context;
+    }
+
+    public ImagePreviewAdapter(List<ImageData> images, Context context, final int IMAGE_SIZE) {
+        this.images = images;
+        this.context = context;
+        this.IMAGE_SIZE = IMAGE_SIZE;
     }
 
     public ImagePreviewAdapter(List<ImageData> images, Context context, OnImageReviewClickListener onImageReviewClickListener) {
@@ -64,8 +72,9 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
     public void onBindViewHolder(ImagePreviewHolder holder, final int position) {
         final ImageData image = images.get(position);
         if (image.getUri() != null) {
-            setSizeImage(holder.imgPreview, SIZE_IMAGE_PREVIEW, SIZE_IMAGE_PREVIEW);
-            ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUri(), SIZE_IMAGE_PREVIEW, SIZE_IMAGE_PREVIEW);
+            int size = IMAGE_SIZE == 0 ? SIZE_IMAGE_PREVIEW : IMAGE_SIZE;
+            setSizeImage(holder.imgPreview, size, size);
+            ImageUtils.loadResizeImage(context, holder.imgPreview, image.getUri(), size, size);
             holder.removeChoose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

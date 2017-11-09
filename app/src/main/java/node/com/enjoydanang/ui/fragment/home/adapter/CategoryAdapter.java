@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -61,7 +62,7 @@ public class CategoryAdapter extends BaseAdapter {
         }
         Category category = categories.get(i);
         holder.tvName.setText(category.getName());
-        ImageUtils.loadImageNoRadius(context, holder.imgCategory, category.getIcon());
+        ImageUtils.loadImageWithFreso(holder.imgCategory, category.getIcon());
         return view;
     }
 
@@ -70,7 +71,7 @@ public class CategoryAdapter extends BaseAdapter {
         TextView tvName;
 
         @BindView(R.id.img_icon)
-        CircleImageView imgCategory;
+        SimpleDraweeView imgCategory;
 
         Holder(View view) {
             ButterKnife.bind(this, view);

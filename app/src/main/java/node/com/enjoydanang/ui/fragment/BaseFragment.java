@@ -173,12 +173,12 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
         AppCompatActivity activity;
         if (context instanceof AppCompatActivity) {
             activity = (AppCompatActivity) context;
             mBaseActivity = (BaseActivity) activity;
         }
-        super.onAttach(context);
     }
 
     protected void setHasOptionMenu(){}

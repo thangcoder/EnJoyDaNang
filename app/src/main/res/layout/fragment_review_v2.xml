@@ -8,7 +8,7 @@
 
     <include layout="@layout/include_normal_progress_bar"/>
 
-    <LinearLayout
+    <LinearLayout xmlns:fresco="http://schemas.android.com/apk/res-auto"
         android:id="@+id/lrlContentReview"
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -16,13 +16,22 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgPartner2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".4"
             android:contentDescription="@null"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            fresco:fadeDuration="300"
+            fresco:placeholderImage="@color/material_grey_100"
+            fresco:failureImage="@drawable/ic_logo_app_v1"
+            fresco:progressBarAutoRotateInterval="1000"
+            fresco:progressBarImage="@drawable/loading"
+            fresco:progressBarImageScaleType="centerInside"
+            fresco:retryImageScaleType="fitXY"
+            fresco:roundAsCircle="false" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +81,7 @@
             android:id="@+id/rcv_review"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".7" />
+            android:layout_weight=".6" />
 
     </LinearLayout>
 </LinearLayout>

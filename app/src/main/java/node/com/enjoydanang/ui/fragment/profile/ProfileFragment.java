@@ -254,18 +254,12 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     public void onAttach(Context context) {
+        super.onAttach(context);
         AppCompatActivity activity;
         if (context instanceof AppCompatActivity) {
             activity = (AppCompatActivity) context;
             mMainActivity = (MainActivity) activity;
         }
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mMainActivity = null;
     }
 
     @Override
@@ -285,5 +279,9 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    public MainActivity getParentActivity(){
+        return mMainActivity;
     }
 }

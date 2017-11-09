@@ -232,10 +232,10 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {
+                for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
+                    lstImageBase64.add(i, null);
+                }
                 if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
-                    for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-                        lstImageBase64.add(i, null);
-                    }
                     int count = -1;
                     for (ImageData item : mPreviewAdapter.getImages()) {
                         if (item.getUri() != null) {

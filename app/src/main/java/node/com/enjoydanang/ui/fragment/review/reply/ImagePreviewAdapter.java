@@ -62,6 +62,13 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
         this.onImageReviewClickListener = onImageReviewClickListener;
     }
 
+    public ImagePreviewAdapter(List<ImageData> images, Context context, final int IMAGE_SIZE, OnImageReviewClickListener onImageReviewClickListener) {
+        this.images = images;
+        this.context = context;
+        this.IMAGE_SIZE = IMAGE_SIZE;
+        this.onImageReviewClickListener = onImageReviewClickListener;
+    }
+
     @Override
     public ImagePreviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_preview, parent, false);

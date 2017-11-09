@@ -50,8 +50,6 @@
                 android:paddingLeft="@dimen/_3sdp"
                 android:textColor="#90949c"
                 android:textCursorDrawable="@null" />
-
-
         </LinearLayout>
 
     </LinearLayout>

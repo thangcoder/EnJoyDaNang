@@ -5,6 +5,7 @@ import android.animation.TimeInterpolator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 import node.com.enjoydanang.utils.Utils;
@@ -16,7 +17,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version 1.0
  */
 
-public class Review {
+public class Review implements Serializable{
 
     @SerializedName("Id")
     @Expose

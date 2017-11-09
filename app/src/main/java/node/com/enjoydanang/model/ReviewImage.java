@@ -3,6 +3,8 @@ package node.com.enjoydanang.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import node.com.enjoydanang.utils.Utils;
 
 /**
@@ -12,7 +14,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class ReviewImage {
+public class ReviewImage implements Serializable{
 
     @SerializedName("Id")
     @Expose

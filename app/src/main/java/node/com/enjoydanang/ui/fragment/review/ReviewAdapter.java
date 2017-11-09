@@ -40,6 +40,7 @@ import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.widget.BetterRecyclerView;
 
 /**
@@ -56,7 +57,6 @@ public class ReviewAdapter extends RecyclerView.Adapter {
 
     private List<Review> lstReviews;
     private List<List<Reply>> lstReply;
-    private List<List<ImageData>> lstImages;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
@@ -64,8 +64,6 @@ public class ReviewAdapter extends RecyclerView.Adapter {
 
     public interface OnReplyClickListener {
         void onClick(ProgressBar prgLoading, View view, int position);
-
-        void onSubmitClick(View view, String content, int position);
     }
 
     private OnReplyClickListener onReplyClickListener;
@@ -76,7 +74,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public ReviewAdapter(List<Review> lstReviews, List<List<Reply>> lstReply, List<List<ImageData>> lstImages,
+    public ReviewAdapter(List<Review> lstReviews, List<List<Reply>> lstReply,
                          Context context, OnItemClickListener onItemClickListener,
                          ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick,
                          OnReplyClickListener onReplyClickListener) {
@@ -86,7 +84,6 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         this.onImagePreviewClick = onImagePreviewClick;
         this.onReplyClickListener = onReplyClickListener;
         this.lstReply = lstReply;
-        this.lstImages = lstImages;
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -102,7 +99,6 @@ public class ReviewAdapter extends RecyclerView.Adapter {
 
         @BindView(R.id.txtContentReview)
         TextView txtContentReview;
-
 
         @BindView(R.id.txtTitleReview)
         TextView txtTitleReview;
@@ -128,20 +124,9 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         @BindView(R.id.prgLoadingReply)
         ProgressBar prgLoadingReply;
 
-        @BindView(R.id.imgAvtCurrent)
-        SimpleDraweeView imgAvtCurrent;
+        @BindView(R.id.txtWriteReply)
+        TextView txtWriteReply;
 
-        @BindView(R.id.edtWriteReply)
-        EditText edtWriteReply;
-
-        @BindView(R.id.btnAttachImage)
-        ImageButton btnAttachImage;
-
-        @BindView(R.id.btnSubmitReply)
-        ImageView btnSubmitReply;
-
-        @BindView(R.id.rcvImageReply)
-        RecyclerView rcvImageReply;
 
         ReviewViewHolder(View itemView) {
             super(itemView);
@@ -186,6 +171,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             ((ReviewViewHolder) holder).txtReviewerName.setText(model.getName());
             ((ReviewViewHolder) holder).txtTitleReview.setText(model.getTitle());
             ((ReviewViewHolder) holder).txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, model.getDate()));
+            LanguageHelper.getValueByViewId(((ReviewViewHolder) holder).txtWriteReply);
             ImageUtils.loadImageWithFreso(((ReviewViewHolder) holder).imgAvatar, model.getAvatar());
             if (((ReviewViewHolder) holder).txtContentReview.getLineCount() > 3) {
                 ((ReviewViewHolder) holder).imgExpanCollapseContent.setVisibility(View.VISIBLE);
@@ -234,17 +220,12 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                     onClickButton(((ReviewViewHolder) holder).expandableLayout);
                 }
             });
-            //Attach Images
-            initAdapter(((ReviewViewHolder) holder).rcvImageReply, LinearLayoutManager.HORIZONTAL);
-            lstImages.add(new ArrayList<ImageData>());
-            ImagePreviewAdapter previewAdapter = new ImagePreviewAdapter(lstImages.get(position), context, 120);
-            ((ReviewViewHolder) holder).rcvImageReply.setAdapter(previewAdapter);
-            if(CollectionUtils.isNotEmpty(lstImages.get(position))){
-                ((ReviewViewHolder) holder).rcvImageReply.setVisibility(View.VISIBLE);
-            }else{
-                ((ReviewViewHolder) holder).rcvImageReply.setVisibility(View.GONE);
-            }
-            initViewWriteReply(((ReviewViewHolder) holder), position);
+            ((ReviewViewHolder) holder).txtWriteReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(view, position);
+                }
+            });
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -307,38 +288,5 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         });
     }
 
-
-    private void initViewWriteReply(ReviewViewHolder holder, final int position) {
-        if (Utils.hasLogin()) {
-            ImageUtils.loadImageWithFreso(holder.imgAvtCurrent, GlobalApplication.getUserInfo().getImage());
-        }
-        final String content = String.valueOf(holder.edtWriteReply.getText());
-        holder.btnSubmitReply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isShowWarningLogin()) {
-                    onReplyClickListener.onSubmitClick(v, content, position);
-                }
-            }
-        });
-
-        holder.btnAttachImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isShowWarningLogin()) {
-                    onReplyClickListener.onSubmitClick(v, content, position);
-                }
-            }
-        });
-    }
-
-    private boolean isShowWarningLogin() {
-        if (!Utils.hasLogin()) {
-            DialogUtils.showDialog(context, DialogType.WARNING, DialogUtils.getTitleDialog(2),
-                    Utils.getLanguageByResId(R.string.Message_You_Need_Login));
-            return true;
-        }
-        return false;
-    }
 
 }

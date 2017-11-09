@@ -64,31 +64,4 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         });
     }
 
-    void writeReply(int reviewId, long customerId,
-                    int partnerId, String content, int start,
-                    String name, String image1, String image2, String image3) {
-        addSubscription(apiStores.writeReplyByReviewId(
-                reviewId, customerId, partnerId, start, content, name, image1, image2, image3), new ApiCallback<Repository>(){
-
-            @Override
-            public void onSuccess(Repository model) {
-                if(Utils.isResponseError(model)){
-                    mvpView.onFetchFailure(new AppError(new Throwable(model.getMessage())));
-                    return;
-                }
-                mvpView.onWriteReplySuccess(model);
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
 }

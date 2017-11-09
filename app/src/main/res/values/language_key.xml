@@ -174,4 +174,7 @@
     <string name="Message.Over.Size.Select">Message.Over.Size.Select</string>
     <string name="Sending">Sending</string>
     <string name="Image">Image</string>
+    <string name="Review.Write.Reply">Review.Write.Reply</string>
+    <string name="Loading">Loading</string>
+    <string name="Review.Write.Reply.Success">Review.Write.Reply.Success</string>
 </resources>

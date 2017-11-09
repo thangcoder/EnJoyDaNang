@@ -158,75 +158,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/lrlReply"
+                <TextView
+                    android:id="@+id/txtWriteReply"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rcvReply"
-                    android:background="@color/white"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:orientation="horizontal"
-                        android:paddingLeft="@dimen/_5sdp"
-                        android:weightSum="1">
-
-                        <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/imgAvtCurrent"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_25sdp"
-                            android:layout_weight=".1"
-                            fresco:placeholderImage="@drawable/placeholder"
-                            fresco:placeholderImageScaleType="centerCrop"
-                            fresco:progressBarAutoRotateInterval="1000"
-                            fresco:progressBarImage="@drawable/loading"
-                            fresco:progressBarImageScaleType="centerInside"
-                            fresco:roundAsCircle="true" />
-
-                        <EditText
-                            android:id="@+id/edtWriteReply"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight=".8"
-                            android:background="@drawable/border_edittext_normal"
-                            android:inputType="text"
-                            android:maxLines="1"
-                            android:padding="8dp"
-                            android:textColor="@color/secondary_text"
-                            android:textCursorDrawable="@null" />
-
-                        <ImageView
-                            android:id="@+id/btnSubmitReply"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight=".1"
-                            android:contentDescription="@null"
-                            android:src="@drawable/ic_send_36dp" />
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/btnAttachImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:background="@drawable/ic_add_a_photo_18dp"
-                        android:contentDescription="@null"
-                        android:visibility="visible" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rcvImageReply"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/_5sdp"
-                        android:visibility="gone" />
-
-                </LinearLayout>
+                    android:gravity="center_horizontal"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:text="@string/Review.Write.Reply"
+                    android:textColor="@color/blue" />
             </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
         </LinearLayout>

@@ -17,13 +17,10 @@ import node.com.enjoydanang.constant.AppError;
 
 public interface iReviewView extends iBaseView {
 
-
     void onFetchReviews(List<Review> models);
 
     void onFetchFailure(AppError error);
 
     void onFetchReplyByReview(Repository<Reply> data);
-
-    void onWriteReplySuccess(Repository repository);
 
 }

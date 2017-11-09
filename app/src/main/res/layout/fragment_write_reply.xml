@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:id="@+id/lrlWriteReply"
+    android:weightSum="1">
+
+    <include layout="@layout/include_toolbar"/>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imgAvatar"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_marginRight="10dp"
+                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImageScaleType="centerCrop"
+                fresco:progressBarAutoRotateInterval="1000"
+                fresco:progressBarImage="@drawable/loading"
+                fresco:progressBarImageScaleType="centerInside"
+                fresco:roundAsCircle="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/txtReviewerName"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".85"
+                    android:gravity="center_vertical"
+                    android:textColor="#0d54af"
+                    android:textSize="@dimen/_13ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtNumRate"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".15"
+                    android:drawableLeft="@drawable/ic_star_yellow_500_24dp"
+                    android:gravity="center"
+                    android:textColor="@color/material_grey_600"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/txtTitleReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="#1d2129"
+                android:textSize="@dimen/_15ssp" />
+
+            <TextView
+                android:id="@+id/txtContentReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtTitleReview"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:maxLines="3"
+                android:textColor="#90949c" />
+
+            <ImageView
+                android:id="@+id/imgExpanCollapseContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/txtContentReview"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvImageReply"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="@dimen/_5sdp"
+        android:layout_weight=".2" />
+
+
+    <TextView
+        android:id="@+id/txtDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|end"
+        android:textColor="@color/black32" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcvReplies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:paddingLeft="@dimen/_35sdp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/_5sdp"
+            android:weightSum="1">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imgAvtCurrent"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_weight=".15"
+                fresco:placeholderImage="@drawable/placeholder"
+                fresco:placeholderImageScaleType="centerCrop"
+                fresco:progressBarAutoRotateInterval="1000"
+                fresco:progressBarImage="@drawable/loading"
+                fresco:progressBarImageScaleType="centerInside"
+                fresco:roundAsCircle="true" />
+
+            <EditText
+                android:id="@+id/edtWriteReply"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".73"
+                android:background="@drawable/border_edittext_normal"
+                android:hint="@string/Content"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:textColor="@color/secondary_text"
+                android:textCursorDrawable="@null" />
+
+            <ImageView
+                android:id="@+id/btnSubmitReply"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".12"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_send_36dp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnAttachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:background="@drawable/ic_add_a_photo_36dp"
+            android:contentDescription="@null"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvImagePicked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/_5sdp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -38,6 +38,7 @@ import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
+import node.com.enjoydanang.ui.fragment.review.reply.WriteReplyDialog;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
@@ -97,13 +98,10 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private List<Review> lstReviews;
     private List<List<Reply>> lstReply;
-    private List<List<ImageData>> lstImageSelected;
 
     private ProgressBar prgLoadingReply;
 
     private int rowIndexClick;
-
-    private PhotoHelper mPhotoHelper;
 
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
@@ -124,22 +122,17 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     protected void init(View view) {
         lstReply = new ArrayList<>();
-        lstImageSelected = new ArrayList<>();
-        mPhotoHelper = new PhotoHelper(this);
         recyclerView.setHasFixedSize(false);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         lstReviews = new ArrayList<>();
-        mAdapter = new ReviewAdapter(lstReviews, lstReply, lstImageSelected, getContext(), this, this, this);
+        mAdapter = new ReviewAdapter(lstReviews, lstReply, getContext(), this, this, this);
         recyclerView.setHasFixedSize(false);
         recyclerView.setAdapter(mAdapter);
         Bundle bundle = getArguments();
         if (bundle != null) {
             partner = (Partner) bundle.getSerializable(TAG);
             if (partner != null) {
-//                Glide.with(getActivity()).load(partner.getPicture()).crossFade()
-//                        .skipMemoryCache(false).placeholder(R.drawable.placeholder)
-//                        .into(imgPartner);
                 ImageUtils.loadImageWithFreso(imgPartner, partner.getPicture());
                 txtPartnerName.setText(partner.getName());
             }
@@ -177,18 +170,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @OnClick(R.id.txtAddReview)
     void onClick(View view) {
         if (Utils.hasLogin()) {
-
             if (partner != null) {
                 WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
-//            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                @Override
-//                public void onDismiss(DialogInterface dialog) {
-//                    prgLoading.setVisibility(View.VISIBLE);
-//                    lrlContentReview.setVisibility(View.GONE);
-//                    dialog.dismiss();
-//                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
-//                }
-//            });
                 dialog.setOnBackListener(new OnBackFragmentListener() {
                     @Override
                     public void onBack(boolean isBack) {
@@ -261,11 +244,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onWriteReplySuccess(Repository repository) {
-
-    }
-
     private void onRetryGetListReview(int page) {
         mvpPresenter.fetchReviewByPartner(partner.getId(), page);
     }
@@ -286,30 +264,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mvpPresenter.fetchReplyByReviewId(lstReviews.get(position).getId(), START_PAGE);
     }
 
-    @Override
-    public void onSubmitClick(View view, String content , int position) {
-        rowIndexClick = position;
-        switch (view.getId()) {
-            case R.id.btnAttachImage:
-                mPhotoHelper.startGalleryIntent();
-                break;
-            case R.id.btnSubmitReply:
-                if (CollectionUtils.isNotEmpty(lstReviews)) {
-                    if (!Utils.hasLogin() || partner == null) return;
-                    List<String> lstBase64 = getListImageBase64(position);
-                    int reviewId = lstReviews.get(position).getId();
-                    long userId = GlobalApplication.getUserInfo().getUserId();
-                    String userName = GlobalApplication.getUserInfo().getFullName();
-                    if (StringUtils.isEmpty(content)) {
-                        DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
-                        return;
-                    }
-                    mvpPresenter.writeReply(reviewId, userId, partner.getId(),
-                            content, 0, userName, lstBase64.get(0), lstBase64.get(1), lstBase64.get(3));
-                }
-                break;
-        }
-    }
 
     @Override
     public void initViewLabel(View view) {
@@ -323,7 +277,35 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onClick(View view, int position) {
+        switch (view.getId()) {
+            case R.id.txtWriteReply:
+                if (Utils.hasLogin()) {
+                    if (partner != null) {
+                        WriteReplyDialog dialog = WriteReplyDialog.newInstance(lstReviews.get(position), partner.getId());
+                        dialog.setOnBackListener(new OnBackFragmentListener() {
+                            @Override
+                            public void onBack(boolean isBack) {
 
+                            }
+
+                            @Override
+                            public void onDismiss(DialogInterface dialog, boolean isBack) {
+                                if (!isBack) {
+//                                    prgLoading.setVisibility(View.VISIBLE);
+//                                    lrlContentReview.setVisibility(View.GONE);
+//                                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show(mFragmentManager, TAG);
+                    }
+                } else {
+                    DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
+                break;
+
+        }
     }
 
     @Override
@@ -332,33 +314,5 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
-                && null != data) {
-            List<ImageData> images = mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT);
-            lstImageSelected.get(rowIndexClick).addAll(images);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
-    private List<String> getListImageBase64(int position){
-        List<String> lstImageBase64 = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(lstImageSelected.get(position))) {
-            for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-                lstImageBase64.add(i, null);
-            }
-            int count = -1;
-            for (ImageData item : lstImageSelected.get(position)) {
-                if (item.getUri() != null) {
-                    count++;
-                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
-                    String strConvert = ImageUtils.encodeTobase64(file);
-                    lstImageBase64.add(count, strConvert);
-                }
-            }
-        }
-        return lstImageBase64;
-    }
 }

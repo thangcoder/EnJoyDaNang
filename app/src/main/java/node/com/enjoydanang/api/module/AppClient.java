@@ -1,15 +1,7 @@
 package node.com.enjoydanang.api.module;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import node.com.enjoydanang.BuildConfig;
-import node.com.enjoydanang.api.model.NullOnEmptyConverterFactory;
-import node.com.enjoydanang.constant.Constant;
-
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -19,6 +11,9 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import node.com.enjoydanang.BuildConfig;
+import node.com.enjoydanang.api.model.NullOnEmptyConverterFactory;
+import node.com.enjoydanang.constant.Constant;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

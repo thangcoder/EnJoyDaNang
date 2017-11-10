@@ -7,8 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,9 +24,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Reply;
@@ -36,12 +32,12 @@ import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.ReplyAdapter;
-import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.widget.BetterRecyclerView;
+import node.com.enjoydanang.utils.widget.DividerItemDecoration;
 
 /**
  * Author: Tavv
@@ -208,7 +204,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             // Reply
             initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
             lstReply.add(new ArrayList<Reply>());
-            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onItemClickListener);
+            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onImagePreviewClick);
+            ((ReviewViewHolder) holder).rcvReply.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
             ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
             initExpandableLayout(holder, model);
             ((ReviewViewHolder) holder).imgReply.setOnClickListener(new View.OnClickListener() {

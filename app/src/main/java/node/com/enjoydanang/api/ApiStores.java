@@ -199,9 +199,10 @@ public interface ApiStores {
                                                 @Field("star") int star,
                                                 @Field("title") String title,
                                                 @Field("name") String name,
-                                                @Field("image1") String strImage1,
-                                                @Field("image2") String strImage2,
-                                                @Field("image3") String strImage3);
+                                                @Field("content") String content,
+                                                @Field("image1") String image1,
+                                                @Field("image2") String image2,
+                                                @Field("image3") String image3);
 
 //    @FormUrlEncoded
 //    @POST("/login")

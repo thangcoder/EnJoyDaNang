@@ -17,7 +17,7 @@ import node.com.enjoydanang.model.Partner;
  * Project Name: EnJoyDaNang
  * Version : 1.0
  */
-
+@Deprecated
 public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> implements iDetailHomeView, TabLayout.OnTabSelectedListener{
     private static final String TAG = DetailHomeFragment.class.getSimpleName();
 
@@ -62,7 +62,7 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     protected void init(View view) {
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.detail_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.review_tab_name)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.schedule_tab_name)));
+        //tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.schedule_tab_name)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.album_tab_name)));
         //Creating our pager adapter
         Bundle bundle = getArguments();

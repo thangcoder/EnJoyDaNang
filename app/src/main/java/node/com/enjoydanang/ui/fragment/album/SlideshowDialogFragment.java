@@ -6,6 +6,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,8 @@ import java.util.ArrayList;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.PartnerAlbum;
-import node.com.enjoydanang.utils.widget.TouchImageView;
+import node.com.enjoydanang.utils.widget.AlbumViewPager;
+import node.com.enjoydanang.utils.widget.TouchImageViewExtended;
 
 /**
  * Author: Tavv
@@ -32,11 +34,10 @@ import node.com.enjoydanang.utils.widget.TouchImageView;
 public class SlideshowDialogFragment extends DialogFragment {
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
     private ArrayList<PartnerAlbum> images;
-    private ViewPager viewPager;
-    private MyViewPagerAdapter myViewPagerAdapter;
+    private AlbumViewPager viewPager;
     private TextView lblCount, lblTitle, lblDate;
     private int selectedPosition = 0;
-    private TouchImageView imgPhoto;
+    private TouchImageViewExtended imgPhoto;
 
 
     public static SlideshowDialogFragment newInstance() {
@@ -47,14 +48,14 @@ public class SlideshowDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_slider, container, false);
-        viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager = (AlbumViewPager) view.findViewById(R.id.viewpager);
         lblCount = (TextView) view.findViewById(R.id.lbl_count);
         lblTitle = (TextView) view.findViewById(R.id.title);
         lblDate = (TextView) view.findViewById(R.id.date);
         images = (ArrayList<PartnerAlbum>) getArguments().getSerializable("images");
         selectedPosition = getArguments().getInt("position");
 
-        myViewPagerAdapter = new MyViewPagerAdapter();
+        MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
@@ -74,20 +75,16 @@ public class SlideshowDialogFragment extends DialogFragment {
         @Override
         public void onPageSelected(int position) {
             displayMetaInfo(position);
-            if(imgPhoto != null){
-                myViewPagerAdapter.notifyDataSetChanged();
-//                imgPhoto.reiniciarZoom();
-            }
         }
 
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
-
+            Log.i(TAG, "onPageScrolled ");
         }
 
         @Override
         public void onPageScrollStateChanged(int arg0) {
-
+            Log.i(TAG, "onPageScrollStateChanged ");
         }
     };
 
@@ -118,7 +115,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.image_fullscreen_preview, container, false);
 
-            imgPhoto = (TouchImageView) view.findViewById(R.id.image_preview);
+            imgPhoto = (TouchImageViewExtended) view.findViewById(R.id.image_preview);
             DisplayMetrics display = getActivity().getResources().getDisplayMetrics();
             int width = display.widthPixels;
             int height = ((display.heightPixels * 75) / 100);

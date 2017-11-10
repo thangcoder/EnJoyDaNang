@@ -8,7 +8,7 @@ import node.com.enjoydanang.BasePresenter;
  * Project Name: EnJoyDaNang
  * Version : 1.0
  */
-
+@Deprecated
 public class DetailHomePresenter extends BasePresenter<iDetailHomeView>{
     public DetailHomePresenter(iDetailHomeView view) {
         super(view);

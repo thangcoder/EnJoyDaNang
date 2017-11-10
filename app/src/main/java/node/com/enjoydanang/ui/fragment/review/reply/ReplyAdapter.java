@@ -9,17 +9,20 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
+import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
  * Author: Tavv
@@ -32,15 +35,15 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
     private List<Reply> replies;
 
-    private OnItemClickListener onItemClickListener;
+    private ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener;
 
     public ReplyAdapter(List<Reply> replies) {
         this.replies = replies;
     }
 
-    public ReplyAdapter(List<Reply> replies, OnItemClickListener onItemClickListener) {
+    public ReplyAdapter(List<Reply> replies, ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener) {
         this.replies = replies;
-        this.onItemClickListener = onItemClickListener;
+        this.onImageReviewClickListener = onImageReviewClickListener;
     }
 
     @Override
@@ -51,7 +54,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
     @Override
     public void onBindViewHolder(ReplyViewHolder holder, final int position) {
-        Reply reply = replies.get(position);
+        final Reply reply = replies.get(position);
         ImageUtils.loadImageWithFreso(holder.imgAvatar, reply.getAvatar());
         holder.txtContentReview.setText(reply.getContent());
         holder.txtReviewerName.setText(reply.getName());
@@ -61,7 +64,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         holder.txtNumberOfImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListener.onClick(view, position);
+                onImageReviewClickListener.onImageClick(view, position, reply.getAvatar(), getListImage(position));
             }
         });
     }
@@ -92,12 +95,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         }
     }
 
-    public Reply getItemAtPosition(int position){
+    public Reply getItemAtPosition(int position) {
         return replies.get(position);
     }
 
-    public void updateDataSource(List<Reply> lstReply){
-        if(CollectionUtils.isNotEmpty(replies)){
+    public void updateDataSource(List<Reply> lstReply) {
+        if (CollectionUtils.isNotEmpty(replies)) {
             replies.clear();
         }
         replies.addAll(lstReply);
@@ -111,5 +114,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
     public void setReplies(List<Reply> replies) {
         this.replies = replies;
+    }
+
+    private ArrayList<PartnerAlbum> getListImage(int position) {
+        ArrayList<PartnerAlbum> result = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(replies.get(position).getImages())) {
+            int size = replies.get(position).getImages().size();
+            for (int i = 0; i < size; i++) {
+                ReviewImage image = replies.get(position).getImages().get(i);
+                PartnerAlbum partnerAlbum = new PartnerAlbum();
+                partnerAlbum.setTitle(StringUtils.EMPTY);
+                partnerAlbum.setPicture(image.getPicture());
+                result.add(partnerAlbum);
+            }
+        }
+        return result;
     }
 }

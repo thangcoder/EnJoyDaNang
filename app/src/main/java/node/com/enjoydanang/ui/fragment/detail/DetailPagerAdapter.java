@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.album.AlbumDetailFragment;
 import node.com.enjoydanang.ui.fragment.review.ReviewFragment;
-import node.com.enjoydanang.ui.fragment.schedule_utility.ScheduleUtilityFragment;
 
 /**
  * Author: Tavv
@@ -37,9 +36,9 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
                 return DetailPartnerFragment.newInstance(partner);
             case 1:
                 return ReviewFragment.newInstance(partner);
+//            case 2:
+//                return ScheduleUtilityFragment.newInstance(partner);
             case 2:
-                return ScheduleUtilityFragment.newInstance(partner);
-            case 3:
                 return AlbumDetailFragment.newInstance(partner);
             default:
                 return null;

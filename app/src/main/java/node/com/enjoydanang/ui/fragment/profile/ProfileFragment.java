@@ -54,7 +54,9 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.app.Activity.RESULT_OK;
+import static node.com.enjoydanang.utils.helper.PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE;
 import static node.com.enjoydanang.utils.helper.PhotoHelper.PERMISSION_READ_EXTERNAL_CODE;
+import static node.com.enjoydanang.utils.helper.PhotoHelper.SELECT_FROM_GALLERY_CODE;
 
 /**
  * Author: Tavv
@@ -190,7 +192,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 startCamera();
                 break;
             case R.id.txtUploadFrGallery:
-                mPhotoHelper.openGallery();
+                openGallery();
                 break;
         }
     }
@@ -198,7 +200,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @AfterPermissionGranted(PERMISSION_CAMERA)
     private void startCamera() {
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.CAMERA)) {
-            mPhotoHelper.cameraIntent();
+            cameraIntent();
         } else {
             EasyPermissions.requestPermissions(getActivity(),
                     Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_CAMERA,
@@ -218,7 +220,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             return;
         }
         switch (requestCode) {
-            case PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE:
+            case CAPTURE_IMAGE_REQUEST_CODE:
                 if (StringUtils.isNotBlank(mPhotoHelper.getCurrentPhotoPath())) {
                     File imgFile = new File(mPhotoHelper.getCurrentPhotoPath());
                     if (imgFile.exists()) {
@@ -230,7 +232,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                     }
                 }
                 break;
-            case PhotoHelper.SELECT_FROM_GALLERY_CODE:
+            case SELECT_FROM_GALLERY_CODE:
                 if (data != null) {
                     Uri uri = data.getData();
                     File file = new File(FileUtils.getFilePath(getContext(), uri));
@@ -331,24 +333,28 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     }
                 }
-                startActivityForResult(takePicture, PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE);
+                startActivityForResult(takePicture, CAPTURE_IMAGE_REQUEST_CODE);
             }
         }
     }
+
+
     @AfterPermissionGranted(PERMISSION_READ_EXTERNAL_CODE)
     public void openGallery() {
+        if(!isAdded()) return;
         if (Build.VERSION.SDK_INT >= 23) {
-            if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            Context context = getContext() == null ? getActivity() : getContext();
+            if (EasyPermissions.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, PhotoHelper.SELECT_FROM_GALLERY_CODE);
+                startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
             } else {
                 EasyPermissions.requestPermissions(this, Utils.getLanguageByResId(R.string.Request_Permission_Camera), PERMISSION_READ_EXTERNAL_CODE, Manifest.permission.READ_EXTERNAL_STORAGE);
             }
         } else {
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
-            startActivityForResult(photoPickerIntent, PhotoHelper.SELECT_FROM_GALLERY_CODE);
+            startActivityForResult(photoPickerIntent, SELECT_FROM_GALLERY_CODE);
         }
     }
 }

@@ -1,10 +1,7 @@
 package node.com.enjoydanang.ui.fragment.review;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
@@ -16,23 +13,18 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
@@ -41,17 +33,13 @@ import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.WriteReplyDialog;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
 import node.com.enjoydanang.utils.DialogUtils;
-import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Author: Tavv
@@ -97,17 +85,20 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     private LinearLayoutManager mLayoutManager;
 
     private List<Review> lstReviews;
+
     private List<List<Reply>> lstReply;
 
     private ProgressBar prgLoadingReply;
 
     private int rowIndexClick;
 
+    private Review currentReviewClick;
+
+    private boolean isRefreshAfterSubmit;
+
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
         Bundle bundle = new Bundle();
-        //TODO : Remove hardcode Id
-        partner.setId(91);
         bundle.putSerializable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
@@ -164,6 +155,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                 onRetryGetListReview(page);
             }
         });
+
         lrlContentReview.setOnTouchListener(this);
     }
 
@@ -239,6 +231,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onFetchReplyByReview(Repository<Reply> data) {
         prgLoadingReply.setVisibility(View.GONE);
+        if(CollectionUtils.isNotEmpty(lstReply.get(rowIndexClick))){
+            lstReply.get(rowIndexClick).clear();
+        }
         lstReply.get(rowIndexClick).addAll(data.getData());
         mAdapter.notifyItemRangeChanged(0, lstReply.size());
         mAdapter.notifyDataSetChanged();
@@ -259,6 +254,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onClick(ProgressBar prgLoadingReply, View view, final int position) {
         rowIndexClick = position;
+        currentReviewClick = lstReviews.get(position);
         this.prgLoadingReply = prgLoadingReply;
         prgLoadingReply.setVisibility(View.VISIBLE);
         mvpPresenter.fetchReplyByReviewId(lstReviews.get(position).getId(), START_PAGE);
@@ -272,6 +268,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> lstModel) {
+        position = position >= lstModel.size() ? 0 : position;
         DialogUtils.showDialogAlbum(mFragmentManager, lstModel, position);
     }
 
@@ -291,9 +288,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                             @Override
                             public void onDismiss(DialogInterface dialog, boolean isBack) {
                                 if (!isBack) {
-//                                    prgLoading.setVisibility(View.VISIBLE);
-//                                    lrlContentReview.setVisibility(View.GONE);
-//                                    mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                                    prgLoadingReply.setVisibility(View.VISIBLE);
+                                    lrlContentReview.setVisibility(View.GONE);
+                                    mvpPresenter.fetchReplyByReviewId(currentReviewClick.getId(), START_PAGE);
                                 }
                                 dialog.dismiss();
                             }

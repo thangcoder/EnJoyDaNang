@@ -91,7 +91,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         super.onViewCreated(view, savedInstanceState);
         mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail))));
         mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Review))));
-        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Schedule))));
+//        mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Schedule))));
         mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Album))));
         setEvents();
         //Creating our pager adapter

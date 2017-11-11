@@ -70,6 +70,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import node.com.enjoydanang.utils.widget.DividerItemDecoration;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -160,7 +161,11 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     private LinearLayoutManager replyLayoutManager;
 
+    private List<ImageData> imageChoose;
+
     private int partnerId;
+
+    private boolean isRefreshAfterSubmit;
 
     public void setOnBackListener(OnBackFragmentListener onBackListener) {
         this.onBackListener = onBackListener;
@@ -197,12 +202,16 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         showLoading(Utils.getLanguageByResId(R.string.Loading));
         mPhotoHelper = new PhotoHelper(this);
         lstReplies = new ArrayList<>();
+        imageChoose = new ArrayList<>();
         replyAdapter = new ReplyAdapter(lstReplies, this);
+        mPreviewAdapter = new ImagePreviewAdapter(imageChoose, getContext(), 120);
+        rcvImagePicked.setAdapter(mPreviewAdapter);
         initLabelView();
         initToolbar();
         replyLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvReplies.setLayoutManager(replyLayoutManager);
         rcvReplies.setHasFixedSize(false);
+        rcvReplies.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         rcvReplies.setAdapter(replyAdapter);
 
         initAdapter(rcvImagePicked, LinearLayoutManager.HORIZONTAL, true);
@@ -307,7 +316,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     private List<String> getListImageBase64(List<ImageData> images) {
         List<String> lstImageBase64 = new ArrayList<>();
         for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-            lstImageBase64.add(i, null);
+            lstImageBase64.add(i, StringUtils.EMPTY);
         }
         if (CollectionUtils.isNotEmpty(images)) {
             int count = -1;
@@ -316,7 +325,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                     count++;
                     File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                     String strConvert = ImageUtils.encodeTobase64(file);
-                    lstImageBase64.add(count, strConvert);
+                    lstImageBase64.set(count, strConvert);
                 }
             }
         }
@@ -338,8 +347,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
                 && null != data) {
             List<ImageData> images = mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT);
-            mPreviewAdapter = new ImagePreviewAdapter(images, getContext(), 120);
-            rcvImagePicked.setAdapter(mPreviewAdapter);
+            clearDataImagePreview(images);
         }
     }
 
@@ -357,12 +365,13 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                 long userId = GlobalApplication.getUserInfo().getUserId();
                 String userName = GlobalApplication.getUserInfo().getFullName();
                 String content = String.valueOf(edtWriteReply.getText());
+                String title = StringUtils.EMPTY;
                 if (StringUtils.isEmpty(content)) {
                     DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
                     return;
                 }
-                writeReply(reviewId, userId, partnerId,
-                        content, 0, userName, lstBase64.get(0), lstBase64.get(1), lstBase64.get(3));
+                writeReply(reviewId, userId, partnerId, title,
+                        content, 0, userName, lstBase64.get(0), lstBase64.get(1), lstBase64.get(2));
                 break;
         }
     }
@@ -406,10 +415,10 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
 
     void writeReply(final int reviewId, long customerId,
-                    int partnerId, String content, int start,
+                    int partnerId, String title, String content, int start,
                     String name, String image1, String image2, String image3) {
-        addSubscription(apiStores.writeReplyByReviewId(
-                reviewId, customerId, partnerId, start, content, name, image1, image2, image3), new ApiCallback<Repository>() {
+        addSubscription(apiStores.writeReplyByReviewId(reviewId, customerId, partnerId, start, title, name, content,
+                image1, image2, image3), new ApiCallback<Repository>() {
 
             @Override
             public void onSuccess(Repository model) {
@@ -421,7 +430,9 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                         Utils.getLanguageByResId(R.string.Review_Write_Reply_Success), new PromptDialog.OnPositiveListener() {
                             @Override
                             public void onClick(PromptDialog promptDialog) {
+                                isRefreshAfterSubmit = true;
                                 promptDialog.dismiss();
+                                clearData();
                                 fetchReplies(reviewId, START_PAGE);
                             }
                         });
@@ -499,8 +510,18 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     private void updateReplies(List<Reply> replies) {
         int oldSize = lstReplies.size();
-        int newSize = oldSize + replies.size();
-        lstReplies.addAll(replies);
+        int newSize = 0;
+        if(isRefreshAfterSubmit){
+            if(CollectionUtils.isNotEmpty(lstReplies)){
+                lstReplies.clear();
+                replyAdapter.notifyItemRangeRemoved(0, oldSize);
+            }
+            lstReplies.addAll(replies);
+            newSize = lstReplies.size();
+        }else{
+            newSize = oldSize + replies.size();
+            lstReplies.addAll(replies);
+        }
         replyAdapter.notifyItemRangeChanged(0, newSize);
         replyAdapter.notifyDataSetChanged();
         if (CollectionUtils.isEmpty(lstReplies)) {
@@ -519,6 +540,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                isRefreshAfterSubmit = false;
                 fetchReplies(review.getId(), page);
             }
         });
@@ -554,7 +576,24 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     @Override
     public void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> lstModel) {
+        position = position >= lstModel.size() ? 0 : position;
         DialogUtils.showDialogAlbum(getFragmentManager(), lstModel, position);
     }
 
+
+    private void clearData() {
+        clearDataImagePreview(new ArrayList<ImageData>());
+        Utils.clearForm(edtWriteReply);
+    }
+
+    private void clearDataImagePreview(List<ImageData> lstData){
+        int oldSize = imageChoose.size();
+        if (CollectionUtils.isNotEmpty(imageChoose)) {
+            imageChoose.clear();
+            mPreviewAdapter.notifyItemRangeRemoved(0, oldSize);
+        }
+        imageChoose.addAll(lstData);
+        mPreviewAdapter.notifyItemRangeChanged(0, imageChoose.size());
+        mPreviewAdapter.notifyDataSetChanged();
+    }
 }

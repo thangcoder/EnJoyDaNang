@@ -107,7 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingLeft="@dimen/_5sdp"
-        android:layout_weight=".2" />
+        android:layout_weight=".15" />
 
 
     <TextView
@@ -142,8 +142,8 @@
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imgAvtCurrent"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_weight=".15"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_weight=".13"
                 fresco:placeholderImage="@drawable/placeholder"
                 fresco:placeholderImageScaleType="centerCrop"
                 fresco:progressBarAutoRotateInterval="1000"
@@ -189,6 +189,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp"
             android:visibility="visible" />
 
     </LinearLayout>

@@ -11,10 +11,9 @@ public class Constant {
 
     public static final String URL_HOST = "http://enjoyindanang.com/API/";
     public static final String URL_HOST_IMAGE = "http://enjoyindanang.com";
+    public static final String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
 
     public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
-
-    public static final String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
 
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
@@ -24,7 +23,7 @@ public class Constant {
 
     public static final String DATE_FORMAT_DMY = "dd-MM-yyyy";
 
-    public static String REGEX_URL = "((http)[s]?(://).*)";
+    public static final String REGEX_URL = "((http)[s]?(://).*)";
 
     public static final String API_OK = "200";
     public static final String API_401 = "401";

@@ -233,7 +233,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {
                 for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-                    lstImageBase64.add(i, null);
+                    lstImageBase64.add(i, StringUtils.EMPTY);
                 }
                 if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
                     int count = -1;
@@ -242,7 +242,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                             count++;
                             File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                             String strConvert = ImageUtils.encodeTobase64(file);
-                            lstImageBase64.add(count, strConvert);
+                            lstImageBase64.set(count, strConvert);
                         }
                     }
                 }

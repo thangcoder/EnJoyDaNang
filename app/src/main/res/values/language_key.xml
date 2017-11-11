@@ -177,4 +177,5 @@
     <string name="Review.Write.Reply">Review.Write.Reply</string>
     <string name="Loading">Loading</string>
     <string name="Review.Write.Reply.Success">Review.Write.Reply.Success</string>
+    <string name="Message.Update.FullName">Message.Update.FullName</string>
 </resources>

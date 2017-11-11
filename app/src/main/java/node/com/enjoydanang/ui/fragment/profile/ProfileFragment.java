@@ -351,4 +351,5 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             startActivityForResult(photoPickerIntent, PhotoHelper.SELECT_FROM_GALLERY_CODE);
         }
     }
+
 }

@@ -93,7 +93,7 @@ public class UserInfo {
     }
 
     public String getFullName() {
-        return StringUtils.isNoneBlank(fullName) ? fullName : userName;
+        return StringUtils.isNoneBlank(fullName) ? fullName : StringUtils.EMPTY;
     }
 
     public void setFullName(String fullName) {

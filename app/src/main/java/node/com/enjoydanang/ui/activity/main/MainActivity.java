@@ -29,6 +29,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.change_password.ChangePwdFragment;
 import node.com.enjoydanang.ui.fragment.contact.ContactUsFragment;
@@ -61,7 +64,7 @@ import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
-        NavigationView.OnNavigationItemSelectedListener,OnUpdateProfileSuccess {
+        NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -172,6 +175,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     protected void onResume() {
         super.onResume();
+        validAndUpdateFullName();
     }
 
     @Override
@@ -214,20 +218,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             @Override
             public void onBackStackChanged() {
                 Fragment fragment = getActiveFragment();
-                if(fragment!= null){
+                if (fragment != null) {
                     String tag = fragment.getTag();
-                    if (tag.equals(HomeFragment.class.getName())){
-                            currentTab = HomeTab.Home;
+                    if (tag.equals(HomeFragment.class.getName())) {
+                        currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
-                    }else if(tag.equals(SearchFragment.class.getName())){
+                    } else if (tag.equals(SearchFragment.class.getName())) {
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
-                    }else if(tag.equals(ProfileMenuFragment.class.getName())){
+                    } else if (tag.equals(ProfileMenuFragment.class.getName())) {
                         currentTab = HomeTab.Profile;
                         lvDrawerNav.clearChoices();
-                    }else{
+                    } else {
                         currentTab = HomeTab.None;
-                        if (tag.equals(ProfileFragment.class.getName())){
+                        if (tag.equals(ProfileFragment.class.getName())) {
                             lvDrawerNav.setSelection(7);
                         }
                     }
@@ -235,7 +239,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     lvDrawerNav.requestLayout();
                 }
 
-                Log.d(TAG, "onBackStackChanged: "+getActiveFragment().getTag());
+                Log.d(TAG, "onBackStackChanged: " + getActiveFragment().getTag());
             }
         });
     }
@@ -249,7 +253,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
 
 
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -343,7 +347,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 }
                 break;
             case R.id.ll_profile:
-                if (currentTab != HomeTab.Profile ) {
+                if (currentTab != HomeTab.Profile) {
                     if (Utils.hasLogin()) {
                         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
                         if (fragment == null) {
@@ -539,6 +543,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
 
     }
+
     private void replaceFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         lvDrawerNav.setItemChecked(position, true);
@@ -654,6 +659,23 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 }
 
                 break;
+        }
+    }
+
+    private void validAndUpdateFullName() {
+        if (Utils.hasLogin()) {
+            UserInfo userInfo = GlobalApplication.getUserInfo();
+            if (StringUtils.isEmpty(userInfo.getFullName())) {
+                DialogUtils.showDialog(this, DialogType.INFO, DialogUtils.getTitleDialog(2),
+                        Utils.getLanguageByResId(R.string.Message_Update_FullName),
+                        new PromptDialog.OnPositiveListener() {
+                            @Override
+                            public void onClick(PromptDialog promptDialog) {
+                                promptDialog.dismiss();
+                                addFr(ProfileFragment.class.getName(), CHANGE_PROFILE);
+                            }
+                        });
+            }
         }
     }
 }

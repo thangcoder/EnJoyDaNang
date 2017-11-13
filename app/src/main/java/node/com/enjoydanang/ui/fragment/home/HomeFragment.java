@@ -328,6 +328,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        loadmorePartner = new LoadmorePartner(mLayoutManager);
+        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
         countCategoryClick++;
         lstPartner.clear();
         Category category = (Category) parent.getItemAtPosition(position);

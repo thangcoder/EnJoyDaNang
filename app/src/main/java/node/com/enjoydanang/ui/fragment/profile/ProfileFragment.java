@@ -16,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,6 +53,11 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 import static node.com.enjoydanang.utils.helper.PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE;
@@ -180,12 +186,13 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnUpdate:
-                if (!TextUtils.isEmpty(base64Image)) {
-                    mvpPresenter.updateProfile(userInfo.getUserId(),
-                            String.valueOf(edtFullname.getText()),
-                            String.valueOf(edtPhone.getText()),
-                            String.valueOf(edtEmail.getText()),
-                            base64Image);
+                if (StringUtils.isNotBlank(edtFullname.getText())) {
+                    showLoading();
+                    setValueAvatar();
+                } else {
+                    DialogUtils.showDialog(getContext(), DialogType.WARNING,
+                            DialogUtils.getTitleDialog(2),
+                            Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
                 }
                 break;
             case R.id.txtTakeAPhoto:
@@ -195,6 +202,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 openGallery();
                 break;
         }
+
     }
 
     @AfterPermissionGranted(PERMISSION_CAMERA)
@@ -293,7 +301,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    public MainActivity getParentActivity(){
+    public MainActivity getParentActivity() {
         return mMainActivity;
     }
 
@@ -341,7 +349,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @AfterPermissionGranted(PERMISSION_READ_EXTERNAL_CODE)
     public void openGallery() {
-        if(!isAdded()) return;
+        if (!isAdded()) return;
         if (Build.VERSION.SDK_INT >= 23) {
             Context context = getContext() == null ? getActivity() : getContext();
             if (EasyPermissions.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -358,4 +366,44 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         }
     }
 
+    private void setValueAvatar() {
+        if (StringUtils.isBlank(base64Image) && StringUtils.isNoneBlank(userInfo.getImage())) {
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
+                    subscriber.onCompleted();
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "onError: " + e.getMessage());
+                        }
+
+                        @Override
+                        public void onNext(String base64) {
+                            base64Image = base64;
+                            base64Image = StringUtils.isBlank(base64Image) ? StringUtils.EMPTY : base64Image;
+                            mvpPresenter.updateProfile(userInfo.getUserId(),
+                                    String.valueOf(edtFullname.getText()),
+                                    String.valueOf(edtPhone.getText()),
+                                    String.valueOf(edtEmail.getText()),
+                                    base64Image);
+                        }
+                    });
+
+
+        }
+    }
+
+    public boolean isEmptyFullName() {
+        return StringUtils.isEmpty(edtFullname.getText());
+    }
 }

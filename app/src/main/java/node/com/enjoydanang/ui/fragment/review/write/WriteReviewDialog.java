@@ -219,6 +219,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
 
     private void submitWriteReview() {
+        showSending();
         String name = String.valueOf(edtName.getText());
         String title = String.valueOf(edtTitle.getText());
         String content = String.valueOf(edtAriaContent.getText());
@@ -228,7 +229,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             return;
         }
         if (partner != null) {
-            showSending();
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {
@@ -262,7 +262,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                             DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
                                 @Override
                                 public void onClick(PromptDialog promptDialog) {
-                                    hideSending();
                                     promptDialog.dismiss();
                                     dismiss();
                                 }
@@ -277,6 +276,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
                         @Override
                         public void onFinish() {
+                            hideSending();
                         }
                     }));
         }

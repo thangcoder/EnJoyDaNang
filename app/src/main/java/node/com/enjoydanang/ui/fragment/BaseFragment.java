@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.ui.activity.BaseActivity;
+import node.com.enjoydanang.utils.Utils;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -159,7 +160,21 @@ public abstract class BaseFragment extends Fragment {
         } else {
             progressDialog = new ProgressDialog(mMainActivity);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setMessage(Utils.getLanguageByResId(R.string.Loading));
+            progressDialog.show();
+        }
+    }
+
+    public void showProgressDialog(String title) {
+        if (progressDialog != null) {
+            if (!progressDialog.isShowing()) {
+                progressDialog.setMessage(title);
+                progressDialog.show();
+            }
+        } else {
+            progressDialog = new ProgressDialog(mMainActivity);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(title);
             progressDialog.show();
         }
     }

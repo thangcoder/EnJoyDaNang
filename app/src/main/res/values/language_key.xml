@@ -179,4 +179,6 @@
     <string name="Review.Write.Reply.Success">Review.Write.Reply.Success</string>
     <string name="Message.Update.FullName">Message.Update.FullName</string>
     <string name="Review.Write.Reply.Readmore">Review.Write.Reply.Readmore</string>
+    <string name="Home.Account.Fullname.NotEmpty">Home.Account.Fullname.NotEmpty</string>
+    <string name="Message.Updating">Message.Updating</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import node.com.enjoydanang.ui.fragment.BaseFragment;
+import node.com.enjoydanang.utils.Utils;
 
 
 /**
@@ -32,7 +33,7 @@ public abstract class MvpFragment<P extends BasePresenter> extends BaseFragment 
         }
     }
     public void showLoading() {
-        showProgressDialog();
+        showProgressDialog(Utils.getLanguageByResId(R.string.Message_Updating));
     }
 
     public void hideLoading() {

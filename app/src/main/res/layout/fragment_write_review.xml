@@ -42,6 +42,7 @@
             android:background="@drawable/border_edittext_normal"
             android:inputType="text"
             android:maxLines="1"
+            android:enabled="false"
             android:padding="8dp"
             android:textColor="@color/secondary_text"
             android:textCursorDrawable="@null" />

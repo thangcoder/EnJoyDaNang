@@ -107,7 +107,7 @@ public class LanguageHelper {
         if (js != null) {
             try {
                 return new String[]{js.getString(AppLanguage.Key.Information), js.getString(AppLanguage.Key.Introduction), js.getString(AppLanguage.Key.Contact_Us),
-                        js.getString(AppLanguage.Key.Persional), js.getString(AppLanguage.Key.Home_Account_Logout)};
+                        js.getString(AppLanguage.Key.Persional), js.getString(AppLanguage.Key.Home_Account_Login)};
             } catch (JSONException e) {
                 e.printStackTrace();
             }

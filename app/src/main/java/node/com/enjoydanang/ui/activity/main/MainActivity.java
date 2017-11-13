@@ -63,6 +63,8 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
+import static android.R.attr.fragment;
+
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -112,8 +114,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private DrawerLayout mDrawerLayout;
 
-    private String[] navMenuTitles;
-
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -126,7 +126,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void init() {
         initToolbar(toolbar);
         setToolbar(toolbar);
-        navMenuTitles = getResources().getStringArray(R.array.item_menu);
+        String[] navMenuTitles = getResources().getStringArray(R.array.item_menu);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -254,9 +254,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-
-
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                Fragment fragment = getTopFragment();
+                if(fragment instanceof ProfileFragment){
+                    if(!isUpdatedFullName(fragment)){
+                        DialogUtils.showDialog(fragment.getContext(), DialogType.WARNING,
+                                DialogUtils.getTitleDialog(2),
+                                Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
+                        return;
+                    }
+                }
                 getSupportFragmentManager().popBackStack();
             } else {
                 if (Utils.hasLogin()) {
@@ -424,49 +431,56 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (Utils.hasLogin()) {
-            switch (position) {
-                case 0:
-                    break;
-                case INTRODUCTION:
-                    addFr(IntroductionFragment.class.getName(), position);
-                    break;
-                case CONTACT_US:
-                    addFr(ContactUsFragment.class.getName(), position);
-                    break;
-                case FAVORITE:
-                    addFr(FavoriteFragment.class.getName(), position);
-                    break;
-                case LOG_CHECKIN:
-                    addFr(CheckinHistoryFragment.class.getName(), position);
-                    break;
-                case 5:
-                    break;
-                case CHANGE_PROFILE:
-                    addFr(ProfileFragment.class.getName(), position);
-                    break;
-                case CHANGE_PASSWORD:
-                    addFr(ChangePwdFragment.class.getName(), position);
-                    break;
-                case LOGOUT:
-                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
-                            new ColorDialog.OnPositiveListener() {
-                                @Override
-                                public void onClick(ColorDialog colorDialog) {
-                                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                                    GlobalApplication.setUserInfo(null);
-                                    finish();
-                                    overridePendingTransitionExit();
-                                }
-                            }, new ColorDialog.OnNegativeListener() {
-                                @Override
-                                public void onClick(ColorDialog colorDialog) {
-                                    colorDialog.dismiss();
-                                }
-                            });
-                    break;
+            if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
+                switch (position) {
+                    case 0:
+                        break;
+                    case INTRODUCTION:
+                        addFr(IntroductionFragment.class.getName(), position);
+                        break;
+                    case CONTACT_US:
+                        addFr(ContactUsFragment.class.getName(), position);
+                        break;
+                    case FAVORITE:
+                        addFr(FavoriteFragment.class.getName(), position);
+                        break;
+                    case LOG_CHECKIN:
+                        addFr(CheckinHistoryFragment.class.getName(), position);
+                        break;
+                    case 5:
+                        break;
+                    case CHANGE_PROFILE:
+                        addFr(ProfileFragment.class.getName(), position);
+                        break;
+                    case CHANGE_PASSWORD:
+                        addFr(ChangePwdFragment.class.getName(), position);
+                        break;
+                    case LOGOUT:
+                        DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
+                                Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
+                                Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                                Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                                new ColorDialog.OnPositiveListener() {
+                                    @Override
+                                    public void onClick(ColorDialog colorDialog) {
+                                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                                        GlobalApplication.setUserInfo(null);
+                                        finish();
+                                        overridePendingTransitionExit();
+                                    }
+                                }, new ColorDialog.OnNegativeListener() {
+                                    @Override
+                                    public void onClick(ColorDialog colorDialog) {
+                                        colorDialog.dismiss();
+                                    }
+                                });
+                        break;
+                }
+            } else {
+                lvDrawerNav.setItemChecked(CHANGE_PROFILE, true);
+                DialogUtils.showDialog(this, DialogType.WARNING,
+                        DialogUtils.getTitleDialog(2),
+                        Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
             }
         } else {
             switch (position) {
@@ -677,5 +691,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         });
             }
         }
+    }
+
+    private boolean isUpdatedFullName(Fragment fragment) {
+        return StringUtils.isNotEmpty(GlobalApplication.getUserInfo().getFullName())
+                && !((ProfileFragment) fragment).isEmptyFullName();
     }
 }

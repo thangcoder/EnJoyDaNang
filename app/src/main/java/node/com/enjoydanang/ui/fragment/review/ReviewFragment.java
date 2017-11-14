@@ -180,7 +180,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                         dialog.dismiss();
                     }
                 });
-                dialog.show(mFragmentManager, TAG);
+                DialogUtils.openDialogFragment(mFragmentManager, dialog);
             }
         } else {
             DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
@@ -295,7 +295,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                                 dialog.dismiss();
                             }
                         });
-                        dialog.show(mFragmentManager, TAG);
+                        DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }
                 } else {
                     DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));

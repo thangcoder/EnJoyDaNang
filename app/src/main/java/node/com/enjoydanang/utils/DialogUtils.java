@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
@@ -177,6 +179,13 @@ public class DialogUtils {
             SlideshowDialogFragment newFragment = SlideshowDialogFragment.newInstance();
             newFragment.setArguments(bundle);
             newFragment.show(mFragmentManager, "slideshow");
+        }
+    }
+
+    public static void openDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment){
+        Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
+        if (prev == null) {
+            dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
         }
     }
 }

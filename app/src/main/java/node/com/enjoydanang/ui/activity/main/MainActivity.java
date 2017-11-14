@@ -237,7 +237,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     lvDrawerNav.requestLayout();
                 }
 
-                Log.d(TAG, "onBackStackChanged: " + getActiveFragment().getTag());
             }
         });
     }
@@ -327,15 +326,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    @OnClick({R.id.ll_home, R.id.ll_profile, R.id.img_search})
+    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ll_home:
+            case R.id.img_home:
                 if (currentTab != HomeTab.Home) {
                     Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
                     if (fragment == null) {
                         addFrMenu(HomeFragment.class.getName(), true);
                     } else {
+//                        fragment.onResume();
                         backToFragment(fragment);
                     }
 
@@ -348,11 +348,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         addFrMenu(SearchFragment.class.getName(), true);
                     } else {
                         currentTab = HomeTab.Search;
-                        resurfaceFragment(SearchFragment.class.getName());
+                        resurfaceFragment(fragment,SearchFragment.class.getName());
                     }
                 }
                 break;
-            case R.id.ll_profile:
+            case R.id.img_profile:
                 if (currentTab != HomeTab.Profile) {
                     if (Utils.hasLogin()) {
                         Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
@@ -360,7 +360,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                             addFrMenu(ProfileMenuFragment.class.getName(), true);
                         } else {
                             currentTab = HomeTab.Profile;
-                            resurfaceFragment(ProfileMenuFragment.class.getName());
+                            resurfaceFragment(fragment,ProfileMenuFragment.class.getName());
                         }
                     } else {
                         DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
@@ -583,25 +583,34 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
     }
 
-    public boolean resurfaceFragment(String tag) {
+    public void resurfaceFragment(Fragment fragment,String tag) {
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(tag);
-        FragmentTransaction transaction = manager.beginTransaction();
-        if (fragment != null) {
-            for (int i = 0; i < manager.getFragments().size(); i++) {
-                Fragment f = manager.getFragments().get(i);
-                transaction.hide(f);
-            }
-            transaction.show(fragment).commit();
-            setStateTabSelected();
-            return true;
-        }
-        return false;
+        FragmentTransaction trans = manager.beginTransaction();
+        trans.remove(fragment);
+        trans.commit();
+        manager.popBackStack();
+        addFrMenu(tag, true);
+
+//        FragmentTransaction transaction = manager.beginTransaction();
+//        if (fragment != null) {
+//            for (int i = 0; i < manager.getFragments().size(); i++) {
+//                Fragment f = manager.getFragments().get(i);
+//                transaction.hide(f);
+//            }
+//            transaction.show(fragment).commit();
+//            setStateTabSelected();
+//            return true;
+//        }
+//        return false;
     }
 
     public void backToFragment(final Fragment fragment) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
         getSupportFragmentManager().popBackStack(
                 fragment.getClass().getName(), 0);
+        transaction.show(fragment).commit();
+
     }
 
     public Fragment getActiveFragment() {

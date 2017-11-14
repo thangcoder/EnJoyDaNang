@@ -39,6 +39,7 @@ import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import node.com.enjoydanang.utils.helper.StatusBarCompat;
@@ -52,7 +53,8 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
  * Version : 1.0
  */
 
-public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener {
+public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener,
+        ForceUpdateChecker.OnUpdateNeededListener{
     private static final String TAG = LoginActivity.class.getSimpleName();
 
 //    @BindView(R.id.toolbar)
@@ -103,7 +105,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void init() {
-//        setTitle(Utils.getString(R.string.Login_Screen_Title));
         LoginFactory loginFactory = new LoginFactory();
         loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this, this);
         loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this, this);
@@ -113,7 +114,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaFacebook.init();
         loginViaGoogle.init();
         setPresenter();
-//        initToolbar(toolbar);
     }
 
     @Override
@@ -251,6 +251,13 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        new AppUpdateConfiguration().configFirebaseUpdate();
+//        ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
+    }
+
+    @Override
     protected void redirectMain() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -307,5 +314,17 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             SoftKeyboardManager.hideSoftKeyboard(this, v.getWindowToken(), 0);
         }
         return true;
+    }
+
+    @Override
+    public void onUpdateNeeded(final String updateUrl) {
+        DialogUtils.showDialog(LoginActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Message_Warning_Version_Title),
+                Utils.getLanguageByResId(R.string.Message_Confirm_Update_Title), new PromptDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(PromptDialog promptDialog) {
+                        promptDialog.dismiss();
+                        Utils.redirectStore(LoginActivity.this, updateUrl);
+                    }
+                });
     }
 }

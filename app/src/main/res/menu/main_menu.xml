@@ -17,7 +17,6 @@
 
     <item
         android:id="@+id/menu_edit"
-        android:visible="false"
         android:orderInCategory="300"
         android:title="@string/action_edit"
         app:showAsAction="ifRoom" />

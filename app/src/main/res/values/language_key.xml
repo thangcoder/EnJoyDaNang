@@ -181,4 +181,6 @@
     <string name="Review.Write.Reply.Readmore">Review.Write.Reply.Readmore</string>
     <string name="Home.Account.Fullname.NotEmpty">Home.Account.Fullname.NotEmpty</string>
     <string name="Message.Updating">Message.Updating</string>
+    <string name="Message.Confirm.Update.Title">Message.Confirm.Update.Title</string>
+    <string name="Message.Warning.Version.Title">Message.Warning.Version.Title</string>
 </resources>

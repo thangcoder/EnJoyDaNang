@@ -63,8 +63,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
-import static android.R.attr.fragment;
-
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -349,6 +347,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     if (fragment == null) {
                         addFrMenu(SearchFragment.class.getName(), true);
                     } else {
+                        currentTab = HomeTab.Search;
                         resurfaceFragment(SearchFragment.class.getName());
                     }
                 }
@@ -360,6 +359,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         if (fragment == null) {
                             addFrMenu(ProfileMenuFragment.class.getName(), true);
                         } else {
+                            currentTab = HomeTab.Profile;
                             resurfaceFragment(ProfileMenuFragment.class.getName());
                         }
                     } else {
@@ -591,12 +591,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             for (int i = 0; i < manager.getFragments().size(); i++) {
                 Fragment f = manager.getFragments().get(i);
                 transaction.hide(f);
-
             }
             transaction.show(fragment).commit();
+            setStateTabSelected();
             return true;
         }
-
         return false;
     }
 

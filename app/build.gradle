@@ -8,9 +8,10 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 7
-        versionName "1.0.0"
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled  true
+        buildConfigField "String", "urlStore", "\"https://play.google.com/store/apps/details?id=node.com.enjoydanang\""
     }
 
     buildTypes {
@@ -107,6 +108,7 @@ dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
 
     compile 'com.github.aakira:expandable-layout:1.6.0@aar'
+    compile 'com.google.firebase:firebase-config:11.4.0'
 
 }
 

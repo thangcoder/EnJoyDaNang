@@ -1,7 +1,6 @@
 package node.com.enjoydanang;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -22,11 +21,9 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import node.com.enjoydanang.constant.Role;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.kakao.util.helper.Utility.getPackageInfo;
 
 /**

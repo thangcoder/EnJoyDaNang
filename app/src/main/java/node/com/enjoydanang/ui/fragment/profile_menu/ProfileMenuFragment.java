@@ -55,6 +55,16 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
     SimpleDraweeView imgAvatar;
 
     private UserInfo userInfo;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        editItem.setVisible(true);
+        scanItem.setVisible(false);
+    }
+
     @Override
     protected void init(View view) {
         setHasOptionsMenu(true);
@@ -91,15 +101,6 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
     @Override
     protected ProfileMenuPresenter createPresenter() {
         return new ProfileMenuPresenter(this);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(true);
-        scanItem.setVisible(false);
     }
 
     @Override
@@ -140,4 +141,5 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
         super.initViewLabel(view);
         LanguageHelper.getValueByViewId(lblUserName, lblPhone, lblEmail, lblMethodLogin, lblLogCheckin);
     }
+
 }

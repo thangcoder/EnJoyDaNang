@@ -137,29 +137,45 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
-        mLocationHelper.checkPlayServices();
+        if(mMapView != null){
+            mMapView.onResume();
+            mLocationHelper.checkPlayServices();
+        }
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if(mMapView != null){
+            mMapView.onPause();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mMapView.onStop();
+        if(mMapView != null){
+            mMapView.onStop();
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+        if(mMapView != null){
+            mMapView.onLowMemory();
+            mGoogleMap.clear();
+        }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mGoogleMap != null){
+            mGoogleMap.clear();
+        }
+    }
 
     @Override
     protected void setEvent(View view) {

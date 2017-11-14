@@ -219,7 +219,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
 
     private void submitWriteReview() {
-        showSending();
         String name = String.valueOf(edtName.getText());
         String title = String.valueOf(edtTitle.getText());
         String content = String.valueOf(edtAriaContent.getText());
@@ -229,6 +228,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             return;
         }
         if (partner != null) {
+            showSending();
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {

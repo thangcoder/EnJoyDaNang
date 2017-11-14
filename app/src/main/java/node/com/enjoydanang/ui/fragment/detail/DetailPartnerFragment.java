@@ -386,7 +386,9 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     public void onLowMemory() {
         super.onLowMemory();
         if(mMapView != null){
+            mGoogleMap.clear();
             mMapView.onLowMemory();
+            System.gc();
         }
     }
 
@@ -397,6 +399,10 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mWebView.destroy();
             mWebView = null;
         }
+        if(mGoogleMap != null){
+            mGoogleMap.clear();
+        }
+        mMapView = null;
         super.onDestroy();
     }
 
@@ -415,8 +421,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 LatLng currentPoint = getCurrentLocation();
                 if (currentPoint != null) {
                     startIntentMapsView(partnerPoint, currentPoint);
-//                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
-//                    locationHelper.downloadAndParse(url);
                 }
                 return true;
             }
@@ -430,8 +434,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 LatLng currentPoint = getCurrentLocation();
                 if (currentPoint != null) {
                     startIntentMapsView(partnerPoint, currentPoint);
-//                    String url = locationHelper.getDirectionsUrl(currentPoint, partnerPoint);
-//                    locationHelper.downloadAndParse(url);
                 }
             }
         });

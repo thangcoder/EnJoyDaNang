@@ -7,8 +7,6 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.Utils;
 
-import static com.kakao.auth.StringSet.msg;
-
 /**
  * Author: Tavv
  * Created on 27/10/2017
@@ -39,7 +37,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView>{
 
             @Override
             public void onFinish() {
-                mvpView.hideLoading();
             }
         });
     }

@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -168,6 +167,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     public void onUpdateSuccess(UserInfo userInfo) {
+        hideLoading();
         if (userInfo != null) {
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
@@ -179,6 +179,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     public void onUpdateFailure(AppError error) {
+        hideLoading();
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
@@ -389,8 +390,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
                         @Override
                         public void onNext(String base64) {
-                            base64Image = base64;
-                            base64Image = StringUtils.isBlank(base64Image) ? StringUtils.EMPTY : base64Image;
+                            base64Image = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
                             mvpPresenter.updateProfile(userInfo.getUserId(),
                                     String.valueOf(edtFullname.getText()),
                                     String.valueOf(edtPhone.getText()),

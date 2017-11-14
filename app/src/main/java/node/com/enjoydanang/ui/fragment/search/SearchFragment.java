@@ -12,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -101,9 +103,18 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     protected SearchPresenter createPresenter() {
         return new SearchPresenter(this);
     }
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem editItem = menu.findItem(R.id.menu_edit);
+        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+        editItem.setVisible(false);
+        scanItem.setVisible(false);
+        setHasOptionsMenu(true);
+    }
     @Override
     protected void init(View view) {
+        setHasOptionsMenu(true);
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Home_Search));
         showLoading();
         try {

@@ -63,6 +63,7 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
         MenuItem scanItem = menu.findItem(R.id.menu_scan);
         editItem.setVisible(true);
         scanItem.setVisible(false);
+        setHasOptionsMenu(true);
     }
 
     @Override

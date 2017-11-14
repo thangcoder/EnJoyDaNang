@@ -274,6 +274,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "HomeFragment onResume: ");
 
     }
 

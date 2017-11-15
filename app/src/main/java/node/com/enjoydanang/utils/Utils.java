@@ -1,6 +1,8 @@
 package node.com.enjoydanang.utils;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,11 +25,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
@@ -273,5 +275,22 @@ public class Utils {
         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(intent);
+    }
+
+    public static void restartApp() {
+        Intent i = GlobalApplication.getGlobalApplicationContext().getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(GlobalApplication.getGlobalApplicationContext().getBaseContext().getPackageName());
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        GlobalApplication.getGlobalApplicationContext().startActivity(i);
+    }
+
+    public static void backToSplashScreen() {
+        Intent mStartActivity = new Intent(GlobalApplication.getGlobalApplicationContext(), ScreenSplashActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(GlobalApplication.getGlobalApplicationContext(), mPendingIntentId, mStartActivity,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) GlobalApplication.getGlobalApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 }

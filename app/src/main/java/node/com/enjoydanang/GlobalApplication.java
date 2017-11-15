@@ -2,13 +2,9 @@ package node.com.enjoydanang;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Base64;
-import android.util.Log;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
@@ -18,24 +14,23 @@ import com.kakao.auth.KakaoSDK;
 
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
-
-import static com.kakao.util.helper.Utility.getPackageInfo;
+import node.com.enjoydanang.utils.helper.DomainHelper;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Created by chien on 10/8/17.
  */
 
-public class GlobalApplication extends MultiDexApplication {
+public class GlobalApplication extends MultiDexApplication{
     private static final String TAG = GlobalApplication.class.getSimpleName();
     private static volatile GlobalApplication sInstance = null;
     private static volatile Activity currentActivity = null;
     public JSONObject jsLanguage;
     private static UserInfo userInfo;
+    private String strLanguage;
+    private boolean hasChangeLanguage;
 
     @Override
     public void onCreate() {
@@ -47,6 +42,7 @@ public class GlobalApplication extends MultiDexApplication {
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
+//        checkLanguage();
     }
     @Override
     protected void attachBaseContext(Context base) {
@@ -81,23 +77,6 @@ public class GlobalApplication extends MultiDexApplication {
         sInstance = null;
     }
 
-    public static String getKeyHash(final Context context) {
-        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
-        if (packageInfo == null)
-            return null;
-
-        for (Signature signature : packageInfo.signatures) {
-            try {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
-            } catch (NoSuchAlgorithmException e) {
-                Log.w(TAG, "Unable to get MessageDigest. signature=" + signature, e);
-            }
-        }
-        return null;
-    }
-
     public JSONObject getJsLanguage() {
         return jsLanguage;
     }
@@ -113,4 +92,22 @@ public class GlobalApplication extends MultiDexApplication {
     public static void setUserInfo(UserInfo userInfo) {
         GlobalApplication.userInfo = userInfo;
     }
+
+    private void checkLanguage(){
+        // TODO: New feature multiple languages
+        strLanguage = LanguageHelper.getSystemLanguage();
+        if(strLanguage.equalsIgnoreCase("vi")){
+            new DomainHelper(DomainHelper.DomainType.VN);
+        }else{
+            new DomainHelper(DomainHelper.DomainType.KR);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+//        String newLanguage = LanguageHelper.getSystemLanguage(newConfig);
+//        hasChangeLanguage = !strLanguage.equalsIgnoreCase(newLanguage);
+    }
+
 }

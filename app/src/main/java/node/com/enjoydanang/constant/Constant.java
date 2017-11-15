@@ -9,9 +9,9 @@ import node.com.enjoydanang.R;
 
 public class Constant {
 
-    public static final String URL_HOST = "http://enjoyindanang.com/API/";
-    public static final String URL_HOST_IMAGE = "http://enjoyindanang.com";
-    public static final String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
+    public static String URL_HOST = "http://enjoyindanang.com/API/";
+    public static String URL_HOST_IMAGE = "http://enjoyindanang.com";
+    public static String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
 
     public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
 
@@ -59,8 +59,8 @@ public class Constant {
 
     public static final Integer[] INDEX_HEADER_NO_LOGIN = new Integer[]{0, 3};
 
-    public static final String FROM_DATE  = "FromDate";
-    public static final String TO_DATE  = "ToDate";
+    public static final String FROM_DATE = "FromDate";
+    public static final String TO_DATE = "ToDate";
 
     public static final int MAX_SIZE_GALLERY_SELECT = 3;
 

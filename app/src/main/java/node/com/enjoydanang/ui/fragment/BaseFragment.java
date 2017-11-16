@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.ui.activity.BaseActivity;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.Utils;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -26,7 +27,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public abstract class BaseFragment extends Fragment {
 
-    protected Activity mMainActivity;
+    protected MainActivity mMainActivity;
     protected FragmentManager mFragmentManager;
     protected FragmentTransaction mTransaction;
     protected BaseActivity mBaseActivity;
@@ -34,7 +35,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainActivity = getActivity();
+        mMainActivity = (MainActivity) getActivity();
         mFragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionMenu();
     }

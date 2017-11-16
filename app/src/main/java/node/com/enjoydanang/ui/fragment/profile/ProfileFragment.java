@@ -122,10 +122,6 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(false);
-        scanItem.setVisible(false);
 
     }
 
@@ -220,7 +216,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBaseActivity.getToolbar().setTitle(Utils.getString(R.string.Update_Profile_Screen_Title).toUpperCase());
+        mMainActivity.setNameToolbar(Utils.getString(R.string.Update_Profile_Screen_Title).toUpperCase());
     }
 
     @Override

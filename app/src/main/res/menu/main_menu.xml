@@ -12,12 +12,11 @@
         android:id="@+id/menu_scan"
         android:orderInCategory="200"
         android:title="@string/action_scan"
-        android:icon="@drawable/ic_scan_qr"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/menu_edit"
-        android:orderInCategory="300"
+        android:orderInCategory="200"
         android:title="@string/action_edit"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

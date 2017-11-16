@@ -16,6 +16,7 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -25,7 +26,6 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  */
 
 public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> implements iProfileMenuView {
-
 
     @BindView(R.id.tv_username)
     TextView tvUserName;
@@ -59,16 +59,19 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(true);
-        scanItem.setVisible(false);
-        setHasOptionsMenu(true);
-    }
 
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+//        MenuItem editItem = menu.findItem(R.id.menu_edit);
+//        MenuItem scanItem = menu.findItem(R.id.menu_scan);
+//        editItem.setVisible(false);
+//        editItem.setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
     @Override
     protected void init(View view) {
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         userInfo = Utils.getUserInfo();
         if (userInfo!= null){initData();};
     }
@@ -90,7 +93,7 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
 
     @Override
     public void onResume() {
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
+        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
         super.onResume();
     }
 

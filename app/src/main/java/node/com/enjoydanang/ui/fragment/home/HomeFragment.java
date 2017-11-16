@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Weather;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
@@ -119,16 +121,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private UserInfo user;
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(false);
-        scanItem.setVisible(true);
-
-    }
-
-    @Override
     public void showToast(String desc) {
 
     }
@@ -138,16 +130,16 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
 
+        super.onPrepareOptionsMenu(menu);
+    }
     @Override
     protected void init(View view) {
-        setHasOptionsMenu(true);
         user = Utils.getUserInfo();
-        /**
-         * Init Data
-         */
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home).toUpperCase());
-        mBaseActivity.setSupportActionBar(mBaseActivity.getToolbar());
+        MainActivity activity = (MainActivity) mMainActivity;
+        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home).toUpperCase());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -392,6 +384,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             }
 
         } else {
+            MainActivity activity = (MainActivity) getActivity();
+            activity.currentTab = HomeTab.None;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

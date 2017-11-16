@@ -111,7 +111,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
-        mBaseActivity.getToolbar().setTitle(Utils.getLanguageByResId(R.string.Favorite).toUpperCase());
+        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Favorite).toUpperCase());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvFavorite.setLayoutManager(layoutManager);

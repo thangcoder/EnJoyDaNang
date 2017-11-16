@@ -106,15 +106,10 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(false);
-        scanItem.setVisible(false);
-        setHasOptionsMenu(true);
+
     }
     @Override
     protected void init(View view) {
-        setHasOptionsMenu(true);
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Home_Search));
         showLoading();
         try {

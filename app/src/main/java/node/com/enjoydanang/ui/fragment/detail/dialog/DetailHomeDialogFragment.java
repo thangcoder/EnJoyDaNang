@@ -14,6 +14,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import android.widget.RelativeLayout;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -85,6 +88,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         return dialog;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -104,7 +111,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
             mViewPager.setOffscreenPageLimit(limit);
         }
     }
-
     @Override
     public void onStart() {
         super.onStart();

@@ -1,8 +1,12 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.BindView;
@@ -52,6 +56,13 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     public void onTabReselected(TabLayout.Tab tab) {
 
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
 
     @Override
     protected DetailHomePresenter createPresenter() {

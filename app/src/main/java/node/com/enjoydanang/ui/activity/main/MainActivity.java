@@ -68,7 +68,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQUEST_CODE = 200;
-
+    private Menu mMenu;
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
     private final int FAVORITE = 3;
@@ -81,6 +81,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private final String IS_OPEN = "IS_OPEN";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.name)
+    TextView toolbarName;
+    @BindView(R.id.edit_profile)
+    TextView tvProfile;
+    @BindView(R.id.img_scan)
+    ImageView imgScan;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
     @BindView(R.id.left_drawer)
@@ -100,6 +107,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.lv_drawer_nav)
     ListView lvDrawerNav;
 
+
+
     //    private CircleImageView imgAvatarUser;
     @BindView(R.id.imgAvatarUser)
     SimpleDraweeView imgAvatarUser;
@@ -108,7 +117,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private TextView txtEmail;
 
-    private HomeTab currentTab;
+    public HomeTab currentTab;
 
     private DrawerLayout mDrawerLayout;
 
@@ -122,8 +131,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void init() {
-        initToolbar(toolbar);
-        setToolbar(toolbar);
+
         String[] navMenuTitles = getResources().getStringArray(R.array.item_menu);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -140,7 +148,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         mNavigationView.setNavigationItemSelectedListener(this);
         currentTab = HomeTab.getCurrentTab(0);
         setStateTabSelected();
-
+        setShowMenuItem(3);
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         if (!checkPermission()) {
             requestPermission();
@@ -219,15 +227,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 if (fragment != null) {
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
+                        setShowMenuItem(1);
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(SearchFragment.class.getName())) {
+                        setShowMenuItem(3);
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(ProfileMenuFragment.class.getName())) {
+                        setShowMenuItem(2);
                         currentTab = HomeTab.Profile;
                         lvDrawerNav.clearChoices();
                     } else {
+                        setShowMenuItem(3);
                         currentTab = HomeTab.None;
                         if (tag.equals(ProfileFragment.class.getName())) {
                             lvDrawerNav.setSelection(7);
@@ -325,8 +337,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void unKnownError() {
 
     }
-
-    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search})
+    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search,R.id.img_scan,R.id.edit_profile})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_home:
@@ -335,7 +346,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     if (fragment == null) {
                         addFrMenu(HomeFragment.class.getName(), true);
                     } else {
-//                        fragment.onResume();
                         backToFragment(fragment);
                     }
 
@@ -367,60 +377,21 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                 }
                 break;
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        switch (currentTab) {
-            case Home:
-                editItem.setVisible(false);
-                scanItem.setVisible(true);
-                break;
-            case Search:
-                editItem.setVisible(false);
-                scanItem.setVisible(false);
-                break;
-            case Profile:
-                editItem.setVisible(true);
-                scanItem.setVisible(false);
-                break;
-            case None:
-                editItem.setVisible(false);
-                scanItem.setVisible(false);
-                break;
-            default:
-                break;
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_scan:
+            case R.id.img_scan:
                 if (Utils.hasLogin()) {
                     startActivity(new Intent(MainActivity.this, ScanActivity.class));
                     overridePendingTransitionEnter();
                 } else {
                     DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
-                return true;
-            case R.id.menu_edit:
+                break;
+            case R.id.edit_profile:
                 addFr(ProfileFragment.class.getName(), CHANGE_PROFILE);
                 currentTab = HomeTab.None;
-                return true;
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
+                break;
         }
-        setStateTabSelected();
-        return super.onOptionsItemSelected(item);
     }
+
 
     private void replaceFr(String fragmentTag) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
@@ -533,19 +504,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home).toUpperCase());
+                setNameToolbar(Utils.getLanguageByResId(R.string.Home).toUpperCase());
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
                 imgProfile.setImageResource(R.drawable.tab3_default_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
+                setNameToolbar(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
                 break;
             case Profile:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
                 imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                getToolbar().setTitle(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
+                setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
@@ -704,5 +675,32 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private boolean isUpdatedFullName(Fragment fragment) {
         return StringUtils.isNotEmpty(GlobalApplication.getUserInfo().getFullName())
                 && !((ProfileFragment) fragment).isEmptyFullName();
+    }
+    public void setNameToolbar(String name) {
+        toolbarName.setText(name);
+    }
+
+    /**
+     * 1:Show Scan Menu Item
+     * 2: Show Edit Menu Item
+     * 3: Hide All Menu item
+     * @param type
+     */
+    public void setShowMenuItem(int type){
+        switch (type){
+            case 1:
+                imgScan.setVisibility(View.VISIBLE);
+                tvProfile.setVisibility(View.GONE);
+                break;
+            case 2:
+                imgScan.setVisibility(View.GONE);
+                tvProfile.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                imgScan.setVisibility(View.GONE);
+                tvProfile.setVisibility(View.GONE);
+                break;
+        }
+
     }
 }

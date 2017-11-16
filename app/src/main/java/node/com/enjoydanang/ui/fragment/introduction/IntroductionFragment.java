@@ -58,7 +58,7 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
 
     @Override
     protected void init(View view) {
-        mBaseActivity.getToolbar().setTitle(StringUtils.EMPTY);
+        mMainActivity.setNameToolbar(StringUtils.EMPTY);
     }
 
     @Override

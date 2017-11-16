@@ -4,50 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!--<com.makeramen.roundedimageview.RoundedImageView-->
-            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/img_partner_photo"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/_125sdp"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:src="@drawable/ic_category_temp"-->
-            <!--app:riv_corner_radius_bottom_left="0dp"-->
-            <!--app:riv_corner_radius_bottom_right="0dp"-->
-            <!--app:riv_corner_radius_top_left="0dp"-->
-            <!--app:riv_corner_radius_top_right="0dp" />-->
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:layout_marginTop="@dimen/_16sdp"
-            android:id="@+id/img_partner_photo"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_125sdp"
-            app:placeholderImageScaleType="centerCrop"
-            app:placeholderImage="@drawable/placeholder"
-            app:progressBarAutoRotateInterval="1000"
-            app:progressBarImage="@drawable/loading"
-            app:progressBarImageScaleType="centerInside"
-            />
-
-
-        <TextView
-            android:id="@+id/tv_partner_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="[다낭 헬리오센터] Helio Center Da nang"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabFavorite"
         android:layout_width="wrap_content"
@@ -56,8 +12,71 @@
         android:src="@drawable/follow"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="mini"
-        app:layout_anchor="@id/img_partner_photo"
+        app:layout_anchor="@+id/frImagePartner"
         app:layout_anchorGravity="bottom|right|end" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <!--<com.makeramen.roundedimageview.RoundedImageView-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/img_partner_photo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/_125sdp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/ic_category_temp"-->
+        <!--app:riv_corner_radius_bottom_left="0dp"-->
+        <!--app:riv_corner_radius_bottom_right="0dp"-->
+        <!--app:riv_corner_radius_top_left="0dp"-->
+        <!--app:riv_corner_radius_top_right="0dp" />-->
+
+        <FrameLayout
+            android:id="@+id/frImagePartner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_125sdp">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/img_partner_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:placeholderImage="@drawable/placeholder"
+                app:placeholderImageScaleType="centerCrop"
+                app:progressBarAutoRotateInterval="1000"
+                app:progressBarImage="@drawable/loading"
+                app:progressBarImageScaleType="centerInside" />
+
+
+            <TextView
+                android:id="@+id/txtDiscount"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/circleshape"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
+
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/tv_partner_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

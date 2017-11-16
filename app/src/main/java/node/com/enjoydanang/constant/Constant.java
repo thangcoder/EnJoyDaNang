@@ -17,6 +17,8 @@ public class Constant {
 
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
 
+    public static String DISCOUNT_TEMPLATE = "%d%s OFF";
+
     public static final String DATE_SERVER_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     public static final int SPLASH_TIME_OUT = 1000;

@@ -6,17 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -72,7 +73,7 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
-            ImageUtils.loadImageWithFreso( ((ViewHolder) holder).imgPhoto, partner.getPicture());
+            ImageUtils.loadImageWithFreso(((ViewHolder) holder).imgPhoto, partner.getPicture());
             boolean isFavorite = partner.getFavorite() > 0;
             ((ViewHolder) holder).fabFavorite.setImageResource(isFavorite ? R.drawable.follow : R.drawable.unfollow);
             ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +88,14 @@ public class PartnerAdapter extends RecyclerView.Adapter {
                     mOnItemClickListener.onClick(view, position);
                 }
             });
+            int discount = partner.getDiscount();
+            if(discount != 0){
+                String strDiscount = String.format(Locale.getDefault(), Constant.DISCOUNT_TEMPLATE, discount, "%");
+                ((ViewHolder) holder).txtDiscount.setText(strDiscount);
+                ((ViewHolder) holder).txtDiscount.setVisibility(View.VISIBLE);
+            }else{
+                ((ViewHolder) holder).txtDiscount.setVisibility(View.GONE);
+            }
         } else if (holder instanceof LoadingViewHolder) {
             ((LoadingViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -110,11 +119,14 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         public final View mView;
         @BindView(R.id.img_partner_photo)
 //        ImageView imgPhoto;
-        SimpleDraweeView imgPhoto;
+                SimpleDraweeView imgPhoto;
         @BindView(R.id.tv_partner_name)
         TextView tvTitle;
         @BindView(R.id.fabFavorite)
         FloatingActionButton fabFavorite;
+
+        @BindView(R.id.txtDiscount)
+        TextView txtDiscount;
 
         public ViewHolder(View v) {
             super(v);

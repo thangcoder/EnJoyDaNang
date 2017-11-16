@@ -126,6 +126,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
 
     private static final int START_PAGE = 0;
 
+    private List<ImageData> images;
+
     public void setOnBackListener(OnBackFragmentListener onBackListener) {
         this.onBackListener = onBackListener;
     }
@@ -156,6 +158,9 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rcvAttachImgPreview.setLayoutManager(layoutManager);
         rcvAttachImgPreview.setHasFixedSize(false);
+        images = new ArrayList<>();
+        mPreviewAdapter = new ImagePreviewAdapter(images, getContext());
+        rcvAttachImgPreview.setAdapter(mPreviewAdapter);
         userInfo = GlobalApplication.getUserInfo();
         if (Utils.hasLogin()) {
             edtName.setText(userInfo.getFullName());
@@ -315,9 +320,12 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
                 && null != data) {
-            List<ImageData> images = mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT);
-            mPreviewAdapter = new ImagePreviewAdapter(images, getContext());
-            rcvAttachImgPreview.setAdapter(mPreviewAdapter);
+            if(CollectionUtils.isNotEmpty(images)){
+                images.clear();
+            }
+            images.addAll(mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT));
+            mPreviewAdapter.notifyItemRangeChanged(0, images.size());
+            mPreviewAdapter.notifyDataSetChanged();
         }
     }
 

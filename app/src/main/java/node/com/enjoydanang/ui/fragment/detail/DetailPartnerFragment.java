@@ -260,6 +260,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
         drawRouteToPartner();
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        prgLoading.setVisibility(View.GONE);
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             loadMapView(detailPartner, googleMap);
         } else {
@@ -337,7 +338,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mMapView.setVisibility(View.GONE);
             ex.printStackTrace();
         }
-        prgLoading.setVisibility(View.GONE);
         lrlContentDetail.setVisibility(View.VISIBLE);
     }
 

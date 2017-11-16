@@ -1,6 +1,10 @@
 package node.com.enjoydanang.ui.fragment.favorite;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.refactor.lib.colordialog.ColorDialog;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -86,7 +91,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     public void onFetchFavorite(List<Partner> lstFavorites) {
         prgLoading.setVisibility(View.GONE);
-        if(CollectionUtils.isEmpty(lstFavorites)){
+        if (CollectionUtils.isEmpty(lstFavorites)) {
             txtEmpty.setVisibility(View.VISIBLE);
             rcvFavorite.setVisibility(View.GONE);
             return;
@@ -135,33 +140,50 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
 
     @Override
     public void onClick(View view, final int position) {
-        ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
+        final ApiStores apiStores = AppClient.getClient().create(ApiStores.class);
         if (view.getId() == R.id.btnDelete) {
-            new CompositeSubscription().add(apiStores.addFavorite(userInfo.getUserId(), lstFavorites.get(position).getId())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ApiCallback<Repository>() {
+            DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
+                    Utils.getLanguageByResId(R.string.Message_Confirm_Remove_Favorite),
+                    Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                    Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                    new ColorDialog.OnPositiveListener() {
                         @Override
-                        public void onSuccess(Repository model) {
-                            if (!Utils.isResponseError(model)) {
-                                mAdapter.removeAt(position);
-                            }
-                        }
+                        public void onClick(ColorDialog colorDialog) {
+                            colorDialog.dismiss();
+                            new CompositeSubscription().add(apiStores.addFavorite(userInfo.getUserId(), lstFavorites.get(position).getId())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new ApiCallback<Repository>() {
+                                        @Override
+                                        public void onSuccess(Repository model) {
+                                            if (!Utils.isResponseError(model)) {
+                                                mAdapter.removeAt(position);
+                                            }
+                                        }
 
+                                        @Override
+                                        public void onFailure(String msg) {
+                                            Toast.makeText(mMainActivity, msg, Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFinish() {
+
+                                        }
+                                    }));
+                        }
+                    }, new ColorDialog.OnNegativeListener() {
                         @Override
-                        public void onFailure(String msg) {
-                            Toast.makeText(mMainActivity, msg, Toast.LENGTH_SHORT).show();
+                        public void onClick(ColorDialog colorDialog) {
+                            colorDialog.dismiss();
                         }
-
-                        @Override
-                        public void onFinish() {
-
-                        }
-                    }));
+                    }
+            );
         } else {
             DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position));
-            dialog.show(mFragmentManager, TAG);
+            DialogUtils.openDialogFragment(mFragmentManager, dialog);
         }
 
     }
+
 }

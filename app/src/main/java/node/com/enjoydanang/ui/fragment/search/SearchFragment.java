@@ -111,7 +111,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Home_Search));
-        showLoading();
+        progressBar.setVisibility(View.VISIBLE);
         try {
             if (mMapView != null) {
                 mMapView.onCreate(null);
@@ -278,7 +278,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onFound(Location location) {
         mLastLocation = location;
-        hideLoading();
+        progressBar.setVisibility(View.GONE);
         if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             loadMapView(location);
         } else {

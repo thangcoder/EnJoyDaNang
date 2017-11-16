@@ -390,7 +390,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                 @Override
                 public void run() {
                     DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
-                    dialog.show(mFragmentManager, TAG);
+                    DialogUtils.openDialogFragment(mFragmentManager, dialog);
                 }
             }, 50);
         }

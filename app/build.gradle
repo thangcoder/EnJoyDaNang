@@ -7,7 +7,7 @@ android {
         applicationId "node.com.enjoydanang"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 7
+        versionCode 10
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled  true
@@ -15,7 +15,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "Boolean", "DEBUG_MODE", "true"
+        }
         release {
+            buildConfigField "Boolean", "DEBUG_MODE", "false"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.detail.dialog;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -10,23 +11,26 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
@@ -40,13 +44,23 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 public class DetailHomeDialogFragment extends DialogFragment implements TabLayout.OnTabSelectedListener {
     private static final String TAG = DetailHomeDialogFragment.class.getSimpleName();
 
-    private Toolbar mToolbar;
 
     private ViewPager mViewPager;
 
     private TabLayout mTabLayout;
 
     private Partner partner = null;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.name)
+    TextView toolbarName;
+    @BindView(R.id.edit_profile)
+    TextView tvProfile;
+    @BindView(R.id.img_scan)
+    ImageView imgScan;
+    @BindView(R.id.frToolBar)
+    FrameLayout frToolBar;
 
     public static DetailHomeDialogFragment newInstance(Partner partner) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
@@ -60,11 +74,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail_home, container, false);
-        initToolbar(rootView);
+        ButterKnife.bind(this, rootView);
         mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
-        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        initToolbar();
         return rootView;
     }
 
@@ -111,6 +124,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
             mViewPager.setOffscreenPageLimit(limit);
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -131,20 +145,11 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     }
 
 
-    private void initToolbar(View rootView) {
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        toolbar.setTitle(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)).toUpperCase());
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
-        }
+    private void initToolbar() {
+        toolbarName.setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)).toUpperCase());
+        setHeightToolbar();
+        tvProfile.setVisibility(View.GONE);
+        imgScan.setVisibility(View.VISIBLE);
     }
 
     private void setEvents() {
@@ -156,19 +161,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
                 dismiss();
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            // handle close button click here
-            dismiss();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -184,5 +176,25 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    private void setHeightToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            frToolBar.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
+        }
+    }
+
+    @OnClick({R.id.img_scan})
+    public void onMenuOptionsClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_scan:
+                if (Utils.hasLogin()) {
+                    startActivity(new Intent(getActivity(), ScanActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+                } else {
+                    DialogUtils.showDialog(getActivity(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
+                break;
+        }
     }
 }

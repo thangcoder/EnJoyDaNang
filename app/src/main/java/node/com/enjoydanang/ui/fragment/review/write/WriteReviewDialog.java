@@ -186,6 +186,13 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() == null) return;
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.dialog_animation_fade;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

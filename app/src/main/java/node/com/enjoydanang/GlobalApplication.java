@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
+import node.com.enjoydanang.utils.config.AppUpdateConfiguration;
 import node.com.enjoydanang.utils.helper.DomainHelper;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
@@ -42,6 +43,7 @@ public class GlobalApplication extends MultiDexApplication{
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
+        new AppUpdateConfiguration().configFirebaseUpdate();
 //        checkLanguage();
     }
     @Override

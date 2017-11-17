@@ -21,18 +21,6 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <!--<com.makeramen.roundedimageview.RoundedImageView-->
-        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/img_partner_photo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="@dimen/_125sdp"-->
-        <!--android:scaleType="fitXY"-->
-        <!--android:src="@drawable/ic_category_temp"-->
-        <!--app:riv_corner_radius_bottom_left="0dp"-->
-        <!--app:riv_corner_radius_bottom_right="0dp"-->
-        <!--app:riv_corner_radius_top_left="0dp"-->
-        <!--app:riv_corner_radius_top_right="0dp" />-->
-
         <FrameLayout
             android:id="@+id/frImagePartner"
             android:layout_width="match_parent"

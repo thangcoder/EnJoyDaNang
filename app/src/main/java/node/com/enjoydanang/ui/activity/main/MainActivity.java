@@ -87,6 +87,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.img_scan)
     ImageView imgScan;
 
+    @BindView(R.id.frToolBar)
+    FrameLayout frToolBar;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
     @BindView(R.id.left_drawer)
@@ -130,8 +133,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void init() {
-
-        String[] navMenuTitles = getResources().getStringArray(R.array.item_menu);
+        setHeightToolbar();
+        LanguageHelper.getValueByViewId(tvProfile);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -152,7 +155,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (!checkPermission()) {
             requestPermission();
         }
-
         settingLeftMenu(Utils.hasLogin());
     }
 
@@ -702,5 +704,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
         }
 
+    }
+
+    private void setHeightToolbar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            frToolBar.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
+        }
     }
 }

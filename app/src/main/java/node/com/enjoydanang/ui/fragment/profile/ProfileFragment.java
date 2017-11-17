@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -110,9 +109,9 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     private PhotoHelper mPhotoHelper;
 
-    private String base64Image;
-
     private MainActivity mMainActivity;
+
+    private File fileChoose;
 
     @Override
     public void showToast(String desc) {
@@ -216,7 +215,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainActivity.setNameToolbar(Utils.getString(R.string.Update_Profile_Screen_Title).toUpperCase());
+        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
     }
 
     @Override
@@ -241,7 +240,6 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 if (data != null) {
                     Uri uri = data.getData();
                     File file = new File(FileUtils.getFilePath(getContext(), uri));
-                    base64Image = ImageUtils.encodeTobase64(file);
                     updateAvatar(file);
                 }
                 break;
@@ -252,7 +250,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         ImageUtils.getRightAngleImage(file.getAbsolutePath());
         Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".fileprovider", file);
         ImageUtils.loadImageWithFresoURI(imgAvatarUser, uri);
-        base64Image = ImageUtils.encodeTobase64(file);
+        fileChoose = file;
     }
 
     private void initData() {
@@ -364,11 +362,15 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     private void setValueAvatar() {
-        if (StringUtils.isBlank(base64Image) && StringUtils.isNoneBlank(userInfo.getImage())) {
+        if (StringUtils.isNoneBlank(userInfo.getImage())) {
             Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
-                    subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
+                    if(fileChoose == null){
+                        subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
+                    }else{
+                        subscriber.onNext(ImageUtils.encodeTobase64(fileChoose));
+                    }
                     subscriber.onCompleted();
                 }
             }).subscribeOn(Schedulers.io())
@@ -386,12 +388,12 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
                         @Override
                         public void onNext(String base64) {
-                            base64Image = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
+                            String endValue = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
                             mvpPresenter.updateProfile(userInfo.getUserId(),
                                     String.valueOf(edtFullname.getText()),
                                     String.valueOf(edtPhone.getText()),
                                     String.valueOf(edtEmail.getText()),
-                                    base64Image);
+                                    endValue);
                         }
                     });
 

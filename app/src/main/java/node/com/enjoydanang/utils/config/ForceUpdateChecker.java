@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Author: Tavv
  * Created on 14/11/2017.
@@ -21,6 +24,7 @@ public class ForceUpdateChecker {
     public static final String KEY_UPDATE_REQUIRED = "force_update_required";
     public static final String KEY_CURRENT_VERSION = "force_update_current_version";
     public static final String KEY_UPDATE_URL = "force_update_store_url";
+    public static final String KEY_VERSION_CODE = "current_version_code";
 
     private OnUpdateNeededListener onUpdateNeededListener;
     private Context context;
@@ -44,29 +48,36 @@ public class ForceUpdateChecker {
 
         if (remoteConfig.getBoolean(KEY_UPDATE_REQUIRED)) {
             String currentVersion = remoteConfig.getString(KEY_CURRENT_VERSION);
-            String appVersion = getAppVersion(context);
+            long newestVersionCode = remoteConfig.getLong(KEY_VERSION_CODE);
+            Map<String, String> appInfo = getAppVersion(context);
+            String appVersionName = appInfo.get("versionName");
+            int appVersionCode = Integer.parseInt(appInfo.get("versionCode"));
             String updateUrl = remoteConfig.getString(KEY_UPDATE_URL);
 
-            if (!TextUtils.equals(currentVersion, appVersion)
+            if ((!TextUtils.equals(currentVersion, appVersionName) || newestVersionCode != appVersionCode)
                     && onUpdateNeededListener != null) {
                 onUpdateNeededListener.onUpdateNeeded(updateUrl);
             }
         }
     }
 
-    private String getAppVersion(Context context) {
-        String result = "";
-
+    private Map<String, String> getAppVersion(Context context) {
+        Map<String, String> appInfo = new HashMap<>();
+        String versionName = "";
         try {
-            result = context.getPackageManager()
+            versionName = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0)
                     .versionName;
-            result = result.replaceAll("[a-zA-Z]|-", "");
+            int versionCode = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0)
+                    .versionCode;
+            versionName = versionName.replaceAll("[a-zA-Z]|-", "");
+            appInfo.put("versionName", versionName);
+            appInfo.put("versionCode", String.valueOf(versionCode));
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, e.getMessage());
         }
-
-        return result;
+        return appInfo;
     }
 
     public static class Builder {

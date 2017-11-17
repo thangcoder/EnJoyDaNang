@@ -13,20 +13,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -59,6 +55,7 @@ import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -113,9 +110,6 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     private static final int START_PAGE = 0;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
     @BindView(R.id.imgAvatar)
     SimpleDraweeView imgAvatar;
 
@@ -155,6 +149,18 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     @BindView(R.id.lrlWriteReply)
     LinearLayout lrlWriteReply;
 
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.name)
+    TextView toolbarName;
+    @BindView(R.id.edit_profile)
+    TextView tvProfile;
+    @BindView(R.id.img_scan)
+    ImageView imgScan;
+    @BindView(R.id.frToolBar)
+    FrameLayout frToolBar;
+
     private ReplyAdapter replyAdapter;
 
     private List<Reply> lstReplies;
@@ -181,9 +187,10 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+    public void onStart() {
+        super.onStart();
+        if (getDialog() == null) return;
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.dialog_animation_fade;
     }
 
     @Nullable
@@ -544,7 +551,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                 fetchReplies(review.getId(), page);
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 isBack = true;
@@ -555,24 +562,11 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void initToolbar() {
-        toolbar.setTitle(Utils.getLanguageByResId(R.string.Review_Write_Reply).toUpperCase());
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        toolbarName.setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail)).toUpperCase());
+        tvProfile.setVisibility(View.GONE);
+        imgScan.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem editItem = menu.findItem(R.id.menu_edit);
-        MenuItem scanItem = menu.findItem(R.id.menu_scan);
-        editItem.setVisible(false);
-        scanItem.setVisible(false);
-    }
 
     @Override
     public void onImageClick(View view, int position, String url, ArrayList<PartnerAlbum> lstModel) {
@@ -595,5 +589,19 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         imageChoose.addAll(lstData);
         mPreviewAdapter.notifyItemRangeChanged(0, imageChoose.size());
         mPreviewAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick({R.id.img_scan})
+    public void onMenuOptionsClick(View view) {
+        switch (view.getId()) {
+            case R.id.img_scan:
+                if (Utils.hasLogin()) {
+                    startActivity(new Intent(getActivity(), ScanActivity.class));
+                    getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+                } else {
+                    DialogUtils.showDialog(getActivity(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
+                break;
+        }
     }
 }

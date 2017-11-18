@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
+import node.com.enjoydanang.utils.SharedPrefsUtils;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.AppUpdateConfiguration;
 import node.com.enjoydanang.utils.helper.DomainHelper;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -31,7 +33,7 @@ public class GlobalApplication extends MultiDexApplication{
     public JSONObject jsLanguage;
     private static UserInfo userInfo;
     private String strLanguage;
-    private boolean hasChangeLanguage;
+    private boolean hasSessionLogin;
 
     @Override
     public void onCreate() {
@@ -44,6 +46,8 @@ public class GlobalApplication extends MultiDexApplication{
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
         new AppUpdateConfiguration().configFirebaseUpdate();
+        SharedPrefsUtils.setContext(this);
+        hasSessionLogin = Utils.hasSessionLogin();
 //        checkLanguage();
     }
     @Override
@@ -105,11 +109,11 @@ public class GlobalApplication extends MultiDexApplication{
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-//        String newLanguage = LanguageHelper.getSystemLanguage(newConfig);
-//        hasChangeLanguage = !strLanguage.equalsIgnoreCase(newLanguage);
+    public boolean isHasSessionLogin() {
+        return hasSessionLogin;
     }
 
+    public void setHasSessionLogin(boolean hasSessionLogin) {
+        this.hasSessionLogin = hasSessionLogin;
+    }
 }

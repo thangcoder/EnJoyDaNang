@@ -23,4 +23,6 @@ public interface iReviewView extends iBaseView {
 
     void onFetchReplyByReview(Repository<Reply> data);
 
+    void onRefreshReviews(List<Review> models);
+
 }

@@ -94,8 +94,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private Review currentReviewClick;
 
-    private boolean isRefreshAfterSubmit;
-
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
         Bundle bundle = new Bundle();
@@ -175,7 +173,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                         if (!isBack) {
                             prgLoading.setVisibility(View.VISIBLE);
                             lrlContentReview.setVisibility(View.GONE);
-                            mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+                            mvpPresenter.refreshReviewByPartner(partner.getId(), START_PAGE);
                         }
                         dialog.dismiss();
                     }
@@ -239,6 +237,22 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onRefreshReviews(List<Review> models) {
+        if (CollectionUtils.isEmpty(models) && currentPage == 0) {
+            lrlContentReview.setVisibility(View.VISIBLE);
+            prgLoading.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        }
+        refreshItems(models);
+        txtEmpty.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        lrlContentReview.setVisibility(View.VISIBLE);
+        prgLoading.setVisibility(View.GONE);
+    }
+
     private void onRetryGetListReview(int page) {
         mvpPresenter.fetchReviewByPartner(partner.getId(), page);
     }
@@ -248,6 +262,15 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         int newSize = lstReviews.size();
         this.lstReviews.addAll(lstReviews);
         mAdapter.notifyItemRangeChanged(0, oldSize + newSize);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void refreshItems(List<Review> lstReviews) {
+        if(CollectionUtils.isNotEmpty(this.lstReviews)){
+            this.lstReviews.clear();
+        }
+        this.lstReviews.addAll(lstReviews);
+        mAdapter.notifyItemRangeChanged(0, lstReviews.size());
         mAdapter.notifyDataSetChanged();
     }
 

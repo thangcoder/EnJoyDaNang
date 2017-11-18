@@ -129,9 +129,17 @@ public class FileUtils {
             //API 3 will crash if SDK_INT is called
             currentApiVersion = 3;
         }
-        if (currentApiVersion == Build.VERSION_CODES.KITKAT) {
+        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
             String filePath = "";
             String wholeID = null;
+            if(checkUri(uri)){
+                String[] proj = {MediaStore.Images.Media.DATA};
+                Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+                int column_index
+                        = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            }
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                 wholeID = DocumentsContract.getDocumentId(uri);
             }
@@ -180,4 +188,8 @@ public class FileUtils {
         }
     }
 
+
+    private static boolean checkUri(Uri uri){
+       return uri.toString().startsWith("content://com.google.android.apps.photos.content");
+    }
 }

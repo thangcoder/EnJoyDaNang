@@ -293,4 +293,8 @@ public class Utils {
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0);
     }
+
+    public static boolean hasSessionLogin(){
+        return SharedPrefsUtils.checkPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO);
+    }
 }

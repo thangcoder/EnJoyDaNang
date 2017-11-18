@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
+
 import node.com.enjoydanang.constant.Role;
 import node.com.enjoydanang.utils.Utils;
 
@@ -15,7 +17,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class UserInfo {
+public class UserInfo implements Serializable{
 
     @SerializedName("id")
     @Expose

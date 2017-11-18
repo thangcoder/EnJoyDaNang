@@ -64,4 +64,23 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         });
     }
 
+    void refreshReviewByPartner(int partnerId, int page) {
+        addSubscription(apiStores.getListReviewByPartnerId(partnerId, page), new ApiCallback<Repository<Review>>() {
+
+            @Override
+            public void onSuccess(Repository<Review> model) {
+                mvpView.onRefreshReviews(model.getData());
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        });
+    }
+
 }

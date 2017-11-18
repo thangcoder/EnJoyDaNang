@@ -18,6 +18,7 @@ import com.facebook.internal.CallbackManagerImpl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.gson.Gson;
 import com.kakao.auth.Session;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,7 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -54,11 +56,8 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
  */
 
 public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener,
-        ForceUpdateChecker.OnUpdateNeededListener{
+        ForceUpdateChecker.OnUpdateNeededListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
-
-//    @BindView(R.id.toolbar)
-//    public Toolbar toolbar;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -161,6 +160,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.txtContinue:
                 intent = new Intent(this, MainActivity.class);
+                GlobalApplication.getGlobalApplicationContext().setHasSessionLogin(false);
                 break;
         }
         if (intent != null) {
@@ -238,8 +238,17 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             GlobalApplication.setUserInfo(userInfo);
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
+            saveUserInfo(userInfo);
             redirectMain();
             hideLoading();
+        }
+    }
+
+    private void saveUserInfo(UserInfo userInfo) {
+        if (userInfo != null) {
+            Gson gson = new Gson();
+            String strJsonUserInfo = gson.toJson(userInfo);
+            SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO, strJsonUserInfo);
         }
     }
 
@@ -319,4 +328,5 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                     }
                 });
     }
+
 }

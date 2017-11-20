@@ -124,6 +124,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             imgPhoto.setLayoutParams(parms);
             PartnerAlbum model = images.get(position);
             Glide.with(getActivity()).load(model.getPicture())
+                    .fitCenter()
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imgPhoto);

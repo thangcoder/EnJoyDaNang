@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -239,7 +240,12 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             case SELECT_FROM_GALLERY_CODE:
                 if (data != null) {
                     Uri uri = data.getData();
-                    File file = new File(FileUtils.getFilePath(getContext(), uri));
+                    String realPath = FileUtils.getFilePath(getContext(), uri);
+                    if(StringUtils.isBlank(realPath)){
+                        Toast.makeText(mMainActivity, Utils.getLanguageByResId(R.string.Message_Warning_File), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    File file = new File(realPath);
                     updateAvatar(file);
                 }
                 break;

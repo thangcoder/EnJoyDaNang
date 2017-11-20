@@ -12,6 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled  true
         buildConfigField "String", "urlStore", "\"https://play.google.com/store/apps/details?id=node.com.enjoydanang\""
+        buildConfigField "String", "AUTHORITY", "\"node.com.enjoydanang.fileprovider\""
     }
 
     buildTypes {
@@ -113,7 +114,6 @@ dependencies {
 
     compile 'com.github.aakira:expandable-layout:1.6.0@aar'
     compile 'com.google.firebase:firebase-config:11.4.0'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

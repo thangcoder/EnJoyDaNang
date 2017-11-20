@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -112,9 +114,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.lv_drawer_nav)
     ListView lvDrawerNav;
 
-
-
-    //    private CircleImageView imgAvatarUser;
     @BindView(R.id.imgAvatarUser)
     SimpleDraweeView imgAvatarUser;
 
@@ -127,6 +126,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private DrawerLayout mDrawerLayout;
 
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private boolean isExit;
 
     @Override
     public void setContentView() {
@@ -185,7 +186,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     protected void onResume() {
         super.onResume();
-        if(GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()){
+        if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
             ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
         }
         validAndUpdateFullName();
@@ -272,8 +273,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         } else {
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 Fragment fragment = getTopFragment();
-                if(fragment instanceof ProfileFragment){
-                    if(!isUpdatedFullName(fragment)){
+                if (fragment instanceof ProfileFragment) {
+                    if (!isUpdatedFullName(fragment)) {
                         DialogUtils.showDialog(fragment.getContext(), DialogType.WARNING,
                                 DialogUtils.getTitleDialog(2),
                                 Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
@@ -283,24 +284,42 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 getSupportFragmentManager().popBackStack();
             } else {
                 if (Utils.hasLogin()) {
-                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
-                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
-                            new ColorDialog.OnPositiveListener() {
-                                @Override
-                                public void onClick(ColorDialog colorDialog) {
-                                    colorDialog.dismiss();
-                                    GlobalApplication.setUserInfo(null);
-                                    validRedirectLogin();
-                                    finish();
-                                }
-                            }, new ColorDialog.OnNegativeListener() {
-                                @Override
-                                public void onClick(ColorDialog colorDialog) {
-                                    colorDialog.dismiss();
-                                }
-                            });
+//                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
+//                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
+//                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+//                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+//                            new ColorDialog.OnPositiveListener() {
+//                                @Override
+//                                public void onClick(ColorDialog colorDialog) {
+//                                    colorDialog.dismiss();
+//                                    GlobalApplication.setUserInfo(null);
+//                                    validRedirectLogin();
+//                                    finish();
+//                                }
+//                            }, new ColorDialog.OnNegativeListener() {
+//                                @Override
+//                                public void onClick(ColorDialog colorDialog) {
+//                                    colorDialog.dismiss();
+//                                }
+//                            });
+
+                    if (isExit) {
+                        finish();
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, Utils.getLanguageByResId(R.string.Action_DoubleTap),
+                                Toast.LENGTH_SHORT).show();
+                        isExit = true;
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                isExit = false;
+                            }
+                        }, 2500);
+                    }
                 } else {
                     GlobalApplication.setUserInfo(null);
                     finish();
@@ -346,7 +365,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void unKnownError() {
 
     }
-    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search,R.id.img_scan,R.id.edit_profile})
+
+    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search, R.id.img_scan, R.id.edit_profile})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_home:
@@ -367,7 +387,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         addFrMenu(SearchFragment.class.getName(), true);
                     } else {
                         currentTab = HomeTab.Search;
-                        resurfaceFragment(fragment,SearchFragment.class.getName());
+                        resurfaceFragment(fragment, SearchFragment.class.getName());
                     }
                 }
                 break;
@@ -379,7 +399,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                             addFrMenu(ProfileMenuFragment.class.getName(), true);
                         } else {
                             currentTab = HomeTab.Profile;
-                            resurfaceFragment(fragment,ProfileMenuFragment.class.getName());
+                            resurfaceFragment(fragment, ProfileMenuFragment.class.getName());
                         }
                     } else {
                         DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
@@ -564,7 +584,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
     }
 
-    public void resurfaceFragment(Fragment fragment,String tag) {
+    public void resurfaceFragment(Fragment fragment, String tag) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
         trans.remove(fragment);
@@ -674,6 +694,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         return StringUtils.isNotEmpty(GlobalApplication.getUserInfo().getFullName())
                 && !((ProfileFragment) fragment).isEmptyFullName();
     }
+
     public void setNameToolbar(String name) {
         toolbarName.setText(name);
     }
@@ -682,10 +703,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
      * 1:Show Scan Menu Item
      * 2: Show Edit Menu Item
      * 3: Hide All Menu item
+     *
      * @param type
      */
-    public void setShowMenuItem(int type){
-        switch (type){
+    public void setShowMenuItem(int type) {
+        switch (type) {
             case 1:
                 imgScan.setVisibility(View.VISIBLE);
                 tvProfile.setVisibility(View.GONE);
@@ -702,14 +724,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    private void setHeightToolbar(){
+    private void setHeightToolbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             frToolBar.setPadding(0, Utils.getStatusBarHeight(), 0, 0);
         }
     }
 
-    private void validRedirectLogin(){
-        if(GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()){
+    private void validRedirectLogin() {
+        if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
             startActivity(new Intent(this, LoginActivity.class));
             GlobalApplication.getGlobalApplicationContext().setHasSessionLogin(false);
             SharedPrefsUtils.clearPrefs(Constant.SHARED_PREFS_NAME);

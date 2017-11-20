@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.lang3.StringUtils;
 
 import butterknife.BindView;
@@ -23,9 +25,11 @@ import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.AppLanguage;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ValidUtils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -153,6 +157,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
             GlobalApplication.setUserInfo(userInfo);
+            saveUserInfo(userInfo);
             clearFormAfterSuccess();
             DialogUtils.showDialog(SignUpActivity.this, 3, DialogUtils.getTitleDialog(1),
                     Utils.getLanguageByResId(R.string.Message_Register_Success), new PromptDialog.OnPositiveListener() {
@@ -213,4 +218,11 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
         return true;
     }
 
+    private void saveUserInfo(UserInfo userInfo) {
+        if (userInfo != null) {
+            Gson gson = new Gson();
+            String strJsonUserInfo = gson.toJson(userInfo);
+            SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO, strJsonUserInfo);
+        }
+    }
 }

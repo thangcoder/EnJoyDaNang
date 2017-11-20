@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/border_edittext_normal"
+        android:background="@drawable/border_item_default"
         android:hint="@string/Payment.Placeholder.Money"
         android:inputType="numberDecimal"
         android:maxLines="1"
@@ -73,24 +73,24 @@
         android:weightSum="1">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnCancel"
+            android:id="@+id/btnSubmit"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_login_social_height"
             android:layout_gravity="center_horizontal"
             android:layout_marginRight="@dimen/_5sdp"
             android:layout_weight=".5"
             android:background="@color/color_button_login"
-            android:text="@string/Cancel" />
+            android:text="@string/Action.Payment" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btnSubmit"
+            android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_login_social_height"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_weight=".5"
             android:background="@color/color_button_login"
-            android:text="@string/Action.Payment" />
+            android:text="@string/Cancel" />
 
     </LinearLayout>
 

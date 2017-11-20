@@ -82,20 +82,11 @@
                         android:transformPivotX="0dp"
                         android:transformPivotY="0dp" />
 
-
-                    <node.com.enjoydanang.utils.widget.CustomMapView
-                        android:id="@+id/mapView"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp"
-
-                        android:layout_marginTop="@dimen/_13sdp" />
-
                     <com.daimajia.slider.library.SliderLayout
                         android:id="@+id/slider"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="@dimen/_13sdp"
                         app:auto_cycle="true"
                         app:indicator_visibility="visible"
                         app:pager_animation="Accordion"
@@ -115,8 +106,14 @@
                         android:paddingLeft="@dimen/_5sdp"
                         android:paddingRight="@dimen/_5sdp"
                         android:paddingTop="@dimen/_15sdp" />
-                </LinearLayout>
 
+                    <node.com.enjoydanang.utils.widget.CustomMapView
+                        android:id="@+id/mapView"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_marginTop="@dimen/_5sdp" />
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 

@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_50sdp"
+    android:layout_height="@dimen/_40sdp"
     android:background="@null"
     android:layout_alignParentBottom="true"
     android:orientation="vertical">
-
-    <!--<ImageView-->
-        <!--android:id="@+id/img_search"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:contentDescription="@null"-->
-        <!--android:src="@drawable/tab2_default_3x" />-->
-
 
     <LinearLayout
         android:id="@+id/ll_bottom_menu"

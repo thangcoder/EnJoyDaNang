@@ -47,6 +47,7 @@
 
     <color name="btn_login_start">#666666</color>
     <color name="btn_login_end">#70F3D3</color>
+    <color name="title_partner">#464646</color>
 
     <!--text notice-->
     <color name="color_text_notice_on">#323232</color>

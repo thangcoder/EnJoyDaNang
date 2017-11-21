@@ -186,4 +186,6 @@
     <string name="Message.Confirm.Remove.Favorite">Message.Confirm.Remove.Favorite</string>
     <string name="Profile.Edit">Profile.Edit</string>
     <string name="Message.Warning.File">Message.Warning.File</string>
+    <string name="Message.Networking.Problem">Message.Networking.Problem</string>
+    <string name="Message.Server.Error">Message.Server.Error</string>
 </resources>

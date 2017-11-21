@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -17,9 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -35,11 +32,11 @@ import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
-import node.com.enjoydanang.utils.helper.FragmentHelper;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NetworkStatus;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.ConnectionUltils;
+import node.com.enjoydanang.utils.helper.FragmentHelper;
 import retrofit2.Call;
 import rx.Observable;
 import rx.Subscriber;
@@ -417,6 +414,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void initToolbar(Toolbar toolbar) {
         if (toolbar != null) {
+            toolbar.setTitle("");
             setSupportActionBar(toolbar);
             ActionBar actionBar = getSupportActionBar();
             actionBar.setHomeButtonEnabled(true);

@@ -30,7 +30,10 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +50,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
+import node.com.enjoydanang.model.NavigationItem;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
@@ -129,6 +133,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private boolean isExit;
 
+    private boolean hasLogin;
+
+    private boolean mToolBarNavigationListenerIsRegistered;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -137,9 +145,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void init() {
-        setHeightToolbar();
+        settingToolbar();
         LanguageHelper.getValueByViewId(tvProfile);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
+        mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -160,21 +168,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             requestPermission();
         }
         settingLeftMenu(Utils.hasLogin());
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            isOpen = (boolean) savedInstanceState.getSerializable(IS_OPEN);
-            if (!isOpen) {
-                addFrMenu(HomeFragment.class.getName(), true);
-
-            }
-        } else {
-            addFrMenu(HomeFragment.class.getName(), true);
-        }
-
+        hasLogin = Utils.hasLogin();
     }
 
     @Override
@@ -199,16 +193,36 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     private void settingLeftMenu(boolean hasLogin) {
-        List<Integer> lstIndexHeaders = new ArrayList<>(Arrays.asList(hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
+        List<Integer> lstIndexHeaders = null;
+        int[] icons;
+        String[] titles;
+        List<NavigationItem> navigationItems = null;
+        try{
+            lstIndexHeaders = new ArrayList<>(Arrays.asList(hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
 
-        int[] icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
+            icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
 
-        String[] titles = hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
+            titles = hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
 
-        NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,
-                NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles));
+            navigationItems = NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles);
 
-        lvDrawerNav.setAdapter(mNavigationAdapter);
+            if (CollectionUtils.isNotEmpty(navigationItems)) {
+                NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,navigationItems);
+                lvDrawerNav.setAdapter(mNavigationAdapter);
+            }
+        }catch (Exception e){
+            lstIndexHeaders = new ArrayList<>(Arrays.asList(this.hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
+            icons = this.hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
+            titles = this.hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
+            if(ArrayUtils.isNotEmpty(titles)){
+                navigationItems = NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles);
+                if (CollectionUtils.isNotEmpty(navigationItems)) {
+                    NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,navigationItems);
+                    lvDrawerNav.setAdapter(mNavigationAdapter);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -222,7 +236,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void setValue(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            isOpen = (boolean) savedInstanceState.getSerializable(IS_OPEN);
+            if (!isOpen) {
+                addFrMenu(HomeFragment.class.getName(), true);
 
+            }
+        } else {
+            addFrMenu(HomeFragment.class.getName(), true);
+        }
     }
 
     @Override
@@ -247,9 +269,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         currentTab = HomeTab.Profile;
                         lvDrawerNav.clearChoices();
                     } else {
-                        setShowMenuItem(3);
                         currentTab = HomeTab.None;
                         if (tag.equals(ProfileFragment.class.getName())) {
+                            setShowMenuItem(3);
                             lvDrawerNav.setSelection(7);
                         }
                     }
@@ -282,6 +304,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                 }
                 getSupportFragmentManager().popBackStack();
+                enableBackButton(false);
             } else {
                 if (Utils.hasLogin()) {
 //                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
@@ -368,6 +391,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search, R.id.img_scan, R.id.edit_profile})
     public void onClick(View view) {
+        enableBackButton(true);
         switch (view.getId()) {
             case R.id.img_home:
                 if (currentTab != HomeTab.Home) {
@@ -432,6 +456,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (Utils.hasLogin()) {
             if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
+                enableBackButton(true);
+                setShowMenuItem(1);
                 switch (position) {
                     case 0:
                         break;
@@ -465,6 +491,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                                     public void onClick(ColorDialog colorDialog) {
                                         mDrawerLayout.closeDrawer(GravityCompat.START);
                                         GlobalApplication.setUserInfo(null);
+                                        hasLogin = false;
                                         validRedirectLogin();
                                         finish();
                                         overridePendingTransitionExit();
@@ -484,6 +511,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
             }
         } else {
+            enableBackButton(true);
             switch (position) {
                 case 0:
                     break;
@@ -699,6 +727,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         toolbarName.setText(name);
     }
 
+
+    public void showMenuOptions(){
+        imgScan.setVisibility(View.VISIBLE);
+        tvProfile.setVisibility(View.GONE);
+    }
+
     /**
      * 1:Show Scan Menu Item
      * 2: Show Edit Menu Item
@@ -721,7 +755,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 tvProfile.setVisibility(View.GONE);
                 break;
         }
-
     }
 
     private void setHeightToolbar() {
@@ -749,4 +782,45 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                 });
     }
+
+    private void enableBackButton(boolean enable){
+        if(enable) {
+            // Remove hamburger
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            // Show back button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // when DrawerToggle is disabled i.e. setDrawerIndicatorEnabled(false), navigation icon
+            // clicks are disabled i.e. the UP button will not work.
+            // We need to add a listener, as in below, so DrawerToggle will forward
+            // click events to this listener.
+            if(!mToolBarNavigationListenerIsRegistered) {
+                mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Doesn't have to be onBackPressed
+                        onBackPressed();
+                    }
+                });
+
+                mToolBarNavigationListenerIsRegistered = true;
+            }
+
+        } else {
+            // Remove back button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            // Show hamburger
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            // Remove the/any drawer toggle listener
+            mDrawerToggle.setToolbarNavigationClickListener(null);
+            mToolBarNavigationListenerIsRegistered = false;
+        }
+
+    }
+
+    private void settingToolbar(){
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setHeightToolbar();
+    }
+
 }

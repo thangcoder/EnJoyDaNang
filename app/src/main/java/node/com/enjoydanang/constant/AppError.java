@@ -24,7 +24,12 @@ public class AppError extends Throwable{
     public static final String DEFAULT_ERROR_MESSAGE = "Something went wrong! Please try again.";
     public static final String NETWORK_ERROR_MESSAGE = "No Internet Connection!";
     private static final String ERROR_MESSAGE_HEADER = "Error-Message";
+    public static final String DEFAULT_SERVER_ERROR_MSG = "Can't connect to Server, Please try again later !";
+    public static final String DEFAULT_NETWORK_ERROR_MSG = "Connecting internet has problem !";
+
+
     private final Throwable error;
+    public static final boolean ENABLE_CATCH_TIME_OUT = true;
 
     public AppError(Throwable e) {
         super(e);

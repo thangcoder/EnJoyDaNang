@@ -1,6 +1,5 @@
 package node.com.enjoydanang.ui.fragment.home;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,8 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -60,7 +57,7 @@ import static node.com.enjoydanang.R.id.fabFavorite;
  * Created by chien on 10/8/17.
  */
 
-public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
+public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener{
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 8;
     private static final int DURATION_SLIDE = 3000;
@@ -135,6 +132,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
         super.onPrepareOptionsMenu(menu);
     }
+
     @Override
     protected void init(View view) {
         user = Utils.getUserInfo();
@@ -389,8 +387,16 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
-                    DialogUtils.openDialogFragment(mFragmentManager, dialog);
+                    if (CollectionUtils.isNotEmpty(lstPartner)) {
+                        Partner partner;
+                        try {
+                            partner = lstPartner.get(position);
+                        } catch (IndexOutOfBoundsException ex) {
+                            partner = null;
+                        }
+                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+                        DialogUtils.openDialogFragment(mFragmentManager, dialog);
+                    }
                 }
             }, 50);
         }

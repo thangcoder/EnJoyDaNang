@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Partner;
@@ -241,6 +243,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         }
         if (partner != null) {
             showSending();
+            boolean hasErrorConvertImg = false;
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             List<String> lstImageBase64 = new ArrayList<>();
             if (mPreviewAdapter != null) {
@@ -253,9 +256,15 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                         if (item.getUri() != null) {
                             count++;
                             File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
-                            String strConvert = ImageUtils.encodeTobase64(file);
-                            lstImageBase64.set(count, strConvert);
+                            hasErrorConvertImg = file == null;
+                            if(file != null){
+                                String strConvert = ImageUtils.encodeTobase64(file);
+                                lstImageBase64.set(count, strConvert);
+                            }
                         }
+                    }
+                    if(hasErrorConvertImg){
+                        Toast.makeText(getContext(), AppError.DEFAULT_ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
                     }
                 }
             }

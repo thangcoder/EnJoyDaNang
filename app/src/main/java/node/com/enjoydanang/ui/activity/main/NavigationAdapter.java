@@ -1,8 +1,6 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import node.com.enjoydanang.R;
@@ -90,11 +87,6 @@ public class NavigationAdapter extends BaseAdapter {
         if (holder.imgIcon != null) {
             if (menuItem.getIcon() != 0) {
                 holder.imgIcon.setImageResource(menuItem.getIcon());
-            }
-        }
-        if(holder.span != null){
-            if(position == lstItem.size() - 1){
-                holder.span.setVisibility(View.INVISIBLE);
             }
         }
         return convertView;

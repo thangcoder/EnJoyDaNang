@@ -16,10 +16,8 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.utils.DialogUtils;
-import node.com.enjoydanang.utils.Utils;
 
 /**
  * Author: Tavv

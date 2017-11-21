@@ -1,17 +1,20 @@
 package node.com.enjoydanang.api;
 
 
-import node.com.enjoydanang.LogApp;
-import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.model.BaseReponse;
-
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import node.com.enjoydanang.LogApp;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.model.BaseReponse;
 import node.com.enjoydanang.model.NetworkStatus;
+import node.com.enjoydanang.utils.Utils;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
@@ -36,10 +39,16 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
             onFailure(status);
         }
         else if(e instanceof ConnectException){
-            onFailure("500");
+            String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
+            msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
+            onFailure(msg);
         }
         else if(e instanceof SocketTimeoutException || e instanceof UnknownHostException){
-            onFailure("408");
+            if(AppError.ENABLE_CATCH_TIME_OUT){
+                String msg = Utils.getLanguageByResId(R.string.Message_Networking_Problem);
+                msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_NETWORK_ERROR_MSG : msg;
+                onFailure(msg);
+            }
         }
         else {
             onFailure(e.getMessage());
@@ -58,19 +67,19 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
                 }else{
                     switch (((BaseReponse) model).getStatus()){
                         case Constant.API_402:
-                            ((BaseReponse) model).setMessage("交換に必要なポイントが不足しています。現金で購入することも可能です。");
+                            ((BaseReponse) model).setMessage(AppError.DEFAULT_ERROR_MESSAGE);
                             break;
                         case Constant.API_403:
-                            ((BaseReponse) model).setMessage("終了報告済みの現場です。現場詳細は終了報告画面から確認してください。");
+                            ((BaseReponse) model).setMessage(AppError.DEFAULT_ERROR_MESSAGE);
                             break;
                         case Constant.API_404:
-                            ((BaseReponse) model).setMessage("現在品切れの商品です。");
+                            ((BaseReponse) model).setMessage(AppError.DEFAULT_ERROR_MESSAGE);
                             break;
                         case Constant.API_501:
-                            ((BaseReponse) model).setMessage("ただいまシステムメンテナンス中です。ご迷惑をおかけし申し訳ございません。");
+                            ((BaseReponse) model).setMessage(AppError.DEFAULT_ERROR_MESSAGE);
                             break;
                         case Constant.API_502:
-                            ((BaseReponse) model).setMessage("処理に失敗しました。しばらく時間をおいてから再度お試しください。");
+                            ((BaseReponse) model).setMessage(AppError.DEFAULT_ERROR_MESSAGE);
                             break;
                     }
                 }

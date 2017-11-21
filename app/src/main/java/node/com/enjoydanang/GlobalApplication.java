@@ -2,7 +2,6 @@ package node.com.enjoydanang;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
@@ -38,7 +37,7 @@ public class GlobalApplication extends MultiDexApplication{
     @Override
     public void onCreate() {
         super.onCreate();
-        ImagePipelineConfig frescoConfig = ImagePipelineConfig.newBuilder(getApplicationContext()) .setDownsampleEnabled(true).build();
+        ImagePipelineConfig frescoConfig = ImagePipelineConfig.newBuilder(getApplicationContext()).setDownsampleEnabled(true).build();
         DraweeConfig draweeConfig = DraweeConfig.newBuilder()
                 .build();
         Fresco.initialize(this, frescoConfig, draweeConfig);

@@ -8,8 +8,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class HeaderInterceptor
-        implements Interceptor {
+public class HeaderInterceptor implements Interceptor {
     //    Context context;
 //    public HeaderInterceptor(Context context){
 //        this.context=context;

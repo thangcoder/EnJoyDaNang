@@ -45,13 +45,20 @@
             android:layout_weight="4"
             android:orientation="vertical">
 
+            <!--<ImageView-->
+                <!--android:id="@+id/img_profile"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:contentDescription="@null"-->
+                <!--android:src="@drawable/tab3_default_3x" />-->
             <ImageView
-                android:id="@+id/img_profile"
+                android:id="@+id/img_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contentDescription="@null"
-                android:src="@drawable/tab3_default_3x" />
+                android:src="@drawable/ic_hamburger" />
 
         </LinearLayout>
     </LinearLayout>

@@ -51,8 +51,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private Partner partner = null;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
+    @BindView(R.id.imgLogo)
+    ImageView imgLogo;
     @BindView(R.id.name)
     TextView toolbarName;
     @BindView(R.id.edit_profile)
@@ -80,7 +82,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         initToolbar();
         return rootView;
     }
-
+    @OnClick(R.id.img_back)
+    public void onClick(View view) {
+        dismiss();
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -155,12 +160,12 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     private void setEvents() {
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dismiss();
+//            }
+//        });
     }
 
     @Override

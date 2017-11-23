@@ -153,7 +153,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void init() {
-//        settingToolbar();
+        setHeightToolbar();
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -204,7 +204,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         int[] icons;
         String[] titles;
         List<NavigationItem> navigationItems = null;
-        try{
+        try {
             lstIndexHeaders = new ArrayList<>(Arrays.asList(hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
 
             icons = hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
@@ -214,17 +214,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             navigationItems = NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles);
 
             if (CollectionUtils.isNotEmpty(navigationItems)) {
-                NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,navigationItems);
+                NavigationAdapter mNavigationAdapter = new NavigationAdapter(this, navigationItems);
                 lvDrawerNav.setAdapter(mNavigationAdapter);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             lstIndexHeaders = new ArrayList<>(Arrays.asList(this.hasLogin ? Constant.INDEX_HEADER_NORMAL : Constant.INDEX_HEADER_NO_LOGIN));
             icons = this.hasLogin ? Constant.ICON_MENU_NORMAL : Constant.ICON_MENU_NO_LOGIN;
             titles = this.hasLogin ? LanguageHelper.getTitleMenuNormal() : LanguageHelper.getTitleMenuNoLogin();
-            if(ArrayUtils.isNotEmpty(titles)){
+            if (ArrayUtils.isNotEmpty(titles)) {
                 navigationItems = NavigationListItem.getNavigationAdapter(this, lstIndexHeaders, null, icons, titles);
                 if (CollectionUtils.isNotEmpty(navigationItems)) {
-                    NavigationAdapter mNavigationAdapter = new NavigationAdapter(this,navigationItems);
+                    NavigationAdapter mNavigationAdapter = new NavigationAdapter(this, navigationItems);
                     lvDrawerNav.setAdapter(mNavigationAdapter);
                 }
             }
@@ -270,12 +270,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
-                    }  else {
+                    } else {
                         currentTab = HomeTab.None;
                         if (tag.equals(ProfileFragment.class.getName())) {
                             lvDrawerNav.setSelection(7);
                         }
-                        setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
+                        setShowMenuItem(Constant.SHOW_MENU_BACK);
                     }
                     setStateTabSelected();
                     lvDrawerNav.requestLayout();
@@ -368,7 +368,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu,R.id.edit_profile,R.id.img_back})
+    @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.edit_profile, R.id.img_back})
     public void onClick(View view) {
         enableBackButton(true);
         switch (view.getId()) {
@@ -397,7 +397,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case R.id.img_menu:
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                     mDrawerLayout.closeDrawer(GravityCompat.START);
-                }else{
+                } else {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 }
 
@@ -431,7 +431,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (Utils.hasLogin()) {
             if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
-                if(position != LOGOUT){
+                if (position != LOGOUT) {
                     enableBackButton(true);
                 }
                 setShowMenuItem(1);
@@ -705,6 +705,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
      */
     public void setShowMenuItem(int type) {
         switch (type) {
+            case Constant.SHOW_MENU_BACK:
+                imgScan.setVisibility(View.VISIBLE);
+                installNav(Constant.SHOW_BACK_ICON);
+                break;
             case Constant.SHOW_QR_CODE:
                 imgScan.setVisibility(View.VISIBLE);
                 installNav(Constant.HIDE_BACK_ICON);
@@ -718,15 +722,18 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     /**
      * Show/hide back icon
+     *
      * @param type
      */
-    public void installNav(int type){
-        switch (type){
+    public void installNav(int type) {
+        switch (type) {
             case Constant.HIDE_BACK_ICON:
                 imgBack.setVisibility(View.GONE);
+                toolbarName.setVisibility(View.VISIBLE);
                 break;
             case Constant.SHOW_BACK_ICON:
                 imgBack.setVisibility(View.VISIBLE);
+                toolbarName.setVisibility(View.GONE);
                 break;
         }
     }
@@ -757,8 +764,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 });
     }
 
-    public void enableBackButton(boolean enable){
-        if(enable) {
+    public void enableBackButton(boolean enable) {
+        if (enable) {
             // Remove hamburger
             mDrawerToggle.setDrawerIndicatorEnabled(false);
             // Show back button
@@ -767,7 +774,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             // clicks are disabled i.e. the UP button will not work.
             // We need to add a listener, as in below, so DrawerToggle will forward
             // click events to this listener.
-            if(!mToolBarNavigationListenerIsRegistered) {
+            if (!mToolBarNavigationListenerIsRegistered) {
                 mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -790,12 +797,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
 
     }
-
-//    private void settingToolbar(){
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        setHeightToolbar();
-//    }
 
     @Override
     public void onShowPopup(Repository response) {

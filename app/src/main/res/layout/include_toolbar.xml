@@ -8,15 +8,6 @@
     android:minHeight="?actionBarSize"
     tools:background="@color/colorPrimary">
 
-    <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--android:minHeight="?attr/actionBarSize"-->
-        <!--android:theme="@style/AppTheme.ActionBarTheme"-->
-        <!--app:navigationIcon="?attr/homeAsUpIndicator" />-->
-
 
     <RelativeLayout
         android:id="@+id/ll_left"
@@ -35,7 +26,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_action_arrow_left" />
+            android:src="@drawable/left_arrow" />
 
         <TextView
             android:id="@+id/name"
@@ -44,8 +35,9 @@
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/img_back"
-            android:paddingLeft="@dimen/_20sdp"
-            android:text="HOME"
+            android:paddingLeft="@dimen/_8sdp"
+            android:layout_alignParentLeft="true"
+            android:text="@string/Home"
             android:textColor="@color/white"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
@@ -55,9 +47,9 @@
             android:id="@+id/imgLogo"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_35sdp"
-            android:layout_centerInParent="true"
             android:contentDescription="@null"
             android:src="@drawable/logo_home"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:visibility="visible" />
 
         <ImageView

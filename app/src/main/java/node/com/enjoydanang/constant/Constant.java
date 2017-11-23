@@ -76,6 +76,7 @@ public class Constant {
     public static final int  SHOW_QR_CODE = 1;
     public static final int  SHOW_EDIT_PROFILE = 2;
     public static final int  HIDE_ALL_ITEM_MENU = 3;
+    public static final int  SHOW_MENU_BACK = 4;
 
 
 

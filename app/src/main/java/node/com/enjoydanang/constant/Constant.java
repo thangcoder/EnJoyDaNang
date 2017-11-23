@@ -70,4 +70,14 @@ public class Constant {
 
     public static final String KEY_EXTRAS_USER_INFO = "user_data";
     public static final String SHARED_PREFS_NAME= "EnjoySharedPrefs";
+
+    public static final int  SHOW_BACK_ICON = 1;
+    public static final int  HIDE_BACK_ICON = 2;
+    public static final int  SHOW_QR_CODE = 1;
+    public static final int  SHOW_EDIT_PROFILE = 2;
+    public static final int  HIDE_ALL_ITEM_MENU = 3;
+
+
+
+
 }

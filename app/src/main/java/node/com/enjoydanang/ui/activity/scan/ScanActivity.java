@@ -60,8 +60,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     private ZXingScannerView mScannerView;
 
     private UserInfo userInfo;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
 
     @BindView(R.id.scan_container)
     ViewGroup contentFrame;
@@ -227,7 +227,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     @Override
     public void init() {
         userInfo = Utils.getUserInfo();
-        initToolbar(toolbar);
+//        initToolbar(toolbar);
         mScannerView = new ZXingScannerView(this) {
             @Override
             protected IViewFinder createViewFinderView(Context context) {
@@ -263,13 +263,13 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
     @Override
     public void setEvent() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransitionExit();
-            }
-        });
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//                overridePendingTransitionExit();
+//            }
+//        });
     }
 
 

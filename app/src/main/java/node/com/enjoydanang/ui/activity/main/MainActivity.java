@@ -18,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,14 +93,17 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private final int LOGIN = 4;
     private boolean isOpen;
     private final String IS_OPEN = "IS_OPEN";
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
     @BindView(R.id.name)
     TextView toolbarName;
-    @BindView(R.id.edit_profile)
-    TextView tvProfile;
     @BindView(R.id.img_scan)
     ImageView imgScan;
+
+    @BindView(R.id.img_back)
+    ImageView imgBack;
+
+    @BindView(R.id.imgLogo)
+    ImageView imgLogo;
 
     @BindView(R.id.frToolBar)
     FrameLayout frToolBar;
@@ -115,8 +119,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.img_search)
     ImageView imgSearch;
 
-    @BindView(R.id.img_profile)
-    ImageView imgProfile;
+    @BindView(R.id.img_menu)
+    ImageView imgMenu;
 
     @BindView(R.id.lv_drawer_nav)
     ListView lvDrawerNav;
@@ -149,10 +153,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void init() {
-        settingToolbar();
-        LanguageHelper.getValueByViewId(tvProfile);
+//        settingToolbar();
         mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                this, mDrawerLayout, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
             }
@@ -166,7 +169,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         mNavigationView.setNavigationItemSelectedListener(this);
         currentTab = HomeTab.getCurrentTab(0);
         setStateTabSelected();
-        setShowMenuItem(3);
+        setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
         if (!checkPermission()) {
             requestPermission();
@@ -259,24 +262,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 if (fragment != null) {
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
-                        setShowMenuItem(1);
+                        setShowMenuItem(Constant.SHOW_QR_CODE);
                         EventBus.getDefault().post("hasBackFragment");
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(SearchFragment.class.getName())) {
-                        setShowMenuItem(3);
+                        setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
-                    } else if (tag.equals(ProfileMenuFragment.class.getName())) {
-                        setShowMenuItem(2);
-                        currentTab = HomeTab.Profile;
-                        lvDrawerNav.clearChoices();
-                    } else {
+                    }  else {
                         currentTab = HomeTab.None;
                         if (tag.equals(ProfileFragment.class.getName())) {
-                            setShowMenuItem(3);
                             lvDrawerNav.setSelection(7);
                         }
+                        setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
                     }
                     setStateTabSelected();
                     lvDrawerNav.requestLayout();
@@ -369,7 +368,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    @OnClick({R.id.img_home, R.id.img_profile, R.id.img_search, R.id.img_scan, R.id.edit_profile})
+    @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu,R.id.edit_profile,R.id.img_back})
     public void onClick(View view) {
         enableBackButton(true);
         switch (view.getId()) {
@@ -395,20 +394,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                 }
                 break;
-            case R.id.img_profile:
-                if (currentTab != HomeTab.Profile) {
-                    if (Utils.hasLogin()) {
-                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProfileMenuFragment.class.getName());
-                        if (fragment == null) {
-                            addFrMenu(ProfileMenuFragment.class.getName(), true);
-                        } else {
-                            currentTab = HomeTab.Profile;
-                            resurfaceFragment(fragment, ProfileMenuFragment.class.getName());
-                        }
-                    } else {
-                        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
-                    }
+            case R.id.img_menu:
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    mDrawerLayout.closeDrawer(GravityCompat.START);
+                }else{
+                    mDrawerLayout.openDrawer(GravityCompat.START);
                 }
+
                 break;
             case R.id.img_scan:
                 if (Utils.hasLogin()) {
@@ -421,6 +413,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case R.id.edit_profile:
                 addFr(ProfileFragment.class.getName(), CHANGE_PROFILE);
                 currentTab = HomeTab.None;
+                break;
+            case R.id.img_back:
+                this.onBackPressed();
                 break;
         }
     }
@@ -543,25 +538,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case Home:
                 imgHome.setImageResource(R.drawable.tab1_selected_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
-                imgProfile.setImageResource(R.drawable.tab3_default_3x);
                 setNameToolbar(Utils.getLanguageByResId(R.string.Home).toUpperCase());
                 break;
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
-                imgProfile.setImageResource(R.drawable.tab3_default_3x);
                 setNameToolbar(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
-                break;
-            case Profile:
-                imgHome.setImageResource(R.drawable.tab1_default_3x);
-                imgSearch.setImageResource(R.drawable.tab2_default_3x);
-                imgProfile.setImageResource(R.drawable.tab3_selected_3x);
-                setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_default_3x);
-                imgProfile.setImageResource(R.drawable.tab3_default_3x);
                 break;
             default:
                 break;
@@ -710,11 +696,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
 
-    public void showMenuOptions(){
-        imgScan.setVisibility(View.VISIBLE);
-        tvProfile.setVisibility(View.GONE);
-    }
-
     /**
      * 1:Show Scan Menu Item
      * 2: Show Edit Menu Item
@@ -724,17 +705,28 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
      */
     public void setShowMenuItem(int type) {
         switch (type) {
-            case 1:
+            case Constant.SHOW_QR_CODE:
                 imgScan.setVisibility(View.VISIBLE);
-                tvProfile.setVisibility(View.GONE);
+                installNav(Constant.HIDE_BACK_ICON);
                 break;
-            case 2:
+            case Constant.HIDE_ALL_ITEM_MENU:
                 imgScan.setVisibility(View.GONE);
-                tvProfile.setVisibility(View.VISIBLE);
+                installNav(Constant.SHOW_BACK_ICON);
                 break;
-            case 3:
-                imgScan.setVisibility(View.GONE);
-                tvProfile.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Show/hide back icon
+     * @param type
+     */
+    public void installNav(int type){
+        switch (type){
+            case Constant.HIDE_BACK_ICON:
+                imgBack.setVisibility(View.GONE);
+                break;
+            case Constant.SHOW_BACK_ICON:
+                imgBack.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -770,7 +762,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             // Remove hamburger
             mDrawerToggle.setDrawerIndicatorEnabled(false);
             // Show back button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             // when DrawerToggle is disabled i.e. setDrawerIndicatorEnabled(false), navigation icon
             // clicks are disabled i.e. the UP button will not work.
             // We need to add a listener, as in below, so DrawerToggle will forward
@@ -789,7 +781,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
         } else {
             // Remove back button
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             // Show hamburger
             mDrawerToggle.setDrawerIndicatorEnabled(true);
             // Remove the/any drawer toggle listener
@@ -799,11 +791,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    private void settingToolbar(){
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setHeightToolbar();
-    }
+//    private void settingToolbar(){
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        setHeightToolbar();
+//    }
 
     @Override
     public void onShowPopup(Repository response) {

@@ -48,6 +48,7 @@ import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NavigationItem;
@@ -99,8 +100,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @BindView(R.id.frToolBar)
     FrameLayout frToolBar;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
     @BindView(R.id.left_drawer)
     NavigationView mNavigationView;
     @BindView(R.id.img_home)
@@ -127,7 +126,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     public HomeTab currentTab;
 
-    private DrawerLayout mDrawerLayout;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -148,7 +148,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         settingToolbar();
         LanguageHelper.getValueByViewId(tvProfile);
         mDrawerToggle = new ActionBarDrawerToggle(
-                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
             }
@@ -157,7 +157,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             public void onDrawerClosed(View drawerView) {
             }
         };
-        mDrawer.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         currentTab = HomeTab.getCurrentTab(0);
@@ -230,8 +230,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         ButterKnife.bind(this);
         txtFullName = (TextView) mNavigationView.findViewById(R.id.txtFullName);
         txtEmail = (TextView) mNavigationView.findViewById(R.id.txtEmail);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
     }
 
     @Override
@@ -258,6 +256,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
                         setShowMenuItem(1);
+                        EventBus.getDefault().post("hasBackFragment");
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(SearchFragment.class.getName())) {
@@ -307,25 +306,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 enableBackButton(false);
             } else {
                 if (Utils.hasLogin()) {
-//                    DialogUtils.showDialogConfirm(this, Utils.getLanguageByResId(R.string.Home_Account_Logout),
-//                            Utils.getLanguageByResId(R.string.Message_Confirm_Action_Logout),
-//                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
-//                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
-//                            new ColorDialog.OnPositiveListener() {
-//                                @Override
-//                                public void onClick(ColorDialog colorDialog) {
-//                                    colorDialog.dismiss();
-//                                    GlobalApplication.setUserInfo(null);
-//                                    validRedirectLogin();
-//                                    finish();
-//                                }
-//                            }, new ColorDialog.OnNegativeListener() {
-//                                @Override
-//                                public void onClick(ColorDialog colorDialog) {
-//                                    colorDialog.dismiss();
-//                                }
-//                            });
-
                     if (isExit) {
                         finish();
                         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -371,11 +351,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -456,7 +432,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (Utils.hasLogin()) {
             if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
-                enableBackButton(true);
+                if(position != LOGOUT){
+                    enableBackButton(true);
+                }
                 setShowMenuItem(1);
                 switch (position) {
                     case 0:
@@ -593,12 +571,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         replaceFragment(R.id.container_fragment, fragmentTag, false, null, transitionInfo);
     }
 
-    private void addFrMenu(String fragmentTag, boolean isBackStack) {
+    public void addFrMenu(String fragmentTag, boolean isBackStack) {
 //        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, 0, 0, 0);
         addFragment(R.id.container_fragment, fragmentTag, isBackStack, null, null);
     }
 
-    private void addFr(String fragmentTag, int position) {
+    public void addFr(String fragmentTag, int position) {
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         if (position <= LOGOUT) {
             lvDrawerNav.setItemChecked(position, true);
@@ -765,9 +743,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private void validRedirectLogin() {
         if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
-            startActivity(new Intent(this, LoginActivity.class));
             GlobalApplication.getGlobalApplicationContext().setHasSessionLogin(false);
             SharedPrefsUtils.clearPrefs(Constant.SHARED_PREFS_NAME);
+            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 
@@ -783,7 +761,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 });
     }
 
-    private void enableBackButton(boolean enable){
+    public void enableBackButton(boolean enable){
         if(enable) {
             // Remove hamburger
             mDrawerToggle.setDrawerIndicatorEnabled(false);
@@ -823,4 +801,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setHeightToolbar();
     }
 
+    @Override
+    public void onShowPopup(Repository response) {
+
+    }
 }

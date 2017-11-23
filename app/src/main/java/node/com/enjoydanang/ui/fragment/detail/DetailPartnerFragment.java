@@ -133,7 +133,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @Override
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
-//        initGoogleClient();
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -162,15 +161,15 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         prgLoading.post(new Runnable() {
             @Override
             public void run() {
-                initWebView();
-                locationHelper = new LocationHelper(getActivity(), DetailPartnerFragment.this);
-                locationHelper.checkpermission();
-                locationHelper.buildGoogleApiClient(DetailPartnerFragment.this, DetailPartnerFragment.this);
                 Bundle bundle = getArguments();
                 if (bundle != null) {
                     partner = (Partner) bundle.getSerializable(TAG);
                     if (partner != null) {
+                        initWebView();
                         mvpPresenter.getAllDataHome(partner.getId());
+                        locationHelper = new LocationHelper(getActivity(), DetailPartnerFragment.this);
+                        locationHelper.checkpermission();
+                        locationHelper.buildGoogleApiClient(DetailPartnerFragment.this, DetailPartnerFragment.this);
                     }
                 }
             }
@@ -311,6 +310,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 mWebView.setVisibility(View.GONE);
             }
         }
+        prgLoading.setVisibility(View.GONE);
+        lrlContentDetail.setVisibility(View.VISIBLE);
     }
 
     private void loadMapView(DetailPartner detailPartner, GoogleMap googleMap) {
@@ -330,8 +331,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             mMapView.setVisibility(View.GONE);
             ex.printStackTrace();
         }
-        prgLoading.setVisibility(View.GONE);
-        lrlContentDetail.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -507,7 +506,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             txtContent.loadDataWithBaseURL(null, detailPartner.getDescription(), "text/html", "utf-8", null);
             ratingBar.setRating(detailPartner.getStarReview());
             ratingBar.setFocusable(false);
-
             loadVideo(detailPartner.getVideo());
         }
 

@@ -188,4 +188,5 @@
     <string name="Message.Warning.File">Message.Warning.File</string>
     <string name="Message.Networking.Problem">Message.Networking.Problem</string>
     <string name="Message.Server.Error">Message.Server.Error</string>
+    <string name="Message.Category.PartnerEmpty">Message.Category.PartnerEmpty</string>
 </resources>

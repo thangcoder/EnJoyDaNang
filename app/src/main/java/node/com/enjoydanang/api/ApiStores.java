@@ -204,6 +204,9 @@ public interface ApiStores {
                                                 @Field("image2") String image2,
                                                 @Field("image3") String image3);
 
+    @GET("API")
+    Observable<Repository> getPopupInformation();
+
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

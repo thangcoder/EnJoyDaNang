@@ -292,7 +292,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                         @Override
                         public void onFailure(String msg) {
                             hideSending();
-                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
+                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
+                                    Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
                         }
 
                         @Override

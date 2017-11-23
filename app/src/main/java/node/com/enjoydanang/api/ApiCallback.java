@@ -18,6 +18,8 @@ import node.com.enjoydanang.utils.Utils;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
+import static com.kakao.auth.StringSet.msg;
+
 public abstract class ApiCallback<M> extends Subscriber<M> {
 
     public abstract void onSuccess(M model);
@@ -51,7 +53,14 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
             }
         }
         else {
-            onFailure(e.getMessage());
+            String msgServer = e.getMessage();
+            if(StringUtils.equals(msgServer, "500")){
+                String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
+                msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
+                onFailure(msg);
+                return;
+            }
+            onFailure(msgServer);
         }
         onFinish();
     }

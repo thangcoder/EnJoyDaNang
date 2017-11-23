@@ -8,13 +8,11 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -22,6 +20,9 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.ExchangeRate;
@@ -57,7 +59,7 @@ import static node.com.enjoydanang.R.id.fabFavorite;
  * Created by chien on 10/8/17.
  */
 
-public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener{
+public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 8;
     private static final int DURATION_SLIDE = 3000;
@@ -67,46 +69,30 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @BindView(R.id.grv_menu)
     GridView gridView;
 
-
     @BindView(R.id.lrlContentHome)
     LinearLayout lrlContentHome;
-
 
     @BindView(R.id.progress_bar)
     ProgressBar prgLoading;
 
-//    @BindView(R.id.rcv_weather)
-//    RecyclerView rcvWeather;
-//    @BindView(R.id.txtExchangeRate)
-//    TextView txtExchangeRate;
-//    @BindView(R.id.txtNameExchange)
-//    TextView txtNameExchange;
-
-//    @BindView(R.id.imgVNRate)
-//    ImageView imgVNRate;
-//
-//    @BindView(R.id.imgUSRate)
-//    ImageView imgUSRate;
-
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
-
-//    @BindView(R.id.carouselView)
-//    BannerSlider bannerSlider;
 
     @BindView(R.id.carouselView)
     SliderLayout bannerSlider;
 
-
     private CategoryAdapter mCategoryAdapter;
+
     private final int startPage = 0;
+
     private int currentPage;
 
     private List<Partner> lstPartner;
+
     private List<Category> lstCategories;
 
-
     private PartnerAdapter mPartnerAdapter;
+
     private boolean hasLoadmore;
 
     private int countCategoryClick = 0;
@@ -128,15 +114,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     protected void init(View view) {
         user = Utils.getUserInfo();
-        MainActivity activity = (MainActivity) mMainActivity;
         mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home).toUpperCase());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
@@ -151,9 +130,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         lstCategories = new ArrayList<>();
         mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
         gridView.setAdapter(mCategoryAdapter);
-
-//        rcvWeather.setLayoutManager(new LinearLayoutManager(mMainActivity, LinearLayoutManager.HORIZONTAL, false));
-//        bannerSlider.setLoopSlides(true);
     }
 
     @Override
@@ -319,27 +295,31 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        loadmorePartner = new LoadmorePartner(mLayoutManager);
-        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
-        countCategoryClick++;
-        lstPartner.clear();
+//        loadmorePartner = new LoadmorePartner(mLayoutManager);
+//        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
+//        countCategoryClick++;
+//        lstPartner.clear();
+        mMainActivity.enableBackButton(true);
         Category category = (Category) parent.getItemAtPosition(position);
-        if (category != null) {
-            for (int i = 0; i < gridView.getCount(); i++) {
-                View childView = gridView.getChildAt(i);
-                TextView txtName = (TextView) childView.findViewById(R.id.tv_name);
-                if (i == position) {
-                    txtName.setTextColor(Utils.getColorRes(R.color.color_category_selected));
-                } else {
-                    txtName.setTextColor(Utils.getColorRes(R.color.color_title_category));
-                }
-            }
-            showLoading();
-            loadmorePartner.setCategoryId(category.getId());
-            hasLoadmore = false;
-            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId());
-//            bannerSlider.setVisibility(View.GONE);
-        }
+        FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
+        mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName()),
+                R.id.container_fragment, PartnerCategoryFragment.class.getName(),
+                transitionInfo);
+//        if (category != null) {
+//            for (int i = 0; i < gridView.getCount(); i++) {
+//                View childView = gridView.getChildAt(i);
+//                TextView txtName = (TextView) childView.findViewById(R.id.tv_name);
+//                if (i == position) {
+//                    txtName.setTextColor(Utils.getColorRes(R.color.color_category_selected));
+//                } else {
+//                    txtName.setTextColor(Utils.getColorRes(R.color.color_title_category));
+//                }
+//            }
+//            showLoading();
+//            loadmorePartner.setCategoryId(category.getId());
+//            hasLoadmore = false;
+//            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId());
+//        }
     }
 
     private class LoadmorePartner extends EndlessParentScrollListener {
@@ -424,6 +404,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onFetchFailure(AppError error) {
         Log.e(TAG, "onFetchFailure " + error.getMessage());
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
     private void clearFirstTimeData() {
@@ -465,6 +446,27 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             return;
         }
         updateItemNoLoadmore(partners);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageReceive(String msg) {
+        nestedScrollView.scrollTo(0, 0);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
 }

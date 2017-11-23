@@ -10,6 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.GlobalApplication;
+import node.com.enjoydanang.api.ApiCallback;
+import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
 
@@ -36,11 +38,31 @@ public class MainPresenter extends BasePresenter<MainView> {
             } else {
                 email.setText(userInfo.getEmail());
             }
-            ImageUtils.loadImageWithFreso(imgAvatar,userInfo.getImage());
+            ImageUtils.loadImageWithFreso(imgAvatar, userInfo.getImage());
         } else {
             fullName.setVisibility(View.GONE);
             email.setVisibility(View.GONE);
             imgAvatar.setVisibility(View.GONE);
         }
+    }
+
+    void getPopup() {
+        addSubscription(apiStores.getPopupInformation(), new ApiCallback<Repository>() {
+
+            @Override
+            public void onSuccess(Repository model) {
+                mvpView.onShowPopup(model);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 }

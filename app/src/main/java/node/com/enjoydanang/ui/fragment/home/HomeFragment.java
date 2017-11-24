@@ -36,6 +36,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
@@ -364,6 +365,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         } else {
             MainActivity activity = (MainActivity) getActivity();
             activity.currentTab = HomeTab.None;
+            activity.setShowMenuItem(Constant.SHOW_MENU_BACK);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

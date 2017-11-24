@@ -37,11 +37,10 @@
             android:layout_toRightOf="@+id/img_back"
             android:paddingLeft="@dimen/_8sdp"
             android:layout_alignParentLeft="true"
-            android:text="@string/Home"
             android:textColor="@color/white"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/imgLogo"

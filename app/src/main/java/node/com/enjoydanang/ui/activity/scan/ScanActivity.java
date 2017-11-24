@@ -10,7 +10,6 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,13 +79,6 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the time to figure out.
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mScannerView.resumeCameraPreview(ScanActivity.this);
-            }
-        }, 1000);
     }
 
     @Override
@@ -153,6 +145,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                mScannerView.resumeCameraPreview(ScanActivity.this);
             }
         });
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -185,6 +178,7 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
                         promptDialog.dismiss();
                         if (alertDialog != null && alertDialog.isShowing()) {
                             alertDialog.dismiss();
+                            mScannerView.resumeCameraPreview(ScanActivity.this);
                         }
                     }
                 });
@@ -310,5 +304,15 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             }
             canvas.drawText(StringUtils.EMPTY, tradeMarkLeft, tradeMarkTop, PAINT);
         }
+    }
+
+    private void resumeScan() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mScannerView.resumeCameraPreview(ScanActivity.this);
+            }
+        }, 1000);
     }
 }

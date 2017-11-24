@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -155,6 +154,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         setHeightToolbar();
         tvProfile.setVisibility(View.GONE);
         imgScan.setVisibility(View.VISIBLE);
+        toolbarName.setVisibility(View.GONE);
     }
 
     private void setEvents() {

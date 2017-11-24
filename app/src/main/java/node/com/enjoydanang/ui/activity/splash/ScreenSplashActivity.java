@@ -44,15 +44,14 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
         if (NetworkUtils.isNetworkContented(ScreenSplashActivity.this)) {
             mvpPresenter = createPresenter();
             mvpPresenter.loadLanguage();
         } else {
             DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_No_Internet));
         }
-
     }
 
     @Override
@@ -92,6 +91,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
             }
         }, SPLASH_TIME_OUT);
     }
+
 
     private void openNextActivity() {
         if (Utils.hasSessionLogin()) {

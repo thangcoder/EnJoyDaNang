@@ -34,8 +34,6 @@ import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
-import static node.com.enjoydanang.R.id.fabFavorite;
-
 /**
  * Author: Tavv
  * Created on 22/11/2017.
@@ -103,7 +101,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     @Override
     public void onClick(View view, final int position) {
-        if (view.getId() == fabFavorite) {
+        if (view.getId() == R.id.fabFavorite) {
             if (userInfo.getUserId() != 0) {
                 FloatingActionButton fabFavorite = (FloatingActionButton) view;
                 mvpPresenter.addFavorite(userInfo.getUserId(), lstPartner.get(position).getId());

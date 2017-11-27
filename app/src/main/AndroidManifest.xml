@@ -30,6 +30,11 @@
         <activity android:name="com.facebook.FacebookActivity" />
 
         <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c56bb7c6dda9de4abf3082eaf30cee3de5de2186"
+            />
+
+        <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
         <meta-data

@@ -9,4 +9,5 @@
     <string name="fb_login_protocol_scheme">fb123608678348689</string>
     <string name="facebook_app_id">123608678348689</string>
     <string name="google_map_key">AIzaSyACkM_OFDB78OK2aexfO5IW-SKpidDOZ5g</string>
+    <string name="fabric_key">c56bb7c6dda9de4abf3082eaf30cee3de5de2186</string>
 </resources>

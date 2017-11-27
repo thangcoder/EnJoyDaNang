@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -13,6 +14,7 @@ import com.kakao.auth.KakaoSDK;
 
 import org.json.JSONObject;
 
+import io.fabric.sdk.android.Fabric;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 import node.com.enjoydanang.utils.SharedPrefsUtils;
@@ -44,6 +46,11 @@ public class GlobalApplication extends MultiDexApplication{
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(new Crashlytics())
+                .debuggable(BuildConfig.DEBUG_MODE)
+                .build();
+        Fabric.with(fabric);
         new AppUpdateConfiguration().configFirebaseUpdate();
         SharedPrefsUtils.setContext(this);
         hasSessionLogin = Utils.hasSessionLogin();

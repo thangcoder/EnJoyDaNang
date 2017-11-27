@@ -17,9 +17,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -48,9 +53,11 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NavigationItem;
+import node.com.enjoydanang.model.Popup;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
@@ -64,7 +71,9 @@ import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
+import node.com.enjoydanang.utils.DateUtils;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
@@ -165,6 +174,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setStateTabSelected();
         setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
+        if(!disableShowPopup()){
+            mvpPresenter.getPopup();
+        }
         if (!checkPermission()) {
             requestPermission();
         }
@@ -303,7 +315,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     }
                 }
                 getSupportFragmentManager().popBackStack();
-                enableBackButton(false);
+//                enableBackButton(false);
+                setShowMenuItem(Constant.SHOW_MENU_BACK);
             } else {
                 if (Utils.hasLogin()) {
                     if (isExit) {
@@ -367,7 +380,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.edit_profile, R.id.img_back})
     public void onClick(View view) {
-        enableBackButton(true);
         switch (view.getId()) {
             case R.id.img_home:
                 if (currentTab != HomeTab.Home) {
@@ -429,7 +441,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (Utils.hasLogin()) {
             if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
                 if (position != LOGOUT) {
-                    enableBackButton(true);
+                    setShowMenuItem(Constant.SHOW_BACK_ICON);
                 }
                 setShowMenuItem(1);
                 switch (position) {
@@ -485,7 +497,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
             }
         } else {
-            enableBackButton(true);
+            setShowMenuItem(Constant.SHOW_BACK_ICON);
             switch (position) {
                 case 0:
                     break;
@@ -744,7 +756,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private void validRedirectLogin() {
         if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
             GlobalApplication.getGlobalApplicationContext().setHasSessionLogin(false);
-            SharedPrefsUtils.clearPrefs(Constant.SHARED_PREFS_NAME);
+            SharedPrefsUtils.removeVariableFromPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO);
             startActivity(new Intent(this, LoginActivity.class));
         }
     }
@@ -796,7 +808,70 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     @Override
-    public void onShowPopup(Repository response) {
+    public void onShowPopup(Repository<Popup> response) {
+        showPopupMain(response.getData().get(0));
+    }
 
+    @Override
+    public void onError(AppError error) {
+        Log.e(TAG, "onError " + error.getMessage());
+    }
+
+    private void showPopupMain(final Popup popup) {
+        if (popup == null) return;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_home, null);
+        dialogBuilder.setView(dialogView);
+//        AppCompatButton btnViewDetail = (AppCompatButton) dialogView.findViewById(R.id.btnPopupLeft);
+        final AppCompatButton btnHide = (AppCompatButton) dialogView.findViewById(R.id.btnPopupCenter);
+        AppCompatButton btnClose = (AppCompatButton) dialogView.findViewById(R.id.btnPopupRight);
+
+//        btnViewDetail.setText(popup.getTextButtonLeft());
+        btnHide.setText(popup.getTextButtonCenter());
+        btnClose.setText(popup.getTextButtonRight());
+
+        SimpleDraweeView imgPopup = (SimpleDraweeView) dialogView.findViewById(R.id.imgPopup);
+
+        ImageUtils.loadImageWithFreso(imgPopup, popup.getImage());
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setCancelable(false);
+
+//        btnViewDetail.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(popup.getHref().length() > 1){
+//                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(popup.getHref()));
+//                    startActivity(intent);
+//                }
+//            }
+//        });
+
+        btnHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, false);
+                alertDialog.dismiss();
+            }
+        });
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String currentTime = DateUtils.getCurrentTime();
+                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, true);
+                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_DATE_CLOSE_POPUP, currentTime);
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private boolean disableShowPopup() {
+        String strTimeClosePopup = SharedPrefsUtils.getStringFromPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_DATE_CLOSE_POPUP);
+        boolean hasClose = SharedPrefsUtils.getBooleanFromPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP);
+        return hasClose && (StringUtils.isNotBlank(strTimeClosePopup) && !DateUtils.dayIsYesterday(strTimeClosePopup));
     }
 }

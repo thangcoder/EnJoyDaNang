@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.review.reply;
 
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,5 +130,20 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             }
         }
         return result;
+    }
+
+    public void setProgressMore(final boolean isProgress) {
+        if (isProgress) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    replies.add(null);
+                    notifyItemInserted(replies.size() - 1);
+                }
+            });
+        } else {
+            replies.remove(replies.size() - 1);
+            notifyItemRemoved(replies.size());
+        }
     }
 }

@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.fragment.review;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -283,6 +284,21 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 review.setExpandedComment(false);
             }
         });
+    }
+
+    public void setProgressMore(final boolean isProgress) {
+        if (isProgress) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    lstReviews.add(null);
+                    notifyItemInserted(lstReviews.size() - 1);
+                }
+            });
+        } else {
+            lstReviews.remove(lstReviews.size() - 1);
+            notifyItemRemoved(lstReviews.size());
+        }
     }
 
 

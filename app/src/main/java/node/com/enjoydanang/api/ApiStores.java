@@ -14,6 +14,7 @@ import node.com.enjoydanang.model.Introduction;
 import node.com.enjoydanang.model.Language;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.Popup;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.Schedule;
@@ -204,8 +205,8 @@ public interface ApiStores {
                                                 @Field("image2") String image2,
                                                 @Field("image3") String image3);
 
-    @GET("API")
-    Observable<Repository> getPopupInformation();
+    @GET("GlobalApi.asmx/PopupAds")
+    Observable<Repository<Popup>> getPopupInformation();
 
 //    @FormUrlEncoded
 //    @POST("/login")

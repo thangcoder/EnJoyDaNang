@@ -37,7 +37,7 @@ import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
+import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 
@@ -92,6 +92,8 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private int rowIndexClick;
 
+    private boolean hasLoadmore;
+
     private Review currentReviewClick;
 
     public static ReviewFragment newInstance(Partner partner) {
@@ -140,20 +142,17 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     protected void setEvent(View view) {
-        recyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(mLayoutManager) {
+        recyclerView.addOnScrollListener(new EndlessScrollListener(mLayoutManager) {
 
             @Override
-            public int getFooterViewType(int defaultNoFooterViewType) {
-                return 1;
-            }
-
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page) {
                 currentPage = page;
+//                mAdapter.setProgressMore(true);
+//                hasLoadmore = true;
                 onRetryGetListReview(page);
             }
-        });
 
+        });
         lrlContentReview.setOnTouchListener(this);
     }
 
@@ -207,6 +206,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchReviews(List<Review> models) {
+//        if(hasLoadmore){
+//            mAdapter.setProgressMore(false);
+//        }
         if (CollectionUtils.isEmpty(models) && currentPage == 0) {
             lrlContentReview.setVisibility(View.VISIBLE);
             prgLoading.setVisibility(View.GONE);
@@ -229,7 +231,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     @Override
     public void onFetchReplyByReview(Repository<Reply> data) {
         prgLoadingReply.setVisibility(View.GONE);
-        if(CollectionUtils.isNotEmpty(lstReply.get(rowIndexClick))){
+        if (CollectionUtils.isNotEmpty(lstReply.get(rowIndexClick))) {
             lstReply.get(rowIndexClick).clear();
         }
         lstReply.get(rowIndexClick).addAll(data.getData());
@@ -266,7 +268,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     }
 
     public void refreshItems(List<Review> lstReviews) {
-        if(CollectionUtils.isNotEmpty(this.lstReviews)){
+        if (CollectionUtils.isNotEmpty(this.lstReviews)) {
             this.lstReviews.clear();
         }
         this.lstReviews.addAll(lstReviews);

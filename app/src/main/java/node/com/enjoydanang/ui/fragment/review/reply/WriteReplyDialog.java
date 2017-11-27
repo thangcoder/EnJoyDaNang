@@ -62,7 +62,7 @@ import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
+import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
@@ -148,6 +148,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     @BindView(R.id.lrlWriteReply)
     LinearLayout lrlWriteReply;
+
+    private boolean hasLoadmore;
 
 
     @BindView(R.id.toolbar)
@@ -516,16 +518,19 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void updateReplies(List<Reply> replies) {
+//        if(hasLoadmore){
+//            replyAdapter.setProgressMore(false);
+//        }
         int oldSize = lstReplies.size();
         int newSize = 0;
-        if(isRefreshAfterSubmit){
-            if(CollectionUtils.isNotEmpty(lstReplies)){
+        if (isRefreshAfterSubmit) {
+            if (CollectionUtils.isNotEmpty(lstReplies)) {
                 lstReplies.clear();
                 replyAdapter.notifyItemRangeRemoved(0, oldSize);
             }
             lstReplies.addAll(replies);
             newSize = lstReplies.size();
-        }else{
+        } else {
             newSize = oldSize + replies.size();
             lstReplies.addAll(replies);
         }
@@ -539,14 +544,12 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void setEvents() {
-        rcvReplies.addOnScrollListener(new EndlessRecyclerViewScrollListener(replyLayoutManager) {
-            @Override
-            public int getFooterViewType(int defaultNoFooterViewType) {
-                return 1;
-            }
+        rcvReplies.addOnScrollListener(new EndlessScrollListener(replyLayoutManager) {
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page) {
+//                hasLoadmore = true;
+//                replyAdapter.setProgressMore(true);
                 isRefreshAfterSubmit = false;
                 fetchReplies(review.getId(), page);
             }
@@ -580,7 +583,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         Utils.clearForm(edtWriteReply);
     }
 
-    private void clearDataImagePreview(List<ImageData> lstData){
+    private void clearDataImagePreview(List<ImageData> lstData) {
         int oldSize = imageChoose.size();
         if (CollectionUtils.isNotEmpty(imageChoose)) {
             imageChoose.clear();

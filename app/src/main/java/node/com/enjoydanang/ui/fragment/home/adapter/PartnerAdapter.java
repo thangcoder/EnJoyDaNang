@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.home.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -110,7 +111,12 @@ public class PartnerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return partners.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        if(partners.get(position) == null){
+            return VIEW_TYPE_LOADING;
+        }else{
+            return VIEW_TYPE_ITEM;
+        }
+//        return partners.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -151,5 +157,20 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         notifyItemRangeRemoved(0, size);
     }
 
+
+    public void setProgressMore(final boolean isProgress) {
+        if (isProgress) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    partners.add(null);
+                    notifyItemInserted(partners.size() - 1);
+                }
+            });
+        } else {
+            partners.remove(partners.size() - 1);
+            notifyItemRemoved(partners.size());
+        }
+    }
 
 }

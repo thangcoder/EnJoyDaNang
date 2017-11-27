@@ -46,11 +46,13 @@ public class GlobalApplication extends MultiDexApplication{
         sInstance = this;
         AppEventsLogger.activateApp(this);
         KakaoSDK.init(new KakaoSDKAdapter());
-        final Fabric fabric = new Fabric.Builder(this)
-                .kits(new Crashlytics())
-                .debuggable(BuildConfig.DEBUG_MODE)
-                .build();
-        Fabric.with(fabric);
+        if(!BuildConfig.DEBUG_MODE){
+            final Fabric fabric = new Fabric.Builder(this)
+                    .kits(new Crashlytics())
+                    .debuggable(BuildConfig.DEBUG_MODE)
+                    .build();
+            Fabric.with(fabric);
+        }
         new AppUpdateConfiguration().configFirebaseUpdate();
         SharedPrefsUtils.setContext(this);
         hasSessionLogin = Utils.hasSessionLogin();

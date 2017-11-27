@@ -69,6 +69,8 @@ public class Constant {
     public static final int FETCH_UPDATE_TIME = 0; // fetch every 1h
 
     public static final String KEY_EXTRAS_USER_INFO = "user_data";
+    public static final String KEY_EXTRAS_CLOSE_POPUP = "popup_close_home";
+    public static final String KEY_EXTRAS_DATE_CLOSE_POPUP = "date_close_popup";
     public static final String SHARED_PREFS_NAME= "EnjoySharedPrefs";
 
     public static final int  SHOW_BACK_ICON = 1;

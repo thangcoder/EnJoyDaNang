@@ -30,7 +30,7 @@ import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.EndlessRecyclerViewScrollListener;
+import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
@@ -68,6 +68,8 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     @BindView(R.id.txtPartnerEmpty)
     TextView txtPartnerEmpty;
+
+    private boolean hasLoadmore;
 
 
     public static PartnerCategoryFragment newInstance(int categoryId, String title) {
@@ -141,15 +143,13 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     @Override
     protected void setEvent(View view) {
-        rcvPartnerCategory.addOnScrollListener(new EndlessRecyclerViewScrollListener(mLayoutManager) {
+        rcvPartnerCategory.addOnScrollListener(new EndlessScrollListener(mLayoutManager) {
             @Override
-            public int getFooterViewType(int defaultNoFooterViewType) {
-                return 1;
-            }
-
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
+            public void onLoadMore(int currentPage) {
+                // TODO: Issues progress loadmore
+//                hasLoadmore = true;
+//                mPartnerAdapter.setProgressMore(true);
+                mvpPresenter.getPartnerByCategory(categoryId, currentPage, userInfo.getUserId());
             }
         });
     }
@@ -172,6 +172,9 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
             txtPartnerEmpty.setVisibility(View.VISIBLE);
             return;
         }
+//        if(hasLoadmore){
+//            mPartnerAdapter.setProgressMore(false);
+//        }
         if (!Utils.isResponseError(data)) {
             updateItems(data.getData());
         }

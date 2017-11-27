@@ -12,8 +12,11 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.Popup;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.ImageUtils;
+import node.com.enjoydanang.utils.Utils;
 
 /**
  * Created by chientruong on 3/27/17.
@@ -47,16 +50,18 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     void getPopup() {
-        addSubscription(apiStores.getPopupInformation(), new ApiCallback<Repository>() {
+        addSubscription(apiStores.getPopupInformation(), new ApiCallback<Repository<Popup>>() {
 
             @Override
-            public void onSuccess(Repository model) {
-                mvpView.onShowPopup(model);
+            public void onSuccess(Repository<Popup> model) {
+                if(!Utils.isResponseError(model)){
+                    mvpView.onShowPopup(model);
+                }
             }
 
             @Override
             public void onFailure(String msg) {
-
+                mvpView.onError(new AppError(new Throwable(msg)));
             }
 
             @Override

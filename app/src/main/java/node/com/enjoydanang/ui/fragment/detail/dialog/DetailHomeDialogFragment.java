@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
+import node.com.enjoydanang.ui.fragment.home.PartnerCategoryFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -63,6 +67,8 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     @BindView(R.id.frToolBar)
     FrameLayout frToolBar;
 
+    private MainActivity mMainActivity;
+
     public static DetailHomeDialogFragment newInstance(Partner partner) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
         Bundle bundle = new Bundle();
@@ -79,11 +85,22 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         initToolbar();
+        mMainActivity = (MainActivity) getActivity();
         return rootView;
     }
+
     @OnClick(R.id.img_back)
     public void onClick(View view) {
-        dismiss();
+        if(mMainActivity != null){
+            Fragment fragment = mMainActivity.getActiveFragment();
+            if(fragment instanceof PartnerCategoryFragment){
+                dismiss();
+            }else{
+                mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+                dismiss();
+            }
+        }
+
     }
     @NonNull
     @Override

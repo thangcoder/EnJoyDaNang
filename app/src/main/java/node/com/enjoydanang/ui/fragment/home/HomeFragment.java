@@ -300,7 +300,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 //        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
 //        countCategoryClick++;
 //        lstPartner.clear();
-        mMainActivity.enableBackButton(true);
+//        mMainActivity.enableBackButton(true);
         Category category = (Category) parent.getItemAtPosition(position);
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName()),

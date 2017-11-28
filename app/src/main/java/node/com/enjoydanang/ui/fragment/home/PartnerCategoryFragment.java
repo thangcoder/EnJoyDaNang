@@ -218,11 +218,12 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private void initRecyclerView() {
         lstPartner = new ArrayList<>();
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         partnerCategoryAdapter = new PartnerCategoryAdapter(getContext(), this);
-        rcvPartnerCategory.setLayoutManager(mLayoutManager);
         rcvPartnerCategory.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.red), VERTICAL_ITEM_SPACE));
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
+        rcvPartnerCategory.setLayoutManager(mLayoutManager);
+        rcvPartnerCategory.setHasFixedSize(false);
         rcvPartnerCategory.setAdapter(partnerCategoryAdapter);
     }
 

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="recycler-view-divider-1.3.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/75ce0d10df1fd84d902d38cdb96fefaf4b4a1564/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/75ce0d10df1fd84d902d38cdb96fefaf4b4a1564/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.fondesa/recycler-view-divider/1.3.0/66f5efeea65e003a05babe0d481345d6efe26d89/recycler-view-divider-1.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

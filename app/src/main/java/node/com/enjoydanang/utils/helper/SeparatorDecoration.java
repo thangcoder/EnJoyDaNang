@@ -46,7 +46,7 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
         final int position = params.getViewAdapterPosition();
 
         // and add a separator to any view but the last one
-        if (position < state.getItemCount()) {
+        if (position < state.getItemCount() - 2) {
             outRect.set(0, 0, 0, (int) mPaint.getStrokeWidth()); // left, top, right, bottom
         } else {
             outRect.setEmpty(); // 0, 0, 0, 0
@@ -59,7 +59,8 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
         final int offset = (int) (mPaint.getStrokeWidth() / 2);
 
         // this will iterate over every visible view
-        for (int i = 0; i < parent.getChildCount(); i++) {
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount - 2; i++) {
             // get the view
             final View view = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
@@ -68,7 +69,7 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
             final int position = params.getViewAdapterPosition();
 
             // and finally draw the separator
-            if (position < state.getItemCount()) {
+            if (position < state.getItemCount() - 2) {
                 c.drawLine(view.getLeft(), view.getBottom() + offset, view.getRight(), view.getBottom() + offset, mPaint);
             }
         }

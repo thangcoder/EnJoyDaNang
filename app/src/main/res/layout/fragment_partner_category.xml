@@ -7,7 +7,6 @@
 
     <include layout="@layout/include_normal_progress_bar" />
 
-
     <TextView
         android:id="@+id/txtPartnerEmpty"
         android:layout_width="match_parent"

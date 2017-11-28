@@ -20,8 +20,8 @@ public class ScanQRCodePresenter extends BasePresenter<ScanQRCodeView> {
         super(view);
     }
 
-    void requestOrder(int partnerId, long customerId, int amount) {
-        addSubscription(apiStores.checkIn(partnerId, customerId, amount), new ApiCallback<Repository<HistoryCheckin>>() {
+    void requestOrder(int partnerId, long customerId, int amount, String passCode) {
+        addSubscription(apiStores.checkIn(partnerId, customerId, amount, passCode), new ApiCallback<Repository<HistoryCheckin>>() {
 
             @Override
             public void onSuccess(Repository<HistoryCheckin> response) {

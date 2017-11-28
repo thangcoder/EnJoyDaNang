@@ -1,4 +1,4 @@
-package node.com.enjoydanang.framework;
+package node.com.enjoydanang.ui.base;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,13 +11,12 @@ import java.util.List;
 
 /**
  * Author: Tavv
- * Created on 21/10/2017
- * Project Name: EnjoyDaNang
- * Version 1.0
+ * Created on 28/11/2017.
+ * Project Name: EnJoyDaNang
+ * Version : 1.0
  */
 
-public abstract class BaseRecyclerViewAdapter <T>
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected LayoutInflater mInflater;
     protected List<T> mDataList;
     protected ItemClickListener mItemClickListener;

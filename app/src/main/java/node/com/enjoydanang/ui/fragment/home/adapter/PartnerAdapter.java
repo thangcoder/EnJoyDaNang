@@ -38,6 +38,8 @@ public class PartnerAdapter extends RecyclerView.Adapter {
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
 
+    private boolean isLoadingAdded = false;
+
     public PartnerAdapter(Context context, List<Partner> partners, OnItemClickListener mOnItemClickListener) {
         mContext = context;
         this.partners = partners;
@@ -90,11 +92,11 @@ public class PartnerAdapter extends RecyclerView.Adapter {
                 }
             });
             int discount = partner.getDiscount();
-            if(discount != 0){
+            if (discount != 0) {
                 String strDiscount = String.format(Locale.getDefault(), Constant.DISCOUNT_TEMPLATE, discount, "%");
                 ((ViewHolder) holder).txtDiscount.setText(strDiscount);
                 ((ViewHolder) holder).txtDiscount.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 ((ViewHolder) holder).txtDiscount.setVisibility(View.GONE);
             }
         } else if (holder instanceof LoadingViewHolder) {
@@ -111,21 +113,14 @@ public class PartnerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(partners.get(position) == null){
-            return VIEW_TYPE_LOADING;
-        }else{
-            return VIEW_TYPE_ITEM;
-        }
-//        return partners.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        return (partners.get(position) == null && isLoadingAdded) ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-//        public SimpleDraweeView imgPhoto;
         public final View mView;
         @BindView(R.id.img_partner_photo)
-//        ImageView imgPhoto;
-                SimpleDraweeView imgPhoto;
+        SimpleDraweeView imgPhoto;
         @BindView(R.id.tv_partner_name)
         TextView tvTitle;
         @BindView(R.id.fabFavorite)
@@ -151,7 +146,7 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    private void clear() {
+    private void clearData() {
         int size = this.partners.size();
         this.partners.clear();
         notifyItemRangeRemoved(0, size);
@@ -171,6 +166,57 @@ public class PartnerAdapter extends RecyclerView.Adapter {
             partners.remove(partners.size() - 1);
             notifyItemRemoved(partners.size());
         }
+    }
+
+
+    public void add(Partner partner) {
+        partners.add(partner);
+        notifyItemInserted(partners.size() - 1);
+    }
+
+    public void addAll(List<Partner> mcList) {
+        for (Partner mc : mcList) {
+            add(mc);
+        }
+    }
+
+    public void remove(Partner partner) {
+        int position = partners.indexOf(partner);
+        if (position > -1) {
+            partners.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty() {
+        return getItemCount() == 0;
+    }
+
+
+    public void addLoadingFooter() {
+        isLoadingAdded = true;
+        add(null);
+    }
+
+    public void removeLoadingFooter() {
+        isLoadingAdded = false;
+        int position = partners.size() - 1;
+        Partner item = getItem(position);
+        if (item != null) {
+            partners.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Partner getItem(int position){
+        return partners.get(position);
     }
 
 }

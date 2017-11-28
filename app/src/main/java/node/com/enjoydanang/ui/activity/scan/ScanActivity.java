@@ -111,7 +111,8 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
         ImageView imgPartner = (ImageView) dialogView.findViewById(R.id.imgPartner);
         TextView txtDiscount = (TextView) dialogView.findViewById(R.id.txtDiscount);
         final EditText edtAmount = (EditText) dialogView.findViewById(R.id.edtAmount);
-        LanguageHelper.getValueByViewId(edtAmount, txtPartnerName, txtDiscount, btnCancel, btnOk);
+        final EditText edtPwd = (EditText) dialogView.findViewById(R.id.edtPassWord);
+        LanguageHelper.getValueByViewId(edtAmount, txtPartnerName, txtDiscount, btnCancel, btnOk, edtPwd);
         edtAmount.addTextChangedListener(new NumberTextWatcher(edtAmount));
         txtPartnerName.setText(String.format(Locale.getDefault(), formatPartnerName, partner.getName()));
         txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + partner.getDiscount() + " (%)");
@@ -120,24 +121,25 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
             @Override
             public void onClick(View v) {
                 int amount;
+                String strPwd;
                 try {
                     amount = Integer.parseInt(getNumber(edtAmount.getText().toString()));
+                    strPwd = String.valueOf(edtPwd.getText());
                 } catch (Exception e) {
                     DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
                             Utils.getLanguageByResId(R.string.Message_Wrong_Amount));
                     return;
                 }
-                if (amount != 0) {
+                if (amount != 0 && StringUtils.isNotBlank(strPwd)) {
+                    v.setEnabled(false);
                     if (Utils.hasLogin()) {
-                        v.setEnabled(false);
-                        mvpPresenter.requestOrder(partner.getId(), userInfo.getUserId(), amount);
+                        mvpPresenter.requestOrder(partner.getId(), userInfo.getUserId(), amount, strPwd);
                     } else {
-                        v.setEnabled(false);
-                        mvpPresenter.requestOrder(partner.getId(), 0, amount);
+                        mvpPresenter.requestOrder(partner.getId(), 0, amount, strPwd);
                     }
                 } else {
                     DialogUtils.showDialog(ScanActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Dialog_Title_Warning),
-                            Utils.getLanguageByResId(R.string.Message_Wrong_Amount_Empty));
+                            Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
                 }
             }
         });

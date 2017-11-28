@@ -25,8 +25,9 @@ import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.base.BaseRecyclerViewAdapter;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
-import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
+import node.com.enjoydanang.ui.fragment.home.adapter.PartnerCategoryAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -41,7 +42,8 @@ import node.com.enjoydanang.utils.helper.SeparatorDecoration;
  * Version : 1.0
  */
 
-public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresenter> implements PartnerCategoryView, OnItemClickListener {
+public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresenter> implements PartnerCategoryView, OnItemClickListener,
+        BaseRecyclerViewAdapter.ItemClickListener{
     private static final String TAG = PartnerCategoryFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
 
@@ -57,8 +59,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private List<Partner> lstPartner;
 
-    private PartnerAdapter mPartnerAdapter;
-
+    private PartnerCategoryAdapter partnerCategoryAdapter;
 
     @BindView(R.id.rcvPartnerByCate)
     RecyclerView rcvPartnerCategory;
@@ -145,11 +146,10 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
     protected void setEvent(View view) {
         rcvPartnerCategory.addOnScrollListener(new EndlessScrollListener(mLayoutManager) {
             @Override
-            public void onLoadMore(int currentPage) {
-                // TODO: Issues progress loadmore
-//                hasLoadmore = true;
-//                mPartnerAdapter.setProgressMore(true);
-                mvpPresenter.getPartnerByCategory(categoryId, currentPage, userInfo.getUserId());
+            public void onLoadMore(int page) {
+                hasLoadmore = true;
+                partnerCategoryAdapter.startLoadMore();
+                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
             }
         });
     }
@@ -172,11 +172,12 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
             txtPartnerEmpty.setVisibility(View.VISIBLE);
             return;
         }
-//        if(hasLoadmore){
-//            mPartnerAdapter.setProgressMore(false);
-//        }
+        if (hasLoadmore) {
+            partnerCategoryAdapter.onReachEnd();
+        }
         if (!Utils.isResponseError(data)) {
             updateItems(data.getData());
+            partnerCategoryAdapter.set(lstPartner);
         }
         prgLoading.setVisibility(View.GONE);
         rcvPartnerCategory.setVisibility(View.VISIBLE);
@@ -186,6 +187,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
     public void onGetPartnerByCategoryFailure(AppError error) {
         prgLoading.setVisibility(View.GONE);
         txtPartnerEmpty.setVisibility(View.VISIBLE);
+        partnerCategoryAdapter.onLoadMoreFailed();
         Log.e(TAG, "onGetPartnerByCategoryFailure " + error.getMessage());
     }
 
@@ -216,24 +218,54 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private void initRecyclerView() {
         lstPartner = new ArrayList<>();
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        partnerCategoryAdapter = new PartnerCategoryAdapter(getContext(), this);
         rcvPartnerCategory.setLayoutManager(mLayoutManager);
         rcvPartnerCategory.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
-        rcvPartnerCategory.setAdapter(mPartnerAdapter);
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.red), VERTICAL_ITEM_SPACE));
+        rcvPartnerCategory.setAdapter(partnerCategoryAdapter);
     }
 
     private void updateItems(List<Partner> lstPartners) {
-        int oldSize = lstPartner.size();
-        int newSize = lstPartners.size() + oldSize;
         lstPartner.addAll(lstPartners);
-        mPartnerAdapter.notifyItemRangeChanged(0, newSize);
-        mPartnerAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void initViewLabel(View view) {
         LanguageHelper.getValueByViewId(txtPartnerEmpty);
+    }
+
+    @Override
+    public void onItemClick(View view, final int position) {
+        if (view.getId() == R.id.fabFavorite) {
+            if (userInfo.getUserId() != 0) {
+                FloatingActionButton fabFavorite = (FloatingActionButton) view;
+                mvpPresenter.addFavorite(userInfo.getUserId(), lstPartner.get(position).getId());
+                boolean isFavorite = lstPartner.get(position).getFavorite() > 0;
+                fabFavorite.setImageResource(isFavorite ? R.drawable.unfollow : R.drawable.follow);
+                lstPartner.get(position).setFavorite(isFavorite ? 0 : 1);
+            } else {
+                DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+            }
+
+        } else {
+            MainActivity activity = (MainActivity) getActivity();
+            activity.currentTab = HomeTab.None;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (CollectionUtils.isNotEmpty(lstPartner)) {
+                        Partner partner;
+                        try {
+                            partner = lstPartner.get(position);
+                        } catch (IndexOutOfBoundsException ex) {
+                            partner = null;
+                        }
+                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+                        DialogUtils.openDialogFragment(mFragmentManager, dialog);
+                    }
+                }
+            }, 50);
+        }
     }
 }

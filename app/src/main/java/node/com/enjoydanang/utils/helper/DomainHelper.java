@@ -11,6 +11,9 @@ import node.com.enjoydanang.constant.Constant;
 
 public class DomainHelper {
 
+    private boolean isDomainVN;
+
+
     public enum DomainType {
         VN, KR
     }
@@ -18,11 +21,13 @@ public class DomainHelper {
     public DomainHelper(DomainType type) {
         switch (type) {
             case VN:
+                isDomainVN = true;
                 Constant.URL_HOST_IMAGE = "http://enjoyindanang.vn";
                 Constant.URL_HOST = "http://enjoyindanang.vn/API/";
                 Constant.URL_FORGOT_PWD = "http://enjoyindanang.vn/Account/ForgotPassword";
                 break;
             case KR:
+                isDomainVN = false;
                 Constant.URL_HOST_IMAGE = "http://enjoyindanang.com";
                 Constant.URL_HOST = "http://enjoyindanang.com/API/";
                 Constant.URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
@@ -30,5 +35,13 @@ public class DomainHelper {
             default:
                 break;
         }
+    }
+
+    public boolean isDomainVN() {
+        return isDomainVN;
+    }
+
+    public void setDomainVN(boolean domainVN) {
+        isDomainVN = domainVN;
     }
 }

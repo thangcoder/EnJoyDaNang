@@ -189,4 +189,6 @@
     <string name="Message.Networking.Problem">Message.Networking.Problem</string>
     <string name="Message.Server.Error">Message.Server.Error</string>
     <string name="Message.Category.PartnerEmpty">Message.Category.PartnerEmpty</string>
+    <string name="ScanQR.Hint.Money">ScanQR.Hint.Money</string>
+    <string name="ScanQR.Hint.Passcode">ScanQR.Hint.Passcode</string>
 </resources>

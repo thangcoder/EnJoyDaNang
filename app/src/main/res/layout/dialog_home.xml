@@ -6,9 +6,6 @@
     android:layout_gravity="center_vertical"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/_5sdp"
-    android:paddingLeft="@dimen/_5sdp"
-    android:paddingRight="@dimen/_5sdp"
     android:paddingTop="@dimen/_5sdp">
 
 
@@ -17,6 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_200sdp"
         android:contentDescription="@null"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
         android:scaleType="centerCrop"
         android:src="@drawable/bg_drink_temp"
         fresco:fadeDuration="300"
@@ -26,39 +25,29 @@
         fresco:progressBarImageScaleType="centerInside" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:weightSum="3">
-
-        <!--<android.support.v7.widget.AppCompatButton-->
-        <!--android:id="@+id/btnPopupLeft"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginRight="@dimen/_5sdp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="@color/color_button_login"-->
-        <!--android:textColor="@color/white" />-->
+        android:layout_marginTop="@dimen/_5sdp">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnPopupCenter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/_5sdp"
-            android:layout_weight="1.5"
             android:background="@color/color_button_login"
             android:textColor="@color/white" />
 
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnPopupRight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentRight="true"
             android:background="@color/color_button_login"
             android:textColor="@color/white" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

@@ -18,8 +18,6 @@ import node.com.enjoydanang.utils.Utils;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
-import static com.kakao.auth.StringSet.msg;
-
 public abstract class ApiCallback<M> extends Subscriber<M> {
 
     public abstract void onSuccess(M model);
@@ -38,6 +36,15 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
             //httpException.response().errorBody().string()
             int code = httpException.code();
             status = String.valueOf(code);
+            if(StringUtils.equals(status, Constant.API_500)){
+                String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
+                msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
+                onFailure(msg);
+                return;
+            }else if(status.matches(Constant.REGEX_NUMBER)){
+                onFailure(AppError.DEFAULT_ERROR_MESSAGE);
+                return;
+            }
             onFailure(status);
         }
         else if(e instanceof ConnectException){
@@ -54,10 +61,13 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
         }
         else {
             String msgServer = e.getMessage();
-            if(StringUtils.equals(msgServer, "500")){
+            if(StringUtils.equals(msgServer, Constant.API_500)){
                 String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
                 msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
                 onFailure(msg);
+                return;
+            }else if(msgServer.matches(Constant.REGEX_NUMBER)){
+                onFailure(AppError.DEFAULT_ERROR_MESSAGE);
                 return;
             }
             onFailure(msgServer);

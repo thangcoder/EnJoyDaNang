@@ -1,7 +1,10 @@
 package node.com.enjoydanang;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
@@ -16,6 +19,7 @@ import org.json.JSONObject;
 
 import io.fabric.sdk.android.Fabric;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.receiver.LanguageReceiver;
 import node.com.enjoydanang.ui.activity.login.KakaoSDKAdapter;
 import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
@@ -35,6 +39,7 @@ public class GlobalApplication extends MultiDexApplication{
     private static UserInfo userInfo;
     private String strLanguage;
     private boolean hasSessionLogin;
+    private BroadcastReceiver mBroadcastReceiver = null;
 
     @Override
     public void onCreate() {
@@ -56,6 +61,7 @@ public class GlobalApplication extends MultiDexApplication{
         new AppUpdateConfiguration().configFirebaseUpdate();
         SharedPrefsUtils.setContext(this);
         hasSessionLogin = Utils.hasSessionLogin();
+//        setUpLangReceiver();
 //        checkLanguage();
     }
     @Override
@@ -78,7 +84,7 @@ public class GlobalApplication extends MultiDexApplication{
      */
     public static GlobalApplication getGlobalApplicationContext() {
         if(sInstance == null)
-            throw new IllegalStateException("this application does not inherit com.kakao.GlobalApplication");
+            throw new IllegalStateException("this application does not inherit node.com.enjoydanang.GlobalApplication");
         return sInstance;
     }
 
@@ -89,6 +95,9 @@ public class GlobalApplication extends MultiDexApplication{
     public void onTerminate() {
         super.onTerminate();
         sInstance = null;
+        if(mBroadcastReceiver != null){
+            unregisterReceiver(mBroadcastReceiver);
+        }
     }
 
     public JSONObject getJsLanguage() {
@@ -108,7 +117,6 @@ public class GlobalApplication extends MultiDexApplication{
     }
 
     private void checkLanguage(){
-        // TODO: New feature multiple languages
         strLanguage = LanguageHelper.getSystemLanguage();
         if(strLanguage.equalsIgnoreCase("vi")){
             new DomainHelper(DomainHelper.DomainType.VN);
@@ -123,5 +131,23 @@ public class GlobalApplication extends MultiDexApplication{
 
     public void setHasSessionLogin(boolean hasSessionLogin) {
         this.hasSessionLogin = hasSessionLogin;
+    }
+
+
+    public BroadcastReceiver setUpLangReceiver() {
+        if (mBroadcastReceiver == null) {
+            mBroadcastReceiver = new LanguageReceiver();
+            IntentFilter filter = new IntentFilter(Intent.ACTION_LOCALE_CHANGED);
+            registerReceiver(mBroadcastReceiver, filter);
+        }
+        return mBroadcastReceiver;
+    }
+
+    public String getStrLanguage() {
+        return strLanguage;
+    }
+
+    public void setStrLanguage(String strLanguage) {
+        this.strLanguage = strLanguage;
     }
 }

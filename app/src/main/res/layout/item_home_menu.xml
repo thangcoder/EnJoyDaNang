@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="@dimen/_80sdp"
+    android:layout_height="@dimen/_82sdp"
     android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical"
@@ -23,12 +23,10 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="@dimen/_75sdp"
-        android:layout_height="@dimen/_30sdp"
-        android:layout_gravity="center"
-        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:lines="1"
+        android:ellipsize="end"
         android:textColor="@color/color_title_category"
         android:textSize="@dimen/_12ssp" />
 

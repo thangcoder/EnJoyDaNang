@@ -153,7 +153,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setContentView(R.layout.activity_main);
     }
 
-
     @Override
     public void init() {
         setHeightToolbar();
@@ -174,7 +173,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         setStateTabSelected();
         setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
         mvpPresenter.loadInfoUserMenu(this, imgAvatarUser, txtFullName, txtEmail);
-        if(!disableShowPopup()){
+        if (!disableShowPopup()) {
             mvpPresenter.getPopup();
         }
         if (!checkPermission()) {
@@ -625,15 +624,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         int resultCamera = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
         int resultWrite = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int resultRead = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-
+        int resultLocation = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        int resultCroarse = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         return resultCamera == PackageManager.PERMISSION_GRANTED &&
-                resultWrite == PackageManager.PERMISSION_GRANTED && resultRead == PackageManager.PERMISSION_GRANTED;
+                resultWrite == PackageManager.PERMISSION_GRANTED && resultRead == PackageManager.PERMISSION_GRANTED
+                && resultLocation == PackageManager.PERMISSION_GRANTED &&
+                resultCroarse == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                PERMISSION_REQUEST_CODE);
 
     }
 
@@ -738,7 +741,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         switch (type) {
             case Constant.HIDE_BACK_ICON:
                 imgBack.setVisibility(View.GONE);
-                toolbarName.setVisibility(View.VISIBLE);
+                if(toolbarName.getText().toString().equalsIgnoreCase(Constant.TITLE_HOME_VN)){
+                    toolbarName.setVisibility(View.GONE);
+                }else {
+                    toolbarName.setVisibility(View.VISIBLE);
+                }
                 break;
             case Constant.SHOW_BACK_ICON:
                 imgBack.setVisibility(View.VISIBLE);

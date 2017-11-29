@@ -27,12 +27,15 @@ public class Constant {
 
     public static final String REGEX_URL = "((http)[s]?(://).*)";
 
+    public static final String REGEX_NUMBER = "[0-9]+";
+
     public static final String API_OK = "200";
     public static final String API_401 = "401";
     public static final String API_402 = "402";
     public static final String API_403 = "403";
     public static final String API_404 = "404";
     public static final String API_405 = "405";
+    public static final String API_500 = "500";
     public static final String API_501 = "501";
     public static final String API_502 = "502";
     public static final String MSG_SUCCESS = "success";
@@ -82,4 +85,5 @@ public class Constant {
 
     public static final int DEFAULT_ITEM_EACH_FETCH = 6;
 
+    public static final String TITLE_HOME_VN = "TRANG CHỦ";
 }

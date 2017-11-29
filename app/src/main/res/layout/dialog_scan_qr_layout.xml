@@ -53,14 +53,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:background="@drawable/border_item_default"
-        android:hint="@string/Payment.Placeholder.Money"
+        android:background="@drawable/border_text_scan_qr"
+        android:hint="@string/ScanQR.Hint.Money"
         android:inputType="numberDecimal"
         android:maxLines="1"
         android:padding="8dp"
+        android:textColorHint="@color/material_grey_300"
         android:textColor="@color/secondary_text"
         android:textCursorDrawable="@null">
-
         <requestFocus />
     </EditText>
 
@@ -68,18 +68,17 @@
         android:id="@+id/edtPassWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/border_item_default"
-        android:hint="@string/Password"
+        android:textColorHint="@color/material_grey_300"
+        android:background="@drawable/border_text_scan_qr"
+        android:hint="@string/ScanQR.Hint.Passcode"
         android:inputType="textPassword"
         android:maxLines="1"
         android:padding="8dp"
         android:textColor="@color/secondary_text"
         android:textCursorDrawable="@null">
-
-        <requestFocus />
     </EditText>
 
     <LinearLayout
@@ -98,7 +97,7 @@
             android:layout_marginRight="@dimen/_5sdp"
             android:layout_weight=".5"
             android:background="@color/color_button_login"
-            android:text="@string/Action.Payment" />
+            android:text="@string/Message.Confirm.Ok" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnCancel"
@@ -108,7 +107,7 @@
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_weight=".5"
             android:background="@color/color_button_login"
-            android:text="@string/Cancel" />
+            android:text="@string/Message.Confirm.Cancel" />
 
     </LinearLayout>
 

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,14 +29,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.LogApp;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.module.AppClient;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NetworkStatus;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.ConnectionUltils;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.helper.FragmentHelper;
 import retrofit2.Call;
 import rx.Observable;
@@ -86,6 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        registerEventBus();
         /**
          * Listening status internet by EvenBus
          */
@@ -98,11 +103,34 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showHasChangeLang(String value) {
+        if (StringUtils.equals(value, "hasChangeLanguage")) {
+            DialogUtils.showDialog(this, DialogType.INFO, StringUtils.EMPTY, "You have recently changed language .Please restart application to apply", new PromptDialog.OnPositiveListener() {
+                @Override
+                public void onClick(PromptDialog promptDialog) {
+                    finish();
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
     public void registerEventBus() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
             LogApp.log("BaseActivity", "registerEventBus: ");
+        }
+    }
 
+
+    public void unRegisterEventBus() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+            LogApp.log("BaseActivity", "unRegisterEventBus: ");
         }
     }
 
@@ -124,12 +152,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         dismissProgressDialog();
         dismissDialogAlarm();
         dissmissDialog();
+        unRegisterEventBus();
         super.onDestroy();
 
 
     }
 
-    protected void redirectMain(){
+    protected void redirectMain() {
         startActivity(new Intent(this, MainActivity.class));
     }
 
@@ -151,7 +180,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract void setEvent();
 
 
-    public void initViewLabel(){}
+    public void initViewLabel() {
+    }
 
     //-------------------------------------------------------------------------------------------------------------------
 
@@ -185,7 +215,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-
     private class MyReceiver extends BroadcastReceiver {
 
         @Override
@@ -201,8 +230,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
 
 
-
-
     private AlertDialog.Builder builder;
     private AlertDialog.Builder builderLogout;
     AlertDialog dialog;
@@ -211,14 +238,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     AlertDialog dialogAlarm;
 
 
-
     public void dismissDialogAlarm() {
         if (dialogAlarm != null) {
             dialogAlarm.dismiss();
             dialogAlarm = null;
         }
     }
-
 
 
     public void dissmissDialog() {
@@ -404,10 +429,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    public void setTranslucentStatusBar(){}
+    public void setTranslucentStatusBar() {
+    }
 
 
-    public void configScreen(){
+    public void configScreen() {
         //// TODO: override when need config before set init layout
     }
 

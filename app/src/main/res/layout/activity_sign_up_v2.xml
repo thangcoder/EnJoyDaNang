@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lrlSignUp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <include layout="@layout/include_toolbar" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.ActionBarTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
     <LinearLayout
         android:id="@+id/lrlLoginForm"
@@ -222,7 +230,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_7sdp"
-                    android:text="@string/Home.Account.Register"
+                    android:text="@string/Home.Account.Login"
                     android:textColor="@color/color_button_login"
                     android:textSize="@dimen/_12sdp"
                     android:textStyle="bold" />

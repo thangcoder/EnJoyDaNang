@@ -152,6 +152,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         webSettings.setLoadWithOverviewMode(true);
         mWebView.setWebViewClient(new WebClient(getActivity()));
         webSettings.setBuiltInZoomControls(true);
+
+        WebSettings wvContent = txtContent.getSettings();
+        wvContent.setJavaScriptEnabled(true);
+        wvContent.setLoadWithOverviewMode(true);
+        txtContent.setWebViewClient(new WebClient(getActivity()));
+        webSettings.setBuiltInZoomControls(false);
     }
 
     @Override

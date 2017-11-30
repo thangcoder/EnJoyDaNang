@@ -24,7 +24,6 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.constant.AppLanguage;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
@@ -97,7 +96,7 @@ public class SignUpActivity extends MvpActivity<SignUpPresenter> implements Sign
     @Override
     public void setValue(Bundle savedInstanceState) {
         initToolbar(toolbar);
-        setTitle(Utils.getLanguageByResId(R.string.Home_Account_Register).toUpperCase());
+        toolbar.setTitle(Utils.getLanguageByResId(R.string.Home_Account_Register).toUpperCase());
     }
 
     @OnClick({R.id.txtBackToSignIn, R.id.btnSignUp})

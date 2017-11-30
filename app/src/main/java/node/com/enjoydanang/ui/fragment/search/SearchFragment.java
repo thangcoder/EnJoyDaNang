@@ -41,6 +41,7 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -303,7 +304,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onClick(View view, int position) {
         DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
-        dialog.show(mFragmentManager, TAG);
+        DialogUtils.openDialogFragment(mFragmentManager, dialog);
     }
 
     private void showResultContainer(final boolean isShow) {

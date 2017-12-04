@@ -551,7 +551,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
-                setNameToolbar(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);

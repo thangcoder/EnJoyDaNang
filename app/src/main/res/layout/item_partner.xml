@@ -24,7 +24,7 @@
         <FrameLayout
             android:id="@+id/frImagePartner"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_125sdp">
+            android:layout_height="@dimen/_140sdp">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/img_partner_photo"

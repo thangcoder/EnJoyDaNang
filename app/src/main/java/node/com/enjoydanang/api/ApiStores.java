@@ -21,10 +21,14 @@ import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
+import okhttp3.MultipartBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -210,6 +214,20 @@ public interface ApiStores {
 
     @GET("GlobalApi.asmx/PopupAds")
     Observable<Repository<Popup>> getPopupInformation();
+
+    @Multipart
+    @Headers("Accept:application/json; charset=utf-8")
+    @POST("testupload")
+    Observable<Repository> uploadImages(@Part("reviewId") int reviewId,
+                                        @Part("customerId") long customerId,
+                                        @Part("partnerId") int partnerId,
+                                        @Part("star") int star,
+                                        @Part("title") String title,
+                                        @Part("name") String name,
+                                        @Part("content") String content,
+                                        @Part MultipartBody.Part file1,
+                                        @Part MultipartBody.Part file2,
+                                        @Part MultipartBody.Part file3);
 
 //    @FormUrlEncoded
 //    @POST("/login")

@@ -83,18 +83,32 @@
                         android:transformPivotY="0dp" />
 
 
-                    <node.com.enjoydanang.utils.widget.CustomMapView
+                    <!--<node.com.enjoydanang.utils.widget.CustomMapView-->
+                        <!--android:id="@+id/mapView"-->
+                        <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="250dp"-->
+                        <!--android:layout_marginTop="@dimen/_13sdp" />-->
+
+                    <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/mapView"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
-
-                        android:layout_marginTop="@dimen/_13sdp" />
+                        android:contentDescription="@null"
+                        fresco:fadeDuration="300"
+                        fresco:placeholderImage="@color/material_grey_100"
+                        fresco:failureImage="@drawable/ic_logo_app_v1"
+                        android:layout_marginTop="@dimen/_13sdp"
+                        fresco:progressBarAutoRotateInterval="1000"
+                        fresco:progressBarImage="@drawable/loading"
+                        fresco:progressBarImageScaleType="centerInside"
+                        fresco:retryImageScaleType="fitXY"
+                        fresco:roundAsCircle="false" />
 
                     <com.daimajia.slider.library.SliderLayout
                         android:id="@+id/slider"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="@dimen/_190sdp"
                         android:layout_marginTop="10dp"
                         app:auto_cycle="true"
                         app:indicator_visibility="visible"

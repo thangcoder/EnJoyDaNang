@@ -183,8 +183,8 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
     public String getFullInfoByAddress(Address address) {
         if (address != null) {
-            String  addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";
-            String  locality = StringUtils.isNotBlank(address.getLocality()) ? address.getLocality().concat(", ") : "";
+            String addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";
+            String locality = StringUtils.isNotBlank(address.getLocality()) ? address.getLocality().concat(", ") : "";
             return addressLine + locality + address.getCountryName();
         }
         return StringUtils.EMPTY;
@@ -541,5 +541,9 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
     public GoogleMap getGoogleMap() {
         return mGoogleMap;
+    }
+
+    public String getUrlThumbnailLocation(double longtitude, double latitude) {
+        return "http://maps.google.com/maps/api/staticmap?center=" + latitude + "," + longtitude + "&zoom=18&size=600x300&sensor=false&markers=color:red|Clabel:|" + latitude + "," + longtitude;
     }
 }

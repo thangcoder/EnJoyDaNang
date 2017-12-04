@@ -32,7 +32,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,6 +62,7 @@ import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import okhttp3.MultipartBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -180,7 +183,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSubmitReview:
-                submitWriteReview();
+                List<MultipartBody.Part> lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+//                submitWriteReview();
                 break;
             case R.id.btnAttachImage:
                 mPhotoHelper.startGalleryIntent();
@@ -392,5 +396,29 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    private List<MultipartBody.Part> getFilePartsRequest(List<ImageData> images) {
+        MultipartBody.Part[] temp = new MultipartBody.Part[]{null, null, null};
+        List<MultipartBody.Part> lstFileParts = Arrays.asList(temp);
+        if (CollectionUtils.isNotEmpty(images)) {
+            int count = -1;
+            for (ImageData item : images) {
+                if (item.getUri() != null) {
+                    count++;
+                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                    if (file != null) {
+                        MultipartBody.Part part = Utils.createContentBody(file);
+                        try {
+                            long size = part.body().contentLength();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        lstFileParts.set(count, part);
+                    }
+                }
+            }
+        }
+        return lstFileParts;
     }
 }

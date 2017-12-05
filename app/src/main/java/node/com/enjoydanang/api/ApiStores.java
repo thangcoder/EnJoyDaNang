@@ -217,17 +217,31 @@ public interface ApiStores {
 
     @Multipart
     @Headers("Accept:application/json; charset=utf-8")
-    @POST("testupload")
-    Observable<Repository> uploadImages(@Part("reviewId") int reviewId,
-                                        @Part("customerId") long customerId,
-                                        @Part("partnerId") int partnerId,
-                                        @Part("star") int star,
-                                        @Part("title") String title,
-                                        @Part("name") String name,
-                                        @Part("content") String content,
-                                        @Part MultipartBody.Part file1,
-                                        @Part MultipartBody.Part file2,
-                                        @Part MultipartBody.Part file3);
+    @POST("ReviewApi.asmx/WriteReview")
+    Observable<Repository> writeReview(@Part("customerId") long customerId,
+                                       @Part("partnerId") int partnerId,
+                                       @Part("star") int star,
+                                       @Part("title") String title,
+                                       @Part("name") String name,
+                                       @Part("content") String content,
+                                       @Part MultipartBody.Part file1,
+                                       @Part MultipartBody.Part file2,
+                                       @Part MultipartBody.Part file3);
+
+    @Multipart
+    @Headers("Accept:application/json; charset=utf-8")
+    @POST("ReviewApi.asmx/WriteReviewReply")
+    Observable<Repository> writeReplyByReviewId(@Part("reviewId") int reviewId,
+                                                @Part("customerId") long customerId,
+                                                @Part("partnerId") int partnerId,
+                                                @Part("star") int star,
+                                                @Part("title") String title,
+                                                @Part("name") String name,
+                                                @Part("content") String content,
+                                                @Part MultipartBody.Part image1,
+                                                @Part MultipartBody.Part image2,
+                                                @Part MultipartBody.Part image3);
+
 
 //    @FormUrlEncoded
 //    @POST("/login")

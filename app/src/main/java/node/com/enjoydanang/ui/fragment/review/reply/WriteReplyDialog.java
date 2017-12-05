@@ -342,11 +342,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         return lstImageBase64;
     }
 
-    private List<MultipartBody.Part> getFilePartsRequest(List<ImageData> images) {
-        List<MultipartBody.Part> lstFileParts = new ArrayList<>(2);
-        for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-            lstFileParts.add(i, null);
-        }
+    private MultipartBody.Part[] getFilePartsRequest(List<ImageData> images) {
+        MultipartBody.Part[] arrMultipart = new MultipartBody.Part[]{null, null, null};
         if (CollectionUtils.isNotEmpty(images)) {
             int count = -1;
             for (ImageData item : images) {
@@ -355,12 +352,12 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                     File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                     if (file != null) {
                         MultipartBody.Part part = Utils.createContentBody(file);
-                        lstFileParts.set(count, part);
+                        arrMultipart[count] = part;
                     }
                 }
             }
         }
-        return lstFileParts;
+        return arrMultipart;
     }
 
     private boolean isShowWarningLogin() {
@@ -389,23 +386,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                 mPhotoHelper.startGalleryIntent();
                 break;
             case R.id.btnSubmitReply:
-                if (!Utils.hasLogin() || review == null || partnerId == 0) return;
-                showLoading(Utils.getLanguageByResId(R.string.Sending));
-
-                List<MultipartBody.Part> lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
-
-//                List<String> lstBase64 = getListImageBase64(mPreviewAdapter.getImages());
-//                int reviewId = review.getId();
-//                long userId = GlobalApplication.getUserInfo().getUserId();
-//                String userName = GlobalApplication.getUserInfo().getFullName();
-//                String content = String.valueOf(edtWriteReply.getText());
-//                String title = StringUtils.EMPTY;
-//                if (StringUtils.isEmpty(content)) {
-//                    DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
-//                    return;
-//                }
-//                writeReply(reviewId, userId, partnerId, title,
-//                        content, 0, userName, lstBase64.get(0), lstBase64.get(1), lstBase64.get(2));
+                // TODO: replace func submitWriteReply() to writeReply()
+                submitWriteReply();
                 break;
         }
     }
@@ -448,11 +430,22 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
 
-    void writeReply(final int reviewId, long customerId,
-                    int partnerId, String title, String content, int start,
-                    String name, String image1, String image2, String image3) {
-        addSubscription(apiStores.writeReplyByReviewId(reviewId, customerId, partnerId, start, title, name, content,
-                image1, image2, image3), new ApiCallback<Repository>() {
+    void submitWriteReply() {
+        if (!Utils.hasLogin() || review == null || partnerId == 0) return;
+        showLoading(Utils.getLanguageByResId(R.string.Sending));
+        final List<String> lstBase64 = getListImageBase64(mPreviewAdapter.getImages());
+        final int reviewId = review.getId();
+        long userId = GlobalApplication.getUserInfo().getUserId();
+        String userName = GlobalApplication.getUserInfo().getFullName();
+        String content = String.valueOf(edtWriteReply.getText());
+        String title = StringUtils.EMPTY;
+        if (StringUtils.isEmpty(content)) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+
+        addSubscription(apiStores.writeReplyByReviewId(reviewId, userId, partnerId, 0, title, userName, content,
+                lstBase64.get(0), lstBase64.get(1), lstBase64.get(2)), new ApiCallback<Repository>() {
 
             @Override
             public void onSuccess(Repository model) {
@@ -484,42 +477,50 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         });
     }
 
-    void testUpload(final int reviewId, long customerId,
-                    int partnerId, String title, String content, int start, String name,
-                    MultipartBody.Part file1,
-                    MultipartBody.Part file2, MultipartBody.Part file3) {
+    void writeReply() {
+        if (!Utils.hasLogin() || review == null || partnerId == 0) return;
+        showLoading(Utils.getLanguageByResId(R.string.Sending));
+        MultipartBody.Part[] lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+        final int reviewId = review.getId();
+        long userId = GlobalApplication.getUserInfo().getUserId();
+        String userName = GlobalApplication.getUserInfo().getFullName();
+        String content = String.valueOf(edtWriteReply.getText());
+        String title = StringUtils.EMPTY;
+        if (StringUtils.isEmpty(content)) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+        addSubscription(apiStores.writeReplyByReviewId(reviewId, userId, partnerId, 0, title, userName, content,
+                lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {
 
-        return;
-//        addSubscription(apiStores.uploadImages(reviewId, customerId, partnerId, start, title, name, content, file1, file2, file3), new ApiCallback<Repository>() {
-//
-//            @Override
-//            public void onSuccess(Repository model) {
-//                if (Utils.isResponseError(model)) {
-//                    DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
-//                    return;
-//                }
-//                DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1),
-//                        Utils.getLanguageByResId(R.string.Review_Write_Reply_Success), new PromptDialog.OnPositiveListener() {
-//                            @Override
-//                            public void onClick(PromptDialog promptDialog) {
-//                                isRefreshAfterSubmit = true;
-//                                promptDialog.dismiss();
-//                                clearData();
-//                                fetchReplies(reviewId, START_PAGE);
-//                            }
-//                        });
-//            }
-//
-//            @Override
-//            public void onFailure(String msg) {
-//                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                hideLoading();
-//            }
-//        });
+            @Override
+            public void onSuccess(Repository model) {
+                if (Utils.isResponseError(model)) {
+                    DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
+                    return;
+                }
+                DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1),
+                        Utils.getLanguageByResId(R.string.Review_Write_Reply_Success), new PromptDialog.OnPositiveListener() {
+                            @Override
+                            public void onClick(PromptDialog promptDialog) {
+                                isRefreshAfterSubmit = true;
+                                promptDialog.dismiss();
+                                clearData();
+                                fetchReplies(reviewId, START_PAGE);
+                            }
+                        });
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
+            }
+
+            @Override
+            public void onFinish() {
+                hideLoading();
+            }
+        });
     }
 
     private void fetchContentReview(final Review review) {

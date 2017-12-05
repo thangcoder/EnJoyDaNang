@@ -32,9 +32,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -183,8 +181,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSubmitReview:
-                List<MultipartBody.Part> lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
-//                submitWriteReview();
+                // TODO: replace func submitWriteReview() to writeReview()
+                submitWriteReview();
                 break;
             case R.id.btnAttachImage:
                 mPhotoHelper.startGalleryIntent();
@@ -261,13 +259,13 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                             count++;
                             File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                             hasErrorConvertImg = file == null;
-                            if(file != null){
+                            if (file != null) {
                                 String strConvert = ImageUtils.encodeTobase64(file);
                                 lstImageBase64.set(count, strConvert);
                             }
                         }
                     }
-                    if(hasErrorConvertImg){
+                    if (hasErrorConvertImg) {
                         Toast.makeText(getContext(), AppError.DEFAULT_ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -275,6 +273,60 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
                     (int) ratingCount, title, name, content,
                     lstImageBase64.get(0), lstImageBase64.get(1), lstImageBase64.get(2))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ApiCallback<Repository>() {
+                        @Override
+                        public void onSuccess(Repository model) {
+                            if (Utils.isResponseError(model)) {
+                                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
+                                return;
+                            }
+                            DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(PromptDialog promptDialog) {
+                                    promptDialog.dismiss();
+                                    dismiss();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                            hideSending();
+                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
+                                    Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            hideSending();
+                        }
+                    }));
+        }
+    }
+
+    private void writeReview() {
+        String name = String.valueOf(edtName.getText());
+        String title = String.valueOf(edtTitle.getText());
+        String content = String.valueOf(edtAriaContent.getText());
+        float ratingCount = ratingBar.getRating();
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+        if (partner != null) {
+            showSending();
+            long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
+            MultipartBody.Part[] lstParts = null;
+            if (mPreviewAdapter != null) {
+                if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
+                    lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+                }
+            }
+            mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
+                    (int) ratingCount, title, name, content,
+                    lstParts[0], lstParts[1], lstParts[2])
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
@@ -341,7 +393,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
                 && null != data) {
-            if(CollectionUtils.isNotEmpty(images)){
+            if (CollectionUtils.isNotEmpty(images)) {
                 images.clear();
             }
             images.addAll(mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT));
@@ -398,9 +450,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                 .subscribe(subscriber));
     }
 
-    private List<MultipartBody.Part> getFilePartsRequest(List<ImageData> images) {
-        MultipartBody.Part[] temp = new MultipartBody.Part[]{null, null, null};
-        List<MultipartBody.Part> lstFileParts = Arrays.asList(temp);
+    private MultipartBody.Part[] getFilePartsRequest(List<ImageData> images) {
+        MultipartBody.Part[] arrMultipart = new MultipartBody.Part[]{null, null, null};
         if (CollectionUtils.isNotEmpty(images)) {
             int count = -1;
             for (ImageData item : images) {
@@ -409,16 +460,11 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                     File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
                     if (file != null) {
                         MultipartBody.Part part = Utils.createContentBody(file);
-                        try {
-                            long size = part.body().contentLength();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        lstFileParts.set(count, part);
+                        arrMultipart[count] = part;
                     }
                 }
             }
         }
-        return lstFileParts;
+        return arrMultipart;
     }
 }

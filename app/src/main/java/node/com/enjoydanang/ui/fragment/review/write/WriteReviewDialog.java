@@ -182,7 +182,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         switch (view.getId()) {
             case R.id.btnSubmitReview:
                 // TODO: replace func submitWriteReview() to writeReview()
-                submitWriteReview();
+//                submitWriteReview();
+                writeReview();
                 break;
             case R.id.btnAttachImage:
                 mPhotoHelper.startGalleryIntent();
@@ -324,8 +325,8 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                     lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
                 }
             }
-            mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
-                    (int) ratingCount, title, name, content,
+            mCompositeSubscription.add(apiStores.postComment(0, userId, partner.getId(), 0,
+                    (int) ratingCount, title, content,
                     lstParts[0], lstParts[1], lstParts[2])
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

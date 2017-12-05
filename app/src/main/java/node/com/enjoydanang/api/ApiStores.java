@@ -243,6 +243,21 @@ public interface ApiStores {
                                                 @Part MultipartBody.Part image3);
 
 
+    @Multipart
+    @Headers("Accept:application/json; charset=utf-8")
+    @POST("ReviewApi.asmx/WriteReview_New")
+    Observable<Repository> postComment(@Part("Id") long id,
+                                       @Part("CustomerId") long customerId,
+                                       @Part("PartnerId") int partnerId,
+                                       @Part("ReviewId") int reviewId,
+                                       @Part("Star") int star,
+                                       @Part("Title") String title,
+                                       @Part("Content") String content,
+                                       @Part MultipartBody.Part image1,
+                                       @Part MultipartBody.Part image2,
+                                       @Part MultipartBody.Part image3);
+
+
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

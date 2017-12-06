@@ -305,8 +305,8 @@ public class Utils {
 
     public static MultipartBody.Part createContentBody(File file) {
         if (file != null) {
-            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            return MultipartBody.Part.createFormData("uploaded_file", file.getName(), requestFile);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+            return MultipartBody.Part.createFormData("file", file.getName(), requestFile);
         }
         return null;
     }

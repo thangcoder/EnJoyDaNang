@@ -282,6 +282,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         if (prgLoading == null) {
             prgLoading = new ProgressDialog(getActivity());
             prgLoading.setMessage(title);
+            prgLoading.setCancelable(false);
             prgLoading.show();
         } else {
             prgLoading.setMessage(title);
@@ -333,7 +334,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             for (ImageData item : images) {
                 if (item.getUri() != null) {
                     count++;
-                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                     String strConvert = ImageUtils.encodeTobase64(file);
                     lstImageBase64.set(count, strConvert);
                 }
@@ -349,7 +350,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             for (ImageData item : images) {
                 if (item.getUri() != null) {
                     count++;
-                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                     if (file != null) {
                         MultipartBody.Part part = Utils.createContentBody(file);
                         arrMultipart[count] = part;

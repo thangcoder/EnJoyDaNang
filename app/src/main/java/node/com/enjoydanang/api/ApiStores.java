@@ -244,7 +244,6 @@ public interface ApiStores {
 
 
     @Multipart
-    @Headers("Accept:application/json; charset=utf-8")
     @POST("ReviewApi.asmx/WriteReview_New")
     Observable<Repository> postComment(@Part("Id") long id,
                                        @Part("CustomerId") long customerId,

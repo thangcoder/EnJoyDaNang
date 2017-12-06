@@ -258,7 +258,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                     for (ImageData item : mPreviewAdapter.getImages()) {
                         if (item.getUri() != null) {
                             count++;
-                            File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                            File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                             hasErrorConvertImg = file == null;
                             if (file != null) {
                                 String strConvert = ImageUtils.encodeTobase64(file);
@@ -411,6 +411,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         if (prgLoading == null) {
             prgLoading = new ProgressDialog(getActivity());
             prgLoading.setMessage(Utils.getLanguageByResId(R.string.Sending));
+            prgLoading.setCancelable(false);
             prgLoading.show();
         } else {
             if (!prgLoading.isShowing()) {
@@ -458,7 +459,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             for (ImageData item : images) {
                 if (item.getUri() != null) {
                     count++;
-                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                     if (file != null) {
                         MultipartBody.Part part = Utils.createContentBody(file);
                         arrMultipart[count] = part;

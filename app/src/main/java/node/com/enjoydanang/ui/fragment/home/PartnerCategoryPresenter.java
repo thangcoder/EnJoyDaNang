@@ -20,6 +20,26 @@ public class PartnerCategoryPresenter extends BasePresenter<PartnerCategoryView>
         super(view);
     }
 
+    void getListByLocation(int categoryId, long userId , int page, double geoLat, double geoLng) {
+        addSubscription(apiStores.getListPartnerByLocation(categoryId, userId, page , geoLat, geoLng), new ApiCallback<Repository<Partner>>() {
+
+            @Override
+            public void onSuccess(Repository<Partner> data) {
+                mvpView.onGetPartnerByCategorySuccess(data);
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onGetPartnerByCategoryFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
     void getPartnerByCategory(int categoryId, int page, long userId) {
         addSubscription(apiStores.getPartnerByCategoryId(categoryId, page, userId), new ApiCallback<Repository<Partner>>() {
 

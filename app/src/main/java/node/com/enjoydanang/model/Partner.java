@@ -41,6 +41,10 @@ public class Partner implements Serializable{
     @Expose
     private String date;
 
+    @SerializedName("Distance")
+    @Expose
+    private String distance;
+
 
     public int getId() {
         return id;
@@ -112,5 +116,13 @@ public class Partner implements Serializable{
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

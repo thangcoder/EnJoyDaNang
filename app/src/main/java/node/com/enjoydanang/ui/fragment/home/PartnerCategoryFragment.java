@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -46,6 +47,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         BaseRecyclerViewAdapter.ItemClickListener{
     private static final String TAG = PartnerCategoryFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
+    private static final String KEY_EXTRAS_LOCATION = "current_location";
 
     private static final int VERTICAL_ITEM_SPACE = 8;
 
@@ -72,12 +74,14 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private boolean hasLoadmore;
 
+    private Location mLocation;
 
-    public static PartnerCategoryFragment newInstance(int categoryId, String title) {
+    public static PartnerCategoryFragment newInstance(int categoryId, String title, Location location) {
         PartnerCategoryFragment fragment = new PartnerCategoryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TAG, categoryId);
         bundle.putString(KEY_EXTRAS_TITLE, title);
+        bundle.putParcelable(KEY_EXTRAS_LOCATION, location);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -87,8 +91,9 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         userInfo = Utils.getUserInfo();
-        if (categoryId != -1) {
-            mvpPresenter.getPartnerByCategory(categoryId, START_PAGE, userInfo.getUserId());
+        if (categoryId != -1 && mLocation != null) {
+//            mvpPresenter.getPartnerByCategory(categoryId, START_PAGE, userInfo.getUserId());
+            mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, mLocation.getLatitude(), mLocation.getLongitude());
         }
     }
 
@@ -212,6 +217,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         if (bundle != null) {
             categoryId = bundle.getInt(TAG, -1);
             String title = bundle.getString(KEY_EXTRAS_TITLE);
+            mLocation =  bundle.getParcelable(KEY_EXTRAS_LOCATION);
             mMainActivity.setNameToolbar(title);
         }
     }

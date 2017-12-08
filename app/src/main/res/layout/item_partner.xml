@@ -57,12 +57,22 @@
             android:id="@+id/tv_partner_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:paddingLeft="10dp"
             android:textColor="@color/title_partner"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/txtDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/brownishGrey"
+            android:textSize="@dimen/_15ssp"/>
 
     </LinearLayout>
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -20,6 +22,8 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.base.LoadMoreRecyclerViewAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
+import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -50,6 +54,12 @@ public class PartnerCategoryAdapter extends LoadMoreRecyclerViewAdapter<Partner>
         if (holder instanceof PartnerViewHolder) {
             Partner partner = mDataList.get(position);
             ((PartnerViewHolder) holder).tvTitle.setText(partner.getName());
+            if (StringUtils.isNotBlank(partner.getDistance())) {
+                String distance = LanguageHelper.getValueByKey(Utils.getString(R.string.Partner_Distance)) + ": " + partner.getDistance();
+                ((PartnerViewHolder) holder).txtDistance.setText(distance);
+            } else {
+                ((PartnerViewHolder) holder).txtDistance.setVisibility(View.GONE);
+            }
             ImageUtils.loadImageWithFreso(((PartnerViewHolder) holder).imgPhoto, partner.getPicture());
             boolean isFavorite = partner.getFavorite() > 0;
             ((PartnerViewHolder) holder).fabFavorite.setImageResource(isFavorite ? R.drawable.follow : R.drawable.unfollow);
@@ -90,6 +100,8 @@ public class PartnerCategoryAdapter extends LoadMoreRecyclerViewAdapter<Partner>
         SimpleDraweeView imgPhoto;
         @BindView(R.id.tv_partner_name)
         TextView tvTitle;
+        @BindView(R.id.txtDistance)
+        TextView txtDistance;
         @BindView(R.id.fabFavorite)
         FloatingActionButton fabFavorite;
 

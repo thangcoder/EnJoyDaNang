@@ -78,6 +78,15 @@ public interface ApiStores {
     @POST("PartnerApi.asmx/ListByCategory")
     Observable<Repository<Partner>> getPartnerByCategoryId(@Field("categoryId") int categoryId, @Field("page") int page, @Field("customerId") long userId);
 
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListByCategoryByLocation")
+    Observable<Repository<Partner>> getListPartnerByLocation(@Field("categoryId") int categoryId,
+                                                             @Field("customerId") long userId,
+                                                             @Field("page") int page,
+                                                             @Field("geoLat") double latitude,
+                                                             @Field("geoLng") double longtitude);
+
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
     Observable<Repository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);

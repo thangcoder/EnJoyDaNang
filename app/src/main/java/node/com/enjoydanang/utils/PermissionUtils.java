@@ -39,7 +39,6 @@ public class PermissionUtils {
     public PermissionUtils(Context context) {
         this.context = context;
         this.current_activity = (Activity) context;
-
         permissionResultCallback = (PermissionResultCallback) context;
 
 

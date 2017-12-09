@@ -112,7 +112,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     protected void init(View view) {
-        mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Home_Search));
         progressBar.setVisibility(View.VISIBLE);
         try {
             if (mMapView != null) {
@@ -173,12 +172,13 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         super.onLowMemory();
         if (mMapView != null && mGoogleMap != null) {
             mMapView.onLowMemory();
-            mGoogleMap.clear();
+            System.gc();
         }
     }
 
     @Override
     public void onDestroyView() {
+        super.onDestroyView();
         if (mGoogleMap != null) {
             mGoogleMap.clear();
         }
@@ -186,7 +186,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
             mMapView.onDestroy();
             mMapView = null;
         }
-        super.onDestroyView();
+        System.gc();
     }
 
     @Override
@@ -304,7 +304,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onClick(View view, int position) {
         DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
-        DialogUtils.openDialogFragment(mFragmentManager, dialog);
+        dialog.show(mFragmentManager, TAG);
     }
 
     private void showResultContainer(final boolean isShow) {

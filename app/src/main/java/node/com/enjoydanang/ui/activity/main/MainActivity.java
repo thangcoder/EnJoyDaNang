@@ -551,7 +551,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             case Search:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
                 imgSearch.setImageResource(R.drawable.tab2_selected_3x);
-                setNameToolbar(Utils.getLanguageByResId(R.string.Home_Search).toUpperCase());
                 break;
             case None:
                 imgHome.setImageResource(R.drawable.tab1_default_3x);
@@ -741,9 +740,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         switch (type) {
             case Constant.HIDE_BACK_ICON:
                 imgBack.setVisibility(View.GONE);
-                if(toolbarName.getText().toString().equalsIgnoreCase(Constant.TITLE_HOME_VN)){
+                if (toolbarName.getText().toString().equalsIgnoreCase(Constant.TITLE_HOME_VN)) {
                     toolbarName.setVisibility(View.GONE);
-                }else {
+                } else {
                     toolbarName.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -826,26 +825,27 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private void showPopupMain(final Popup popup) {
         if (popup == null) return;
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_home, null);
-        dialogBuilder.setView(dialogView);
+        if (popup.getIsPublish() == 1) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            LayoutInflater inflater = this.getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.dialog_home, null);
+            dialogBuilder.setView(dialogView);
 //        AppCompatButton btnViewDetail = (AppCompatButton) dialogView.findViewById(R.id.btnPopupLeft);
-        final AppCompatButton btnHide = (AppCompatButton) dialogView.findViewById(R.id.btnPopupCenter);
-        AppCompatButton btnClose = (AppCompatButton) dialogView.findViewById(R.id.btnPopupRight);
+            final AppCompatButton btnHide = (AppCompatButton) dialogView.findViewById(R.id.btnPopupCenter);
+            AppCompatButton btnClose = (AppCompatButton) dialogView.findViewById(R.id.btnPopupRight);
 
 //        btnViewDetail.setText(popup.getTextButtonLeft());
-        btnHide.setText(popup.getTextButtonCenter());
-        btnClose.setText(popup.getTextButtonRight());
+            btnHide.setText(popup.getTextButtonCenter());
+            btnClose.setText(popup.getTextButtonRight());
 
-        SimpleDraweeView imgPopup = (SimpleDraweeView) dialogView.findViewById(R.id.imgPopup);
+            SimpleDraweeView imgPopup = (SimpleDraweeView) dialogView.findViewById(R.id.imgPopup);
 
-        ImageUtils.loadImageWithFreso(imgPopup, popup.getImage());
+            ImageUtils.loadImageWithFreso(imgPopup, popup.getImage());
 
-        final AlertDialog alertDialog = dialogBuilder.create();
+            final AlertDialog alertDialog = dialogBuilder.create();
 
-        alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        alertDialog.setCancelable(false);
+            alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            alertDialog.setCancelable(false);
 
 //        btnViewDetail.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -857,23 +857,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 //            }
 //        });
 
-        btnHide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, false);
-                alertDialog.dismiss();
-            }
-        });
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String currentTime = DateUtils.getCurrentTime();
-                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, true);
-                SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_DATE_CLOSE_POPUP, currentTime);
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
+            btnHide.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, false);
+                    alertDialog.dismiss();
+                }
+            });
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String currentTime = DateUtils.getCurrentTime();
+                    SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP, true);
+                    SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_DATE_CLOSE_POPUP, currentTime);
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.show();
+        }
     }
 
     private boolean disableShowPopup() {

@@ -48,7 +48,7 @@ public class Popup {
 
     @SerializedName("IsPublish")
     @Expose
-    private String isPublish;
+    private int isPublish;
 
     public String getTitle() {
         return title;
@@ -114,11 +114,11 @@ public class Popup {
         this.sizeHeight = sizeHeight;
     }
 
-    public String getIsPublish() {
+    public int getIsPublish() {
         return isPublish;
     }
 
-    public void setIsPublish(String isPublish) {
+    public void setIsPublish(int isPublish) {
         this.isPublish = isPublish;
     }
 }

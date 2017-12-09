@@ -152,12 +152,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         webSettings.setLoadWithOverviewMode(true);
         mWebView.setWebViewClient(new WebClient(getActivity()));
         webSettings.setBuiltInZoomControls(true);
-
-        WebSettings wvContent = txtContent.getSettings();
-        wvContent.setJavaScriptEnabled(true);
-        wvContent.setLoadWithOverviewMode(true);
-        txtContent.setWebViewClient(new WebClient(getActivity()));
-        webSettings.setBuiltInZoomControls(false);
     }
 
     @Override
@@ -392,16 +386,23 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         if(mWebView != null){
             mWebView.loadUrl("about:blank");
             mWebView.destroy();
             mWebView = null;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
         if(mGoogleMap != null){
             mGoogleMap.clear();
         }
+        mMapView.onDestroy();
         mMapView = null;
-        super.onDestroy();
+        System.gc();
+        super.onDestroyView();
     }
 
     @Override

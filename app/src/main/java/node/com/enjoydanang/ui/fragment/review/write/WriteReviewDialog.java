@@ -60,6 +60,7 @@ import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import okhttp3.MultipartBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -180,7 +181,9 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSubmitReview:
-                submitWriteReview();
+                // TODO: replace func submitWriteReview() to writeReview()
+//                submitWriteReview();
+                writeReview();
                 break;
             case R.id.btnAttachImage:
                 mPhotoHelper.startGalleryIntent();
@@ -255,15 +258,15 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                     for (ImageData item : mPreviewAdapter.getImages()) {
                         if (item.getUri() != null) {
                             count++;
-                            File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                            File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                             hasErrorConvertImg = file == null;
-                            if(file != null){
+                            if (file != null) {
                                 String strConvert = ImageUtils.encodeTobase64(file);
                                 lstImageBase64.set(count, strConvert);
                             }
                         }
                     }
-                    if(hasErrorConvertImg){
+                    if (hasErrorConvertImg) {
                         Toast.makeText(getContext(), AppError.DEFAULT_ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -271,6 +274,60 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
                     (int) ratingCount, title, name, content,
                     lstImageBase64.get(0), lstImageBase64.get(1), lstImageBase64.get(2))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ApiCallback<Repository>() {
+                        @Override
+                        public void onSuccess(Repository model) {
+                            if (Utils.isResponseError(model)) {
+                                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
+                                return;
+                            }
+                            DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(PromptDialog promptDialog) {
+                                    promptDialog.dismiss();
+                                    dismiss();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String msg) {
+                            hideSending();
+                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
+                                    Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            hideSending();
+                        }
+                    }));
+        }
+    }
+
+    private void writeReview() {
+        String name = String.valueOf(edtName.getText());
+        String title = String.valueOf(edtTitle.getText());
+        String content = String.valueOf(edtAriaContent.getText());
+        float ratingCount = ratingBar.getRating();
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+        if (partner != null) {
+            showSending();
+            long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
+            MultipartBody.Part[] lstParts = null;
+            if (mPreviewAdapter != null) {
+                if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
+                    lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+                }
+            }
+            mCompositeSubscription.add(apiStores.postComment(0, userId, partner.getId(), 0,
+                    (int) ratingCount, title, content,
+                    lstParts[0], lstParts[1], lstParts[2])
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ApiCallback<Repository>() {
@@ -337,7 +394,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK
                 && null != data) {
-            if(CollectionUtils.isNotEmpty(images)){
+            if (CollectionUtils.isNotEmpty(images)) {
                 images.clear();
             }
             images.addAll(mPhotoHelper.parseGalleryResult(data, Constant.MAX_SIZE_GALLERY_SELECT));
@@ -354,6 +411,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         if (prgLoading == null) {
             prgLoading = new ProgressDialog(getActivity());
             prgLoading.setMessage(Utils.getLanguageByResId(R.string.Sending));
+            prgLoading.setCancelable(false);
             prgLoading.show();
         } else {
             if (!prgLoading.isShowing()) {
@@ -392,5 +450,23 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    private MultipartBody.Part[] getFilePartsRequest(List<ImageData> images) {
+        MultipartBody.Part[] arrMultipart = new MultipartBody.Part[]{null, null, null};
+        if (CollectionUtils.isNotEmpty(images)) {
+            int count = -1;
+            for (ImageData item : images) {
+                if (item.getUri() != null) {
+                    count++;
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
+                    if (file != null) {
+                        MultipartBody.Part part = Utils.createContentBody(file);
+                        arrMultipart[count] = part;
+                    }
+                }
+            }
+        }
+        return arrMultipart;
     }
 }

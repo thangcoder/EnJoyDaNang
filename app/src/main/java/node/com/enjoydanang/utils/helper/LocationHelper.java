@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -63,6 +64,7 @@ import rx.schedulers.Schedulers;
 
 public class LocationHelper implements PermissionUtils.PermissionResultCallback {
     private static final String TAG = LocationHelper.class.getSimpleName();
+    private static final long serialVersionUID = 7536482295622776147L;
 
     private static final float WIDTH_PATH = 16f;
 
@@ -71,7 +73,6 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
     private Context context;
     private Activity current_activity;
-
     private boolean isPermissionGranted;
 
     private Location mLastLocation;
@@ -95,17 +96,32 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
     private OnFindLastLocationCallback findCallback;
 
     public LocationHelper(Context context, OnFindLastLocationCallback findCallback) {
-
         this.context = context;
         this.findCallback = findCallback;
-        this.current_activity = (Activity) context;
-
         permissionUtils = new PermissionUtils(context, this);
-
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-
     }
+
+
+    public LocationHelper(Context context) {
+        this.context = context;
+        permissionUtils = new PermissionUtils(context, this);
+        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
+
+
+    public LocationHelper(Context context, OnFindLastLocationCallback findCallback, boolean needCheckPermission) {
+        this.context = context;
+        this.findCallback = findCallback;
+        if (needCheckPermission) {
+            permissionUtils = new PermissionUtils(context, this);
+        }
+        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+    }
+
 
     /**
      * Method to check the availability of location permissions
@@ -115,8 +131,12 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         permissionUtils.check_permission(permissions, "Need GPS permission for getting your location", 1);
     }
 
-    private boolean isPermissionGranted() {
+    public boolean isPermissionGranted() {
         return isPermissionGranted;
+    }
+
+    public void setPermissionGranted(boolean hasPermission){
+        this.isPermissionGranted = hasPermission;
     }
 
     /**
@@ -183,8 +203,8 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
     public String getFullInfoByAddress(Address address) {
         if (address != null) {
-            String  addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";
-            String  locality = StringUtils.isNotBlank(address.getLocality()) ? address.getLocality().concat(", ") : "";
+            String addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";
+            String locality = StringUtils.isNotBlank(address.getLocality()) ? address.getLocality().concat(", ") : "";
             return addressLine + locality + address.getCountryName();
         }
         return StringUtils.EMPTY;
@@ -272,14 +292,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         SettingsClient settingsClient = LocationServices.getSettingsClient(context);
         settingsClient.checkLocationSettings(locationSettingsRequest);
         try {
-            LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                        @Override
-                        public void onLocationResult(LocationResult locationResult) {
-                            // do work here
-                            mLastLocation = locationResult.getLastLocation();
-                            findCallback.onFound(locationResult.getLastLocation());
-                        }
-                    },
+            LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, locationCallback,
                     Looper.myLooper());
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -405,14 +418,12 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
                 });
     }
 
-    public void onLocationChanged(Location location) {
+    public LatLng onLocationChanged(Location location) {
         // New location has now been determined
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-        // You can now create a LatLng Object for use with maps
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
 
@@ -542,4 +553,33 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
     public GoogleMap getGoogleMap() {
         return mGoogleMap;
     }
+
+    public String getUrlThumbnailLocation(double longtitude, double latitude) {
+        return "http://maps.google.com/maps/api/staticmap?center=" + latitude + "," + longtitude + "&zoom=18&size=600x300&sensor=false&markers=color:red|Clabel:|" + latitude + "," + longtitude;
+    }
+
+    public void stopLocationUpdates() {
+        if (locationCallback != null) {
+            LocationServices.getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
+        }
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            // do work here
+            mLastLocation = locationResult.getLastLocation();
+            findCallback.onFound(locationResult.getLastLocation());
+        }
+
+        @Override
+        public void onLocationAvailability(LocationAvailability locationAvailability) {
+            super.onLocationAvailability(locationAvailability);
+        }
+    };
+
+
 }

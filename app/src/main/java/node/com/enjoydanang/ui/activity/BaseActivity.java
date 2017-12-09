@@ -135,12 +135,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         /* Stop listening status internet by EvenBus

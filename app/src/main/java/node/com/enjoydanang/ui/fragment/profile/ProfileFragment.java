@@ -240,7 +240,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             case SELECT_FROM_GALLERY_CODE:
                 if (data != null) {
                     Uri uri = data.getData();
-                    String realPath = FileUtils.getFilePath(getContext(), uri);
+                    String realPath = FileUtils.getPath(getContext(), uri);
                     if(StringUtils.isBlank(realPath)){
                         Toast.makeText(mMainActivity, Utils.getLanguageByResId(R.string.Message_Warning_File), Toast.LENGTH_LONG).show();
                         return;

@@ -68,6 +68,7 @@ import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import node.com.enjoydanang.utils.widget.DividerItemDecoration;
+import okhttp3.MultipartBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -281,6 +282,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         if (prgLoading == null) {
             prgLoading = new ProgressDialog(getActivity());
             prgLoading.setMessage(title);
+            prgLoading.setCancelable(false);
             prgLoading.show();
         } else {
             prgLoading.setMessage(title);
@@ -332,13 +334,31 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             for (ImageData item : images) {
                 if (item.getUri() != null) {
                     count++;
-                    File file = new File(FileUtils.getFilePath(getContext(), item.getUri()));
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
                     String strConvert = ImageUtils.encodeTobase64(file);
                     lstImageBase64.set(count, strConvert);
                 }
             }
         }
         return lstImageBase64;
+    }
+
+    private MultipartBody.Part[] getFilePartsRequest(List<ImageData> images) {
+        MultipartBody.Part[] arrMultipart = new MultipartBody.Part[]{null, null, null};
+        if (CollectionUtils.isNotEmpty(images)) {
+            int count = -1;
+            for (ImageData item : images) {
+                if (item.getUri() != null) {
+                    count++;
+                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
+                    if (file != null) {
+                        MultipartBody.Part part = Utils.createContentBody(file);
+                        arrMultipart[count] = part;
+                    }
+                }
+            }
+        }
+        return arrMultipart;
     }
 
     private boolean isShowWarningLogin() {
@@ -367,20 +387,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                 mPhotoHelper.startGalleryIntent();
                 break;
             case R.id.btnSubmitReply:
-                if (!Utils.hasLogin() || review == null || partnerId == 0) return;
-                showLoading(Utils.getLanguageByResId(R.string.Sending));
-                List<String> lstBase64 = getListImageBase64(mPreviewAdapter.getImages());
-                int reviewId = review.getId();
-                long userId = GlobalApplication.getUserInfo().getUserId();
-                String userName = GlobalApplication.getUserInfo().getFullName();
-                String content = String.valueOf(edtWriteReply.getText());
-                String title = StringUtils.EMPTY;
-                if (StringUtils.isEmpty(content)) {
-                    DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
-                    return;
-                }
-                writeReply(reviewId, userId, partnerId, title,
-                        content, 0, userName, lstBase64.get(0), lstBase64.get(1), lstBase64.get(2));
+                // TODO: replace func submitWriteReply() to writeReply()
+                submitWriteReply();
                 break;
         }
     }
@@ -423,11 +431,22 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
 
-    void writeReply(final int reviewId, long customerId,
-                    int partnerId, String title, String content, int start,
-                    String name, String image1, String image2, String image3) {
-        addSubscription(apiStores.writeReplyByReviewId(reviewId, customerId, partnerId, start, title, name, content,
-                image1, image2, image3), new ApiCallback<Repository>() {
+    void submitWriteReply() {
+        if (!Utils.hasLogin() || review == null || partnerId == 0) return;
+        showLoading(Utils.getLanguageByResId(R.string.Sending));
+        final List<String> lstBase64 = getListImageBase64(mPreviewAdapter.getImages());
+        final int reviewId = review.getId();
+        long userId = GlobalApplication.getUserInfo().getUserId();
+        String userName = GlobalApplication.getUserInfo().getFullName();
+        String content = String.valueOf(edtWriteReply.getText());
+        String title = StringUtils.EMPTY;
+        if (StringUtils.isEmpty(content)) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+
+        addSubscription(apiStores.writeReplyByReviewId(reviewId, userId, partnerId, 0, title, userName, content,
+                lstBase64.get(0), lstBase64.get(1), lstBase64.get(2)), new ApiCallback<Repository>() {
 
             @Override
             public void onSuccess(Repository model) {
@@ -459,6 +478,51 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         });
     }
 
+    void writeReply() {
+        if (!Utils.hasLogin() || review == null || partnerId == 0) return;
+        showLoading(Utils.getLanguageByResId(R.string.Sending));
+        MultipartBody.Part[] lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+        final int reviewId = review.getId();
+        long userId = GlobalApplication.getUserInfo().getUserId();
+        String userName = GlobalApplication.getUserInfo().getFullName();
+        String content = String.valueOf(edtWriteReply.getText());
+        String title = StringUtils.EMPTY;
+        if (StringUtils.isEmpty(content)) {
+            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
+            return;
+        }
+        addSubscription(apiStores.writeReplyByReviewId(reviewId, userId, partnerId, 0, title, userName, content,
+                lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {
+
+            @Override
+            public void onSuccess(Repository model) {
+                if (Utils.isResponseError(model)) {
+                    DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
+                    return;
+                }
+                DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1),
+                        Utils.getLanguageByResId(R.string.Review_Write_Reply_Success), new PromptDialog.OnPositiveListener() {
+                            @Override
+                            public void onClick(PromptDialog promptDialog) {
+                                isRefreshAfterSubmit = true;
+                                promptDialog.dismiss();
+                                clearData();
+                                fetchReplies(reviewId, START_PAGE);
+                            }
+                        });
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
+            }
+
+            @Override
+            public void onFinish() {
+                hideLoading();
+            }
+        });
+    }
 
     private void fetchContentReview(final Review review) {
         List<ImageData> imgDatas = new ArrayList<>();

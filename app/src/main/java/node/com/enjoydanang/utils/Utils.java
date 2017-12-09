@@ -16,6 +16,7 @@ import android.widget.EditText;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,9 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.splash.ScreenSplashActivity;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Author: Tavv
@@ -294,7 +298,16 @@ public class Utils {
         System.exit(0);
     }
 
-    public static boolean hasSessionLogin(){
+    public static boolean hasSessionLogin() {
         return SharedPrefsUtils.checkPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO);
+    }
+
+
+    public static MultipartBody.Part createContentBody(File file) {
+        if (file != null) {
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
+            return MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+        }
+        return null;
     }
 }

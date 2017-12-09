@@ -31,8 +31,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="c56bb7c6dda9de4abf3082eaf30cee3de5de2186"
-            />
+            android:value="c56bb7c6dda9de4abf3082eaf30cee3de5de2186" />
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -76,6 +75,17 @@
         <activity android:name=".ui.activity.scan.ScanActivity" />
 
         <activity android:name=".ui.activity.scan.QRCodeScanActivity" />
+
+        <service android:name=".service.LocationService" />
+
+        <receiver
+            android:name=".receiver.LocationReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="node.com.enjoyindanang.location.listener" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

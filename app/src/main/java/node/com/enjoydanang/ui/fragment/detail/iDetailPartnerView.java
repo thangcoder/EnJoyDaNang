@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.fragment.detail;
 
 import java.util.List;
 
-import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.DetailPartner;
@@ -17,11 +16,6 @@ import node.com.enjoydanang.model.PartnerAlbum;
 
 public interface iDetailPartnerView extends iBaseView {
 
-    void onFetchDetailPartnerSuccess(Repository<DetailPartner> data);
-
     void onFetchFailure(AppError appError);
-
-    void onFetchSlideSuccess(List<PartnerAlbum> images);
-
     void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum);
 }

@@ -172,6 +172,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         super.onLowMemory();
         if (mMapView != null && mGoogleMap != null) {
             mMapView.onLowMemory();
+            mGoogleMap.clear();
             System.gc();
         }
     }

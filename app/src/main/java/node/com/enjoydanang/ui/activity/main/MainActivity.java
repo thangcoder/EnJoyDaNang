@@ -1,12 +1,17 @@
 package node.com.enjoydanang.ui.activity.main;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -55,10 +61,13 @@ import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.constant.Extras;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.NavigationItem;
 import node.com.enjoydanang.model.Popup;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.receiver.LocationReceiver;
+import node.com.enjoydanang.service.LocationService;
 import node.com.enjoydanang.ui.activity.login.LoginActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.change_password.ChangePwdFragment;
@@ -79,6 +88,7 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.LocationHelper;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener {
@@ -148,6 +158,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private boolean mToolBarNavigationListenerIsRegistered;
 
+
+    private Location mLastLocation;
+
+    private LocationReceiver mLocationReceiver;
+
+    private Intent locationService;
+
+    public LocationService mLocationService;
+
+    private boolean isServiceConnected;
+
+    public LocationHelper mLocationHelper;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -156,6 +179,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void init() {
         setHeightToolbar();
+        if (mLocationReceiver == null) {
+            mLocationReceiver = new LocationReceiver();
+        }
         mDrawerToggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -178,6 +204,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         if (!checkPermission()) {
             requestPermission();
+        } else {
+            startTrackLocation();
         }
         settingLeftMenu(Utils.hasLogin());
         hasLogin = Utils.hasLogin();
@@ -196,6 +224,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
         }
         validAndUpdateFullName();
+        IntentFilter intentFilter = new IntentFilter(Extras.KEY_RECEIVER_LOCATION_FILTER);
+        LocalBroadcastManager
+                .getInstance(MainActivity.this).registerReceiver(mLocationReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mLocationReceiver != null) {
+            LocalBroadcastManager
+                    .getInstance(MainActivity.this).unregisterReceiver(mLocationReceiver);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopTrackingService();
     }
 
     @Override
@@ -882,4 +928,52 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         boolean hasClose = SharedPrefsUtils.getBooleanFromPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_CLOSE_POPUP);
         return hasClose && (StringUtils.isNotBlank(strTimeClosePopup) && !DateUtils.dayIsYesterday(strTimeClosePopup));
     }
+
+
+    public Location getLastLocation() {
+        return mLastLocation;
+    }
+
+    public void setLastLocation(Location mLastLocation) {
+        this.mLastLocation = mLastLocation;
+    }
+
+    private void startTrackLocation() {
+        if (isServiceConnected)
+            return;
+        if (locationService == null) {
+            if (mLocationHelper == null) {
+                mLocationHelper = new LocationHelper(this);
+                mLocationHelper.checkpermission();
+            }
+        }
+        if (mLocationHelper.isPermissionGranted()) {
+            locationService = new Intent(this, LocationService.class);
+            bindService(locationService, serviceConnection, BIND_AUTO_CREATE);
+        }
+    }
+
+    private void stopTrackingService() {
+        if (!isServiceConnected)
+            return;
+        if (locationService != null) {
+            unbindService(serviceConnection);
+        }
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            mLocationService = binder.getService();
+            isServiceConnected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isServiceConnected = false;
+        }
+    };
+
 }

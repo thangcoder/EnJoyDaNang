@@ -191,4 +191,5 @@
     <string name="Message.Category.PartnerEmpty">Message.Category.PartnerEmpty</string>
     <string name="ScanQR.Hint.Money">ScanQR.Hint.Money</string>
     <string name="ScanQR.Hint.Passcode">ScanQR.Hint.Passcode</string>
+    <string name="Partner.Distance">Partner.Distance</string>
 </resources>

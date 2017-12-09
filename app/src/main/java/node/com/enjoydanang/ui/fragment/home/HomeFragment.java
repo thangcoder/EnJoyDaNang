@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -103,6 +104,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private LoadmorePartner loadmorePartner;
 
     private UserInfo user;
+
+    private Location mLastLocation;
 
     @Override
     public void showToast(String desc) {
@@ -303,9 +306,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 //        mMainActivity.enableBackButton(true);
         Category category = (Category) parent.getItemAtPosition(position);
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
-        mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName()),
-                R.id.container_fragment, PartnerCategoryFragment.class.getName(),
-                transitionInfo);
+        if (mLastLocation != null) {
+            mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName(), mLastLocation),
+                    R.id.container_fragment, PartnerCategoryFragment.class.getName(),
+                    transitionInfo);
+        }
 //        if (category != null) {
 //            for (int i = 0; i < gridView.getCount(); i++) {
 //                View childView = gridView.getChildAt(i);
@@ -451,8 +456,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageReceive(String msg) {
-        nestedScrollView.scrollTo(0, 0);
+    public void onMessageReceive(Object obj) {
+        if (obj instanceof String) {
+            nestedScrollView.scrollTo(0, 0);
+        } else if (obj instanceof Location) {
+            mLastLocation = (Location) obj;
+        }
     }
 
     @Override

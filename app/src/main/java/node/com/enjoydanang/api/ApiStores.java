@@ -21,10 +21,14 @@ import node.com.enjoydanang.model.Schedule;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
+import okhttp3.MultipartBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -73,6 +77,15 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListByCategory")
     Observable<Repository<Partner>> getPartnerByCategoryId(@Field("categoryId") int categoryId, @Field("page") int page, @Field("customerId") long userId);
+
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListByCategoryByLocation")
+    Observable<Repository<Partner>> getListPartnerByLocation(@Field("categoryId") int categoryId,
+                                                             @Field("customerId") long userId,
+                                                             @Field("page") int page,
+                                                             @Field("geoLat") double latitude,
+                                                             @Field("geoLng") double longtitude);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
@@ -210,6 +223,48 @@ public interface ApiStores {
 
     @GET("GlobalApi.asmx/PopupAds")
     Observable<Repository<Popup>> getPopupInformation();
+
+    @Multipart
+    @Headers("Accept:application/json; charset=utf-8")
+    @POST("ReviewApi.asmx/WriteReview")
+    Observable<Repository> writeReview(@Part("customerId") long customerId,
+                                       @Part("partnerId") int partnerId,
+                                       @Part("star") int star,
+                                       @Part("title") String title,
+                                       @Part("name") String name,
+                                       @Part("content") String content,
+                                       @Part MultipartBody.Part file1,
+                                       @Part MultipartBody.Part file2,
+                                       @Part MultipartBody.Part file3);
+
+    @Multipart
+    @Headers("Accept:application/json; charset=utf-8")
+    @POST("ReviewApi.asmx/WriteReviewReply")
+    Observable<Repository> writeReplyByReviewId(@Part("reviewId") int reviewId,
+                                                @Part("customerId") long customerId,
+                                                @Part("partnerId") int partnerId,
+                                                @Part("star") int star,
+                                                @Part("title") String title,
+                                                @Part("name") String name,
+                                                @Part("content") String content,
+                                                @Part MultipartBody.Part image1,
+                                                @Part MultipartBody.Part image2,
+                                                @Part MultipartBody.Part image3);
+
+
+    @Multipart
+    @POST("ReviewApi.asmx/WriteReview_New")
+    Observable<Repository> postComment(@Part("Id") long id,
+                                       @Part("CustomerId") long customerId,
+                                       @Part("PartnerId") int partnerId,
+                                       @Part("ReviewId") int reviewId,
+                                       @Part("Star") int star,
+                                       @Part("Title") String title,
+                                       @Part("Content") String content,
+                                       @Part MultipartBody.Part image1,
+                                       @Part MultipartBody.Part image2,
+                                       @Part MultipartBody.Part image3);
+
 
 //    @FormUrlEncoded
 //    @POST("/login")

@@ -154,7 +154,8 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
             public void onLoadMore(int page) {
                 hasLoadmore = true;
                 partnerCategoryAdapter.startLoadMore();
-                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
+//                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
+                mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, mLocation.getLatitude(), mLocation.getLongitude());
             }
         });
     }

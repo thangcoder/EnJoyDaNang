@@ -50,6 +50,15 @@
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/txtDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/ic_near_me_black_24dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/brownishGrey"
+                android:textSize="@dimen/_15ssp" />
         </FrameLayout>
 
 
@@ -62,18 +71,6 @@
             android:textColor="@color/title_partner"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold" />
-
-
-        <TextView
-            android:id="@+id/txtDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="@dimen/_3sdp"
-            android:paddingLeft="10dp"
-            android:textColor="@color/brownishGrey"
-            android:textSize="@dimen/_15ssp"/>
-
     </LinearLayout>
 
 

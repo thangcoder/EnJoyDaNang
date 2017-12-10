@@ -40,11 +40,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
@@ -150,7 +152,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                         mvpPresenter.getAllDataHome(partner.getId());
                         locationHelper = new LocationHelper(getActivity(), DetailPartnerFragment.this);
                         locationHelper.checkpermission();
-                        locationHelper.buildGoogleApiClient(DetailPartnerFragment.this, DetailPartnerFragment.this);
+                        if (locationHelper.isPermissionGranted()) {
+                            locationHelper.buildGoogleApiClient(DetailPartnerFragment.this, DetailPartnerFragment.this);
+                        } else {
+                            DialogUtils.showDialog(getContext(), DialogType.INFO, Utils.getLanguageByResId(R.string.Permisstion_Title),
+                                    Utils.getLanguageByResId(R.string.App_Location_Required));
+                        }
                     }
                 }
             }
@@ -409,7 +416,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         }
 
     }
-
 
 
 }

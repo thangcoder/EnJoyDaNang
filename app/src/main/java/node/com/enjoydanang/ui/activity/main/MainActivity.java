@@ -696,7 +696,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     boolean readAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
                     if (cameraAccepted && writeAccepted && readAccepted) {
-                        //TODO : do nothing
+                        startTrackLocation();
                     } else {
                         DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2),
                                 Utils.getLanguageByResId(R.string.Permission_Request_CAMERA_WRITE_READ));

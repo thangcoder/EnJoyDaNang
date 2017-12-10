@@ -19,13 +19,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,14 +45,17 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
+import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
+import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.Observable;
@@ -70,7 +76,8 @@ import static node.com.enjoydanang.utils.helper.PhotoHelper.SELECT_FROM_GALLERY_
  * Version 1.0
  */
 
-public class ProfileFragment extends MvpFragment<ProfilePresenter> implements ProfileView, EasyPermissions.PermissionCallbacks {
+public class ProfileFragment extends MvpFragment<ProfilePresenter> implements ProfileView, EasyPermissions.PermissionCallbacks
+        , View.OnTouchListener {
     private static final String TAG = ProfileFragment.class.getSimpleName();
     public static final int PERMISSION_CAMERA = 200;
 
@@ -105,6 +112,9 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @BindView(R.id.imgAvatarUser)
     SimpleDraweeView imgAvatarUser;
+
+    @BindView(R.id.lrlUpdateProfile)
+    LinearLayout lrlUpdateProfile;
 
     private UserInfo userInfo;
 
@@ -149,6 +159,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     @Override
     protected void setEvent(View view) {
+        lrlUpdateProfile.setOnTouchListener(this);
     }
 
     @Override
@@ -167,9 +178,18 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         if (userInfo != null) {
             this.userInfo = userInfo;
             GlobalApplication.setUserInfo(userInfo);
+            saveUserInfo(userInfo);
             mMainActivity.refreshHeader();
             initData();
             DialogUtils.showDialog(getContext(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Update_Success));
+        }
+    }
+
+    private void saveUserInfo(UserInfo userInfo) {
+        if (userInfo != null) {
+            Gson gson = new Gson();
+            String strJsonUserInfo = gson.toJson(userInfo);
+            SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO, strJsonUserInfo);
         }
     }
 
@@ -241,7 +261,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
                 if (data != null) {
                     Uri uri = data.getData();
                     String realPath = FileUtils.getPath(getContext(), uri);
-                    if(StringUtils.isBlank(realPath)){
+                    if (StringUtils.isBlank(realPath)) {
                         Toast.makeText(mMainActivity, Utils.getLanguageByResId(R.string.Message_Warning_File), Toast.LENGTH_LONG).show();
                         return;
                     }
@@ -368,46 +388,50 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     private void setValueAvatar() {
-        if (StringUtils.isNoneBlank(userInfo.getImage())) {
-            Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    if(fileChoose == null){
-                        subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
-                    }else{
-                        subscriber.onNext(ImageUtils.encodeTobase64(fileChoose));
-                    }
-                    subscriber.onCompleted();
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                if (fileChoose == null) {
+                    subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
+                } else {
+                    subscriber.onNext(ImageUtils.encodeTobase64(fileChoose));
                 }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<String>() {
-                        @Override
-                        public void onCompleted() {
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(TAG, "onError: " + e.getMessage());
-                        }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: " + e.getMessage());
+                    }
 
-                        @Override
-                        public void onNext(String base64) {
-                            String endValue = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
-                            mvpPresenter.updateProfile(userInfo.getUserId(),
-                                    String.valueOf(edtFullname.getText()),
-                                    String.valueOf(edtPhone.getText()),
-                                    String.valueOf(edtEmail.getText()),
-                                    endValue);
-                        }
-                    });
-
-
-        }
+                    @Override
+                    public void onNext(String base64) {
+                        String endValue = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
+                        mvpPresenter.updateProfile(userInfo.getUserId(),
+                                String.valueOf(edtFullname.getText()),
+                                String.valueOf(edtPhone.getText()),
+                                String.valueOf(edtEmail.getText()),
+                                endValue);
+                    }
+                });
     }
 
     public boolean isEmptyFullName() {
         return StringUtils.isEmpty(edtFullname.getText());
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.lrlUpdateProfile) {
+            SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
+        }
+        return true;
     }
 }

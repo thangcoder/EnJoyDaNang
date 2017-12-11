@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.Extras;
 import node.com.enjoydanang.provider.LocationProvider;
+import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
 
 /**
  * Author: Tavv
@@ -21,7 +22,7 @@ import node.com.enjoydanang.provider.LocationProvider;
  * Version : 1.0
  */
 
-public class LocationService extends Service implements LocationListener {
+public class LocationService extends Service implements LocationListener, OnFindLastLocationCallback {
 
     public Location mLastLocation;
 
@@ -42,7 +43,7 @@ public class LocationService extends Service implements LocationListener {
         if (mLocalBroadcastManager == null) {
             mLocalBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         }
-        mLocationProvider = new LocationProvider(GlobalApplication.getGlobalApplicationContext(), this);
+        mLocationProvider = new LocationProvider(GlobalApplication.getGlobalApplicationContext(), this, this);
         mLocationProvider.onResume();
         return mBinder;
     }
@@ -68,7 +69,7 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        updateLocationBroadcast(mLastLocation);
+        updateOnChangeLocationBroadcast(mLastLocation);
     }
 
     @Override
@@ -86,12 +87,26 @@ public class LocationService extends Service implements LocationListener {
 
     }
 
-    private void updateLocationBroadcast(Location location) {
+    private void updateOnChangeLocationBroadcast(Location location) {
+        Intent intent = new Intent(Extras.KEY_RECEIVER_LOCATION_ON_FOUND_FILTER);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Extras.EXTRAS_RECEIVER_LOCATION, location);
+        intent.putExtra(Extras.KEY_RECEIVER_LOCATION, bundle);
+        mLocalBroadcastManager.sendBroadcast(intent);
+    }
+
+    private void updateOnFoundLocationBroadcast(Location location) {
         Intent intent = new Intent(Extras.KEY_RECEIVER_LOCATION_FILTER);
         Bundle bundle = new Bundle();
         bundle.putParcelable(Extras.EXTRAS_RECEIVER_LOCATION, location);
         intent.putExtra(Extras.KEY_RECEIVER_LOCATION, bundle);
         mLocalBroadcastManager.sendBroadcast(intent);
+    }
+
+    @Override
+    public void onFound(Location location) {
+        mLastLocation = location;
+        updateOnFoundLocationBroadcast(mLastLocation);
     }
 
     public class LocalBinder extends Binder {

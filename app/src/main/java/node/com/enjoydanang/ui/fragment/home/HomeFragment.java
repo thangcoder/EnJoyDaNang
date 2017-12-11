@@ -1,10 +1,15 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +26,7 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,6 +44,7 @@ import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.constant.Extras;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
@@ -147,11 +154,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        prgLoading.post(new Runnable() {
-            public void run() {
-                mvpPresenter.getAllDataHome(user.getUserId());
-            }
-        });
         loadmorePartner.setCategoryId(-1);
         gridView.setVisibility(View.VISIBLE);
     }
@@ -244,8 +246,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "HomeFragment onResume: ");
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(onChangedLocationReceiver, new IntentFilter(Extras.KEY_RECEIVER_LOCATION_ON_FOUND_FILTER));
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(onChangedLocationReceiver);
     }
 
     @Override
@@ -306,11 +313,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 //        mMainActivity.enableBackButton(true);
         Category category = (Category) parent.getItemAtPosition(position);
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
-        if (mLastLocation != null) {
-            mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName(), mLastLocation),
-                    R.id.container_fragment, PartnerCategoryFragment.class.getName(),
-                    transitionInfo);
-        }
+        mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName(), mLastLocation),
+                R.id.container_fragment, PartnerCategoryFragment.class.getName(),
+                transitionInfo);
 //        if (category != null) {
 //            for (int i = 0; i < gridView.getCount(); i++) {
 //                View childView = gridView.getChildAt(i);
@@ -327,6 +332,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 //            mvpPresenter.getPartnerByCategory(category.getId(), startPage, user.getUserId());
 //        }
     }
+
 
     private class LoadmorePartner extends EndlessParentScrollListener {
         private int categoryId = -1;
@@ -458,9 +464,26 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageReceive(Object obj) {
         if (obj instanceof String) {
-            nestedScrollView.scrollTo(0, 0);
+            String msg = (String) obj;
+            if (msg.equalsIgnoreCase(Constant.LOCATION_NOT_FOUND)) {
+                mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
+            } else {
+                nestedScrollView.scrollTo(0, 0);
+            }
+
         } else if (obj instanceof Location) {
             mLastLocation = (Location) obj;
+            prgLoading.post(new Runnable() {
+                public void run() {
+                    if (mLastLocation == null) {
+                        mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
+                    } else {
+                        String strGeoLat = String.valueOf(mLastLocation.getLatitude());
+                        String strGeoLng = String.valueOf(mLastLocation.getLongitude());
+                        mvpPresenter.getAllDataHome(user.getUserId(), strGeoLat, strGeoLng);
+                    }
+                }
+            });
         }
     }
 
@@ -480,4 +503,20 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         }
     }
 
+
+    private BroadcastReceiver onChangedLocationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+                Bundle bundle = intent.getBundleExtra(Extras.KEY_RECEIVER_LOCATION);
+                if (bundle != null) {
+                    Location currentLocation = bundle.getParcelable(Extras.EXTRAS_RECEIVER_LOCATION);
+                    if (action.equalsIgnoreCase(Extras.KEY_RECEIVER_LOCATION_ON_FOUND_FILTER)) {
+                        mLastLocation = currentLocation;
+                    }
+                }
+            }
+        }
+    };
 }

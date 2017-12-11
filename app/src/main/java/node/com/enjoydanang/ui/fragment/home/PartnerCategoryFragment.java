@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import node.com.enjoydanang.utils.helper.SeparatorDecoration;
  */
 
 public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresenter> implements PartnerCategoryView, OnItemClickListener,
-        BaseRecyclerViewAdapter.ItemClickListener{
+        BaseRecyclerViewAdapter.ItemClickListener {
     private static final String TAG = PartnerCategoryFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
     private static final String KEY_EXTRAS_LOCATION = "current_location";
@@ -91,9 +92,15 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         userInfo = Utils.getUserInfo();
-        if (categoryId != -1 && mLocation != null) {
+        if (categoryId != -1) {
 //            mvpPresenter.getPartnerByCategory(categoryId, START_PAGE, userInfo.getUserId());
-            mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, mLocation.getLatitude(), mLocation.getLongitude());
+            if (mLocation == null) {
+                mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, StringUtils.EMPTY, StringUtils.EMPTY);
+            } else {
+                String strGeoLat = String.valueOf(mLocation.getLatitude());
+                String strGeoLng = String.valueOf(mLocation.getLongitude());
+                mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, strGeoLat, strGeoLng);
+            }
         }
     }
 
@@ -155,7 +162,13 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 hasLoadmore = true;
                 partnerCategoryAdapter.startLoadMore();
 //                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
-                mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, mLocation.getLatitude(), mLocation.getLongitude());
+                if (mLocation == null) {
+                    mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), page, StringUtils.EMPTY, StringUtils.EMPTY);
+                } else {
+                    String strGeoLat = String.valueOf(mLocation.getLatitude());
+                    String strGeoLng = String.valueOf(mLocation.getLongitude());
+                    mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), page, strGeoLat, strGeoLng);
+                }
             }
         });
     }
@@ -218,7 +231,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         if (bundle != null) {
             categoryId = bundle.getInt(TAG, -1);
             String title = bundle.getString(KEY_EXTRAS_TITLE);
-            mLocation =  bundle.getParcelable(KEY_EXTRAS_LOCATION);
+            mLocation = bundle.getParcelable(KEY_EXTRAS_LOCATION);
             mMainActivity.setNameToolbar(title);
         }
     }

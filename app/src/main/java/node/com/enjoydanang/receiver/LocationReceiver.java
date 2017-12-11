@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import org.greenrobot.eventbus.EventBus;
 
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.Extras;
 
 /**
@@ -23,10 +24,17 @@ public class LocationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null) {
+            String action = intent.getAction();
             Bundle bundle = intent.getBundleExtra(Extras.KEY_RECEIVER_LOCATION);
             if (bundle != null) {
                 Location currentLocation = bundle.getParcelable(Extras.EXTRAS_RECEIVER_LOCATION);
-                EventBus.getDefault().post(currentLocation);
+                if(action.equals(Extras.KEY_RECEIVER_LOCATION_FILTER)){
+                    if(currentLocation != null){
+                        EventBus.getDefault().post(currentLocation);
+                    }else{
+                        EventBus.getDefault().post(Constant.LOCATION_NOT_FOUND);
+                    }
+                }
             }
         }
     }

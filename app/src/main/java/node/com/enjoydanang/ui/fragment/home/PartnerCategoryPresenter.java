@@ -20,7 +20,7 @@ public class PartnerCategoryPresenter extends BasePresenter<PartnerCategoryView>
         super(view);
     }
 
-    void getListByLocation(int categoryId, long userId , int page, double geoLat, double geoLng) {
+    void getListByLocation(int categoryId, long userId , int page, String geoLat, String geoLng) {
         addSubscription(apiStores.getListPartnerByLocation(categoryId, userId, page , geoLat, geoLng), new ApiCallback<Repository<Partner>>() {
 
             @Override

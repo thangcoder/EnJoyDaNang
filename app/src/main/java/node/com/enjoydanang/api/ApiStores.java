@@ -84,8 +84,14 @@ public interface ApiStores {
     Observable<Repository<Partner>> getListPartnerByLocation(@Field("categoryId") int categoryId,
                                                              @Field("customerId") long userId,
                                                              @Field("page") int page,
-                                                             @Field("geoLat") double latitude,
-                                                             @Field("geoLng") double longtitude);
+                                                             @Field("geoLat") String latitude,
+                                                             @Field("geoLng") String longtitude);
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListHomeByLocation")
+    Observable<Repository<Partner>> getListPartnerHome(@Field("customerId") long customerId,
+                                                       @Field("geoLat") String latitude,
+                                                       @Field("geoLng") String longtitude);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
@@ -265,6 +271,15 @@ public interface ApiStores {
                                        @Part MultipartBody.Part image2,
                                        @Part MultipartBody.Part image3);
 
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListAround")
+    Observable<Repository> listPlaceAround(@Field("customerId") long customerId, @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
+
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/ListSearchByLocation")
+    Observable<Repository> listSearchByLocation(@Field("customerId") long customerId, @Field("distance") String distance,
+                                                @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
 
 //    @FormUrlEncoded
 //    @POST("/login")

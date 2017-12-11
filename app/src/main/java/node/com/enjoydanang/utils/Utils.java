@@ -310,4 +310,8 @@ public class Utils {
         }
         return null;
     }
+
+    public static Context getContext(){
+        return GlobalApplication.getGlobalApplicationContext();
+    }
 }

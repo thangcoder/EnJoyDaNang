@@ -23,9 +23,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
-import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -80,8 +78,9 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
-            if (StringUtils.isNotBlank(partner.getDistance())) {
-                String distance = LanguageHelper.getValueByKey(Utils.getString(R.string.Partner_Distance)) + ": " + partner.getDistance();
+            if (StringUtils.isNotBlank(partner.getDistance()) &&  !StringUtils.equals(partner.getDistance().trim(), "km")) {
+//                String distance = LanguageHelper.getValueByKey(Utils.getString(R.string.Partner_Distance)) + ": " + partner.getDistance() + "\t";
+                String distance = partner.getDistance() + "\t";
                 ((ViewHolder) holder).txtDistance.setText(distance);
             } else {
                 ((ViewHolder) holder).txtDistance.setVisibility(View.GONE);

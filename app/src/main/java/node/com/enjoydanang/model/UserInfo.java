@@ -164,4 +164,42 @@ public class UserInfo implements Serializable{
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserInfo userInfo = (UserInfo) o;
+
+        if (userId != userInfo.userId) return false;
+        if (userName != null ? !userName.equals(userInfo.userName) : userInfo.userName != null)
+            return false;
+        if (password != null ? !password.equals(userInfo.password) : userInfo.password != null)
+            return false;
+        if (email != null ? !email.equals(userInfo.email) : userInfo.email != null) return false;
+        if (fullName != null ? !fullName.equals(userInfo.fullName) : userInfo.fullName != null)
+            return false;
+        if (phone != null ? !phone.equals(userInfo.phone) : userInfo.phone != null) return false;
+        if (image != null ? !image.equals(userInfo.image) : userInfo.image != null) return false;
+        if (code != null ? !code.equals(userInfo.code) : userInfo.code != null) return false;
+        if (role != userInfo.role) return false;
+        return type != null ? type.equals(userInfo.type) : userInfo.type == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (userId ^ (userId >>> 32));
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (image != null ? image.hashCode() : 0);
+        result = 31 * result + (code != null ? code.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
 }

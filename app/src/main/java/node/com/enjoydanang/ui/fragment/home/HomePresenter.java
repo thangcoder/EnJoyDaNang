@@ -221,8 +221,8 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         });
     }
 
-    void getAllDataHome(long userId) {
-        Observable.zip(apiStores.getListPartnerHome(userId), apiStores.getBanner(), apiStores.getAllCategories(), new Func3<Repository<Partner>, Repository<Banner>, Repository<Category>, HomeCombined>() {
+    void getAllDataHome(long userId, String latitude, String longtitude) {
+        Observable.zip(apiStores.getListPartnerHome(userId, latitude, longtitude), apiStores.getBanner(), apiStores.getAllCategories(), new Func3<Repository<Partner>, Repository<Banner>, Repository<Category>, HomeCombined>() {
             @Override
             public HomeCombined call(Repository<Partner> partnerRepository, Repository<Banner> bannerRepository, Repository<Category> categoryRepository) {
                 return new HomeCombined(partnerRepository, bannerRepository, categoryRepository);

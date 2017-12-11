@@ -98,6 +98,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
     public LocationHelper(Context context, OnFindLastLocationCallback findCallback) {
         this.context = context;
         this.findCallback = findCallback;
+        this.current_activity = (Activity) context;
         permissionUtils = new PermissionUtils(context, this);
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);

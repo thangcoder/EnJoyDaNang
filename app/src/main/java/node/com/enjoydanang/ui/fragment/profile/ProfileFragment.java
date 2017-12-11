@@ -239,12 +239,6 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
             return;

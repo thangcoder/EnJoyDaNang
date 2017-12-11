@@ -10,9 +10,11 @@ import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.model.Language;
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.utils.network.NetworkUtils;
+
+import static com.kakao.auth.StringSet.msg;
 
 /**
  * Author: Tavv
@@ -21,19 +23,19 @@ import node.com.enjoydanang.utils.network.NetworkUtils;
  * Version 1.0
  */
 
-public class SplashScreenPresenter extends BasePresenter<SplashScreenView>{
+public class SplashScreenPresenter extends BasePresenter<SplashScreenView> {
 
 
     public SplashScreenPresenter(SplashScreenView view) {
         super(view);
     }
 
-    void loadLanguage(){
-        addSubscription(apiStores.getLanguage(), new ApiCallback<Repository<Language>>(){
+    void loadLanguage() {
+        addSubscription(apiStores.getLanguage(), new ApiCallback<Repository<Language>>() {
 
             @Override
             public void onSuccess(Repository<Language> data) {
-                if(Utils.isNotEmptyContent(data)){
+                if (Utils.isNotEmptyContent(data)) {
                     List<Language> lstLanguages = data.getData();
                     Map<String, String> maps = new HashMap<String, String>();
                     int length = lstLanguages.size();
@@ -48,7 +50,32 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView>{
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onLoadFailre(new AppError(new Throwable(msg)));
+                mvpView.onLoadFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+    }
+
+
+    void getUserInfoById(long userId) {
+        addSubscription(apiStores.getUserInfoById(userId, "CUSTOMERINFO"), new ApiCallback<Repository<UserInfo>>() {
+
+            @Override
+            public void onSuccess(Repository<UserInfo> data) {
+                if (Utils.isResponseError(data)) {
+                    mvpView.onFailure(new AppError(new Throwable(data.getMessage())));
+                    return;
+                }
+                mvpView.onGetUserInfoSuccess(data.getData().get(0));
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onLoadFailure(new AppError(new Throwable(msg)));
             }
 
             @Override

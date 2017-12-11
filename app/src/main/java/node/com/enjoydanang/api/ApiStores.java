@@ -281,6 +281,11 @@ public interface ApiStores {
     Observable<Repository> listSearchByLocation(@Field("customerId") long customerId, @Field("distance") String distance,
                                                 @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
 
+
+    @FormUrlEncoded
+    @POST("EnjoyApi.asmx/Get")
+    Observable<Repository<UserInfo>> getUserInfoById(@Field("CustomerId") long customerId, @Field("Type") String type);
+
 //    @FormUrlEncoded
 //    @POST("/login")
 //    Observable<Repository> login(@Field("username") String username, @Field("password") String password,

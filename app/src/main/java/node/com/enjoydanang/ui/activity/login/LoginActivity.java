@@ -238,17 +238,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
             GlobalApplication.setUserInfo(userInfo);
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);
-            saveUserInfo(userInfo);
+            Utils.saveUserInfo(userInfo);
             redirectMain();
             hideLoading();
-        }
-    }
-
-    private void saveUserInfo(UserInfo userInfo) {
-        if (userInfo != null) {
-            Gson gson = new Gson();
-            String strJsonUserInfo = gson.toJson(userInfo);
-            SharedPrefsUtils.addDataToPrefs(Constant.SHARED_PREFS_NAME, Constant.KEY_EXTRAS_USER_INFO, strJsonUserInfo);
         }
     }
 

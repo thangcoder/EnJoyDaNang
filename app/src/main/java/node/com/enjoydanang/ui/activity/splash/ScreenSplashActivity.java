@@ -3,7 +3,10 @@ package node.com.enjoydanang.ui.activity.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.TextView;
+
+import com.kakao.usermgmt.response.model.User;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -38,10 +41,13 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     private boolean hasTextContent;
 
+    private UserInfo localUser;
+
     @Override
     protected SplashScreenPresenter createPresenter() {
         return new SplashScreenPresenter(this);
     }
+
 
     @Override
     protected void onResume() {
@@ -49,6 +55,7 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
         if (NetworkUtils.isNetworkContented(ScreenSplashActivity.this)) {
             mvpPresenter = createPresenter();
             mvpPresenter.loadLanguage();
+
         } else {
             DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_No_Internet));
         }
@@ -61,7 +68,11 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
 
     @Override
     public void init() {
-//        start();
+        if (Utils.hasSessionLogin()) {
+            localUser = JsonUtils.convertJsonToObject(SharedPrefsUtils.getStringFromPrefs(Constant.SHARED_PREFS_NAME,
+                    Constant.KEY_EXTRAS_USER_INFO), UserInfo.class);
+            mvpPresenter.getUserInfoById(localUser.getUserId());
+        }
     }
 
     @Override
@@ -125,13 +136,25 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
             if (!hasTextContent) {
                 LanguageHelper.getValueByViewId(txtLoadingContent);
             }
-            start();
         }
     }
 
     @Override
-    public void onLoadFailre(AppError appError) {
+    public void onLoadFailure(AppError appError) {
         DialogUtils.showDialog(ScreenSplashActivity.this, DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+    }
+
+    @Override
+    public void onGetUserInfoSuccess(UserInfo userInfo) {
+        if(!localUser.equals(userInfo)){
+            Utils.saveUserInfo(userInfo);
+        }
+        start();
+    }
+
+    @Override
+    public void onFailure(AppError appError) {
+        Log.e(TAG, "onFailure: " + appError.getMessage());
     }
 
     @Override

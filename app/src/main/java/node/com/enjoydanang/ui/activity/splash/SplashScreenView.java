@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.UserInfo;
 
 /**
  * Author: Tavv
@@ -14,5 +15,10 @@ import node.com.enjoydanang.constant.AppError;
 
 public interface SplashScreenView extends iBaseView {
     void onLoadLanguageSuccess(JSONObject json);
-    void onLoadFailre(AppError appError);
+
+    void onLoadFailure(AppError appError);
+
+    void onGetUserInfoSuccess(UserInfo userInfo);
+
+    void onFailure(AppError appError);
 }

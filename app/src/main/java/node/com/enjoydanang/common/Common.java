@@ -8,6 +8,8 @@ import android.view.KeyEvent;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Author: Tavv
  * Created on 31/10/2017.
@@ -47,5 +49,17 @@ public class Common {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public static void registerEventBus(Object obj){
+        if(!EventBus.getDefault().isRegistered(obj)){
+            EventBus.getDefault().register(obj);
+        }
+    }
+
+    public static void unregisterEventBus(Object obj){
+        if(EventBus.getDefault().isRegistered(obj)){
+            EventBus.getDefault().unregister(obj);
+        }
     }
 }

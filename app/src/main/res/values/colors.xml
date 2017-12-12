@@ -434,4 +434,7 @@
     <color name="list_background">#BABABA</color>
     <color name="list_background_pressed">@color/material_orange_100</color>
 
+    <color name="colorIntervalLine">#b1b1b1</color>
+    <color name="colorIntervalLabelText">#909090</color>
+    <color name="colorSeekBarTestColor">#e47e30</color>
 </resources>

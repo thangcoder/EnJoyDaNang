@@ -193,4 +193,5 @@
     <string name="ScanQR.Hint.Passcode">ScanQR.Hint.Passcode</string>
     <string name="Partner.Distance">Partner.Distance</string>
     <string name="App.Location.Required">App.Location.Required</string>
+    <string name="Search.Button.Find">Search.Button.Find</string>
 </resources>

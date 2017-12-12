@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.fragment.search;
 
 import java.util.List;
 
+import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.Partner;
 
@@ -16,4 +17,7 @@ public interface iSearchView extends iBaseView {
 
     void OnQuerySearchResult(List<Partner> lstPartner);
 
+    void onResultPlaceByRange(List<Partner> lstPartner);
+
+    void onError(AppError error);
 }

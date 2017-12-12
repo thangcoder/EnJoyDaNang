@@ -64,4 +64,14 @@
 
     <item type="dimen" name="border_edt_scan_qr">2dp</item>
 
+    <dimen name="seekbar_thumb_width">25dp</dimen>
+
+
+    <dimen name="intervalTextSize">8sp</dimen>
+    <dimen name="interval_text_padding">3dp</dimen>
+    <dimen name="interval_image_fix_size">15dp</dimen>
+    <dimen name="interval_image_padding">15dp</dimen>
+    <dimen name="interval_line_width">1dp</dimen>
+    <dimen name="interval_line_height">7dp</dimen>
+    <dimen name="interval_parent_padding">10dp</dimen>
 </resources>

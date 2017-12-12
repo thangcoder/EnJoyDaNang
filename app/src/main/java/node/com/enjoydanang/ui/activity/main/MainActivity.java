@@ -165,7 +165,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private Intent locationService;
 
-    public LocationService mLocationService;
+    private LocationService mLocationService;
 
     private boolean isServiceConnected;
 
@@ -975,5 +975,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             isServiceConnected = false;
         }
     };
+
+
+    public LocationService getLocationService() {
+        return mLocationService;
+    }
 
 }

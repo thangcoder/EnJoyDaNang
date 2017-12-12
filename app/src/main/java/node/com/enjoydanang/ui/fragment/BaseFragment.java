@@ -1,6 +1,5 @@
 package node.com.enjoydanang.ui.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -51,11 +50,14 @@ public abstract class BaseFragment extends Fragment {
         View view = inflater.inflate(getRootLayoutId(), container, false);
         bindView(view);
         init(view);
+        init(view, savedInstanceState);
         setEvent(view);
         initViewLabel(view);
         executeBase();
         return view;
     }
+
+    public void init(View view, Bundle savedInstanceState){};
 
     protected abstract void init(View view);
 
@@ -198,4 +200,5 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void setHasOptionMenu(){}
+
 }

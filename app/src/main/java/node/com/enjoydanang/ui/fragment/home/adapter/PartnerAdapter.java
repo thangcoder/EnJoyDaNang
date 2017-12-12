@@ -78,7 +78,9 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         if (holder instanceof ViewHolder) {
             Partner partner = partners.get(position);
             ((ViewHolder) holder).tvTitle.setText(partner.getName());
-            if (StringUtils.isNotBlank(partner.getDistance()) &&  !StringUtils.equals(partner.getDistance().trim(), "km")) {
+            if (StringUtils.isNotBlank(partner.getDistance()) &&
+                    !StringUtils.equals(partner.getDistance().trim(), "km") &&
+                    partner.isDisplayDistance()) {
 //                String distance = LanguageHelper.getValueByKey(Utils.getString(R.string.Partner_Distance)) + ": " + partner.getDistance() + "\t";
                 String distance = partner.getDistance() + "\t";
                 ((ViewHolder) holder).txtDistance.setText(distance);

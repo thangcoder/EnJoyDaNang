@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 import node.com.enjoydanang.constant.Constant;
 
-public class Partner implements Serializable{
+public class Partner implements Serializable {
 
     @SerializedName("Id")
     @Expose
@@ -44,6 +44,22 @@ public class Partner implements Serializable{
     @SerializedName("Distance")
     @Expose
     private String distance;
+
+    @SerializedName("DisplayDistance")
+    @Expose
+    private int displayDistance;
+
+    @SerializedName("GeoLat")
+    @Expose
+    private String geoLat;
+
+    @SerializedName("GeoLng")
+    @Expose
+    private String geoLng;
+
+    @SerializedName("GeoLocation")
+    @Expose
+    private String geoLocation;
 
 
     public int getId() {
@@ -125,4 +141,41 @@ public class Partner implements Serializable{
     public void setDistance(String distance) {
         this.distance = distance;
     }
+
+    public int getDisplayDistance() {
+        return displayDistance;
+    }
+
+    public void setDisplayDistance(int displayDistance) {
+        this.displayDistance = displayDistance;
+    }
+
+    public boolean isDisplayDistance() {
+        return displayDistance == 1;
+    }
+
+    public String getGeoLat() {
+        return geoLat;
+    }
+
+    public void setGeoLat(String geoLat) {
+        this.geoLat = geoLat;
+    }
+
+    public String getGeoLng() {
+        return geoLng;
+    }
+
+    public void setGeoLng(String geoLng) {
+        this.geoLng = geoLng;
+    }
+
+    public String getGeoLocation() {
+        return geoLocation;
+    }
+
+    public void setGeoLocation(String geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
 }

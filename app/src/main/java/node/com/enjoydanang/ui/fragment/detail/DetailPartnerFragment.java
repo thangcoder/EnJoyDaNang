@@ -110,7 +110,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
         if(mMainActivity != null){
-            mLastLocation = mMainActivity.mLocationService.getLastLocation();
+            mLastLocation = mMainActivity.getLocationService().getLastLocation();
             mLocationHelper = mMainActivity.mLocationHelper;
         }
     }

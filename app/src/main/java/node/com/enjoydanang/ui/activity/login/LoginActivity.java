@@ -316,6 +316,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                     @Override
                     public void onClick(PromptDialog promptDialog) {
                         promptDialog.dismiss();
+                        GlobalApplication.getGlobalApplicationContext().setHasClickedUpdate(true);
                         Utils.redirectStore(LoginActivity.this, updateUrl);
                     }
                 });

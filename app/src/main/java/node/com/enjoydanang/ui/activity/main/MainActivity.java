@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -94,13 +95,14 @@ import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 
+import static node.com.enjoydanang.utils.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
+
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQUEST_CODE = 200;
 
-    private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final String BROADCAST_ACTION = "android.location.PROVIDERS_CHANGED";
 
     private Menu mMenu;
@@ -825,14 +827,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     public void onUpdateNeeded(final String updateUrl) {
-        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Message_Warning_Version_Title),
-                Utils.getLanguageByResId(R.string.Message_Confirm_Update_Title), new PromptDialog.OnPositiveListener() {
-                    @Override
-                    public void onClick(PromptDialog promptDialog) {
-                        promptDialog.dismiss();
-                        Utils.redirectStore(MainActivity.this, updateUrl);
-                    }
-                });
+        if (!GlobalApplication.getGlobalApplicationContext().isHasClickedUpdate()) {
+            DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, Utils.getLanguageByResId(R.string.Message_Warning_Version_Title),
+                    Utils.getLanguageByResId(R.string.Message_Confirm_Update_Title), new PromptDialog.OnPositiveListener() {
+                        @Override
+                        public void onClick(PromptDialog promptDialog) {
+                            promptDialog.dismiss();
+                            Utils.redirectStore(MainActivity.this, updateUrl);
+                        }
+                    });
+        }
     }
 
     public void enableBackButton(boolean enable) {
@@ -927,16 +931,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private void startTrackLocation() {
         if (isServiceConnected)
             return;
-        if (locationService == null) {
-            if (mLocationHelper == null) {
-                mLocationHelper = new LocationHelper(this);
-                mLocationHelper.checkpermission();
-                mLocationHelper.simpleBuildGoogleApi();
-            }
+        if (mLocationHelper == null) {
+            mLocationHelper = new LocationHelper(MainActivity.this);
+            mLocationHelper.checkpermission();
+            mLocationHelper.simpleBuildGoogleApi();
         }
-        if (mLocationHelper.isPermissionGranted() && LocationUtils.isGpsEnabled() ) {
-            locationService = new Intent(this, LocationService.class);
-            bindService(locationService, serviceConnection, BIND_AUTO_CREATE);
+        if (mLocationHelper.isPermissionGranted() && LocationUtils.isGpsEnabled()) {
+            if(locationService == null){
+                locationService = new Intent(this, LocationService.class);
+                bindService(locationService, serviceConnection, BIND_AUTO_CREATE);
+            }
         } else {
             mLocationHelper.showSettingDialog();
         }
@@ -975,14 +979,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
+            case LocationHelper.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
                         startTrackLocation();
                         break;
                     case RESULT_CANCELED:
-                        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2),
-                                Utils.getLanguageByResId(R.string.Permission_Request_CAMERA_WRITE_READ));
+                        EventBus.getDefault().post(Constant.LOCATION_NOT_FOUND);
                         break;
                 }
                 break;
@@ -1000,7 +1003,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                 //Check if GPS is turned ON or OFF
                 if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    Log.e("About GPS", "GPS is Enabled in your device");
+                    startTrackLocation();
                 } else {
                     //If GPS turned OFF show Location Dialog
                     new Handler().postDelayed(sendUpdatesToUI, 10);

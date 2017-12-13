@@ -230,9 +230,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         Bundle bundle = getArguments();
         if (bundle != null) {
             categoryId = bundle.getInt(TAG, -1);
-            String title = bundle.getString(KEY_EXTRAS_TITLE);
             mLocation = bundle.getParcelable(KEY_EXTRAS_LOCATION);
-            mMainActivity.setNameToolbar(title);
         }
     }
 

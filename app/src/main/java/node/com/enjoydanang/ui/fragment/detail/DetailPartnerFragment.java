@@ -110,7 +110,9 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
         if(mMainActivity != null){
-            mLastLocation = mMainActivity.getLocationService().getLastLocation();
+            if(mMainActivity.getLocationService() != null){
+                mLastLocation = mMainActivity.getLocationService().getLastLocation();
+            }
             mLocationHelper = mMainActivity.mLocationHelper;
         }
     }
@@ -306,6 +308,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
 
     private LatLng getCurrentLocation() {
+        retryGetLastLocation();
         if (mLastLocation != null) {
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
@@ -313,6 +316,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         } else {
             showToast("Couldn't get the location. Make sure location is enabled on the device");
             return null;
+        }
+    }
+
+    private void retryGetLastLocation(){
+        if(mLastLocation == null && mMainActivity.getLocationService() != null){
+            mLastLocation = mMainActivity.getLocationService().getLastLocation();
         }
     }
 

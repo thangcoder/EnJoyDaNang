@@ -18,8 +18,6 @@ public interface SplashScreenView extends iBaseView {
 
     void onLoadFailure(AppError appError);
 
-    void onGetUserInfoSuccess(UserInfo userInfo);
-
     void onFailure(AppError appError);
 
     void onCombined(JSONObject jsLanguage, UserInfo userInfo);

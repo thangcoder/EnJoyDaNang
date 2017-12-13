@@ -63,31 +63,6 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> {
         });
     }
 
-
-    void getUserInfoById(long userId) {
-        addSubscription(apiStores.getUserInfoById(userId, "CUSTOMERINFO"), new ApiCallback<Repository<UserInfo>>() {
-
-            @Override
-            public void onSuccess(Repository<UserInfo> data) {
-                if (Utils.isResponseError(data)) {
-                    mvpView.onFailure(new AppError(new Throwable(data.getMessage())));
-                    return;
-                }
-                mvpView.onGetUserInfoSuccess(data.getData().get(0));
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.onLoadFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
     void getDataCombine(long userId){
         Observable.zip(apiStores.getLanguage(), apiStores.getUserInfoById(userId, "CUSTOMERINFO"), new Func2<Repository<Language>, Repository<UserInfo>, SplashScreenCombined>() {
             @Override

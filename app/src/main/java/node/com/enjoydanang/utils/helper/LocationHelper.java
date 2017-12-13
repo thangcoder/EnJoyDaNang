@@ -96,7 +96,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
     private GoogleMap mGoogleMap;
 
     private final static int PLAY_SERVICES_REQUEST = 1000;
-    private final static int REQUEST_CHECK_SETTINGS = 2000;
+    public final static int REQUEST_CHECK_SETTINGS = 2000;
 
     private OnFindLastLocationCallback findCallback;
 

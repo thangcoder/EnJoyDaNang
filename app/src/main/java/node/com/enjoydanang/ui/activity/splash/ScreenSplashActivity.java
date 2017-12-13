@@ -161,23 +161,15 @@ public class ScreenSplashActivity extends MvpActivity<SplashScreenPresenter> imp
     }
 
     @Override
-    public void onGetUserInfoSuccess(UserInfo userInfo) {
-        if (!localUser.equals(userInfo)) {
-            Utils.saveUserInfo(userInfo);
-        }
-        start();
-    }
-
-    @Override
     public void onFailure(AppError appError) {
         Log.e(TAG, "onFailure: " + appError.getMessage());
     }
 
     @Override
-    public void onCombined(JSONObject json, UserInfo userInfo) {
-        if (json != null) {
-            FileUtils.saveFilePrivateMode(Constant.FILE_NAME_LANGUAGE, json.toString());
-            GlobalApplication.getGlobalApplicationContext().setJsLanguage(json);
+    public void onCombined(JSONObject jsonKr, UserInfo userInfo) {
+        if (jsonKr != null) {
+            FileUtils.saveFilePrivateMode(Constant.FILE_NAME_LANGUAGE, jsonKr.toString());
+            GlobalApplication.getGlobalApplicationContext().setJsLanguage(jsonKr);
             if (!hasTextContent) {
                 LanguageHelper.getValueByViewId(txtLoadingContent);
             }

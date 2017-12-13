@@ -78,7 +78,7 @@ public class LocationProvider implements ILocationProvider {
             onFindLastLocationCallback.onFound(lastKnownGPSLocation != null ? lastKnownGPSLocation : lastKnownNWLocation);
 
             if (!this.gpsProviderEnabled || !this.networkProviderEnabled) {
-                Log.e(TAG, "Devide is turn off GPS");
+                Log.e(TAG, "GPS is Disable in your device");
             }
         }
     }

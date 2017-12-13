@@ -72,10 +72,13 @@ public class Common {
 
     public static void validLanguageLogin(UserInfo userInfo) {
         if (userInfo != null) {
+            JSONObject js = null;
             if (userInfo.getRole() == Role.PARTNER) {
-                JSONObject js = FileUtils.readFile(Constant.FILE_NAME_LANGUAGE_VN);
-                GlobalApplication.getGlobalApplicationContext().setJsLanguage(js);
+                js = FileUtils.readFile(Constant.FILE_NAME_LANGUAGE_VN);
+            } else {
+                js = FileUtils.readFile(Constant.FILE_NAME_LANGUAGE);
             }
+            GlobalApplication.getGlobalApplicationContext().setJsLanguage(js);
         }
     }
 }

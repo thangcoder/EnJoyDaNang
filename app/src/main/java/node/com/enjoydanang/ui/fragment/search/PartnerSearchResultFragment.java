@@ -18,6 +18,8 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -114,15 +116,13 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         lstPartner.addAll(lstPartners);
         mAdapter.notifyItemRangeChanged(0, lstPartner.size());
         mAdapter.notifyDataSetChanged();
-        //Chỗ này là khi fetch hết dữ liệu xong thì a thông báo cho thằng cha dismiss dialog hoặc hide cái progressbar đi
-        //Vấn đề là lúc đầu vào nó đéo chịu show cái củ đậu gì hết
-        //ok de a coi thu
         mOnFetchSearchResult.onFetchCompleted(true);
     }
 
     @Override
     public void onClick(View view, int position) {
-
+        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
+        DialogUtils.openDialogFragment(mFragmentManager, dialog);
     }
 
     @Override

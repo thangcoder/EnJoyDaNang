@@ -10,6 +10,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -25,6 +26,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.service.LocationService;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 
 /**
@@ -37,7 +39,7 @@ import node.com.enjoydanang.utils.helper.LocationHelper;
 public class MapResultFragment extends MvpFragment<SearchPresenter> implements OnMapReadyCallback {
     private static final String TAG = MapResultFragment.class.getSimpleName();
 
-    private static final float INIT_ZOOM_LEVEL = 17f;
+    private static final float INIT_ZOOM_LEVEL = 13f;
 
     SupportMapFragment mMapFragment;
 
@@ -165,14 +167,14 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchResultReceive(List<Partner> lstPartners) {
         if (isMapAlreadyInit && mCurrentLocation != null) {
-//            double lat = mCurrentLocation.getLatitude();
-//            double lng = mCurrentLocation.getLongitude();
-//            LatLng latLng = new LatLng(lat, lng);
-//            mGoogleMap.addCircle(new CircleOptions()
-//                    .center(latLng)
-//                    .radius(1000)
-//                    .strokeWidth(0f)
-//                    .fillColor(0x550000FF));
+            double lat = mCurrentLocation.getLatitude();
+            double lng = mCurrentLocation.getLongitude();
+            LatLng latLng = new LatLng(lat, lng);
+            mGoogleMap.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .radius(1000)
+                    .strokeWidth(0f)
+                    .fillColor(Utils.getColorRes(R.color.material_red_50)));
         }
         if (CollectionUtils.isNotEmpty(lstPartners)) {
             for (Partner partner : lstPartners) {

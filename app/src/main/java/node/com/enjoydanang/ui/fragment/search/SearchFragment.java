@@ -15,7 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -106,10 +105,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     protected void init(View view) {
-        //Cần show chỗ này
-        // init = onCreateView
-        //ONRESUM DAU...MAY A MAC BAM KO DC
-
         progressBar.setVisibility(View.VISIBLE);
         eventBus = EventBus.getDefault();
         userInfo = Utils.getUserInfo();
@@ -118,25 +113,10 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         initTabs();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Toast.makeText(mMainActivity, "resum", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMainActivity.getSupportFragmentManager().r
-        Toast.makeText(mMainActivity, "onDestroy", Toast.LENGTH_SHORT).show();
-
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // onViewCreated thằng này chạy sau thằng onCreateView thì a call API
-        //test thu thooi nha...ti co gi convert lai
         mvpPresenter = createPresenter();
         fetchNearPlace();
     }
@@ -145,7 +125,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         if (currentLocation != null) {
             String geoLat = String.valueOf(currentLocation.getLatitude());
             String geoLng = String.valueOf(currentLocation.getLongitude());
-            //call day
             mvpPresenter.searchPlaceByCurrentLocation(userInfo.getUserId(), DEFAULT_DISTANCE, geoLat, geoLng);
         }
     }
@@ -158,7 +137,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         searchResultPager.setAdapter(mSearchTabAdapter);
         tabLayout.setupWithViewPager(searchResultPager);
         //frame.setVisibility(View.GONE);
-
     }
 
     private void initRecyclerView() {
@@ -199,12 +177,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
-       //Đến khi mà get đc data thì a pass sang 2 fragment kai để init view
-        // init 2 cais fragmetn xong thì a callback về lại đây ở function  onFetchCompleted rooif dismiss di
-        //ok hieu roi
-        //CAI NAY HA
-        // a ko hiểu vì sao mà để gone thì ko đc mà để invisible thì lại đc
-        //chu de invisible coi
         eventBus.post(lstPartner);
     }
 
@@ -272,14 +244,8 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onFetchCompleted(boolean isCompleted) {
         if (isCompleted) {
-            // hide đi
-            //Muc dich cho shơ làm gì? Phai requét moi co data ma init chú?
-            // thì đây này.
-
-                    progressBar.setVisibility(View.GONE);
-                    frame.setVisibility(View.VISIBLE);
-
-
+            progressBar.setVisibility(View.GONE);
+            frame.setVisibility(View.VISIBLE);
         }
     }
 }

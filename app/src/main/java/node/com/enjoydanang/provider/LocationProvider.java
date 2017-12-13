@@ -4,7 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.widget.Toast;
+import android.util.Log;
 
 import node.com.enjoydanang.service.ILocationProvider;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
@@ -78,7 +78,7 @@ public class LocationProvider implements ILocationProvider {
             onFindLastLocationCallback.onFound(lastKnownGPSLocation != null ? lastKnownGPSLocation : lastKnownNWLocation);
 
             if (!this.gpsProviderEnabled || !this.networkProviderEnabled) {
-                Toast.makeText(this.context, "No Location Provider Found Check Your Code", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Devide is turn off GPS");
             }
         }
     }

@@ -32,6 +32,8 @@ public class LocationService extends Service implements LocationListener, OnFind
 
     private final IBinder mBinder = new LocalBinder();
 
+    public boolean isEnableLocation;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
@@ -108,6 +110,7 @@ public class LocationService extends Service implements LocationListener, OnFind
         mLastLocation = location;
         updateOnFoundLocationBroadcast(mLastLocation);
     }
+
 
     public class LocalBinder extends Binder {
 

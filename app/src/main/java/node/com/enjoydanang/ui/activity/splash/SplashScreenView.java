@@ -2,8 +2,8 @@ package node.com.enjoydanang.ui.activity.splash;
 
 import org.json.JSONObject;
 
-import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.iBaseView;
 import node.com.enjoydanang.model.UserInfo;
 
 /**
@@ -21,4 +21,6 @@ public interface SplashScreenView extends iBaseView {
     void onGetUserInfoSuccess(UserInfo userInfo);
 
     void onFailure(AppError appError);
+
+    void onCombined(JSONObject jsLanguage, UserInfo userInfo);
 }

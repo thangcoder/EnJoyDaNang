@@ -9,6 +9,13 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
+
+import node.com.enjoydanang.GlobalApplication;
+import node.com.enjoydanang.constant.Constant;
+import node.com.enjoydanang.constant.Role;
+import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.utils.FileUtils;
 
 /**
  * Author: Tavv
@@ -51,15 +58,24 @@ public class Common {
         dialog.show();
     }
 
-    public static void registerEventBus(Object obj){
-        if(!EventBus.getDefault().isRegistered(obj)){
+    public static void registerEventBus(Object obj) {
+        if (!EventBus.getDefault().isRegistered(obj)) {
             EventBus.getDefault().register(obj);
         }
     }
 
-    public static void unregisterEventBus(Object obj){
-        if(EventBus.getDefault().isRegistered(obj)){
+    public static void unregisterEventBus(Object obj) {
+        if (EventBus.getDefault().isRegistered(obj)) {
             EventBus.getDefault().unregister(obj);
+        }
+    }
+
+    public static void validLanguageLogin(UserInfo userInfo) {
+        if (userInfo != null) {
+            if (userInfo.getRole() == Role.PARTNER) {
+                JSONObject js = FileUtils.readFile(Constant.FILE_NAME_LANGUAGE_VN);
+                GlobalApplication.getGlobalApplicationContext().setJsLanguage(js);
+            }
         }
     }
 }

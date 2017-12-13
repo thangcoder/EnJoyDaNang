@@ -35,7 +35,7 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMainActivity = (MainActivity) getActivity();
-        mFragmentManager = getActivity().getSupportFragmentManager();
+        mFragmentManager = mMainActivity.getSupportFragmentManager();
         setHasOptionMenu();
     }
 
@@ -162,6 +162,19 @@ public abstract class BaseFragment extends Fragment {
             }
         } else {
             progressDialog = new ProgressDialog(mMainActivity);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(Utils.getLanguageByResId(R.string.Loading));
+            progressDialog.show();
+        }
+    }
+
+    public void showProgressDialog(Context context) {
+        if (progressDialog != null) {
+            if (!progressDialog.isShowing()) {
+                progressDialog.show();
+            }
+        } else {
+            progressDialog = new ProgressDialog(context);
             progressDialog.setCancelable(false);
             progressDialog.setMessage(Utils.getLanguageByResId(R.string.Loading));
             progressDialog.show();

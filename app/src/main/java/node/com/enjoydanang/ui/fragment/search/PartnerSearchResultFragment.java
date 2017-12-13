@@ -53,6 +53,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
     @Override
     public void onResume() {
         super.onResume();
+
         Common.registerEventBus(this);
     }
 
@@ -113,6 +114,9 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         lstPartner.addAll(lstPartners);
         mAdapter.notifyItemRangeChanged(0, lstPartner.size());
         mAdapter.notifyDataSetChanged();
+        //Chỗ này là khi fetch hết dữ liệu xong thì a thông báo cho thằng cha dismiss dialog hoặc hide cái progressbar đi
+        //Vấn đề là lúc đầu vào nó đéo chịu show cái củ đậu gì hết
+        //ok de a coi thu
         mOnFetchSearchResult.onFetchCompleted(true);
     }
 

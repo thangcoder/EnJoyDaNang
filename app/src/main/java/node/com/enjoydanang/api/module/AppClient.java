@@ -27,6 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AppClient {
     public static Retrofit retrofit = null;
 
+    private static OkHttpClient httpClient;
+
     public static Retrofit getClient() {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -40,13 +42,13 @@ public class AppClient {
 //                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
 //                .build();
 //
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        httpClient = new OkHttpClient.Builder()
 //                .addNetworkInterceptor(new HeaderInterceptor())
                 .addInterceptor(interceptor)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-        if (retrofit==null) {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.URL_HOST)
                     .client(httpClient)
@@ -59,13 +61,26 @@ public class AppClient {
     }
 
 
+    public static Retrofit setNewBaseUrl(String url) {
+        if (httpClient != null) {
+            return new Retrofit.Builder()
+                      .baseUrl(url)
+                      .client(httpClient)
+                      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                      .addConverterFactory(new NullOnEmptyConverterFactory())
+                      .addConverterFactory(GsonConverterFactory.create())
+                      .build();
+        }
+        return null;
+    }
+
     public static OkHttpClient getUnsafeOkHttpClient() {
 
         try {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
             // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
+            final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
                         public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {

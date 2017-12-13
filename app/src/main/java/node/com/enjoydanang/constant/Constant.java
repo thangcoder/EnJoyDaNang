@@ -13,6 +13,8 @@ public class Constant {
     public static String URL_HOST_IMAGE = "http://enjoyindanang.com";
     public static String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
 
+    public static String URL_HOST_VN = "http://enjoyindanang.vn/API/";
+
     public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
 
     public static String EXCHANGE_RATE_FORMAT = "1$ = %s VND";
@@ -45,6 +47,7 @@ public class Constant {
     public static final int CONNECT_TIME_OUT = 15000;
 
     public static final String FILE_NAME_LANGUAGE = "language.json";
+    public static final String FILE_NAME_LANGUAGE_VN = "languageVN.json";
 
     public static String EMBEB_YOUTUBE_FORMAT = "<html><body><iframe width=\"100%\" height=\"%d\" src=\"%s\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
 

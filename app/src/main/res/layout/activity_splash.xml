@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/txtLoadingContent"
-        android:text="@string/Splash.LoadingLanguage"
+        android:text="@string/Splash.Configuration"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

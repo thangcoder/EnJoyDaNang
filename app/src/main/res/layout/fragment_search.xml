@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lnlSearch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
-
+    <ProgressBar
+        android:background="#000"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/item_loading_height"
+        android:padding="@dimen/item_loading_padding"
+        android:visibility="visible" />
     <android.support.v7.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -23,53 +30,17 @@
         app:searchIcon="@drawable/ic_search_primary_36dp" />
 
     <FrameLayout
+        android:visibility="invisible"
+        android:id="@+id/frame"
+        android:layout_below="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/item_loading_height"
-            android:layout_gravity="center"
-            android:padding="@dimen/item_loading_padding"
-            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/rlrContent"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="match_parent">
-
-            <LinearLayout
-                android:id="@+id/searchControl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <node.com.enjoydanang.utils.widget.SeekbarWithIntervals
-                    android:id="@+id/sbSearchInterval"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/_5sdp"
-                    android:layout_weight=".8"
-                    android:progressTint="#FF5722" />
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btnFindPlace"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_35sdp"
-                    android:layout_weight=".2"
-                    android:background="@color/color_button_login"
-                    android:padding="@dimen/_2sdp"
-                    android:text="@string/Search.Button.Find"
-                    android:textSize="@dimen/_10ssp" />
-
-            </LinearLayout>
-
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
@@ -96,5 +67,7 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
+
     </FrameLayout>
-</LinearLayout>
+
+</RelativeLayout>

@@ -1,19 +1,21 @@
 package node.com.enjoydanang.ui.fragment.search;
 
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -23,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -36,7 +37,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.widget.SeekbarWithIntervals;
 
 
 /**
@@ -59,23 +59,20 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
+    @BindView(R.id.frame)
+    FrameLayout frame;
+
     @BindView(R.id.rcvSearchResult)
     RecyclerView rcvSearchResult;
 
     @BindView(R.id.lnlSearch)
-    LinearLayout lnlSearch;
+    RelativeLayout lnlSearch;
 
     @BindView(R.id.rlrContent)
     LinearLayout rlrContent;
 
     @BindView(R.id.searchResultPager)
     ViewPager searchResultPager;
-
-    @BindView(R.id.sbSearchInterval)
-    SeekbarWithIntervals sbDistance;
-
-    @BindView(R.id.btnFindPlace)
-    AppCompatButton btnFindPlace;
 
     @BindView(R.id.tabs)
     TabLayout tabLayout;
@@ -87,6 +84,10 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     private UserInfo userInfo;
 
     private Location currentLocation;
+
+    private static final int DEFAULT_DISTANCE = 1;
+
+    private EventBus eventBus;
 
     @Override
     public void showToast(String desc) {
@@ -104,40 +105,65 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
-
-    @Override
     protected void init(View view) {
+        //Cần show chỗ này
+        // init = onCreateView
+        //ONRESUM DAU...MAY A MAC BAM KO DC
+
+        progressBar.setVisibility(View.VISIBLE);
+        eventBus = EventBus.getDefault();
         userInfo = Utils.getUserInfo();
         currentLocation = mMainActivity.getLocationService().getLastLocation();
         initRecyclerView();
         initTabs();
-        sbDistance.setIntervals(getIntervals());
-        sbDistance.setIntervalColor(Utils.getColorRes(R.color.material_red_400));
     }
 
-    private List<String> getIntervals() {
-        List<String> intervals = new ArrayList<String>();
-        for (int i = 0; i <= 10; i++) {
-            intervals.add(i + "");
+    @Override
+    public void onResume() {
+        super.onResume();
+        Toast.makeText(mMainActivity, "resum", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMainActivity.getSupportFragmentManager().r
+        Toast.makeText(mMainActivity, "onDestroy", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // onViewCreated thằng này chạy sau thằng onCreateView thì a call API
+        //test thu thooi nha...ti co gi convert lai
+        mvpPresenter = createPresenter();
+        fetchNearPlace();
+    }
+
+    private void fetchNearPlace() {
+        if (currentLocation != null) {
+            String geoLat = String.valueOf(currentLocation.getLatitude());
+            String geoLng = String.valueOf(currentLocation.getLongitude());
+            //call day
+            mvpPresenter.searchPlaceByCurrentLocation(userInfo.getUserId(), DEFAULT_DISTANCE, geoLat, geoLng);
         }
-        return intervals;
     }
 
     private void initTabs() {
-        final String[] tabTitles = new String[]{"Map", "Partner"};
+        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
+        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
+        final String[] tabTitles = new String[]{strTab1, strTab2};
         SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(mFragmentManager, tabTitles, this);
         searchResultPager.setAdapter(mSearchTabAdapter);
         tabLayout.setupWithViewPager(searchResultPager);
+        //frame.setVisibility(View.GONE);
+
     }
 
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rcvSearchResult.setLayoutManager(layoutManager);
-        rcvSearchResult.setHasFixedSize(false);
         lstPartner = new ArrayList<>();
         mAdapter = new SearchResultAdapter(getContext(), lstPartner, this);
         rcvSearchResult.setAdapter(mAdapter);
@@ -146,15 +172,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     protected void setEvent(View view) {
         searchView.setOnQueryTextListener(this);
-    }
-
-    @OnClick(R.id.btnFindPlace)
-    public void onFindClick(){
-        showProgressDialog();
-        int distance = sbDistance.getProgress();
-        String geoLat = String.valueOf(currentLocation.getLatitude());
-        String geoLng = String.valueOf(currentLocation.getLongitude());
-        mvpPresenter.searchPlaceByCurrentLocation(userInfo.getUserId(), distance, geoLat, geoLng);
     }
 
     @Override
@@ -182,7 +199,13 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
-        EventBus.getDefault().post(lstPartner);
+       //Đến khi mà get đc data thì a pass sang 2 fragment kai để init view
+        // init 2 cais fragmetn xong thì a callback về lại đây ở function  onFetchCompleted rooif dismiss di
+        //ok hieu roi
+        //CAI NAY HA
+        // a ko hiểu vì sao mà để gone thì ko đc mà để invisible thì lại đc
+        //chu de invisible coi
+        eventBus.post(lstPartner);
     }
 
     @Override
@@ -243,13 +266,20 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void initViewLabel(View view) {
         super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(searchView, btnFindPlace);
+        LanguageHelper.getValueByViewId(searchView);
     }
 
     @Override
     public void onFetchCompleted(boolean isCompleted) {
-        if(isCompleted){
-            dismissProgressDialog();
+        if (isCompleted) {
+            // hide đi
+            //Muc dich cho shơ làm gì? Phai requét moi co data ma init chú?
+            // thì đây này.
+
+                    progressBar.setVisibility(View.GONE);
+                    frame.setVisibility(View.VISIBLE);
+
+
         }
     }
 }

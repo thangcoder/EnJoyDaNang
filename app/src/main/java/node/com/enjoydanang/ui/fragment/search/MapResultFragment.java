@@ -10,7 +10,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -100,21 +99,10 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     @Override
     public void onResume() {
-//        if (mMapFragment != null) {
-//            mMapFragment.onResume();
-//        }
         super.onResume();
         Common.registerEventBus(this);
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-//        if (mMapFragment != null) {
-//            mMapFragment.onPause();
-//        }
-    }
 
     @Override
     public void onStop() {
@@ -177,14 +165,14 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchResultReceive(List<Partner> lstPartners) {
         if (isMapAlreadyInit && mCurrentLocation != null) {
-            double lat = mCurrentLocation.getLatitude();
-            double lng = mCurrentLocation.getLongitude();
-            LatLng latLng = new LatLng(lat, lng);
-            mGoogleMap.addCircle(new CircleOptions()
-                    .center(latLng)
-                    .radius(1000)
-                    .strokeWidth(0f)
-                    .fillColor(0x550000FF));
+//            double lat = mCurrentLocation.getLatitude();
+//            double lng = mCurrentLocation.getLongitude();
+//            LatLng latLng = new LatLng(lat, lng);
+//            mGoogleMap.addCircle(new CircleOptions()
+//                    .center(latLng)
+//                    .radius(1000)
+//                    .strokeWidth(0f)
+//                    .fillColor(0x550000FF));
         }
         if (CollectionUtils.isNotEmpty(lstPartners)) {
             for (Partner partner : lstPartners) {

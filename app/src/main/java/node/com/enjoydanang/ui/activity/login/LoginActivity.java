@@ -18,7 +18,6 @@ import com.facebook.internal.CallbackManagerImpl;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.gson.Gson;
 import com.kakao.auth.Session;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +31,7 @@ import node.com.enjoydanang.MvpActivity;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
+import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.constant.LoginType;
@@ -39,7 +39,6 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
 import node.com.enjoydanang.utils.DialogUtils;
-import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -235,6 +234,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onLoginSuccess(Repository<UserInfo> resultCallBack) {
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
+            Common.validLanguageLogin(userInfo);
             GlobalApplication.setUserInfo(userInfo);
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);
             Utils.clearForm(edtUserName, edtPassword);

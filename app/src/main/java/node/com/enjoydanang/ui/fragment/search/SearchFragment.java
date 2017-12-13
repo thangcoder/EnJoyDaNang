@@ -17,9 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,10 +110,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     protected void init(View view) {
-        //Cần show chỗ này
-        // init = onCreateView
-        //ONRESUM DAU...MAY A MAC BAM KO DC
-
         progressBar.setVisibility(View.VISIBLE);
         eventBus = EventBus.getDefault();
         userInfo = Utils.getUserInfo();
@@ -121,15 +121,18 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(mMainActivity, "resum", Toast.LENGTH_SHORT).show();
+//        mvpPresenter.showDialog();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMainActivity.getSupportFragmentManager().r
-        Toast.makeText(mMainActivity, "onDestroy", Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -151,12 +154,12 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     }
 
     private void initTabs() {
-        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
-        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
-        final String[] tabTitles = new String[]{strTab1, strTab2};
-        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(mFragmentManager, tabTitles, this);
-        searchResultPager.setAdapter(mSearchTabAdapter);
-        tabLayout.setupWithViewPager(searchResultPager);
+//        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
+//        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
+//        final String[] tabTitles = new String[]{strTab1, strTab2};
+//        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(mFragmentManager, tabTitles, this);
+//        searchResultPager.setAdapter(mSearchTabAdapter);
+//        tabLayout.setupWithViewPager(searchResultPager);
         //frame.setVisibility(View.GONE);
 
     }
@@ -194,18 +197,31 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void OnQuerySearchResult(List<Partner> lstPartner) {
         mAdapter.updateResult(lstPartner);
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
+    }
+    public static Gson gson = new Gson();
+    public static List<Partner> convertListJsonMessageToObject(String listMessage) {
+        Type founderListType = new TypeToken<ArrayList<Partner>>() {
+        }.getType();
+        List<Partner> list = gson.fromJson(listMessage, founderListType);
+        return list;
+    }
+
+    public static String converObjecToJson(List<Partner> lstPartner) {
+        return gson.toJson(lstPartner);
     }
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
-       //Đến khi mà get đc data thì a pass sang 2 fragment kai để init view
-        // init 2 cais fragmetn xong thì a callback về lại đây ở function  onFetchCompleted rooif dismiss di
-        //ok hieu roi
-        //CAI NAY HA
-        // a ko hiểu vì sao mà để gone thì ko đc mà để invisible thì lại đc
-        //chu de invisible coi
-        eventBus.post(lstPartner);
+
+        String data = converObjecToJson(lstPartner);
+
+        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
+        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
+        final String[] tabTitles = new String[]{strTab1, strTab2};
+        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(getChildFragmentManager(), tabTitles, this,data);
+        searchResultPager.setAdapter(mSearchTabAdapter);
+        tabLayout.setupWithViewPager(searchResultPager);
     }
 
     @Override
@@ -227,12 +243,12 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         if (StringUtils.isNotEmpty(newText)) {
             mvpPresenter.searchWithTitle(newText);
             showResultContainer(true);
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
         } else {
             mAdapter.clearAllItem();
             Utils.hideSoftKeyboard(getActivity());
             showResultContainer(false);
-            progressBar.setVisibility(View.GONE);
+//            progressBar.setVisibility(View.GONE);
         }
         return false;
     }
@@ -272,14 +288,9 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void onFetchCompleted(boolean isCompleted) {
         if (isCompleted) {
-            // hide đi
-            //Muc dich cho shơ làm gì? Phai requét moi co data ma init chú?
-            // thì đây này.
-
-                    progressBar.setVisibility(View.GONE);
-                    frame.setVisibility(View.VISIBLE);
-
-
+            progressBar.setVisibility(View.GONE);
+//            mvpPresenter.hideDialog();
+//            frame.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -35,7 +35,7 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMainActivity = (MainActivity) getActivity();
-        mFragmentManager = mMainActivity.getSupportFragmentManager();
+        mFragmentManager = getActivity().getSupportFragmentManager();
         setHasOptionMenu();
     }
 

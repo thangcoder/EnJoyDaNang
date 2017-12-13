@@ -17,11 +17,12 @@ public class SearchTabAdapter extends FragmentPagerAdapter {
 
     private String[] tabTitles;
     private OnFetchSearchResult onFetchSearchResult;
-
-    public SearchTabAdapter(FragmentManager fm, String[] tabTitles, OnFetchSearchResult onFetchSearchResult) {
+    private String data;
+    public SearchTabAdapter(FragmentManager fm, String[] tabTitles, OnFetchSearchResult onFetchSearchResult,String data) {
         super(fm);
         this.tabTitles = tabTitles;
         this.onFetchSearchResult = onFetchSearchResult;
+        this.data = data;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class SearchTabAdapter extends FragmentPagerAdapter {
             case 0:
                 return MapResultFragment.getIntance();
             case 1:
-                return PartnerSearchResultFragment.getIntance(onFetchSearchResult);
+                return PartnerSearchResultFragment.getIntance(onFetchSearchResult,data);
             default:
                 return null;
         }

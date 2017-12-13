@@ -63,4 +63,10 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
         });
 
     }
+    void showDialog(){
+        mvpView.showLoading();
+    }
+    void hideDialog(){
+        mvpView.hideLoading();
+    }
 }

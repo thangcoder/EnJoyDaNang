@@ -5,10 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,18 +47,31 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
     TextView txtEmpty;
 
     private OnFetchSearchResult mOnFetchSearchResult;
-
-    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult) {
+    public static String arrayPartner;
+    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult,String data) {
         PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
         fragment.setFetchSearchResult(onFetchSearchResult);
+        arrayPartner = data;
+
         return fragment;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        Common.registerEventBus(this);
+        lstPartner = convertListJsonMessageToObject(arrayPartner);
+        if (CollectionUtils.isEmpty(lstPartner)) {
+            rcvPartnerSearchResult.setVisibility(View.GONE);
+            txtEmpty.setVisibility(View.VISIBLE);
+            return;
+        }else {
+            rcvPartnerSearchResult.setVisibility(View.VISIBLE);
+            txtEmpty.setVisibility(View.GONE);
+            mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
+            rcvPartnerSearchResult.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+            mOnFetchSearchResult.onFetchCompleted(true);
+        }
     }
 
     @Override
@@ -71,12 +88,11 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     @Override
     protected void init(View view) {
-        showDataList(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvPartnerSearchResult.setLayoutManager(layoutManager);
         lstPartner = new ArrayList<>();
-        mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
-        rcvPartnerSearchResult.setAdapter(mAdapter);
+//        mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
+//        rcvPartnerSearchResult.setAdapter(mAdapter);
     }
 
     private void showDataList(boolean show) {
@@ -104,21 +120,18 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         ButterKnife.bind(this, view);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSearchResultReceive(List<Partner> lstPartners) {
-        if (CollectionUtils.isEmpty(lstPartners)) {
-            return;
-        }
-        lstPartner.clear();
-        showDataList(true);
-        lstPartner.addAll(lstPartners);
-        mAdapter.notifyItemRangeChanged(0, lstPartner.size());
-        mAdapter.notifyDataSetChanged();
-        //Chỗ này là khi fetch hết dữ liệu xong thì a thông báo cho thằng cha dismiss dialog hoặc hide cái progressbar đi
-        //Vấn đề là lúc đầu vào nó đéo chịu show cái củ đậu gì hết
-        //ok de a coi thu
-        mOnFetchSearchResult.onFetchCompleted(true);
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onSearchResultReceive(List<Partner> lstPartners) {
+//        if (CollectionUtils.isEmpty(lstPartners)) {
+//            return;
+//        }
+//        lstPartner.clear();
+//        showDataList(true);
+//        lstPartner.addAll(lstPartners);
+//        mAdapter.notifyItemRangeChanged(0, lstPartner.size());
+//        mAdapter.notifyDataSetChanged();
+//        mOnFetchSearchResult.onFetchCompleted(true);
+//    }
 
     @Override
     public void onClick(View view, int position) {
@@ -134,5 +147,11 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
     public void setFetchSearchResult(OnFetchSearchResult onFetchSearchResult){
         mOnFetchSearchResult = onFetchSearchResult;
     }
-
+    public static Gson gson = new Gson();
+    public static List<Partner> convertListJsonMessageToObject(String listMessage) {
+        Type founderListType = new TypeToken<ArrayList<Partner>>() {
+        }.getType();
+        List<Partner> list = gson.fromJson(listMessage, founderListType);
+        return list;
+    }
 }

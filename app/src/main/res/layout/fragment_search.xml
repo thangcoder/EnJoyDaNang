@@ -7,7 +7,6 @@
     android:background="@color/white"
     android:orientation="vertical">
     <ProgressBar
-        android:background="#000"
         android:layout_centerInParent="true"
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
@@ -30,7 +29,6 @@
         app:searchIcon="@drawable/ic_search_primary_36dp" />
 
     <FrameLayout
-        android:visibility="invisible"
         android:id="@+id/frame"
         android:layout_below="@+id/search"
         android:layout_width="match_parent"

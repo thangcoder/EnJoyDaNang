@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.search;
 
 import android.content.Context;
+import android.location.Address;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LocationHelper;
 
 /**
  * Author: Tavv
@@ -33,11 +35,16 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
     private List<Partner> lstPartners;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private LocationHelper mLocationHelper;
 
-    public SearchPartnerResultAdapter(List<Partner> lstPartners, Context context, OnItemClickListener onItemClickListener) {
+
+    public SearchPartnerResultAdapter(List<Partner> lstPartners, Context context,
+                                      OnItemClickListener onItemClickListener,
+                                      LocationHelper mLocationHelper) {
         this.lstPartners = lstPartners;
         this.context = context;
         this.onItemClickListener = onItemClickListener;
+        this.mLocationHelper = mLocationHelper;
     }
 
     @Override
@@ -52,6 +59,7 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
         holder.setIsRecyclable(false);
         if (model != null) {
             holder.txtPartnerName.setText(model.getName());
+            holder.txtAddress.setText(getAddress(model));
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, model.getPicture());
             if (StringUtils.isNotBlank(model.getDistance()) &&
                     !StringUtils.equals(model.getDistance().trim(), "km") &&
@@ -86,6 +94,9 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
         @BindView(R.id.txtDistance)
         TextView txtDistance;
 
+        @BindView(R.id.txtAddress)
+        TextView txtAddress;
+
         public View view;
 
         public SearchPartnerResultVH(View itemView) {
@@ -107,5 +118,16 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
         lstPartners.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, lstPartners.size());
+    }
+
+    private String getAddress(Partner partner) {
+        try {
+            double lat = Double.parseDouble(partner.getGeoLat());
+            double lng = Double.parseDouble(partner.getGeoLng());
+            Address address = mLocationHelper.getAddress(lat, lng);
+            return mLocationHelper.getFullInfoAddress(address);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

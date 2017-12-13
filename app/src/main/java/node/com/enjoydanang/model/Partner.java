@@ -1,16 +1,17 @@
 
 package node.com.enjoydanang.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.Serializable;
-
 import node.com.enjoydanang.constant.Constant;
 
-public class Partner implements Serializable {
+public class Partner implements Parcelable {
 
     @SerializedName("Id")
     @Expose
@@ -178,4 +179,59 @@ public class Partner implements Serializable {
         this.geoLocation = geoLocation;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.name);
+        dest.writeString(this.picture);
+        dest.writeString(this.phone);
+        dest.writeString(this.address);
+        dest.writeInt(this.starReview);
+        dest.writeInt(this.discount);
+        dest.writeInt(this.favorite);
+        dest.writeString(this.date);
+        dest.writeString(this.distance);
+        dest.writeInt(this.displayDistance);
+        dest.writeString(this.geoLat);
+        dest.writeString(this.geoLng);
+        dest.writeString(this.geoLocation);
+    }
+
+    public Partner() {
+    }
+
+    protected Partner(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.picture = in.readString();
+        this.phone = in.readString();
+        this.address = in.readString();
+        this.starReview = in.readInt();
+        this.discount = in.readInt();
+        this.favorite = in.readInt();
+        this.date = in.readString();
+        this.distance = in.readString();
+        this.displayDistance = in.readInt();
+        this.geoLat = in.readString();
+        this.geoLng = in.readString();
+        this.geoLocation = in.readString();
+    }
+
+    public static final Creator<Partner> CREATOR = new Creator<Partner>() {
+        @Override
+        public Partner createFromParcel(Parcel source) {
+            return new Partner(source);
+        }
+
+        @Override
+        public Partner[] newArray(int size) {
+            return new Partner[size];
+        }
+    };
 }

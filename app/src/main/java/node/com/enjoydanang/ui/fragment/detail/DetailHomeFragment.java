@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import butterknife.BindView;
@@ -36,7 +33,7 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
     public static DetailHomeFragment newInstance(Partner partner) {
         DetailHomeFragment fragment = new DetailHomeFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TAG, partner);
+        bundle.putParcelable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -78,7 +75,7 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
         //Creating our pager adapter
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Partner partner = (Partner) bundle.getSerializable(TAG);
+            Partner partner = (Partner) bundle.getParcelable(TAG);
             if (partner != null) {
                 DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), partner);
                 viewPager.setAdapter(adapter);

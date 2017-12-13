@@ -96,7 +96,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     public static DetailPartnerFragment newInstance(Partner partner) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TAG, partner);
+        bundle.putParcelable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -138,7 +138,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             public void run() {
                 Bundle bundle = getArguments();
                 if (bundle != null) {
-                    partner = (Partner) bundle.getSerializable(TAG);
+                    partner = (Partner) bundle.getParcelable(TAG);
                     if (partner != null) {
                         initWebView();
                         mvpPresenter.getAllDataHome(partner.getId());

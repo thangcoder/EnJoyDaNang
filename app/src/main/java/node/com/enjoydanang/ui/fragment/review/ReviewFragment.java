@@ -99,7 +99,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TAG, partner);
+        bundle.putParcelable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -122,7 +122,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         recyclerView.setAdapter(mAdapter);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            partner = (Partner) bundle.getSerializable(TAG);
+            partner = (Partner) bundle.getParcelable(TAG);
             if (partner != null) {
                 ImageUtils.loadImageWithFreso(imgPartner, partner.getPicture());
                 txtPartnerName.setText(partner.getName());

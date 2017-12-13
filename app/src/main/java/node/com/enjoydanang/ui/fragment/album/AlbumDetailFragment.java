@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.fragment.album;
 
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,9 +20,6 @@ import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
-import node.com.enjoydanang.utils.widget.DividerItemDecoration;
-
-import static node.com.enjoydanang.R.id.rcvHistoryCheckin;
 
 /**
  * Author: Tavv
@@ -48,7 +44,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     public static AlbumDetailFragment newInstance(Partner partner) {
         AlbumDetailFragment fragment = new AlbumDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TAG, partner);
+        bundle.putParcelable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,7 +73,7 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
         mvpPresenter = createPresenter();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Partner partner = (Partner) bundle.getSerializable(TAG);
+            Partner partner = (Partner) bundle.getParcelable(TAG);
             if (partner != null) {
                 mvpPresenter.getAlbum(partner.getId());
             }

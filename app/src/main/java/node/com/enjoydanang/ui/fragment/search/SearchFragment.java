@@ -16,12 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,27 +158,17 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void OnQuerySearchResult(List<Partner> lstPartner) {
         mAdapter.updateResult(lstPartner);
-//        progressBar.setVisibility(View.GONE);
-    }
-    public static Gson gson = new Gson();
-    public static List<Partner> convertListJsonMessageToObject(String listMessage) {
-        Type founderListType = new TypeToken<ArrayList<Partner>>() {
-        }.getType();
-        List<Partner> list = gson.fromJson(listMessage, founderListType);
-        return list;
-    }
-
-    public static String converObjecToJson(List<Partner> lstPartner) {
-        return gson.toJson(lstPartner);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
-        String data = converObjecToJson(lstPartner);
+        ArrayList<Partner> data = new ArrayList<>();
+        data.addAll(lstPartner);
         String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
         String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
         final String[] tabTitles = new String[]{strTab1, strTab2};
-        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(getChildFragmentManager(), tabTitles, this,data);
+        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(getChildFragmentManager(), tabTitles, this, data);
         searchResultPager.setAdapter(mSearchTabAdapter);
         tabLayout.setupWithViewPager(searchResultPager);
     }

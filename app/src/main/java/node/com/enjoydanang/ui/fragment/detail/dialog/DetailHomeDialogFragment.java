@@ -72,7 +72,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     public static DetailHomeDialogFragment newInstance(Partner partner) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(TAG, partner);
+        bundle.putParcelable(TAG, partner);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -138,7 +138,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         //Creating our pager adapter
         Bundle bundle = getArguments();
         if (bundle != null) {
-            partner = (Partner) bundle.getSerializable(TAG);
+            partner = (Partner) bundle.getParcelable(TAG);
             DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner);
             mViewPager.setAdapter(adapter);
             int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);

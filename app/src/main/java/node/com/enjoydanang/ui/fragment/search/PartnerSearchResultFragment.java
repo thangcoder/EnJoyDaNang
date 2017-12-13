@@ -1,18 +1,14 @@
 package node.com.enjoydanang.ui.fragment.search;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.apache.commons.collections.CollectionUtils;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,9 +17,12 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.LocationHelper;
+import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
  * Author: Tavv
@@ -35,7 +34,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> implements OnItemClickListener {
     private static final String TAG = PartnerSearchResultFragment.class.getSimpleName();
 
-    private List<Partner> lstPartner;
+    private ArrayList<Partner> lstPartner;
 
     private SearchPartnerResultAdapter mAdapter;
 
@@ -46,29 +45,34 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
     TextView txtEmpty;
 
     private OnFetchSearchResult mOnFetchSearchResult;
-    public static String arrayPartner;
 
-    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult,String data) {
+    private LocationHelper mLocationHelper;
+
+
+    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
         fragment.setFetchSearchResult(onFetchSearchResult);
-        arrayPartner = data;
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(TAG, data);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        lstPartner = convertListJsonMessageToObject(arrayPartner);
-        if (CollectionUtils.isEmpty(lstPartner)) {
-            rcvPartnerSearchResult.setVisibility(View.GONE);
-            txtEmpty.setVisibility(View.VISIBLE);
-        }else {
-            rcvPartnerSearchResult.setVisibility(View.VISIBLE);
-            txtEmpty.setVisibility(View.GONE);
-            mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
-            rcvPartnerSearchResult.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-            mOnFetchSearchResult.onFetchCompleted(true);
+    private void getData() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            lstPartner = bundle.getParcelableArrayList(TAG);
+            if (CollectionUtils.isEmpty(lstPartner)) {
+                rcvPartnerSearchResult.setVisibility(View.GONE);
+                txtEmpty.setVisibility(View.VISIBLE);
+            } else {
+                rcvPartnerSearchResult.setVisibility(View.VISIBLE);
+                txtEmpty.setVisibility(View.GONE);
+                mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this, mLocationHelper);
+                rcvPartnerSearchResult.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                mOnFetchSearchResult.onFetchCompleted(true);
+            }
         }
     }
 
@@ -80,9 +84,14 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     @Override
     protected void init(View view) {
+        if (mMainActivity != null) {
+            mLocationHelper = mMainActivity.mLocationHelper;
+        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvPartnerSearchResult.setLayoutManager(layoutManager);
+        rcvPartnerSearchResult.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
         lstPartner = new ArrayList<>();
+        getData();
 //        mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
 //        rcvPartnerSearchResult.setAdapter(mAdapter);
     }
@@ -124,14 +133,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         LanguageHelper.getValueByViewId(txtEmpty);
     }
 
-    public void setFetchSearchResult(OnFetchSearchResult onFetchSearchResult){
+    public void setFetchSearchResult(OnFetchSearchResult onFetchSearchResult) {
         mOnFetchSearchResult = onFetchSearchResult;
-    }
-    public static Gson gson = new Gson();
-    public static List<Partner> convertListJsonMessageToObject(String listMessage) {
-        Type founderListType = new TypeToken<ArrayList<Partner>>() {
-        }.getType();
-        List<Partner> list = gson.fromJson(listMessage, founderListType);
-        return list;
     }
 }

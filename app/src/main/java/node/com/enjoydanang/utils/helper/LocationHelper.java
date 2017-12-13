@@ -143,7 +143,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         return isPermissionGranted;
     }
 
-    public void setPermissionGranted(boolean hasPermission){
+    public void setPermissionGranted(boolean hasPermission) {
         this.isPermissionGranted = hasPermission;
     }
 
@@ -217,13 +217,21 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         return StringUtils.EMPTY;
     }
 
+    public String getFullInfoAddress(Address address) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+            sb.append(address.getAddressLine(i)).append(", ");
+        }
+        return sb.toString();
+    }
+
 
     /**
      * Method used to build GoogleApiClient
      */
 
 
-    public void simpleBuildGoogleApi(){
+    public void simpleBuildGoogleApi() {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .build();
@@ -640,7 +648,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         marker.setPosition(position);
     }
 
-    public void drawMarkerWithCircle(Circle circle, Marker marker, LatLng position){
+    public void drawMarkerWithCircle(Circle circle, Marker marker, LatLng position) {
         double radiusInMeters = 100.0;
         int strokeColor = 0xffff0000; //red outline
         int shadeColor = 0x44ff0000; //opaque red fill

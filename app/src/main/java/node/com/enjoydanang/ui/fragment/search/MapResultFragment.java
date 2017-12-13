@@ -2,6 +2,7 @@ package node.com.enjoydanang.ui.fragment.search;
 
 import android.location.Address;
 import android.location.Location;
+import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,17 +14,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.service.LocationService;
 import node.com.enjoydanang.utils.Utils;
@@ -53,8 +55,14 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     private boolean isMapAlreadyInit;
 
-    public static MapResultFragment getIntance() {
+    private ArrayList<Partner> lstPartner;
+
+
+    public static MapResultFragment getIntance(ArrayList<Partner> data) {
         MapResultFragment fragment = new MapResultFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(TAG, data);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -89,6 +97,11 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public int getRootLayoutId() {
         return R.layout.tab_search_map;
     }
@@ -97,14 +110,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     public void bindView(View view) {
         ButterKnife.bind(this, view);
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Common.registerEventBus(this);
-    }
-
 
     @Override
     public void onStop() {
@@ -135,7 +140,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         }
         System.gc();
         super.onDestroyView();
-        Common.unregisterEventBus(this);
     }
 
     @Override
@@ -144,8 +148,40 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         mGoogleMap = googleMap;
         mLocationHelper.setGoogleMap(mGoogleMap);
         mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        mGoogleMap.setMyLocationEnabled(true);
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         loadMapView(mLocationService.getLastLocation());
+        drawMarker();
+    }
+
+    private void drawMarker(){
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            lstPartner = bundle.getParcelableArrayList(TAG);
+            if (isMapAlreadyInit && mCurrentLocation != null) {
+                double lat = mCurrentLocation.getLatitude();
+                double lng = mCurrentLocation.getLongitude();
+                LatLng latLng = new LatLng(lat, lng);
+                mGoogleMap.addCircle(new CircleOptions()
+                        .center(latLng)
+                        .radius(1000)
+                        .strokeWidth(0f)
+                        .fillColor(Utils.getColorRes(R.color.color_circle_fill_map)));
+            }
+            if (CollectionUtils.isNotEmpty(lstPartner)) {
+                for (Partner partner : lstPartner) {
+                    double lat = Double.parseDouble(partner.getGeoLat());
+                    double lng = Double.parseDouble(partner.getGeoLng());
+                    LatLng point = new LatLng(lat, lng);
+                    MarkerOptions marker = new MarkerOptions();
+                    if (mGoogleMap != null) {
+                        marker.position(point).title(partner.getName()).draggable(false)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        mGoogleMap.addMarker(marker);
+                    }
+                }
+            }
+        }
     }
 
     private void loadMapView(Location currentLocation) {
@@ -164,32 +200,11 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSearchResultReceive(List<Partner> lstPartners) {
-        if (isMapAlreadyInit && mCurrentLocation != null) {
-            double lat = mCurrentLocation.getLatitude();
-            double lng = mCurrentLocation.getLongitude();
-            LatLng latLng = new LatLng(lat, lng);
-            mGoogleMap.addCircle(new CircleOptions()
-                    .center(latLng)
-                    .radius(1000)
-                    .strokeWidth(0f)
-                    .fillColor(Utils.getColorRes(R.color.material_red_50)));
-        }
-        if (CollectionUtils.isNotEmpty(lstPartners)) {
-            for (Partner partner : lstPartners) {
-                double lat = Double.parseDouble(partner.getGeoLat());
-                double lng = Double.parseDouble(partner.getGeoLng());
-                LatLng point = new LatLng(lat, lng);
-                MarkerOptions marker = new MarkerOptions();
-                Address address = mLocationHelper.getAddress(lat, lng);
-                String titleMarker = mLocationHelper.getFullInfoByAddress(address);
-                if (mGoogleMap != null) {
-                    marker.position(point).title(titleMarker).draggable(false)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    mGoogleMap.addMarker(marker);
-                }
-            }
-        }
+
+    public List<Partner> convertListJsonMessageToObject(String listMessage) {
+        Gson gson = new Gson();
+        Type founderListType = new TypeToken<ArrayList<Partner>>() {
+        }.getType();
+        return gson.fromJson(listMessage, founderListType);
     }
 }

@@ -16,9 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import org.apache.commons.lang3.StringUtils;
-import org.greenrobot.eventbus.EventBus;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +89,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     private static final int DEFAULT_DISTANCE = 1;
 
-    private EventBus eventBus;
 
     @Override
     public void showToast(String desc) {
@@ -106,13 +108,11 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     protected void init(View view) {
         progressBar.setVisibility(View.VISIBLE);
-        eventBus = EventBus.getDefault();
+        frame.setVisibility(View.INVISIBLE);
         userInfo = Utils.getUserInfo();
         currentLocation = mMainActivity.getLocationService().getLastLocation();
         initRecyclerView();
-        initTabs();
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -127,16 +127,6 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
             String geoLng = String.valueOf(currentLocation.getLongitude());
             mvpPresenter.searchPlaceByCurrentLocation(userInfo.getUserId(), DEFAULT_DISTANCE, geoLat, geoLng);
         }
-    }
-
-    private void initTabs() {
-        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
-        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
-        final String[] tabTitles = new String[]{strTab1, strTab2};
-        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(mFragmentManager, tabTitles, this);
-        searchResultPager.setAdapter(mSearchTabAdapter);
-        tabLayout.setupWithViewPager(searchResultPager);
-        //frame.setVisibility(View.GONE);
     }
 
     private void initRecyclerView() {
@@ -172,12 +162,29 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void OnQuerySearchResult(List<Partner> lstPartner) {
         mAdapter.updateResult(lstPartner);
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
+    }
+    public static Gson gson = new Gson();
+    public static List<Partner> convertListJsonMessageToObject(String listMessage) {
+        Type founderListType = new TypeToken<ArrayList<Partner>>() {
+        }.getType();
+        List<Partner> list = gson.fromJson(listMessage, founderListType);
+        return list;
+    }
+
+    public static String converObjecToJson(List<Partner> lstPartner) {
+        return gson.toJson(lstPartner);
     }
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
-        eventBus.post(lstPartner);
+        String data = converObjecToJson(lstPartner);
+        String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
+        String strTab2 = Utils.getLanguageByResId(R.string.Search_Tab2_Title);
+        final String[] tabTitles = new String[]{strTab1, strTab2};
+        SearchTabAdapter mSearchTabAdapter = new SearchTabAdapter(getChildFragmentManager(), tabTitles, this,data);
+        searchResultPager.setAdapter(mSearchTabAdapter);
+        tabLayout.setupWithViewPager(searchResultPager);
     }
 
     @Override

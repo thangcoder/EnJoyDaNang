@@ -6,13 +6,23 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
     <ProgressBar
-        android:layout_centerInParent="true"
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/item_loading_height"
+        android:layout_centerInParent="true"
         android:padding="@dimen/item_loading_padding"
         android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txtSearching"
+        android:layout_below="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/Action.Searching"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -30,21 +40,21 @@
 
     <FrameLayout
         android:id="@+id/frame"
-        android:layout_below="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search">
 
         <LinearLayout
             android:id="@+id/rlrContent"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
                 app:tabGravity="fill"

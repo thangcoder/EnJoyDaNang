@@ -62,6 +62,7 @@ public class Partner implements Parcelable {
     @Expose
     private String geoLocation;
 
+    private String locationAddress;
 
     public int getId() {
         return id;
@@ -179,6 +180,13 @@ public class Partner implements Parcelable {
         this.geoLocation = geoLocation;
     }
 
+    public String getLocationAddress() {
+        return locationAddress;
+    }
+
+    public void setLocationAddress(String locationAddress) {
+        this.locationAddress = locationAddress;
+    }
 
     @Override
     public int describeContents() {
@@ -201,6 +209,7 @@ public class Partner implements Parcelable {
         dest.writeString(this.geoLat);
         dest.writeString(this.geoLng);
         dest.writeString(this.geoLocation);
+        dest.writeString(this.locationAddress);
     }
 
     public Partner() {
@@ -221,6 +230,7 @@ public class Partner implements Parcelable {
         this.geoLat = in.readString();
         this.geoLng = in.readString();
         this.geoLocation = in.readString();
+        this.locationAddress = in.readString();
     }
 
     public static final Creator<Partner> CREATOR = new Creator<Partner>() {

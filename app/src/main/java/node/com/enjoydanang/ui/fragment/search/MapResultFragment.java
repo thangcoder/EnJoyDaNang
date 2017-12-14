@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.search;
 
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
@@ -9,17 +10,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +28,10 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.service.LocationService;
+import node.com.enjoydanang.utils.BitmapUtil;
+import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 
 /**
@@ -41,7 +44,7 @@ import node.com.enjoydanang.utils.helper.LocationHelper;
 public class MapResultFragment extends MvpFragment<SearchPresenter> implements OnMapReadyCallback {
     private static final String TAG = MapResultFragment.class.getSimpleName();
 
-    private static final float INIT_ZOOM_LEVEL = 13f;
+    private static final float INIT_ZOOM_LEVEL = 14f;
 
     SupportMapFragment mMapFragment;
 
@@ -55,14 +58,29 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     private boolean isMapAlreadyInit;
 
-    private ArrayList<Partner> lstPartner;
+    private List<Partner> lstPartner;
 
+    private static final int DEFAULT_RADIUS = 1000; // 1 kilometer
 
-    public static MapResultFragment getIntance(ArrayList<Partner> data) {
+    private static final int DEFAULT_MARKER_ICON_SIZE = 70; // 1 kilometer
+
+    private OnFetchSearchResult mOnFetchSearchResult;
+
+    public static String arrayPartner;
+
+    public static MapResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         MapResultFragment fragment = new MapResultFragment();
+        fragment.setFetchSearchResult(onFetchSearchResult);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(TAG, data);
         fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static MapResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, String data) {
+        MapResultFragment fragment = new MapResultFragment();
+        fragment.setFetchSearchResult(onFetchSearchResult);
+        arrayPartner = data;
         return fragment;
     }
 
@@ -99,6 +117,9 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     @Override
     public void onResume() {
         super.onResume();
+        if (StringUtils.isNotBlank(arrayPartner)) {
+            lstPartner = JsonUtils.convertJsonObjectToList(arrayPartner, Partner[].class);
+        }
     }
 
     @Override
@@ -151,11 +172,13 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         mGoogleMap.setMyLocationEnabled(true);
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         loadMapView(mLocationService.getLastLocation());
-        drawMarker();
+        drawNearPlace();
+//        drawMap();
     }
 
-    private void drawMarker(){
+    private void drawNearPlace() {
         Bundle bundle = getArguments();
+        Bitmap btmMarker = BitmapUtil.getBitmapFromDrawable(getContext(), R.drawable.marker_thumb, DEFAULT_MARKER_ICON_SIZE, DEFAULT_MARKER_ICON_SIZE);
         if (bundle != null) {
             lstPartner = bundle.getParcelableArrayList(TAG);
             if (isMapAlreadyInit && mCurrentLocation != null) {
@@ -164,7 +187,7 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
                 LatLng latLng = new LatLng(lat, lng);
                 mGoogleMap.addCircle(new CircleOptions()
                         .center(latLng)
-                        .radius(1000)
+                        .radius(DEFAULT_RADIUS)
                         .strokeWidth(0f)
                         .fillColor(Utils.getColorRes(R.color.color_circle_fill_map)));
             }
@@ -175,14 +198,49 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
                     LatLng point = new LatLng(lat, lng);
                     MarkerOptions marker = new MarkerOptions();
                     if (mGoogleMap != null) {
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(btmMarker);
                         marker.position(point).title(partner.getName()).draggable(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                .icon(icon);
                         mGoogleMap.addMarker(marker);
                     }
                 }
             }
         }
+        mOnFetchSearchResult.onFetchCompleted(TAG);
     }
+
+
+    private void drawMap() {
+        Bitmap btmMarker = BitmapUtil.getBitmapFromDrawable(getContext(), R.drawable.marker_thumb, 50, 50);
+        if (btmMarker != null) {
+            if (isMapAlreadyInit && mCurrentLocation != null) {
+                double lat = mCurrentLocation.getLatitude();
+                double lng = mCurrentLocation.getLongitude();
+                LatLng latLng = new LatLng(lat, lng);
+                mGoogleMap.addCircle(new CircleOptions()
+                        .center(latLng)
+                        .radius(DEFAULT_RADIUS)
+                        .strokeWidth(0f)
+                        .fillColor(Utils.getColorRes(R.color.color_circle_fill_map)));
+            }
+            if (CollectionUtils.isNotEmpty(lstPartner)) {
+                for (Partner partner : lstPartner) {
+                    double lat = Double.parseDouble(partner.getGeoLat());
+                    double lng = Double.parseDouble(partner.getGeoLng());
+                    LatLng point = new LatLng(lat, lng);
+                    MarkerOptions marker = new MarkerOptions();
+                    if (mGoogleMap != null) {
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(btmMarker);
+                        marker.position(point).title(partner.getName()).draggable(false)
+                                .icon(icon);
+                        mGoogleMap.addMarker(marker);
+                    }
+                }
+            }
+        }
+        mOnFetchSearchResult.onFetchCompleted(TAG);
+    }
+
 
     private void loadMapView(Location currentLocation) {
         if (currentLocation != null) {
@@ -200,11 +258,8 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         }
     }
 
-
-    public List<Partner> convertListJsonMessageToObject(String listMessage) {
-        Gson gson = new Gson();
-        Type founderListType = new TypeToken<ArrayList<Partner>>() {
-        }.getType();
-        return gson.fromJson(listMessage, founderListType);
+    public void setFetchSearchResult(OnFetchSearchResult onFetchSearchResult) {
+        mOnFetchSearchResult = onFetchSearchResult;
     }
+
 }

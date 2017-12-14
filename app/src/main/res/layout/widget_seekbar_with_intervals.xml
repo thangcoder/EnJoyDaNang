@@ -8,7 +8,7 @@
         android:id="@+id/seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:thumb="@drawable/seekbar_thumb" />
+        android:thumb="@drawable/marker_thumb" />
 
     <RelativeLayout
         android:id="@+id/intervals"

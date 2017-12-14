@@ -1,8 +1,8 @@
 package node.com.enjoydanang.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,15 +10,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
-import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.Constant;
-
-import static android.R.attr.type;
 
 /**
  * Author: Tavv
@@ -49,5 +46,20 @@ public class JsonUtils {
         if (StringUtils.isBlank(json)) return null;
         Gson gson = new Gson();
         return gson.fromJson(json, typeInput);
+    }
+
+    public static <T> List<T> convertJsonObjectToList(String strJsonObject, Class<T[]> clazz) {
+        if (StringUtils.isBlank(strJsonObject)) return null;
+        Gson gson = new Gson();
+        T[] arr = new Gson().fromJson(strJsonObject, clazz);
+//        Type founderListType = new TypeToken<ArrayList<T>>() {
+//        }.getType();
+        return Arrays.asList(arr);
+    }
+
+    public static <T> String convertObjectToJson(List<T> lstObject) {
+        if (CollectionUtils.isEmpty(lstObject)) return null;
+        Gson gson = new Gson();
+        return gson.toJson(lstObject);
     }
 }

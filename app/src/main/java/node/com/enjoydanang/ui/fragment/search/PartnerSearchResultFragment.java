@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +19,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -34,9 +37,7 @@ import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> implements OnItemClickListener {
     private static final String TAG = PartnerSearchResultFragment.class.getSimpleName();
 
-    private ArrayList<Partner> lstPartner;
-
-    private SearchPartnerResultAdapter mAdapter;
+    private List<Partner> lstPartner;
 
     @BindView(R.id.rcvPartnerSearchResult)
     RecyclerView rcvPartnerSearchResult;
@@ -48,6 +49,8 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     private LocationHelper mLocationHelper;
 
+    private static String strJsonData;
+
 
     public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
@@ -55,6 +58,14 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(TAG, data);
         fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
+    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, String data) {
+        PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
+        fragment.setFetchSearchResult(onFetchSearchResult);
+        strJsonData = data;
         return fragment;
     }
 
@@ -68,12 +79,29 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
             } else {
                 rcvPartnerSearchResult.setVisibility(View.VISIBLE);
                 txtEmpty.setVisibility(View.GONE);
-                mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this, mLocationHelper);
+                SearchPartnerResultAdapter mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
                 rcvPartnerSearchResult.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
-                mOnFetchSearchResult.onFetchCompleted(true);
             }
+            mOnFetchSearchResult.onFetchCompleted(TAG);
         }
+    }
+
+    private void initView() {
+        if (StringUtils.isNotBlank(strJsonData)) {
+            lstPartner = JsonUtils.convertJsonObjectToList(strJsonData, Partner[].class);
+        }
+        if (CollectionUtils.isEmpty(lstPartner)) {
+            rcvPartnerSearchResult.setVisibility(View.GONE);
+            txtEmpty.setVisibility(View.VISIBLE);
+        } else {
+            rcvPartnerSearchResult.setVisibility(View.VISIBLE);
+            txtEmpty.setVisibility(View.GONE);
+            SearchPartnerResultAdapter mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
+            rcvPartnerSearchResult.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
+        }
+        mOnFetchSearchResult.onFetchCompleted(TAG);
     }
 
 
@@ -93,6 +121,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         rcvPartnerSearchResult.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
         lstPartner = new ArrayList<>();
         getData();
+//        initView();
     }
 
     private void showDataList(boolean show) {

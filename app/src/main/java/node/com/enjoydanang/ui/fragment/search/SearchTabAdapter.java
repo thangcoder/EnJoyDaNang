@@ -21,6 +21,7 @@ public class SearchTabAdapter extends FragmentPagerAdapter {
     private String[] tabTitles;
     private OnFetchSearchResult onFetchSearchResult;
     private ArrayList<Partner> data;
+    private String strJsonData;
 
     public SearchTabAdapter(FragmentManager fm, String[] tabTitles, OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         super(fm);
@@ -29,11 +30,18 @@ public class SearchTabAdapter extends FragmentPagerAdapter {
         this.onFetchSearchResult = onFetchSearchResult;
     }
 
+    public SearchTabAdapter(FragmentManager fm, String[] tabTitles, OnFetchSearchResult onFetchSearchResult, String data) {
+        super(fm);
+        this.tabTitles = tabTitles;
+        strJsonData = data;
+        this.onFetchSearchResult = onFetchSearchResult;
+    }
+
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MapResultFragment.getIntance(data);
+                return MapResultFragment.getIntance(onFetchSearchResult, data);
             case 1:
                 return PartnerSearchResultFragment.getIntance(onFetchSearchResult, data);
             default:

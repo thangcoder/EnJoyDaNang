@@ -8,8 +8,15 @@ import android.view.KeyEvent;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.Constant;
@@ -81,4 +88,6 @@ public class Common {
             GlobalApplication.getGlobalApplicationContext().setJsLanguage(js);
         }
     }
+
+
 }

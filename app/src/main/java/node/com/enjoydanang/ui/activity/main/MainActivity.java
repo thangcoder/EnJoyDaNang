@@ -42,7 +42,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -94,8 +93,6 @@ import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
-
-import static node.com.enjoydanang.utils.helper.LocationHelper.REQUEST_CHECK_SETTINGS;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener {
@@ -181,6 +178,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     public LocationHelper mLocationHelper;
 
+    private boolean isFirstTimeCheckPermission;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -212,7 +211,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (!disableShowPopup()) {
             mvpPresenter.getPopup();
         }
-        if (!checkPermission()) {
+        isFirstTimeCheckPermission = !hasPermission();
+        if (!hasPermission()) {
             requestPermission();
         } else {
             startTrackLocation();
@@ -233,10 +233,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
             ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
         }
-        validAndUpdateFullName();
+        if(!isFirstTimeCheckPermission){
+            validAndUpdateFullName();
+        }
+        registerLocationReceiver();
+        registerGPSReciver();
+    }
+
+    private void registerLocationReceiver() {
         IntentFilter intentFilter = new IntentFilter(Extras.KEY_RECEIVER_LOCATION_FILTER);
         LocalBroadcastManager
                 .getInstance(MainActivity.this).registerReceiver(mLocationReceiver, intentFilter);
+    }
+
+    private void registerGPSReciver() {
         registerReceiver(gpsLocationReceiver, new IntentFilter(BROADCAST_ACTION));
     }
 
@@ -247,14 +257,15 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             LocalBroadcastManager
                     .getInstance(MainActivity.this).unregisterReceiver(mLocationReceiver);
         }
+        if (gpsLocationReceiver != null) {
+            unregisterReceiver(gpsLocationReceiver);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         stopTrackingService();
-        if (gpsLocationReceiver != null)
-            unregisterReceiver(gpsLocationReceiver);
     }
 
     @Override
@@ -436,7 +447,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     }
 
-    @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.edit_profile, R.id.img_back})
+    @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.img_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.img_home:
@@ -476,10 +487,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 } else {
                     DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
-                break;
-            case R.id.edit_profile:
-                addFr(ProfileFragment.class.getName(), CHANGE_PROFILE);
-                currentTab = HomeTab.None;
                 break;
             case R.id.img_back:
                 this.onBackPressed();
@@ -677,7 +684,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
 
-    private boolean checkPermission() {
+    private boolean hasPermission() {
         int resultCamera = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
         int resultWrite = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int resultRead = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -708,8 +715,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     boolean readAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
                     if (cameraAccepted && writeAccepted && readAccepted) {
+                        isFirstTimeCheckPermission = false;
                         startTrackLocation();
                     } else {
+                        isFirstTimeCheckPermission = true;
                         DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2),
                                 Utils.getLanguageByResId(R.string.Permission_Request_CAMERA_WRITE_READ));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -937,7 +946,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             mLocationHelper.simpleBuildGoogleApi();
         }
         if (mLocationHelper.isPermissionGranted() && LocationUtils.isGpsEnabled()) {
-            if(locationService == null){
+            if (locationService == null) {
                 locationService = new Intent(this, LocationService.class);
                 bindService(locationService, serviceConnection, BIND_AUTO_CREATE);
             }

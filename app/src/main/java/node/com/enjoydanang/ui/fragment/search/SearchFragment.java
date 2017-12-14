@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,6 +78,9 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @BindView(R.id.tabs)
     TabLayout tabLayout;
 
+    @BindView(R.id.txtSearching)
+    TextView txtSearching;
+
     private SearchResultAdapter mAdapter;
 
     private List<Partner> lstPartner;
@@ -87,6 +91,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     private static final int DEFAULT_DISTANCE = 1;
 
+    private ArrayList<String> tabNameChilds;
 
     @Override
     public void showToast(String desc) {
@@ -107,6 +112,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     protected void init(View view) {
         progressBar.setVisibility(View.VISIBLE);
         frame.setVisibility(View.INVISIBLE);
+        tabNameChilds = new ArrayList<>();
         if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
             userInfo = Utils.getUserInfo();
             if (mMainActivity != null && mMainActivity.getLocationService() != null) {
@@ -179,6 +185,16 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     public void onResultPlaceByRange(List<Partner> lstPartner) {
+        //String strJsonData = JsonUtils.convertObjectToJson(lstPartner);
+        mvpPresenter.getAddressByGeoLocation(lstPartner);
+        this.lstPartner = lstPartner;
+    }
+
+    @Override
+    public void onGetLocationAddress(List<String> lstAddress) {
+        for (int i = 0; i < lstAddress.size(); i++) {
+            lstPartner.get(i).setLocationAddress(lstAddress.get(i));
+        }
         ArrayList<Partner> data = new ArrayList<>();
         data.addAll(lstPartner);
         String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);
@@ -188,6 +204,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         searchResultPager.setAdapter(mSearchTabAdapter);
         tabLayout.setupWithViewPager(searchResultPager);
     }
+
 
     @Override
     public void onError(AppError error) {
@@ -247,13 +264,15 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     @Override
     public void initViewLabel(View view) {
         super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(searchView);
+        LanguageHelper.getValueByViewId(searchView, txtSearching);
     }
 
     @Override
-    public void onFetchCompleted(boolean isCompleted) {
-        if (isCompleted) {
+    public void onFetchCompleted(String tabNameInitCompleted) {
+        tabNameChilds.add(tabNameInitCompleted);
+        if (tabNameChilds.size() == 2) {
             progressBar.setVisibility(View.GONE);
+            txtSearching.setVisibility(View.GONE);
             frame.setVisibility(View.VISIBLE);
         }
     }

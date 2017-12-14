@@ -19,5 +19,7 @@ public interface iSearchView extends iBaseView {
 
     void onResultPlaceByRange(List<Partner> lstPartner);
 
+    void onGetLocationAddress(List<String> lstAddress);
+
     void onError(AppError error);
 }

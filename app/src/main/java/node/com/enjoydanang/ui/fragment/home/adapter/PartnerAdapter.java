@@ -49,7 +49,7 @@ public class PartnerAdapter extends RecyclerView.Adapter {
     }
 
 
-    public class LoadingViewHolder extends RecyclerView.ViewHolder {
+    static class LoadingViewHolder extends RecyclerView.ViewHolder {
         public ProgressBar progressBar;
 
         public LoadingViewHolder(View itemView) {

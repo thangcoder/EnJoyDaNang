@@ -74,7 +74,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         return CollectionUtils.isEmpty(lstFavorites) ? 0 : lstFavorites.size();
     }
 
-    public class FavoriteViewHolder extends RecyclerView.ViewHolder {
+    static class FavoriteViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imgPartner)
         ImageView imgPartner;

@@ -72,7 +72,7 @@ public class Constant {
 
     public static final int MAX_SIZE_GALLERY_SELECT = 3;
 
-    public static final int FETCH_UPDATE_TIME = 0; // fetch every 1h
+    public static final int FETCH_UPDATE_TIME = 60; // fetch every 1h
 
     public static final String KEY_EXTRAS_USER_INFO = "user_data";
     public static final String KEY_EXTRAS_CLOSE_POPUP = "popup_close_home";

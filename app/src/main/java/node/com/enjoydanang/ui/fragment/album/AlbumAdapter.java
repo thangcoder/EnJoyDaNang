@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -29,7 +28,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private List<PartnerAlbum> images;
     private Context mContext;
 
-    public class AlbumViewHolder extends RecyclerView.ViewHolder {
+    static class AlbumViewHolder extends RecyclerView.ViewHolder {
         public SimpleDraweeView thumbnail;
 
         public AlbumViewHolder(View view) {

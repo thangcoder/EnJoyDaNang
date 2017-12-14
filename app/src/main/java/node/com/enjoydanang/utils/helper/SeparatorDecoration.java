@@ -55,12 +55,11 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        // we set the stroke width before, so as to correctly draw the line we have to offset by width / 2
         final int offset = (int) (mPaint.getStrokeWidth() / 2);
 
         // this will iterate over every visible view
         int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount - 2; i++) {
+        for (int i = 0; i < childCount - 1; i++) {
             // get the view
             final View view = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
@@ -74,4 +73,5 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
             }
         }
     }
+
 }

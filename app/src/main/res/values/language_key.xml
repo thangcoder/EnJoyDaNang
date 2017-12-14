@@ -198,4 +198,5 @@
     <string name="Search.Tab2.Title">Search.Tab2.Title</string>
     <string name="Action.Searching">Action.Searching</string>
     <string name="Splash.Configuration">Splash.Configuration</string>
+    <string name="Map.Location.NotFound">Map.Location.NotFound</string>
 </resources>

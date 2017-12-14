@@ -89,11 +89,10 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvPartnerSearchResult.setLayoutManager(layoutManager);
+        rcvPartnerSearchResult.setNestedScrollingEnabled(false);
         rcvPartnerSearchResult.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
         lstPartner = new ArrayList<>();
         getData();
-//        mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
-//        rcvPartnerSearchResult.setAdapter(mAdapter);
     }
 
     private void showDataList(boolean show) {

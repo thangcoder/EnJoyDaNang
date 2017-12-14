@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -31,6 +32,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.LocationUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -105,16 +107,30 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     protected void init(View view) {
         progressBar.setVisibility(View.VISIBLE);
         frame.setVisibility(View.INVISIBLE);
-        userInfo = Utils.getUserInfo();
-        currentLocation = mMainActivity.getLocationService().getLastLocation();
-        initRecyclerView();
+        if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
+            userInfo = Utils.getUserInfo();
+            if (mMainActivity != null && mMainActivity.getLocationService() != null) {
+                currentLocation = mMainActivity.getLocationService().getLastLocation();
+            }
+            initRecyclerView();
+        } else {
+            lnlSearch.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+            DialogUtils.showDialog(getContext(), DialogType.INFO, Utils.getLanguageByResId(R.string.Permisstion_Title),
+                    Utils.getLanguageByResId(R.string.Map_Location_NotFound));
+        }
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        fetchNearPlace();
+        if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
+            fetchNearPlace();
+        }
     }
 
     private void fetchNearPlace() {

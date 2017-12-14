@@ -106,7 +106,7 @@ public class ImagePreviewAdapter extends RecyclerView.Adapter<ImagePreviewAdapte
         return CollectionUtils.isEmpty(images) ? 0 : images.size();
     }
 
-    public class ImagePreviewHolder extends RecyclerView.ViewHolder {
+    static class ImagePreviewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imgPreview)
         ImageView imgPreview;

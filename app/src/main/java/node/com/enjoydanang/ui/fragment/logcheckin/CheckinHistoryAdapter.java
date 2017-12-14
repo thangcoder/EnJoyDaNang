@@ -71,7 +71,7 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
         return CollectionUtils.isEmpty(lstHistoryCheckin) ? 0 : lstHistoryCheckin.size();
     }
 
-    public class CheckinViewHolder extends RecyclerView.ViewHolder {
+    static class CheckinViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.imgPartner)
         ImageView imgPartner;

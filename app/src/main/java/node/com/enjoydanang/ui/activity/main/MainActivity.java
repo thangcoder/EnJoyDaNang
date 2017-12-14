@@ -82,6 +82,7 @@ import node.com.enjoydanang.ui.fragment.introduction.IntroductionFragment;
 import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
+import node.com.enjoydanang.ui.fragment.search.MapFragment;
 import node.com.enjoydanang.ui.fragment.search.SearchFragment;
 import node.com.enjoydanang.utils.DateUtils;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -344,7 +345,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         EventBus.getDefault().post("hasBackFragment");
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
-                    } else if (tag.equals(SearchFragment.class.getName())) {
+                    } else if (tag.equals(MapFragment.class.getName())) {
                         setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
@@ -463,12 +464,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 break;
             case R.id.img_search:
                 if (currentTab != HomeTab.Search) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(SearchFragment.class.getName());
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
                     if (fragment == null) {
-                        addFrMenu(SearchFragment.class.getName(), true);
+                        addFrMenu(MapFragment.class.getName(), true);
                     } else {
                         currentTab = HomeTab.Search;
-                        resurfaceFragment(fragment, SearchFragment.class.getName());
+                        resurfaceFragment(fragment, MapFragment.class.getName());
                     }
                 }
                 break;

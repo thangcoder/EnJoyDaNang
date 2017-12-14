@@ -1,0 +1,444 @@
+package node.com.enjoydanang.ui.fragment.search;
+
+import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import node.com.enjoydanang.MvpFragment;
+import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
+import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.model.InfoWindow;
+import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.service.LocationService;
+import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.utils.BitmapUtil;
+import node.com.enjoydanang.utils.DialogUtils;
+import node.com.enjoydanang.utils.LocationUtils;
+import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
+import node.com.enjoydanang.utils.helper.LocationHelper;
+import node.com.enjoydanang.utils.helper.SeparatorDecoration;
+
+/**
+ * Author: Tavv
+ * Created on 14/12/2017
+ * Project Name: EnjoyDaNang
+ * Version 1.0
+ */
+
+public class MapFragment extends MvpFragment<SearchPresenter> implements iSearchView,
+        SearchView.OnQueryTextListener, OnItemClickListener, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+    private static final String TAG = MapFragment.class.getSimpleName();
+
+    private static final float INIT_ZOOM_LEVEL = 14f;
+
+    private SupportMapFragment mMapFragment;
+
+    private GoogleMap mGoogleMap;
+
+    private LocationHelper mLocationHelper;
+
+    private LocationService mLocationService;
+
+    private boolean isMapAlreadyInit;
+
+    private List<Partner> lstPartnerResultSearch;
+
+    private List<Partner> lstPartnerNearPlace;
+
+    private static final int DEFAULT_RADIUS = 1000; // 1 kilometer
+
+    private static final int DEFAULT_MARKER_ICON_SIZE = 50; // 1 kilometer
+
+    private static final int DELAY_INTERVAL = 1000;
+
+    @BindView(R.id.search)
+    SearchView searchView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
+    @BindView(R.id.frame)
+    FrameLayout frame;
+
+    @BindView(R.id.lnlSearch)
+    RelativeLayout lnlSearch;
+
+    @BindView(R.id.rlrContent)
+    LinearLayout rlrContent;
+
+    @BindView(R.id.rcvSearchResult)
+    RecyclerView rcvSearchResult;
+
+    @BindView(R.id.rcvPartnerNearPlace)
+    RecyclerView rcvPartnerNearPlace;
+
+    @BindView(R.id.txtSearching)
+    TextView txtSearching;
+
+    @BindView(R.id.txtEmpty)
+    TextView txtEmpty;
+
+    private SearchResultAdapter mSearchQueryAdapter;
+
+    private SearchPartnerResultAdapter mSearchNearResultAdapter;
+
+    private UserInfo userInfo;
+
+    private Location currentLocation;
+
+    private static final int DEFAULT_DISTANCE = 1;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mvpPresenter = createPresenter();
+    }
+
+    private void fetchNearPlace() {
+        if (currentLocation != null) {
+            String geoLat = String.valueOf(currentLocation.getLatitude());
+            String geoLng = String.valueOf(currentLocation.getLongitude());
+            mvpPresenter.searchPlaceByCurrentLocation(userInfo.getUserId(), DEFAULT_DISTANCE, geoLat, geoLng);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (StringUtils.isNotEmpty(query)) {
+            showResultContainer(true);
+            mvpPresenter.searchWithTitle(query);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (StringUtils.isNotEmpty(newText)) {
+            mvpPresenter.searchWithTitle(newText);
+            showResultContainer(true);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            mSearchQueryAdapter.clearAllItem();
+            Utils.hideSoftKeyboard(getActivity());
+            showResultContainer(false);
+            progressBar.setVisibility(View.GONE);
+        }
+        return false;
+    }
+
+    private void showResultContainer(final boolean isShow) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rcvSearchResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
+                rlrContent.setVisibility(isShow ? View.GONE : View.VISIBLE);
+            }
+        }, DELAY_INTERVAL);
+    }
+
+    @Override
+    public void showToast(String desc) {
+
+    }
+
+    @Override
+    public void unKnownError() {
+
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        if(CollectionUtils.isNotEmpty(lstPartnerNearPlace)){
+            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartnerNearPlace.get(position));
+            DialogUtils.openDialogFragment(mFragmentManager, dialog);
+        }
+    }
+
+    @Override
+    public void OnQuerySearchResult(List<Partner> lstPartner) {
+        mSearchQueryAdapter.updateResult(lstPartner);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResultPlaceByRange(List<Partner> lstPartner) {
+        if (CollectionUtils.isNotEmpty(lstPartner)) {
+            lstPartnerNearPlace = lstPartner;
+            mvpPresenter.getAddressByGeoLocation(lstPartner);
+        } else {
+            rcvPartnerNearPlace.setVisibility(View.GONE);
+            txtEmpty.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onGetLocationAddress(List<String> lstAddress) {
+        for (int i = 0; i < lstAddress.size(); i++) {
+            lstPartnerNearPlace.get(i).setLocationAddress(lstAddress.get(i));
+        }
+        mSearchNearResultAdapter = new SearchPartnerResultAdapter(lstPartnerNearPlace, getContext(), this);
+        rcvPartnerNearPlace.setAdapter(mSearchNearResultAdapter);
+        drawNearPlace();
+    }
+
+    @Override
+    public void onError(AppError error) {
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
+    }
+
+    @Override
+    protected SearchPresenter createPresenter() {
+        return new SearchPresenter(this);
+    }
+
+    @Override
+    protected void init(View view) {
+        hideProgress(false);
+        mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
+        if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
+            userInfo = Utils.getUserInfo();
+            getComponentFromMain();
+            initRecyclerView();
+            initRecyclerViewPartnerNear();
+            try {
+                if (mMapFragment != null) {
+                    mMapFragment.getMapAsync(this);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            lnlSearch.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+            DialogUtils.showDialog(getContext(), DialogType.INFO, Utils.getLanguageByResId(R.string.Permisstion_Title),
+                    Utils.getLanguageByResId(R.string.Map_Location_NotFound));
+        }
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rcvSearchResult.setLayoutManager(layoutManager);
+        lstPartnerResultSearch = new ArrayList<>();
+        mSearchQueryAdapter = new SearchResultAdapter(getContext(), lstPartnerResultSearch, this);
+        rcvPartnerNearPlace.setNestedScrollingEnabled(false);
+        rcvSearchResult.setAdapter(mSearchQueryAdapter);
+    }
+
+    private void initRecyclerViewPartnerNear() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rcvPartnerNearPlace.setLayoutManager(layoutManager);
+        rcvPartnerNearPlace.setNestedScrollingEnabled(false);
+        rcvPartnerNearPlace.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
+    }
+
+    @Override
+    protected void setEvent(View view) {
+        searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public int getRootLayoutId() {
+        return R.layout.fragment_search_v2;
+    }
+
+    @Override
+    public void bindView(View view) {
+        ButterKnife.bind(this, view);
+        customSearchView();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        isMapAlreadyInit = true;
+        mGoogleMap = googleMap;
+        mLocationHelper.setGoogleMap(mGoogleMap);
+        mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+        mGoogleMap.setMyLocationEnabled(true);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        loadMapView(mLocationService.getLastLocation());
+        if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
+            fetchNearPlace();
+        }
+    }
+
+    private void customSearchView() {
+        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(Utils.getColorRes(R.color.color_title_category));
+        searchEditText.setHintTextColor(Utils.getColorRes(R.color.material_grey_200));
+    }
+
+    @Override
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(searchView, txtSearching);
+    }
+
+    private void getComponentFromMain() {
+        if (mMainActivity != null) {
+            if (mMainActivity.getLocationService() != null) {
+                mLocationService = mMainActivity.getLocationService();
+                currentLocation = mMainActivity.getLocationService().getLastLocation();
+            }
+            mLocationHelper = mMainActivity.mLocationHelper;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mMapFragment != null) {
+            mMapFragment.onStop();
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mMapFragment != null && mGoogleMap != null) {
+            mMapFragment.onLowMemory();
+            mGoogleMap.clear();
+            System.gc();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mGoogleMap != null) {
+            mGoogleMap.clear();
+        }
+        if (mMapFragment != null) {
+            mMapFragment.onDestroy();
+            mMapFragment = null;
+        }
+        System.gc();
+        super.onDestroyView();
+    }
+
+    private void drawNearPlace() {
+        Bitmap btmMarker = BitmapUtil.getBitmapFromDrawable(getContext(), R.drawable.marker_thumb, DEFAULT_MARKER_ICON_SIZE, DEFAULT_MARKER_ICON_SIZE);
+        if (isMapAlreadyInit && currentLocation != null) {
+            double lat = currentLocation.getLatitude();
+            double lng = currentLocation.getLongitude();
+            LatLng latLng = new LatLng(lat, lng);
+            mGoogleMap.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .radius(DEFAULT_RADIUS)
+                    .strokeWidth(0f)
+                    .fillColor(Utils.getColorRes(R.color.color_circle_fill_map)));
+        }
+        if (CollectionUtils.isNotEmpty(lstPartnerNearPlace)) {
+            for (Partner partner : lstPartnerNearPlace) {
+                double lat = Double.parseDouble(partner.getGeoLat());
+                double lng = Double.parseDouble(partner.getGeoLng());
+                LatLng point = new LatLng(lat, lng);
+                MarkerOptions markerOptions = new MarkerOptions();
+                CustomInfoWindowGoogleMap infoWindowGoogleMap = new CustomInfoWindowGoogleMap(getContext());
+                if (mGoogleMap != null) {
+                    mGoogleMap.setInfoWindowAdapter(infoWindowGoogleMap);
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(btmMarker);
+                    markerOptions.position(point).title(partner.getName()).draggable(false)
+                            .icon(icon);
+                    addMarkerInfo(partner, markerOptions, mGoogleMap);
+                    mGoogleMap.setOnInfoWindowClickListener(this);
+                }
+            }
+        }
+        hideProgress(true);
+    }
+
+    private void addMarkerInfo(Partner partner, MarkerOptions markerOptions, GoogleMap googleMap) {
+        if (partner != null && markerOptions != null && googleMap != null) {
+            InfoWindow infoWindow = new InfoWindow(partner.getId(), partner.getName(),
+                    partner.getLocationAddress(), partner.getPicture());
+            Marker marker = googleMap.addMarker(markerOptions);
+            marker.setTag(infoWindow);
+        }
+    }
+
+
+    private void loadMapView(Location currentLocation) {
+        if (currentLocation != null) {
+            LatLng point = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            MarkerOptions marker = new MarkerOptions();
+            Address address = mLocationHelper.getAddress(currentLocation.getLatitude(), currentLocation.getLongitude());
+            String titleMarker = mLocationHelper.getFullInfoAddress(address);
+            if (mGoogleMap != null) {
+                marker.position(point).title(titleMarker).draggable(false)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                CameraPosition cameraPosition = CameraPosition.builder().target(point).zoom(INIT_ZOOM_LEVEL).bearing(0).tilt(45).build();
+                mGoogleMap.addMarker(marker);
+                mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        }
+    }
+
+    private void hideProgress(boolean hide) {
+        if (hide) {
+            progressBar.setVisibility(View.GONE);
+            txtSearching.setVisibility(View.GONE);
+            frame.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            txtSearching.setVisibility(View.VISIBLE);
+            frame.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        InfoWindow infoWindow = (InfoWindow) marker.getTag();
+        if (CollectionUtils.isNotEmpty(lstPartnerNearPlace) && infoWindow != null) {
+            Partner result = null;
+            for (Partner partner : lstPartnerNearPlace) {
+                if (partner.getId() == infoWindow.getPartnerId()) {
+                    result = partner;
+                    break;
+                }
+            }
+            if (result != null) {
+                DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(result);
+                DialogUtils.openDialogFragment(mFragmentManager, dialog);
+            }
+        }
+    }
+}

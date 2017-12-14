@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -26,6 +27,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.model.InfoWindow;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.service.LocationService;
 import node.com.enjoydanang.utils.BitmapUtil;
@@ -66,7 +68,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     private OnFetchSearchResult mOnFetchSearchResult;
 
-    public static String arrayPartner;
 
     public static MapResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         MapResultFragment fragment = new MapResultFragment();
@@ -74,13 +75,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(TAG, data);
         fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static MapResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, String data) {
-        MapResultFragment fragment = new MapResultFragment();
-        fragment.setFetchSearchResult(onFetchSearchResult);
-        arrayPartner = data;
         return fragment;
     }
 
@@ -114,13 +108,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (StringUtils.isNotBlank(arrayPartner)) {
-            lstPartner = JsonUtils.convertJsonObjectToList(arrayPartner, Partner[].class);
-        }
-    }
 
     @Override
     public int getRootLayoutId() {
@@ -173,7 +160,6 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         loadMapView(mLocationService.getLastLocation());
         drawNearPlace();
-//        drawMap();
     }
 
     private void drawNearPlace() {
@@ -196,44 +182,14 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
                     double lat = Double.parseDouble(partner.getGeoLat());
                     double lng = Double.parseDouble(partner.getGeoLng());
                     LatLng point = new LatLng(lat, lng);
-                    MarkerOptions marker = new MarkerOptions();
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    CustomInfoWindowGoogleMap infoWindowGoogleMap = new CustomInfoWindowGoogleMap(getContext());
                     if (mGoogleMap != null) {
+                        mGoogleMap.setInfoWindowAdapter(infoWindowGoogleMap);
                         BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(btmMarker);
-                        marker.position(point).title(partner.getName()).draggable(false)
+                        markerOptions.position(point).title(partner.getName()).draggable(false)
                                 .icon(icon);
-                        mGoogleMap.addMarker(marker);
-                    }
-                }
-            }
-        }
-        mOnFetchSearchResult.onFetchCompleted(TAG);
-    }
-
-
-    private void drawMap() {
-        Bitmap btmMarker = BitmapUtil.getBitmapFromDrawable(getContext(), R.drawable.marker_thumb, 50, 50);
-        if (btmMarker != null) {
-            if (isMapAlreadyInit && mCurrentLocation != null) {
-                double lat = mCurrentLocation.getLatitude();
-                double lng = mCurrentLocation.getLongitude();
-                LatLng latLng = new LatLng(lat, lng);
-                mGoogleMap.addCircle(new CircleOptions()
-                        .center(latLng)
-                        .radius(DEFAULT_RADIUS)
-                        .strokeWidth(0f)
-                        .fillColor(Utils.getColorRes(R.color.color_circle_fill_map)));
-            }
-            if (CollectionUtils.isNotEmpty(lstPartner)) {
-                for (Partner partner : lstPartner) {
-                    double lat = Double.parseDouble(partner.getGeoLat());
-                    double lng = Double.parseDouble(partner.getGeoLng());
-                    LatLng point = new LatLng(lat, lng);
-                    MarkerOptions marker = new MarkerOptions();
-                    if (mGoogleMap != null) {
-                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(btmMarker);
-                        marker.position(point).title(partner.getName()).draggable(false)
-                                .icon(icon);
-                        mGoogleMap.addMarker(marker);
+                        addMarkerInfo(partner, markerOptions, mGoogleMap);
                     }
                 }
             }
@@ -260,6 +216,15 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
 
     public void setFetchSearchResult(OnFetchSearchResult onFetchSearchResult) {
         mOnFetchSearchResult = onFetchSearchResult;
+    }
+
+    private void addMarkerInfo(Partner partner, MarkerOptions markerOptions, GoogleMap googleMap) {
+        if (partner != null && markerOptions != null && googleMap != null) {
+            InfoWindow infoWindow = new InfoWindow(partner.getId(), partner.getName(),
+                    partner.getLocationAddress(), partner.getPicture());
+            Marker marker = googleMap.addMarker(markerOptions);
+            marker.setTag(infoWindow);
+        }
     }
 
 }

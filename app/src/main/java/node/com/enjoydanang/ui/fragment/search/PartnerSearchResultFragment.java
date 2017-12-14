@@ -47,11 +47,6 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     private OnFetchSearchResult mOnFetchSearchResult;
 
-    private LocationHelper mLocationHelper;
-
-    private static String strJsonData;
-
-
     public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, ArrayList<Partner> data) {
         PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
         fragment.setFetchSearchResult(onFetchSearchResult);
@@ -61,15 +56,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         return fragment;
     }
 
-
-    public static PartnerSearchResultFragment getIntance(OnFetchSearchResult onFetchSearchResult, String data) {
-        PartnerSearchResultFragment fragment = new PartnerSearchResultFragment();
-        fragment.setFetchSearchResult(onFetchSearchResult);
-        strJsonData = data;
-        return fragment;
-    }
-
-    private void getData() {
+    private void initView() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             lstPartner = bundle.getParcelableArrayList(TAG);
@@ -87,24 +74,6 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         }
     }
 
-    private void initView() {
-        if (StringUtils.isNotBlank(strJsonData)) {
-            lstPartner = JsonUtils.convertJsonObjectToList(strJsonData, Partner[].class);
-        }
-        if (CollectionUtils.isEmpty(lstPartner)) {
-            rcvPartnerSearchResult.setVisibility(View.GONE);
-            txtEmpty.setVisibility(View.VISIBLE);
-        } else {
-            rcvPartnerSearchResult.setVisibility(View.VISIBLE);
-            txtEmpty.setVisibility(View.GONE);
-            SearchPartnerResultAdapter mAdapter = new SearchPartnerResultAdapter(lstPartner, getContext(), this);
-            rcvPartnerSearchResult.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
-        }
-        mOnFetchSearchResult.onFetchCompleted(TAG);
-    }
-
-
     @Override
     protected SearchPresenter createPresenter() {
         return null;
@@ -112,16 +81,12 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     @Override
     protected void init(View view) {
-        if (mMainActivity != null) {
-            mLocationHelper = mMainActivity.mLocationHelper;
-        }
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvPartnerSearchResult.setLayoutManager(layoutManager);
         rcvPartnerSearchResult.setNestedScrollingEnabled(false);
         rcvPartnerSearchResult.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
         lstPartner = new ArrayList<>();
-        getData();
-//        initView();
+        initView();
     }
 
     private void showDataList(boolean show) {

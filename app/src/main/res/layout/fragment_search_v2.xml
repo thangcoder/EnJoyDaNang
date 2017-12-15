@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:clickable="true"
     android:orientation="vertical">
 
     <ProgressBar
@@ -21,12 +22,13 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/progress_bar"
         android:layout_centerInParent="true"
-        android:text="@string/Action.Searching" />
+        android:text="@string/Action.Search.Nearby"
+        android:visibility="visible" />
 
     <android.support.v7.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_35sdp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -42,8 +44,8 @@
         android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:layout_below="@+id/search">
+        android:layout_below="@+id/search"
+        android:visibility="invisible">
 
         <LinearLayout
             android:id="@+id/rlrContent"
@@ -58,13 +60,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
-                android:layout_weight=".6" />
+                android:layout_weight=".5" />
+
+            <LinearLayout
+                android:id="@+id/lrlInfoPartner"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".1"
+                android:background="@color/material_grey_200"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/txtPartnerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/Search.Tab2.Title"
+                    android:textColor="@color/material_grey_800"
+                    android:textSize="@dimen/_11ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:textColor="@color/material_grey_800"
+                    android:textSize="@dimen/_8ssp" />
+
+            </LinearLayout>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcvPartnerNearPlace"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight=".4"
+                android:paddingLeft="@dimen/_8sdp"
                 android:paddingTop="@dimen/_3sdp" />
 
             <TextView

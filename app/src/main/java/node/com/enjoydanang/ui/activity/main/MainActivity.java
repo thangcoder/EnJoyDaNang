@@ -83,7 +83,6 @@ import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.MapFragment;
-import node.com.enjoydanang.ui.fragment.search.SearchFragment;
 import node.com.enjoydanang.utils.DateUtils;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -94,6 +93,8 @@ import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
+
+import static node.com.enjoydanang.utils.Utils.getContext;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
         NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener {
@@ -239,6 +240,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         registerLocationReceiver();
         registerGPSReciver();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(onChangedLocationReceiver,
+                new IntentFilter(Extras.KEY_RECEIVER_LOCATION_ON_FOUND_FILTER));
     }
 
     private void registerLocationReceiver() {
@@ -260,6 +263,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         if (gpsLocationReceiver != null) {
             unregisterReceiver(gpsLocationReceiver);
+        }
+        if(onChangedLocationReceiver != null){
+            LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(onChangedLocationReceiver);
         }
     }
 
@@ -1031,4 +1037,21 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             }
         }
     };
+
+    private BroadcastReceiver onChangedLocationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+                Bundle bundle = intent.getBundleExtra(Extras.KEY_RECEIVER_LOCATION);
+                if (bundle != null) {
+                    Location currentLocation = bundle.getParcelable(Extras.EXTRAS_RECEIVER_LOCATION);
+                    if (action.equalsIgnoreCase(Extras.KEY_RECEIVER_LOCATION_ON_FOUND_FILTER)) {
+                        mLastLocation = currentLocation;
+                    }
+                }
+            }
+        }
+    };
+
 }

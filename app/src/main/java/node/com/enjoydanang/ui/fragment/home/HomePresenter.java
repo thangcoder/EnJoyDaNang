@@ -1,17 +1,13 @@
 package node.com.enjoydanang.ui.fragment.home;
 
-import java.util.Collections;
-
 import node.com.enjoydanang.BasePresenter;
 import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.HomeCombined;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.model.Weather;
 import node.com.enjoydanang.utils.Utils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,73 +24,22 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         super(view);
     }
 
-    void getBanner() {
-        addSubscription(apiStores.getBanner(), new ApiCallback<Repository<Banner>>() {
+
+    void getListHome(long customerId, String latitude, String longtitude) {
+        addSubscription(apiStores.getListPartnerHome(customerId, latitude, longtitude), new ApiCallback<Repository<Partner>>() {
 
             @Override
-            public void onSuccess(Repository<Banner> data) {
-                mvpView.hideLoading();
-                if (Utils.isNotEmptyContent(data)) {
-                    mvpView.onGetBannerSuccess(data.getData());
+            public void onSuccess(Repository<Partner> model) {
+                if (Utils.isResponseError(model)) {
+                    mvpView.onGetPartnerFailure(new AppError(new Throwable(model.getMessage())));
+                    return;
                 }
+                mvpView.onGetPartnerSuccess(model.getData());
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.hideLoading();
-                mvpView.onGetBannerFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
-    void getPartner(int page) {
-        addSubscription(apiStores.getPartner(page), new ApiCallback<Repository<Partner>>() {
-
-            @Override
-            public void onSuccess(Repository<Partner> data) {
-                mvpView.hideLoading();
-                if (Utils.isNotEmptyContent(data)) {
-                    mvpView.onGetPartnerSuccess(data.getData());
-                } else {
-                    mvpView.onGetPartnerSuccess(Collections.EMPTY_LIST);
-                }
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.hideLoading();
                 mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
-    void getAllCategories() {
-        addSubscription(apiStores.getAllCategories(), new ApiCallback<Repository<Category>>() {
-
-            @Override
-            public void onSuccess(Repository<Category> data) {
-//                mvpView.hideLoading();
-                if (Utils.isNotEmptyContent(data)) {
-                    mvpView.onGetCategorySuccess(data.getData());
-                }
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-//                mvpView.hideLoading();
-                mvpView.onGetCategoryFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
@@ -116,78 +61,6 @@ public class HomePresenter extends BasePresenter<iHomeView> {
             @Override
             public void onFailure(String msg) {
                 mvpView.onGetPartnerByCategoryFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
-
-    void getWeather() {
-        addSubscription(apiStores.getWidgetWeather(), new ApiCallback<Repository<Weather>>() {
-
-            @Override
-            public void onSuccess(Repository<Weather> model) {
-                if (Utils.isNotEmptyContent(model)) {
-                    mvpView.onFetchWeatherSuccess(model.getData());
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.hideLoading();
-                mvpView.onFetchWeatherFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
-    void getExchangeRate() {
-        addSubscription(apiStores.getWidgetExchangeRate(), new ApiCallback<Repository<ExchangeRate>>() {
-
-            @Override
-            public void onSuccess(Repository<ExchangeRate> model) {
-                if (Utils.isNotEmptyContent(model)) {
-                    mvpView.onFetchExchangeRateSuccess(model.getData());
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.hideLoading();
-                mvpView.onFetchExchangeRateFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
-    void getListHome(long customerId) {
-        addSubscription(apiStores.getListPartnerHome(customerId), new ApiCallback<Repository<Partner>>() {
-
-            @Override
-            public void onSuccess(Repository<Partner> model) {
-//                mvpView.hideLoading();
-                if (Utils.isNotEmptyContent(model)) {
-                    mvpView.onGetPartnerSuccess(model.getData());
-                } else {
-                    mvpView.onGetPartnerFailure(new AppError(new Throwable(model.getMessage())));
-                }
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
             }
 
             @Override

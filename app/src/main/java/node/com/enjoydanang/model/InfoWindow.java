@@ -19,12 +19,17 @@ public class InfoWindow {
 
     private String image;
 
+    private String distance;
 
-    public InfoWindow(int partnerId, String partnerName, String address, String image) {
+    private String category;
+
+    public InfoWindow(int partnerId, String partnerName, String address, String image, String distance, String category) {
         this.partnerId = partnerId;
         this.partnerName = partnerName;
         this.address = address;
         this.image = image;
+        this.distance = distance;
+        this.category = category;
     }
 
 
@@ -58,5 +63,21 @@ public class InfoWindow {
 
     public void setPartnerId(int partnerId) {
         this.partnerId = partnerId;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

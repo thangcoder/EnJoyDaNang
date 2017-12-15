@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,6 @@ import node.com.enjoydanang.model.InfoWindow;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.service.LocationService;
 import node.com.enjoydanang.utils.BitmapUtil;
-import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -221,7 +219,8 @@ public class MapResultFragment extends MvpFragment<SearchPresenter> implements O
     private void addMarkerInfo(Partner partner, MarkerOptions markerOptions, GoogleMap googleMap) {
         if (partner != null && markerOptions != null && googleMap != null) {
             InfoWindow infoWindow = new InfoWindow(partner.getId(), partner.getName(),
-                    partner.getLocationAddress(), partner.getPicture());
+                    partner.getLocationAddress(), partner.getPicture(),
+                    partner.getDistance(), partner.getCategoryName());
             Marker marker = googleMap.addMarker(markerOptions);
             marker.setTag(infoWindow);
         }

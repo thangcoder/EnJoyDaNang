@@ -199,4 +199,7 @@
     <string name="Action.Searching">Action.Searching</string>
     <string name="Splash.Configuration">Splash.Configuration</string>
     <string name="Map.Location.NotFound">Map.Location.NotFound</string>
+    <string name="Action.Search.Nearby">Action.Search.Nearby</string>
+    <string name="Map.Distance">Map.Distance</string>
+    <string name="Map.My.Current.Position">Map.My.Current.Position</string>
 </resources>

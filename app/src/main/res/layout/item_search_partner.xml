@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imgPartner"
-        android:layout_width="@dimen/_65sdp"
-        android:layout_height="@dimen/_65sdp"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center_vertical"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
@@ -27,30 +27,51 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/_3sdp"
+            android:paddingLeft="@dimen/_8sdp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/black32"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txtAddress"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/_3sdp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="@color/material_grey_600" />
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/txtAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight=".8"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/_3sdp"
+                android:textColor="@color/material_grey_600"
+                android:textSize="@dimen/_10ssp" />
+
+            <TextView
+                android:id="@+id/txtDistance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:gravity="center"
+                android:textColor="@color/material_grey_600"
+                android:textSize="@dimen/_10ssp" />
+
+
+        </LinearLayout>
+
 
         <TextView
-            android:id="@+id/txtDistance"
+            android:id="@+id/txtCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:drawableLeft="@drawable/ic_near_me_black_24dp"
-            android:gravity="center"
-            android:textColor="@color/material_grey_500" />
+            android:paddingLeft="@dimen/_3sdp"
+            android:textColor="@color/material_grey_900"
+            android:textSize="@dimen/_10ssp" />
 
     </LinearLayout>
 </LinearLayout>

@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <solid android:color="#FFFFFF"/>
     <stroke
-        android:width="2dp"
+        android:width="0.7dp"
         android:color="@color/bg_login_button"/>
     <padding
         android:bottom="5dp"

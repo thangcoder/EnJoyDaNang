@@ -218,11 +218,14 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
     }
 
     public String getFullInfoAddress(Address address) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-            sb.append(address.getAddressLine(i)).append(", ");
+        if (address != null) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                sb.append(address.getAddressLine(i)).append(", ");
+            }
+            return sb.toString();
         }
-        return sb.toString();
+        return StringUtils.EMPTY;
     }
 
 

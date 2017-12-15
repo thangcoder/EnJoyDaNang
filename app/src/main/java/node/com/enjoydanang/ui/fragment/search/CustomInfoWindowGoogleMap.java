@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,15 +14,12 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.InfoWindow;
-import node.com.enjoydanang.utils.ImageUtils;
 
 /**
  * Author: Tavv
@@ -35,6 +31,7 @@ import node.com.enjoydanang.utils.ImageUtils;
 public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
     private final Map<Marker, Bitmap> images = new HashMap<>();
     private final Map<Marker, Target<Bitmap>> targets = new HashMap<>();
+    private static final int ICON_MARKER_SIZE = 70;
 
     private Context context;
 
@@ -84,12 +81,6 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
             } else {
                 imgPartner.setImageBitmap(image);
             }
-//            Picasso.with(context)
-//                    .load(infoWindow.getImage())
-//                    .error(R.drawable.placeholder)
-//                    .placeholder(R.drawable.placeholder)
-//                    .fit()
-//                    .into(imgPartner, new MarkerCallback(marker, infoWindow.getImage(), imgPartner));
         }
         return view;
     }
@@ -107,7 +98,7 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
         Marker marker;
 
         InfoTarget(Marker marker) {
-            super(70, 70); // otherwise Glide will load original sized bitmap which is huge
+            super(ICON_MARKER_SIZE, ICON_MARKER_SIZE); // otherwise Glide will load original sized bitmap which is huge
             this.marker = marker;
         }
 
@@ -123,38 +114,6 @@ public class CustomInfoWindowGoogleMap implements GoogleMap.InfoWindowAdapter {
             images.put(marker, resource);
             // tell the maps API it can try to call getInfoContents again, this time finding the loaded image
             marker.showInfoWindow();
-        }
-    }
-
-    public class MarkerCallback implements Callback {
-
-        Marker marker = null;
-        String URL;
-        ImageView userPhoto;
-
-
-        public MarkerCallback(Marker marker, String URL, ImageView userPhoto) {
-            this.marker = marker;
-            this.URL = URL;
-            this.userPhoto = userPhoto;
-        }
-
-        @Override
-        public void onSuccess() {
-            if (marker != null && marker.isInfoWindowShown()) {
-                marker.hideInfoWindow();
-
-                Picasso.with(context)
-                        .load(URL)
-                        .into(userPhoto);
-
-                marker.showInfoWindow();
-            }
-        }
-
-        @Override
-        public void onError() {
-
         }
     }
 }

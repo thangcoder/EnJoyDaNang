@@ -55,6 +55,7 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
         if (model != null) {
             holder.txtPartnerName.setText(model.getName());
             holder.txtAddress.setText(model.getLocationAddress());
+            holder.txtCategory.setText(model.getCategoryName());
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, model.getPicture());
             if (StringUtils.isNotBlank(model.getDistance()) &&
                     !StringUtils.equals(model.getDistance().trim(), "km") &&
@@ -90,6 +91,9 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
 
         @BindView(R.id.txtAddress)
         TextView txtAddress;
+
+        @BindView(R.id.txtCategory)
+        TextView txtCategory;
 
         public View view;
 

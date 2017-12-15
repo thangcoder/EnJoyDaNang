@@ -33,7 +33,7 @@
         <item name="android:textColorSecondary">@color/secondary_text</item>
         <item name="android:windowBackground">@android:color/white</item>
         <item name="android:windowDisablePreview">true</item>
-
+        <item name="autoCompleteTextViewStyle">@style/cursorColor</item>
     </style>
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -177,6 +177,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/_15sdp</item>
         <item name="android:layout_marginRight">@dimen/_15sdp</item>
+    </style>
+
+    <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
 
 </resources>

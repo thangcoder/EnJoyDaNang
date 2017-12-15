@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.search;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Location;
@@ -11,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -33,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +55,7 @@ import node.com.enjoydanang.utils.BitmapUtil;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.LocationUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -64,7 +69,9 @@ import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
  */
 
 public class MapFragment extends MvpFragment<SearchPresenter> implements iSearchView,
-        SearchView.OnQueryTextListener, OnItemClickListener, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener {
+        SearchView.OnQueryTextListener, OnItemClickListener, OnMapReadyCallback,
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener,
+        OnBackFragmentListener {
     private static final String TAG = MapFragment.class.getSimpleName();
 
     private static final float INIT_ZOOM_LEVEL = 14f;
@@ -139,6 +146,8 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
 
     private Marker currentMarker;
 
+    private boolean isResultSearchQueryVisible;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -181,6 +190,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                isResultSearchQueryVisible = isShow;
                 rcvSearchResult.setVisibility(isShow ? View.VISIBLE : View.GONE);
                 rlrContent.setVisibility(isShow ? View.GONE : View.VISIBLE);
             }
@@ -199,14 +209,23 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
 
     @Override
     public void onClick(View view, int position) {
-        if (CollectionUtils.isNotEmpty(lstPartnerNearPlace)) {
-            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartnerNearPlace.get(position));
-            DialogUtils.openDialogFragment(mFragmentManager, dialog);
+        ViewParent parent = view.getParent();
+        DetailHomeDialogFragment dialog = null;
+        if (parent.equals(rcvSearchResult)) {
+            if (CollectionUtils.isNotEmpty(lstPartnerResultSearch)) {
+                dialog = DetailHomeDialogFragment.newInstance(lstPartnerResultSearch.get(position));
+            }
+        } else {
+            if (CollectionUtils.isNotEmpty(lstPartnerNearPlace)) {
+                dialog = DetailHomeDialogFragment.newInstance(lstPartnerNearPlace.get(position));
+            }
         }
+        DialogUtils.openDialogFragment(mFragmentManager, dialog);
     }
 
     @Override
     public void OnQuerySearchResult(List<Partner> lstPartner) {
+        isResultSearchQueryVisible = true;
         mSearchQueryAdapter.updateResult(lstPartner);
         progressBar.setVisibility(View.GONE);
     }
@@ -245,6 +264,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     @Override
     protected void init(View view) {
         hideProgress(false);
+        enableSearchView(searchView, false);
         mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         if (LocationUtils.isGpsEnabled() && LocationUtils.isLocationEnabled()) {
             userInfo = Utils.getUserInfo();
@@ -325,6 +345,13 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Utils.getColorRes(R.color.color_title_category));
         searchEditText.setHintTextColor(Utils.getColorRes(R.color.material_grey_200));
+        try {
+            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+            f.set(searchEditText, R.drawable.cursor);// set textCursorDrawable to null
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -414,6 +441,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             mGoogleMap.setOnInfoWindowClickListener(this);
         }
         hideProgress(true);
+        enableSearchView(searchView, true);
     }
 
     private void addMarkerInfo(Partner partner, MarkerOptions markerOptions, GoogleMap googleMap) {
@@ -495,11 +523,43 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     @Override
     public void onResume() {
         super.onResume();
-        if(lnlSearch != null){
+        if (lnlSearch != null) {
             SoftKeyboardManager.hideSoftKeyboard(getContext(), lnlSearch.getWindowToken(), 0);
         }
         if (mLocationService != null) {
             loadMapView(mLocationService.getLastLocation());
+        }
+    }
+
+    @Override
+    public void onBack(boolean isBack) {
+        if (isBack && isResultSearchQueryVisible) {
+            searchView.setQuery("", false);
+            searchView.clearFocus();
+            showResultContainer(false);
+            isResultSearchQueryVisible = false;
+        } else {
+            isResultSearchQueryVisible = true;
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface, boolean isBack) {
+
+    }
+
+    public boolean isResultSearchQueryVisible() {
+        return isResultSearchQueryVisible;
+    }
+
+    private void enableSearchView(View view, boolean enabled) {
+        view.setEnabled(enabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                enableSearchView(child, enabled);
+            }
         }
     }
 }

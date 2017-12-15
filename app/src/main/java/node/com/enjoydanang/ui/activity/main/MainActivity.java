@@ -90,6 +90,7 @@ import node.com.enjoydanang.utils.LocationUtils;
 import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
+import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -182,6 +183,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private boolean isFirstTimeCheckPermission;
 
+    private OnBackFragmentListener onBackFragmentListener;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -235,7 +238,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (GlobalApplication.getGlobalApplicationContext().isHasSessionLogin()) {
             ForceUpdateChecker.with(this).onUpdateNeeded(this).check();
         }
-        if(!isFirstTimeCheckPermission){
+        if (!isFirstTimeCheckPermission) {
             validAndUpdateFullName();
         }
         registerLocationReceiver();
@@ -264,7 +267,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (gpsLocationReceiver != null) {
             unregisterReceiver(gpsLocationReceiver);
         }
-        if(onChangedLocationReceiver != null){
+        if (onChangedLocationReceiver != null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(onChangedLocationReceiver);
         }
     }
@@ -352,6 +355,11 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(MapFragment.class.getName())) {
+                        if (!(fragment instanceof OnBackFragmentListener)) {
+                            throw new IllegalStateException(
+                                    "Fragment must implement the callbacks.");
+                        }
+                        onBackFragmentListener = (OnBackFragmentListener) fragment;
                         setShowMenuItem(Constant.HIDE_ALL_ITEM_MENU);
                         currentTab = HomeTab.Search;
                         lvDrawerNav.clearChoices();
@@ -382,6 +390,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         } else {
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 Fragment fragment = getTopFragment();
+                boolean canBackWithMapFrg = true;
                 if (fragment instanceof ProfileFragment) {
                     if (!isUpdatedFullName(fragment)) {
                         DialogUtils.showDialog(fragment.getContext(), DialogType.WARNING,
@@ -389,10 +398,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                                 Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
                         return;
                     }
+                } else if (fragment instanceof MapFragment) {
+                    onBackFragmentListener.onBack(true);
+                    canBackWithMapFrg = ((MapFragment) fragment).isResultSearchQueryVisible();
                 }
-                getSupportFragmentManager().popBackStack();
-//                enableBackButton(false);
-                setShowMenuItem(Constant.SHOW_MENU_BACK);
+                if (canBackWithMapFrg) {
+                    getSupportFragmentManager().popBackStack();
+                    setShowMenuItem(Constant.SHOW_MENU_BACK);
+                }
             } else {
                 if (Utils.hasLogin()) {
                     if (isExit) {

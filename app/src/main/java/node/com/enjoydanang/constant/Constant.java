@@ -9,11 +9,11 @@ import node.com.enjoydanang.R;
 
 public class Constant {
 
-    public static String URL_HOST = "http://enjoyindanang.com/API/";
-    public static String URL_HOST_IMAGE = "http://enjoyindanang.com";
-    public static String URL_FORGOT_PWD = "http://enjoyindanang.com/Account/ForgotPassword";
+    public static String URL_HOST = "https://enjoyindanang.com/API/";
+    public static String URL_HOST_IMAGE = "https://enjoyindanang.com";
+    public static String URL_FORGOT_PWD = "https://enjoyindanang.com/Account/ForgotPassword";
 
-    public static String URL_HOST_VN = "http://enjoyindanang.vn/API/";
+    public static String URL_HOST_VN = "https://enjoyindanang.vn/API/";
 
     public static final String URL_DIRECTION_MAPS = "http://maps.google.com/maps?f=d&hl=en&saddr=%1$,.2f,%1$,.2f&daddr=%1$,.2f,%1$,.2f";
 

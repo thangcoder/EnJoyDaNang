@@ -412,13 +412,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private void getCurrentPosition() {
         if (mMainActivity != null) {
             if (mMainActivity.getLocationService() != null) {
-                mLastLocation = mMainActivity.getLastLocation();
-                double distanceTo = firstTimePosition.distanceTo(mLastLocation);
-                if (distanceTo > 0) {
-                    String strGeoLat = String.valueOf(mLastLocation.getLatitude());
-                    String strGeoLng = String.valueOf(mLastLocation.getLongitude());
-                    mvpPresenter.getListHome(user.getUserId(), strGeoLat, strGeoLng);
-                    firstTimePosition = mLastLocation;
+                mLastLocation = mMainActivity.getLocationService().getLastLocation();
+                if (mLastLocation != null) {
+                    double distanceTo = firstTimePosition.distanceTo(mLastLocation);
+                    if (distanceTo > 0) {
+                        String strGeoLat = String.valueOf(mLastLocation.getLatitude());
+                        String strGeoLng = String.valueOf(mLastLocation.getLongitude());
+                        mvpPresenter.getListHome(user.getUserId(), strGeoLat, strGeoLng);
+                        firstTimePosition = mLastLocation;
+                    }
                 }
             }
         }

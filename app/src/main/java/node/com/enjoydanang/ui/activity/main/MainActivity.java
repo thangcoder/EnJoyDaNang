@@ -469,48 +469,52 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.img_back})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.img_home:
-                if (currentTab != HomeTab.Home) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(HomeFragment.class.getName(), true);
-                    } else {
-                        backToFragment(fragment);
-                    }
+        if (Utils.hasLogin()) {
+            if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
+                switch (view.getId()) {
+                    case R.id.img_home:
+                        if (currentTab != HomeTab.Home) {
+                            Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
+                            if (fragment == null) {
+                                addFrMenu(HomeFragment.class.getName(), true);
+                            } else {
+                                backToFragment(fragment);
+                            }
 
-                }
-                break;
-            case R.id.img_search:
-                if (currentTab != HomeTab.Search) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-                    if (fragment == null) {
-                        addFrMenu(MapFragment.class.getName(), true);
-                    } else {
-                        currentTab = HomeTab.Search;
-                        resurfaceFragment(fragment, MapFragment.class.getName());
-                    }
-                }
-                break;
-            case R.id.img_menu:
-                if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    mDrawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
+                        }
+                        break;
+                    case R.id.img_search:
+                        if (currentTab != HomeTab.Search) {
+                            Fragment fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
+                            if (fragment == null) {
+                                addFrMenu(MapFragment.class.getName(), true);
+                            } else {
+                                currentTab = HomeTab.Search;
+                                resurfaceFragment(fragment, MapFragment.class.getName());
+                            }
+                        }
+                        break;
+                    case R.id.img_menu:
+                        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                            mDrawerLayout.closeDrawer(GravityCompat.START);
+                        } else {
+                            mDrawerLayout.openDrawer(GravityCompat.START);
+                        }
 
-                break;
-            case R.id.img_scan:
-                if (Utils.hasLogin()) {
-                    startActivity(new Intent(MainActivity.this, ScanActivity.class));
-                    overridePendingTransitionEnter();
-                } else {
-                    DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                        break;
+                    case R.id.img_scan:
+                        if (Utils.hasLogin()) {
+                            startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                            overridePendingTransitionEnter();
+                        } else {
+                            DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                        }
+                        break;
+                    case R.id.img_back:
+                        this.onBackPressed();
+                        break;
                 }
-                break;
-            case R.id.img_back:
-                this.onBackPressed();
-                break;
+            }
         }
     }
 

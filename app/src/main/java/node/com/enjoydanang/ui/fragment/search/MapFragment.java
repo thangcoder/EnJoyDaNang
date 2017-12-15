@@ -510,7 +510,8 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         InfoWindow infoWindow = (InfoWindow) marker.getTag();
         if (infoWindow != null) {
             lrlInfoPartner.setVisibility(View.VISIBLE);
-            txtDistance.setText(infoWindow.getDistance() + " - " + infoWindow.getCategory());
+            String strCategory = infoWindow.getCategory().replaceAll("\\s+"," ");
+            txtDistance.setText(infoWindow.getDistance() + " - " + strCategory);
             txtPartnerName.setText(infoWindow.getPartnerName());
             return false;
         } else {

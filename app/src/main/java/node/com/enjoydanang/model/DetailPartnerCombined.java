@@ -12,10 +12,14 @@ import node.com.enjoydanang.api.model.Repository;
 public class DetailPartnerCombined {
     Repository<DetailPartner> detailPartnerRepository;
     Repository<PartnerAlbum> partnerAlbumRepository;
+    Repository<Partner> partnerRepository;
 
-    public DetailPartnerCombined(Repository<DetailPartner> detailPartnerRepository, Repository<PartnerAlbum> partnerAlbumRepository) {
+    public DetailPartnerCombined(Repository<DetailPartner> detailPartnerRepository,
+                                 Repository<PartnerAlbum> partnerAlbumRepository,
+                                 Repository<Partner> partnerRepository) {
         this.detailPartnerRepository = detailPartnerRepository;
         this.partnerAlbumRepository = partnerAlbumRepository;
+        this.partnerRepository = partnerRepository;
     }
 
     public Repository<DetailPartner> getDetailPartnerRepository() {
@@ -32,5 +36,13 @@ public class DetailPartnerCombined {
 
     public void setPartnerAlbumRepository(Repository<PartnerAlbum> partnerAlbumRepository) {
         this.partnerAlbumRepository = partnerAlbumRepository;
+    }
+
+    public Repository<Partner> getPartnerRepository() {
+        return partnerRepository;
+    }
+
+    public void setPartnerRepository(Repository<Partner> partnerRepository) {
+        this.partnerRepository = partnerRepository;
     }
 }

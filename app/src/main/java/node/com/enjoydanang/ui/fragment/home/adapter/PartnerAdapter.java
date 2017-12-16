@@ -81,7 +81,6 @@ public class PartnerAdapter extends RecyclerView.Adapter {
             if (StringUtils.isNotBlank(partner.getDistance()) &&
                     !StringUtils.equals(partner.getDistance().trim(), "km") &&
                     partner.isDisplayDistance()) {
-//                String distance = LanguageHelper.getValueByKey(Utils.getString(R.string.Partner_Distance)) + ": " + partner.getDistance() + "\t";
                 String distance = partner.getDistance() + "\t";
                 ((ViewHolder) holder).txtDistance.setText(distance);
             } else {

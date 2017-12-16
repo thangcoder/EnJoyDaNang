@@ -413,7 +413,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         if (mMainActivity != null) {
             if (mMainActivity.getLocationService() != null) {
                 mLastLocation = mMainActivity.getLocationService().getLastLocation();
-                if (mLastLocation != null) {
+                if (mLastLocation != null && firstTimePosition != null) {
                     double distanceTo = firstTimePosition.distanceTo(mLastLocation);
                     if (distanceTo > 0) {
                         String strGeoLat = String.valueOf(mLastLocation.getLatitude());
@@ -421,6 +421,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                         mvpPresenter.getListHome(user.getUserId(), strGeoLat, strGeoLng);
                         firstTimePosition = mLastLocation;
                     }
+                }else{
+                    mvpPresenter.getListHome(user.getUserId(), "", "");
                 }
             }
         }

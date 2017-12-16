@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/_170sdp"
+    android:layout_height="@dimen/_120sdp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imgPartner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        fresco:fadeDuration="300"
+        fresco:failureImage="@drawable/placeholder"
+        fresco:progressBarAutoRotateInterval="1000"
+        fresco:progressBarImage="@drawable/loading"
+        fresco:progressBarImageScaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/txtDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:background="@color/white"
+        android:drawableLeft="@drawable/ic_near_me_black_18dp"
+        android:gravity="center_vertical"
+        android:paddingRight="@dimen/_2sdp"
+        android:textColor="@color/brownishGrey"
+        android:textSize="@dimen/_8ssp" />
+
+    <TextView
+        android:id="@+id/txtDiscountNear"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/_2sdp"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:background="@drawable/circleshape"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_8ssp"
+        android:textStyle="bold" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#99fcfcfc">
+
+        <TextView
+            android:id="@+id/txtPartnerName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:padding="@dimen/_3sdp"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/_11sdp" />
+
+    </RelativeLayout>
+
+
+</FrameLayout>

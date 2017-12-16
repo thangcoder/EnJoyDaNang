@@ -202,4 +202,5 @@
     <string name="Action.Search.Nearby">Action.Search.Nearby</string>
     <string name="Map.Distance">Map.Distance</string>
     <string name="Map.My.Current.Position">Map.My.Current.Position</string>
+    <string name="Partner.NearByPlaces">Partner.NearByPlaces</string>
 </resources>

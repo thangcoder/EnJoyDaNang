@@ -279,11 +279,9 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
                 e.printStackTrace();
             }
         } else {
-            lnlSearch.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    return true;
-                }
-            });
+            enableSearchView(searchView, true);
+            txtEmpty.setVisibility(View.VISIBLE);
+            rcvPartnerNearPlace.setVisibility(View.GONE);
             DialogUtils.showDialog(getContext(), DialogType.INFO, Utils.getLanguageByResId(R.string.Permisstion_Title),
                     Utils.getLanguageByResId(R.string.Map_Location_NotFound));
         }
@@ -335,6 +333,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             loadMapView(mLocationService.getLastLocation());
             fetchNearPlace();
         } else {
+            enableSearchView(searchView, true);
             hideProgress(true);
             txtEmpty.setVisibility(View.VISIBLE);
             rcvPartnerNearPlace.setVisibility(View.GONE);

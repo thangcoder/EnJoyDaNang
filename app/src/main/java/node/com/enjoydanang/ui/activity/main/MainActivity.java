@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.common.ConnectionResult;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -90,7 +92,9 @@ import node.com.enjoydanang.utils.LocationUtils;
 import node.com.enjoydanang.utils.SharedPrefsUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
+import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
+import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -98,7 +102,8 @@ import node.com.enjoydanang.utils.helper.LocationHelper;
 import static node.com.enjoydanang.utils.Utils.getContext;
 
 public class MainActivity extends MvpActivity<MainPresenter> implements MainView, AdapterView.OnItemClickListener,
-        NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener {
+        NavigationView.OnNavigationItemSelectedListener, OnUpdateProfileSuccess, ForceUpdateChecker.OnUpdateNeededListener,
+        LocationConnectListener, OnFindLastLocationCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -965,9 +970,10 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (isServiceConnected)
             return;
         if (mLocationHelper == null) {
-            mLocationHelper = new LocationHelper(MainActivity.this);
+            mLocationHelper = new LocationHelper(MainActivity.this, this);
             mLocationHelper.checkpermission();
-            mLocationHelper.simpleBuildGoogleApi();
+            mLocationHelper.buildGoogleApiStandard(this);
+            mLocationHelper.startLocationUpdates(this);
         }
         if (mLocationHelper.isPermissionGranted() && LocationUtils.isGpsEnabled()) {
             if (locationService == null) {
@@ -1071,4 +1077,24 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
     };
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i(TAG, "onConnected: " + bundle);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
+    }
+
+    @Override
+    public void onFound(Location location) {
+        mLastLocation = location;
+        EventBus.getDefault().post(location);
+    }
 }

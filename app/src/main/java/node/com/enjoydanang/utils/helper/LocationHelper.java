@@ -53,6 +53,7 @@ import java.util.Locale;
 
 import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.PermissionUtils;
+import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
 import rx.Observable;
 import rx.Observer;
@@ -241,6 +242,14 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         mGoogleApiClient.connect();
     }
 
+    public void buildGoogleApiStandard(LocationConnectListener locationConnectListener){
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(locationConnectListener)
+                .addOnConnectionFailedListener(locationConnectListener)
+                .addApi(LocationServices.API).build();
+        mGoogleApiClient.connect();
+    }
+
     public void buildGoogleApiClient(GoogleApiClient.ConnectionCallbacks connectionCallbacks,
                                      GoogleApiClient.OnConnectionFailedListener connectionFailedListener) {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
@@ -333,20 +342,21 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
 
 
     // Trigger new location updates at interval
-    public void startLocationUpdates(GoogleApiClient.ConnectionCallbacks connectionCallbacks,
-                                     GoogleApiClient.OnConnectionFailedListener connectionFailedListener) {
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(connectionCallbacks)
-                .addOnConnectionFailedListener(connectionFailedListener)
-                .addApi(LocationServices.API).build();
-
-        mGoogleApiClient.connect();
-        // Create the location request to start receiving updates
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-
+    public void startLocationUpdates(LocationConnectListener locationConnectListener) {
+        if(mGoogleApiClient == null){
+            mGoogleApiClient = new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(locationConnectListener)
+                    .addOnConnectionFailedListener(locationConnectListener)
+                    .addApi(LocationServices.API).build();
+            mGoogleApiClient.connect();
+        }
+        if(mLocationRequest == null){
+            // Create the location request to start receiving updates
+            mLocationRequest =  LocationRequest.create();
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(UPDATE_INTERVAL);
+            mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        }
         // Create LocationSettingsRequest object using location request
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
@@ -407,6 +417,8 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
                 break;
         }
     }
+
+
 
 
     @Override

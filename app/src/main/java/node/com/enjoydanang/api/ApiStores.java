@@ -273,7 +273,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/ListAround")
-    Observable<Repository> listPlaceAround(@Field("customerId") long customerId, @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
+    Observable<Repository<Partner>> listPlaceAround(@Field("customerId") long customerId, @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
 
     @FormUrlEncoded
     @POST("EnjoyApi.asmx/Get")

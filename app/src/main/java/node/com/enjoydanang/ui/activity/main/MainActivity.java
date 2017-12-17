@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -275,6 +276,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (onChangedLocationReceiver != null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(onChangedLocationReceiver);
         }
+//        if(mLocationHelper != null){
+//            mLocationHelper.stopLocationUpdates();
+//        }
     }
 
     @Override
@@ -969,19 +973,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private void startTrackLocation() {
         if (isServiceConnected)
             return;
-        if (mLocationHelper == null) {
-            mLocationHelper = new LocationHelper(MainActivity.this, this);
-            mLocationHelper.checkpermission();
-            mLocationHelper.buildGoogleApiStandard(this);
-            mLocationHelper.startLocationUpdates(this);
-        }
+        mLocationHelper = new LocationHelper(MainActivity.this, this);
+        mLocationHelper.checkpermission();
+        buildConfigGoogleApi();
         if (mLocationHelper.isPermissionGranted() && LocationUtils.isGpsEnabled()) {
             if (locationService == null) {
                 locationService = new Intent(this, LocationService.class);
                 bindService(locationService, serviceConnection, BIND_AUTO_CREATE);
             }
         } else {
-            mLocationHelper.showSettingDialog();
+            mLocationHelper.showSettingDialog(this);
         }
     }
 
@@ -1056,7 +1057,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
             if (mLocationHelper != null) {
-                mLocationHelper.showSettingDialog();
+                mLocationHelper.showSettingDialog(MainActivity.this);
             }
         }
     };
@@ -1080,6 +1081,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "onConnected: " + bundle);
+        if (mLocationHelper != null) {
+            mLocationHelper.startLocationUpdates(this);
+        }
     }
 
     @Override
@@ -1096,5 +1100,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     public void onFound(Location location) {
         mLastLocation = location;
         EventBus.getDefault().post(location);
+    }
+
+    private void buildConfigGoogleApi() {
+        if (mLocationHelper != null) {
+            mLocationHelper.buildGoogleApiStandard(this);
+            mLocationHelper.buildLocationRequest();
+            mLocationHelper.buildLocationSettings();
+        }
     }
 }

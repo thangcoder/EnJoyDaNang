@@ -1,4 +1,4 @@
-package node.com.enjoydanang.ui.base;
+package node.com.enjoydanang.utils.location;
 
 import android.app.Activity;
 import android.content.Context;

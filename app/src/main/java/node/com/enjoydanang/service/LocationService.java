@@ -7,13 +7,18 @@ import android.location.LocationListener;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+
+import com.google.android.gms.common.ConnectionResult;
 
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.constant.Extras;
 import node.com.enjoydanang.provider.LocationProvider;
+import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
+import node.com.enjoydanang.utils.helper.LocationHelper;
 
 /**
  * Author: Tavv
@@ -22,7 +27,8 @@ import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
  * Version : 1.0
  */
 
-public class LocationService extends Service implements LocationListener, OnFindLastLocationCallback {
+public class LocationService extends Service implements LocationListener, OnFindLastLocationCallback, LocationConnectListener{
+    private static final String TAG = LocationService.class.getSimpleName();
 
     public Location mLastLocation;
 
@@ -31,6 +37,8 @@ public class LocationService extends Service implements LocationListener, OnFind
     private LocalBroadcastManager mLocalBroadcastManager;
 
     private final IBinder mBinder = new LocalBinder();
+
+    private LocationHelper mLocationHelper;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -109,6 +117,21 @@ public class LocationService extends Service implements LocationListener, OnFind
         updateOnFoundLocationBroadcast(mLastLocation);
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 
     public class LocalBinder extends Binder {
 
@@ -121,6 +144,14 @@ public class LocationService extends Service implements LocationListener, OnFind
     public boolean onUnbind(Intent intent) {
         mLocationProvider.onPause();
         return super.onUnbind(intent);
+    }
+
+    private void buildConfigGoogleApi() {
+        if (mLocationHelper != null) {
+            mLocationHelper.buildGoogleApiStandard(this);
+            mLocationHelper.buildLocationRequest();
+            mLocationHelper.buildLocationSettings();
+        }
     }
 
 }

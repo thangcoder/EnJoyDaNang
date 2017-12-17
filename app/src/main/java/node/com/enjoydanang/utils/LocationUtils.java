@@ -47,6 +47,16 @@ public class LocationUtils {
     }
 
     /**
+     * 判断Gps是否可用
+     *
+     * @return {@code true}: 是<br>{@code false}: 否
+     */
+    public static boolean isNetworkEnabled() {
+        LocationManager lm = (LocationManager) Utils.getContext().getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    /**
      * 判断定位是否可用
      *
      * @return {@code true}: 是<br>{@code false}: 否

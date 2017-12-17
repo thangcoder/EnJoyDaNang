@@ -28,14 +28,12 @@ public class LocationProvider implements ILocationProvider {
     private static final int LOCATION_UPDATE_DISTANCE_NW = 0;
     private static final int LOCATION_OUTDATED_WHEN_OLDER_MS = 1000 * 60 * 10;
     private boolean gpsProviderEnabled, networkProviderEnabled;
-    private final Context context;
 
     public LocationProvider(final Context context, LocationListener locationListener, OnFindLastLocationCallback onFindLastLocationCallback) {
         super();
         this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.locationListener = locationListener;
         this.onFindLastLocationCallback = onFindLastLocationCallback;
-        this.context = context;
         this.gpsProviderEnabled = this.locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         this.networkProviderEnabled = this.locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }

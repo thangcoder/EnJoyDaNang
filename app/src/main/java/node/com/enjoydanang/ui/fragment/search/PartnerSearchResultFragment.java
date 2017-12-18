@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,10 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
-import node.com.enjoydanang.utils.JsonUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.helper.LocationHelper;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
@@ -116,7 +113,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
 
     @Override
     public void onClick(View view, int position) {
-        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
+        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position), false);
         DialogUtils.openDialogFragment(mFragmentManager, dialog);
     }
 

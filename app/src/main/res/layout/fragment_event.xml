@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+    <FrameLayout
+        android:id="@+id/frToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?actionBarSize">
+
+
+        <RelativeLayout
+            android:id="@+id/ll_left"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/left_arrow" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_back"
+                android:paddingLeft="@dimen/_8sdp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/edit_profile"
+                android:contentDescription="@null"
+                android:src="@drawable/logo_home"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/img_scan"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@null"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_scan_qr"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/Profile.Edit"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15ssp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <LinearLayout xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rlrEventContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frToolBar"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imgBanner"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            fresco:fadeDuration="300"
+            fresco:failureImage="@drawable/placeholder"
+            fresco:progressBarAutoRotateInterval="1000"
+            fresco:progressBarImage="@drawable/loading"
+            fresco:progressBarImageScaleType="centerInside"
+            fresco:roundAsCircle="false" />
+
+        <WebView
+            android:id="@+id/txtContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:paddingBottom="5dp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

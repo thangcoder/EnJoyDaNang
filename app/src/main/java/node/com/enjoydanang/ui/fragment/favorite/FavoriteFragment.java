@@ -1,10 +1,6 @@
 package node.com.enjoydanang.ui.fragment.favorite;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -116,7 +112,6 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     @Override
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Favorite).toUpperCase());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
         rcvFavorite.setLayoutManager(layoutManager);
@@ -180,7 +175,7 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
                     }
             );
         } else {
-            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position));
+            DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstFavorites.get(position), false);
             DialogUtils.openDialogFragment(mFragmentManager, dialog);
         }
 

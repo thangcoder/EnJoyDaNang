@@ -18,5 +18,6 @@ import node.com.enjoydanang.model.PartnerAlbum;
 public interface iDetailPartnerView extends iBaseView {
 
     void onFetchFailure(AppError appError);
-    void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum, List<Partner> lstPartnerAround);
+    void onFetchAllData(List<DetailPartner> lstDetailPartner, List<PartnerAlbum> lstAlbum);
+    void onFetchListPartnerAround(List<Partner> lstPartnerAround);
 }

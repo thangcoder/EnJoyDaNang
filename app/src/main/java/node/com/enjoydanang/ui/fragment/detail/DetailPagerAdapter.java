@@ -19,12 +19,14 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
     //integer to count number of tabs
     private int tabCount;
     private Partner partner;
+    private boolean isOpenFromNearby;
     //Constructor to the class
-    public DetailPagerAdapter(FragmentManager fm, int tabCount,Partner partner) {
+    public DetailPagerAdapter(FragmentManager fm, int tabCount,Partner partner, boolean isOpenFromNearby) {
         super(fm);
         //Initializing tab count
         this.tabCount= tabCount;
         this.partner = partner;
+        this.isOpenFromNearby = isOpenFromNearby;
     }
 
     //Overriding method getItem
@@ -33,7 +35,7 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter {
         //Returning the current tabs
         switch (position) {
             case 0:
-                return DetailPartnerFragment.newInstance(partner);
+                return DetailPartnerFragment.newInstance(partner, isOpenFromNearby);
             case 1:
                 return ReviewFragment.newInstance(partner);
 //            case 2:

@@ -79,7 +79,6 @@ public class ChangePwdFragment extends MvpFragment<ChangePwdPresenter> implement
 
     @Override
     protected void init(View view) {
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_ChangePassword).toUpperCase());
         userInfo = Utils.getUserInfo();
         validator = new ValidUtils();
     }

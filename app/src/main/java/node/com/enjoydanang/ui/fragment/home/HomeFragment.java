@@ -47,6 +47,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.ui.fragment.event.EventDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
@@ -55,13 +56,12 @@ import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
-import static node.com.enjoydanang.R.id.fabFavorite;
-
 /**
  * Created by chien on 10/8/17.
  */
 
-public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener, OnItemClickListener {
+public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener,
+        OnItemClickListener, BaseSliderView.OnSliderClickListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 8;
     private static final int DURATION_SLIDE = 3000;
@@ -118,7 +118,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     protected void init(View view) {
         user = Utils.getUserInfo();
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home).toUpperCase());
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -220,6 +219,14 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         }
     }
 
+    @Override
+    public void onSliderClick(BaseSliderView slider) {
+        int bannerId = StringUtils.isNotBlank(slider.getDescription()) ? Integer.parseInt(slider.getDescription()) : -1;
+        if (bannerId != -1) {
+            DialogUtils.openDialogFragment(mFragmentManager, EventDialogFragment.getInstance(bannerId));
+        }
+    }
+
 
     private class LoadmorePartner extends EndlessParentScrollListener {
         private int categoryId = -1;
@@ -248,7 +255,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onClick(View view, final int position) {
-        if (view.getId() == fabFavorite) {
+        if (view.getId() == R.id.fabFavorite) {
             if (user.getUserId() != 0) {
                 FloatingActionButton fabFavorite = (FloatingActionButton) view;
                 mvpPresenter.addFavorite(user.getUserId(), lstPartner.get(position).getId());
@@ -273,7 +280,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                         } catch (IndexOutOfBoundsException ex) {
                             partner = null;
                         }
-                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner, false);
                         DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }
                 }
@@ -333,13 +340,16 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         HashMap<String, String> sources = new HashMap<>();
         int length = images.size();
         for (int i = 0; i < length; i++) {
-            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
+//            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
+            sources.put(images.get(i).getId() + "", images.get(i).getPicture());
         }
-        for (String name : sources.keySet()) {
+        for (String id : sources.keySet()) {
             DefaultSliderView textSliderView = new DefaultSliderView(getContext());
             textSliderView
-                    .image(sources.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit);
+                    .image(sources.get(id))
+                    .description(id)
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(this);
             bannerSlider.addSlider(textSliderView);
         }
         bannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
@@ -368,6 +378,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             if (msg.equalsIgnoreCase(Constant.LOCATION_NOT_FOUND)) {
                 mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
             } else {
+                mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
                 nestedScrollView.scrollTo(0, 0);
             }
 
@@ -421,7 +432,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                         mvpPresenter.getListHome(user.getUserId(), strGeoLat, strGeoLng);
                         firstTimePosition = mLastLocation;
                     }
-                }else{
+                } else {
                     mvpPresenter.getListHome(user.getUserId(), "", "");
                 }
             }

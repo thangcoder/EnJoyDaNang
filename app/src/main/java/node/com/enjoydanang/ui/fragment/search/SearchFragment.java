@@ -247,7 +247,7 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
 
     @Override
     public void onClick(View view, int position) {
-        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position));
+        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartner.get(position), false);
         dialog.show(mFragmentManager, TAG);
     }
 

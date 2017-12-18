@@ -140,7 +140,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                         } catch (IndexOutOfBoundsException ex) {
                             partner = null;
                         }
-                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner, false);
                         DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }
                 }
@@ -280,7 +280,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                         } catch (IndexOutOfBoundsException ex) {
                             partner = null;
                         }
-                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner);
+                        DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner, false);
                         DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }
                 }

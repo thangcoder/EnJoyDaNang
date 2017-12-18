@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center"
-            android:text="@string/Introduction_Screen_Title"
+            android:id="@+id/txtTopIntroduction"
+            android:text="@string/Introduction"
             android:textSize="@dimen/_25ssp"
             android:textStyle="bold" />
 
@@ -27,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:visibility="gone"
             android:text="@string/introduction_description" />
 
 

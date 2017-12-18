@@ -14,6 +14,11 @@ public class DetailPartnerCombined {
     Repository<PartnerAlbum> partnerAlbumRepository;
     Repository<Partner> partnerRepository;
 
+    public DetailPartnerCombined(Repository<DetailPartner> detailPartnerRepository, Repository<PartnerAlbum> partnerAlbumRepository) {
+        this.detailPartnerRepository = detailPartnerRepository;
+        this.partnerAlbumRepository = partnerAlbumRepository;
+    }
+
     public DetailPartnerCombined(Repository<DetailPartner> detailPartnerRepository,
                                  Repository<PartnerAlbum> partnerAlbumRepository,
                                  Repository<Partner> partnerRepository) {

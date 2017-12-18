@@ -101,7 +101,6 @@ public class CheckinHistoryFragment extends MvpFragment<CheckinHistoryPresenter>
     @Override
     protected void init(View view) {
         userInfo = GlobalApplication.getUserInfo();
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_LogCheck_in).toUpperCase());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvHistoryCheckin.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
         rcvHistoryCheckin.setLayoutManager(layoutManager);

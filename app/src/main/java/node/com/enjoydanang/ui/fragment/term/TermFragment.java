@@ -1,4 +1,4 @@
-package node.com.enjoydanang.ui.fragment.introduction;
+package node.com.enjoydanang.ui.fragment.term;
 
 import android.os.Bundle;
 import android.text.Html;
@@ -14,22 +14,22 @@ import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.AppError;
-import node.com.enjoydanang.model.Introduction;
+import node.com.enjoydanang.model.Content;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
- * Created on 20/10/2017.
+ * Created on 18/12/2017.
  * Project Name: EnJoyDaNang
  * Version : 1.0
  */
 
-public class IntroductionFragment extends MvpFragment<IntroductionPresenter> implements IntroductionView {
-    private static final String TAG = IntroductionFragment.class.getSimpleName();
+public class TermFragment extends MvpFragment<TermPresenter> implements TermView {
+    private static final String TAG = TermFragment.class.getSimpleName();
 
-    @BindView(R.id.txtIntroductName)
-    TextView txtIntroductionName;
+    @BindView(R.id.txtTermSystemTitle)
+    TextView txtTermSystemTitle;
 
     @BindView(R.id.txtContent)
     TextView txtContent;
@@ -37,23 +37,19 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
     @BindView(R.id.progress_bar)
     ProgressBar prgLoading;
 
-    @BindView(R.id.lrlIntroContent)
-    LinearLayout lrlIntroContent;
-
-    @BindView(R.id.txtTopIntroduction)
-    TextView txtTopIntroduction;
-
+    @BindView(R.id.lrlTermContent)
+    LinearLayout lrlTermContent;
 
     @Override
-    protected IntroductionPresenter createPresenter() {
-        return new IntroductionPresenter(this);
+    protected TermPresenter createPresenter() {
+        return new TermPresenter(this);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        mvpPresenter.getIntroduction();
+        mvpPresenter.getTermSystem();
     }
 
     @Override
@@ -67,7 +63,7 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
 
     @Override
     public int getRootLayoutId() {
-        return R.layout.fragment_introduction;
+        return R.layout.fragment_term;
     }
 
     @Override
@@ -86,27 +82,27 @@ public class IntroductionFragment extends MvpFragment<IntroductionPresenter> imp
     }
 
     @Override
-    public void onGetIntroductionSuccess(Introduction introduction) {
-        txtIntroductionName.setText(introduction.getTitle());
+    public void initViewLabel(View view) {
+        super.initViewLabel(view);
+        LanguageHelper.getValueByViewId(txtTermSystemTitle);
+    }
+
+    @Override
+    public void onLoadTermSuccess(Content content) {
         Spanned spanned = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            spanned = Html.fromHtml(introduction.getContent(), Html.FROM_HTML_MODE_LEGACY);
+            spanned = Html.fromHtml(content.getContent(), Html.FROM_HTML_MODE_LEGACY);
         }else{
-            spanned = Html.fromHtml(introduction.getContent());
+            spanned = Html.fromHtml(content.getContent());
         }
         txtContent.setText(spanned);
-        lrlIntroContent.setVisibility(View.VISIBLE);
+        lrlTermContent.setVisibility(View.VISIBLE);
         prgLoading.setVisibility(View.GONE);
     }
 
     @Override
-    public void onLoadFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), error.getMessage());
-    }
-
-    @Override
-    public void initViewLabel(View view) {
-        super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(txtTopIntroduction);
+    public void onFailure(AppError error) {
+        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 }
+

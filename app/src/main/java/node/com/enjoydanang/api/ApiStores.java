@@ -7,6 +7,7 @@ import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Contact;
+import node.com.enjoydanang.model.Content;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.ExchangeRate;
 import node.com.enjoydanang.model.HistoryCheckin;
@@ -96,6 +97,11 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Detail")
     Observable<Repository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId);
+
+    @FormUrlEncoded
+    @POST("PartnerApi.asmx/DetailWithLocation")
+    Observable<Repository<DetailPartner>> getDetailPartnerById(@Field("id") int partnerId, @Field("geoLat") String geoLat,
+                                                               @Field("geoLng") String geoLng);
 
     @FormUrlEncoded
     @POST("PartnerApi.asmx/Picture")
@@ -244,7 +250,6 @@ public interface ApiStores {
                                        @Part MultipartBody.Part file3);
 
     @Multipart
-    @Headers("Accept:application/json; charset=utf-8")
     @POST("ReviewApi.asmx/WriteReviewReply")
     Observable<Repository> writeReplyByReviewId(@Part("reviewId") int reviewId,
                                                 @Part("customerId") long customerId,
@@ -284,5 +289,14 @@ public interface ApiStores {
     Observable<Repository<Partner>> listSearchByLocation(@Field("customerId") long customerId,
                                                          @Field("distance") int distance,
                                                          @Field("geoLat") String geoLat, @Field("geoLng") String geoLng);
+
+    @FormUrlEncoded
+    @POST("EnjoyApi.asmx/Get")
+    Observable<Repository<Content>> getTermSystem(@Field("Type") String type);
+
+    @FormUrlEncoded
+    @POST("EnjoyApi.asmx/Get")
+    Observable<Repository<Content>> getBannerEvent(@Field("Id") int bannerId, @Field("Type") String type);
+
 
 }

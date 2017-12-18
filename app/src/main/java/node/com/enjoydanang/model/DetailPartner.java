@@ -77,6 +77,14 @@ public class DetailPartner {
     @Expose
     private String video;
 
+    @SerializedName("Distance")
+    @Expose
+    private String distance;
+
+    @SerializedName("DisplayDistance")
+    @Expose
+    private int displayDistance;
+
     public int getId() {
         return id;
     }
@@ -237,29 +245,23 @@ public class DetailPartner {
         this.video = video;
     }
 
-    @Override
-    public String toString() {
-        return "DetailPartner{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", picture='" + picture + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", emailBooking='" + emailBooking + '\'' +
-                ", booking=" + booking +
-                ", address='" + address + '\'' +
-                ", starReview=" + starReview +
-                ", discount=" + discount +
-                ", totalView=" + totalView +
-                ", allowCustomerReviews=" + allowCustomerReviews +
-                ", geoLat='" + geoLat + '\'' +
-                ", geoLng='" + geoLng + '\'' +
-                ", geoLocation='" + geoLocation + '\'' +
-                ", incentivesOther=" + incentivesOther +
-                ", incentivesContent='" + incentivesContent + '\'' +
-                ", video='" + video + '\'' +
-                '}';
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public int getDisplayDistance() {
+        return displayDistance;
+    }
+
+    public void setDisplayDistance(int displayDistance) {
+        this.displayDistance = displayDistance;
+    }
+
+    public boolean isDisplayDistance() {
+        return displayDistance == 1;
     }
 }

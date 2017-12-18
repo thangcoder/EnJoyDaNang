@@ -203,4 +203,6 @@
     <string name="Map.Distance">Map.Distance</string>
     <string name="Map.My.Current.Position">Map.My.Current.Position</string>
     <string name="Partner.NearByPlaces">Partner.NearByPlaces</string>
+    <string name="Home.Term.System">Home.Term.System</string>
+    <string name="Home.Event">Home.Event</string>
 </resources>

@@ -44,7 +44,6 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.location.LocationServices;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -86,6 +85,7 @@ import node.com.enjoydanang.ui.fragment.logcheckin.CheckinHistoryFragment;
 import node.com.enjoydanang.ui.fragment.profile.ProfileFragment;
 import node.com.enjoydanang.ui.fragment.profile_menu.ProfileMenuFragment;
 import node.com.enjoydanang.ui.fragment.search.MapFragment;
+import node.com.enjoydanang.ui.fragment.term.TermFragment;
 import node.com.enjoydanang.utils.DateUtils;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -114,12 +114,13 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     private Menu mMenu;
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
-    private final int FAVORITE = 3;
-    private final int LOG_CHECKIN = 4;
-    private final int CHANGE_PROFILE = 6;
-    private final int CHANGE_PASSWORD = 7;
-    private final int LOGOUT = 8;
-    private final int LOGIN = 4;
+    private final int TERM = 3;
+    private final int FAVORITE = 4;
+    private final int LOG_CHECKIN = 5;
+    private final int CHANGE_PROFILE = 7;
+    private final int CHANGE_PASSWORD = 8;
+    private final int LOGOUT = 9;
+    private final int LOGIN = 5;
     private boolean isOpen;
     private final String IS_OPEN = "IS_OPEN";
 
@@ -551,13 +552,16 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     case CONTACT_US:
                         addFr(ContactUsFragment.class.getName(), position);
                         break;
+                    case TERM:
+                        addFr(TermFragment.class.getName(), position);
+                        break;
                     case FAVORITE:
                         addFr(FavoriteFragment.class.getName(), position);
                         break;
                     case LOG_CHECKIN:
                         addFr(CheckinHistoryFragment.class.getName(), position);
                         break;
-                    case 5:
+                    case 6:
                         break;
                     case CHANGE_PROFILE:
                         addFr(ProfileFragment.class.getName(), position);
@@ -604,6 +608,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     break;
                 case CONTACT_US:
                     addFr(ContactUsFragment.class.getName(), position);
+                    break;
+                case TERM:
+                    addFr(TermFragment.class.getName(), position);
                     break;
                 case LOGIN:
                     finish();
@@ -1017,6 +1024,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             // Check for the integer request code originally supplied to startResolutionForResult().
             case LocationHelper.REQUEST_CHECK_SETTINGS:

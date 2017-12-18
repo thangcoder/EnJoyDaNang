@@ -10,7 +10,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -213,11 +212,11 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         DetailHomeDialogFragment dialog = null;
         if (parent.equals(rcvSearchResult)) {
             if (CollectionUtils.isNotEmpty(lstPartnerResultSearch)) {
-                dialog = DetailHomeDialogFragment.newInstance(lstPartnerResultSearch.get(position));
+                dialog = DetailHomeDialogFragment.newInstance(lstPartnerResultSearch.get(position), false);
             }
         } else {
             if (CollectionUtils.isNotEmpty(lstPartnerNearPlace)) {
-                dialog = DetailHomeDialogFragment.newInstance(lstPartnerNearPlace.get(position));
+                dialog = DetailHomeDialogFragment.newInstance(lstPartnerNearPlace.get(position), false);
             }
         }
         DialogUtils.openDialogFragment(mFragmentManager, dialog);
@@ -498,7 +497,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
                 }
             }
             if (result != null) {
-                DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(result);
+                DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(result, false);
                 DialogUtils.openDialogFragment(mFragmentManager, dialog);
             }
         }

@@ -118,6 +118,8 @@ public class AppLanguage {
         public static final String Contact_Us = "Contact.Us";
         public static final String Account_Already_Have = "Account.Already.Have";
 
+        public static final String Term = "Home.Term.System";
+
 
     }
 }

@@ -77,7 +77,7 @@ public class DetailHomeFragment extends MvpFragment<DetailHomePresenter> impleme
         if (bundle != null) {
             Partner partner = (Partner) bundle.getParcelable(TAG);
             if (partner != null) {
-                DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), partner);
+                DetailPagerAdapter adapter = new DetailPagerAdapter(mFragmentManager, tabLayout.getTabCount(), partner, false);
                 viewPager.setAdapter(adapter);
             }
         }

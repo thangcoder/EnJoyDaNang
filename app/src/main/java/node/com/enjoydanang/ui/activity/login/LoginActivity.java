@@ -38,6 +38,7 @@ import node.com.enjoydanang.constant.LoginType;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.signup.SignUpActivity;
+import node.com.enjoydanang.ui.activity.term.TermActivity;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.config.ForceUpdateChecker;
@@ -78,6 +79,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @BindView(R.id.txtContinue)
     TextView txtContinue;
+
+    @BindView(R.id.txtTermSystem)
+    TextView txtTermSystem;
 
     @BindView(R.id.lrlLogin)
     LinearLayout lrlLogin;
@@ -130,12 +134,13 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void initViewLabel() {
-        LanguageHelper.getValueByViewId(edtUserName, edtPassword, txtOr, txtCreateAccount, txtForgotPwd, btnLoginNormal, txtContinue);
+        LanguageHelper.getValueByViewId(edtUserName, edtPassword, txtOr, txtCreateAccount,
+                txtForgotPwd, btnLoginNormal, txtContinue, txtTermSystem);
     }
 
 
     @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
-            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
+            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue, R.id.txtTermSystem})
     public void onLoginClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -156,6 +161,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.txtForgotPwd:
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constant.URL_FORGOT_PWD));
+                break;
+            case R.id.txtTermSystem:
+                intent = new Intent(this, TermActivity.class);
                 break;
             case R.id.txtContinue:
                 intent = new Intent(this, MainActivity.class);

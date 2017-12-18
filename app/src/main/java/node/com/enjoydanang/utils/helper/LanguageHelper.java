@@ -91,7 +91,8 @@ public class LanguageHelper {
         JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
         if (js != null) {
             try {
-                return new String[]{js.getString(AppLanguage.Key.Information), js.getString(AppLanguage.Key.Introduction), js.getString(AppLanguage.Key.Contact_Us),
+                return new String[]{js.getString(AppLanguage.Key.Information), js.getString(AppLanguage.Key.Introduction),
+                        js.getString(AppLanguage.Key.Contact_Us), js.getString(AppLanguage.Key.Term),
                         js.getString(AppLanguage.Key.Favorite), js.getString(AppLanguage.Key.Home_Account_LogCheck_in),
                         js.getString(AppLanguage.Key.Persional), js.getString(AppLanguage.Key.Home_Account_UpdateProfile),
                         js.getString(AppLanguage.Key.Home_Account_ChangePassword),
@@ -108,7 +109,8 @@ public class LanguageHelper {
         JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
         if (js != null) {
             try {
-                return new String[]{js.getString(AppLanguage.Key.Information), js.getString(AppLanguage.Key.Introduction), js.getString(AppLanguage.Key.Contact_Us),
+                return new String[]{js.getString(AppLanguage.Key.Information), js.getString(AppLanguage.Key.Introduction),
+                        js.getString(AppLanguage.Key.Contact_Us), js.getString(AppLanguage.Key.Term),
                         js.getString(AppLanguage.Key.Persional), js.getString(AppLanguage.Key.Home_Account_Login)};
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -118,7 +120,7 @@ public class LanguageHelper {
         return null;
     }
 
-    public static String getSystemLanguage(){
+    public static String getSystemLanguage() {
         Locale locale = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             locale = Resources.getSystem().getConfiguration().getLocales().get(0);
@@ -129,7 +131,7 @@ public class LanguageHelper {
     }
 
 
-    public static String getSystemLanguage(Configuration configs){
+    public static String getSystemLanguage(Configuration configs) {
         if (configs != null) {
             Locale locale = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

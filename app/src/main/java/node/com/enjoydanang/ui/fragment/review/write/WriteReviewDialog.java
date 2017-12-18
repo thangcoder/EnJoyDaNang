@@ -6,11 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -26,7 +24,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +43,6 @@ import node.com.enjoydanang.api.ApiCallback;
 import node.com.enjoydanang.api.ApiStores;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.api.module.AppClient;
-import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Partner;
@@ -54,7 +50,6 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
-import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -181,8 +176,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSubmitReview:
-                // TODO: replace func submitWriteReview() to writeReview()
-//                submitWriteReview();
                 writeReview();
                 break;
             case R.id.btnAttachImage:
@@ -234,79 +227,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         return false;
     }
 
-
-    private void submitWriteReview() {
-        String name = String.valueOf(edtName.getText());
-        String title = String.valueOf(edtTitle.getText());
-        String content = String.valueOf(edtAriaContent.getText());
-        float ratingCount = ratingBar.getRating();
-        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(title) || StringUtils.isEmpty(content) || ratingCount == 0) {
-            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
-            return;
-        }
-        if (partner != null) {
-            showSending();
-            boolean hasErrorConvertImg = false;
-            long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
-            List<String> lstImageBase64 = new ArrayList<>();
-            if (mPreviewAdapter != null) {
-                for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-                    lstImageBase64.add(i, StringUtils.EMPTY);
-                }
-                if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
-                    int count = -1;
-                    for (ImageData item : mPreviewAdapter.getImages()) {
-                        if (item.getUri() != null) {
-                            count++;
-                            File file = new File(FileUtils.getPath(getContext(), item.getUri()));
-                            hasErrorConvertImg = file == null;
-                            if (file != null) {
-                                String strConvert = ImageUtils.encodeTobase64(file);
-                                lstImageBase64.set(count, strConvert);
-                            }
-                        }
-                    }
-                    if (hasErrorConvertImg) {
-                        Toast.makeText(getContext(), AppError.DEFAULT_ERROR_MESSAGE, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            mCompositeSubscription.add(apiStores.writeReview(userId, partner.getId(),
-                    (int) ratingCount, title, name, content,
-                    lstImageBase64.get(0), lstImageBase64.get(1), lstImageBase64.get(2))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ApiCallback<Repository>() {
-                        @Override
-                        public void onSuccess(Repository model) {
-                            if (Utils.isResponseError(model)) {
-                                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
-                                return;
-                            }
-                            DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
-                                @Override
-                                public void onClick(PromptDialog promptDialog) {
-                                    promptDialog.dismiss();
-                                    dismiss();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onFailure(String msg) {
-                            hideSending();
-                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
-                                    Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            hideSending();
-                        }
-                    }));
-        }
-    }
-
     private void writeReview() {
         String name = String.valueOf(edtName.getText());
         String title = String.valueOf(edtTitle.getText());
@@ -325,39 +245,36 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
                     lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
                 }
             }
-            mCompositeSubscription.add(apiStores.postComment(0, userId, partner.getId(), 0,
+            addSubscription(apiStores.postComment(0, userId, partner.getId(), 0,
                     (int) ratingCount, title, content,
-                    lstParts[0], lstParts[1], lstParts[2])
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ApiCallback<Repository>() {
+                    lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {
+                @Override
+                public void onSuccess(Repository model) {
+                    if (Utils.isResponseError(model)) {
+                        DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
+                        return;
+                    }
+                    DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
                         @Override
-                        public void onSuccess(Repository model) {
-                            if (Utils.isResponseError(model)) {
-                                DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
-                                return;
-                            }
-                            DialogUtils.showDialog(getActivity(), DialogType.SUCCESS, DialogUtils.getTitleDialog(1), Utils.getLanguageByResId(R.string.Dialog_Title_Success), new PromptDialog.OnPositiveListener() {
-                                @Override
-                                public void onClick(PromptDialog promptDialog) {
-                                    promptDialog.dismiss();
-                                    dismiss();
-                                }
-                            });
+                        public void onClick(PromptDialog promptDialog) {
+                            promptDialog.dismiss();
+                            dismiss();
                         }
+                    });
+                }
 
-                        @Override
-                        public void onFailure(String msg) {
-                            hideSending();
-                            DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
-                                    Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
-                        }
+                @Override
+                public void onFailure(String msg) {
+                    hideSending();
+                    DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3),
+                            Utils.getLanguageByResId(R.string.Message_Add_Review_Failed));
+                }
 
-                        @Override
-                        public void onFinish() {
-                            hideSending();
-                        }
-                    }));
+                @Override
+                public void onFinish() {
+                    hideSending();
+                }
+            });
         }
     }
 
@@ -389,7 +306,6 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PhotoHelper.SELECT_FROM_GALLERY_CODE && resultCode == RESULT_OK

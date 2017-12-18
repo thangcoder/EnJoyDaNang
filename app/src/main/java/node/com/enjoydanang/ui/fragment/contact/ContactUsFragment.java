@@ -140,7 +140,6 @@ public class ContactUsFragment extends MvpFragment<ContactUsPresenter> implement
 
     @Override
     protected void init(View view) {
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Contact_Us).toUpperCase());
         String lblNameRequire = String.format(Locale.getDefault(), LABEL_REQUIRE_TEMPLATE, Utils.getLanguageByResId(R.string.Name));
         if (Build.VERSION.SDK_INT >= 24) {
             txtNameLabel.setText(Html.fromHtml(lblNameRequire, Html.FROM_HTML_MODE_LEGACY));

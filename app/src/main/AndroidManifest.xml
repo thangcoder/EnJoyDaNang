@@ -74,7 +74,7 @@
 
         <activity android:name=".ui.activity.scan.ScanActivity" />
 
-        <activity android:name=".ui.activity.scan.QRCodeScanActivity" />
+        <activity android:name=".ui.activity.term.TermActivity" />
 
         <service android:name=".service.LocationService" />
 

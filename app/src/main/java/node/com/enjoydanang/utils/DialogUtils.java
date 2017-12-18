@@ -8,6 +8,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -38,12 +39,12 @@ import static node.com.enjoydanang.utils.Utils.getString;
 public class DialogUtils {
 
     /**
-     * @param context    Context
-     * @param type {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
-     * @param title      Title dialog
-     * @param msg        Message want to display
+     * @param context Context
+     * @param type    {DIALOG_TYPE_INFO : 0, DIALOG_TYPE_HELP : 1, DIALOG_TYPE_WRONG : 2, DIALOG_TYPE_SUCCESS : 3, DIALOG_TYPE_WARNING : 4, DIALOG_TYPE_DEFAULT }
+     * @param title   Title dialog
+     * @param msg     Message want to display
      */
-    public static void showDialog(Context context,@DialogType int type, String title, String msg) {
+    public static void showDialog(Context context, @DialogType int type, String title, String msg) {
         new PromptDialog(context)
                 .setDialogType(type)
                 .setAnimationEnable(true)
@@ -170,7 +171,7 @@ public class DialogUtils {
         }
     }
 
-    public static void showDialogAlbum(FragmentManager mFragmentManager, ArrayList<PartnerAlbum> images, int position){
+    public static void showDialogAlbum(FragmentManager mFragmentManager, ArrayList<PartnerAlbum> images, int position) {
         if (CollectionUtils.isNotEmpty(images)) {
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("images", images);
@@ -182,10 +183,26 @@ public class DialogUtils {
         }
     }
 
-    public static void openDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment){
-        Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
-        if (prev == null) {
-            dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
+    public static void openDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment) {
+        if(mFragmentManager != null){
+            Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
+            if (prev == null) {
+                dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
+            }
+        }
+    }
+
+    public static void reOpenDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment) {
+        if(mFragmentManager != null){
+            Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
+            if (prev != null) {
+                FragmentTransaction trans = mFragmentManager.beginTransaction();
+                trans.remove(prev);
+                trans.commit();
+                dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
+            } else {
+                dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
+            }
         }
     }
 }

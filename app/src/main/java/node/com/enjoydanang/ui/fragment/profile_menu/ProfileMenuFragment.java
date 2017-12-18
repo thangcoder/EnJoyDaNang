@@ -2,7 +2,6 @@ package node.com.enjoydanang.ui.fragment.profile_menu;
 
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +15,6 @@ import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
@@ -93,7 +91,6 @@ public class ProfileMenuFragment extends MvpFragment<ProfileMenuPresenter> imple
 
     @Override
     public void onResume() {
-        mMainActivity.setNameToolbar(Utils.getLanguageByResId(R.string.Home_Account_Profile).toUpperCase());
         super.onResume();
     }
 

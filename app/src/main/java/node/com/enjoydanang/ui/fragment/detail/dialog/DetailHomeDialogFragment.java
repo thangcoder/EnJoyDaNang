@@ -46,7 +46,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 public class DetailHomeDialogFragment extends DialogFragment implements TabLayout.OnTabSelectedListener {
     private static final String TAG = DetailHomeDialogFragment.class.getSimpleName();
-
+    private static final String KEY_OPEN_FROM_NEARBY = "open_from_nearby";
 
     private ViewPager mViewPager;
 
@@ -54,8 +54,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private Partner partner = null;
 
-//    @BindView(R.id.toolbar)
-//    Toolbar mToolbar;
     @BindView(R.id.imgLogo)
     ImageView imgLogo;
     @BindView(R.id.name)
@@ -69,10 +67,13 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private MainActivity mMainActivity;
 
-    public static DetailHomeDialogFragment newInstance(Partner partner) {
+    private boolean isOpenFromNearby;
+
+    public static DetailHomeDialogFragment newInstance(Partner partner, boolean isOpenFromNearby) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TAG, partner);
+        bundle.putBoolean(KEY_OPEN_FROM_NEARBY, isOpenFromNearby);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -112,7 +113,15 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         final Dialog dialog = new Dialog(getActivity(), getTheme()) {
             @Override
             public void onBackPressed() {
-                dismiss();
+                if(mMainActivity != null){
+                    Fragment fragment = mMainActivity.getActiveFragment();
+                    if(fragment instanceof PartnerCategoryFragment){
+                        dismiss();
+                    }else{
+                        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+                        dismiss();
+                    }
+                }
             }
         };
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -139,7 +148,8 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         Bundle bundle = getArguments();
         if (bundle != null) {
             partner = (Partner) bundle.getParcelable(TAG);
-            DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner);
+            isOpenFromNearby = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
+            DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner, isOpenFromNearby);
             mViewPager.setAdapter(adapter);
             int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);
             mViewPager.setOffscreenPageLimit(limit);
@@ -177,12 +187,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     private void setEvents() {
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dismiss();
-//            }
-//        });
     }
 
     @Override

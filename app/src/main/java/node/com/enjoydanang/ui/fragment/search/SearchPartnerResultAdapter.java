@@ -70,6 +70,12 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
                     onItemClickListener.onClick(v, position);
                 }
             });
+            holder.txtDistance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(view, position);
+                }
+            });
         }
     }
 

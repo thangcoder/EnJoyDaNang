@@ -195,7 +195,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
-        setDataBanner(listBannerCopy);
+        if(listBannerCopy!= null){
+            setDataBanner(listBannerCopy);
+        }
         int newSize = partners.size();
         if (CollectionUtils.isNotEmpty(lstPartner)) {
             lstPartner.clear();
@@ -318,7 +320,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories) {
         listBannerCopy = banners;
-        setDataBanner(banners);
+//        setDataBanner(banners);
         setDataPartner(partners);
         setDataCategory(categories);
         prgLoading.setVisibility(View.GONE);

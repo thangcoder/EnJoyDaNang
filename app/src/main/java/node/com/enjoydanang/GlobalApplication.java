@@ -159,4 +159,5 @@ public class GlobalApplication extends MultiDexApplication{
     public void setHasClickedUpdate(boolean hasClickedUpdate) {
         this.hasClickedUpdate = hasClickedUpdate;
     }
+
 }

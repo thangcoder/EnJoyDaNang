@@ -17,7 +17,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version : 1.0
  */
 
-public class UserInfo implements Serializable{
+public class UserInfo implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -59,6 +59,8 @@ public class UserInfo implements Serializable{
     @Expose
     private String type;
 
+    private boolean isIgnoreLogin;
+
     public UserInfo() {
     }
 
@@ -95,7 +97,14 @@ public class UserInfo implements Serializable{
     }
 
     public String getFullName() {
-        return StringUtils.isNoneBlank(fullName) ? fullName : StringUtils.EMPTY;
+        try {
+            return StringUtils.isNoneBlank(fullName) ? fullName : StringUtils.EMPTY;
+        } catch (Exception e) {
+            if (fullName != null && !fullName.equals("")) {
+                return fullName;
+            }
+            return "";
+        }
     }
 
     public void setFullName(String fullName) {
@@ -148,6 +157,14 @@ public class UserInfo implements Serializable{
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public boolean isIgnoreLogin() {
+        return isIgnoreLogin;
+    }
+
+    public void setIgnoreLogin(boolean ignoreLogin) {
+        isIgnoreLogin = ignoreLogin;
     }
 
     @Override

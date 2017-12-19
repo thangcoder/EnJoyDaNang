@@ -194,7 +194,15 @@ public class Utils {
     }
 
     public static UserInfo getUserInfo() {
-        return GlobalApplication.getUserInfo() != null ? GlobalApplication.getUserInfo() : new UserInfo();
+        UserInfo userInfo = null;
+        if (GlobalApplication.getUserInfo() != null) {
+            userInfo = GlobalApplication.getUserInfo();
+            userInfo.setIgnoreLogin(false);
+        } else {
+            userInfo = new UserInfo();
+            userInfo.setIgnoreLogin(true);
+        }
+        return userInfo;
     }
 
     public static void hideSoftKeyboard(Activity activity) {
@@ -321,7 +329,7 @@ public class Utils {
         }
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return GlobalApplication.getGlobalApplicationContext();
     }
 }

@@ -1,6 +1,8 @@
 package node.com.enjoydanang.constant;
 
 
+import android.Manifest;
+
 import node.com.enjoydanang.R;
 
 /**
@@ -94,4 +96,8 @@ public class Constant {
     public static final String LOCATION_NOT_FOUND = "Location_Not_Found";
 
     public static final int DEFAULT_RATING_STAR = 4;
+
+    public static final String[] PERMISSION_REQUIRED = new String[]{Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 }

@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +36,6 @@ import butterknife.ButterKnife;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
-import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.framework.FragmentTransitionInfo;
@@ -53,7 +51,6 @@ import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.EndlessParentScrollListener;
 import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
@@ -90,13 +87,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private PartnerAdapter mPartnerAdapter;
 
-    private boolean hasLoadmore;
 
     private int countCategoryClick = 0;
-
-    private LinearLayoutManager mLayoutManager;
-
-    private LoadmorePartner loadmorePartner;
 
     private UserInfo user;
 
@@ -119,7 +111,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         user = Utils.getUserInfo();
         lstPartner = new ArrayList<>();
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
-        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rcvPartner.addItemDecoration(
                 new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
         rcvPartner.setLayoutManager(mLayoutManager);
@@ -132,16 +124,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     protected void setEvent(View view) {
-        loadmorePartner = new LoadmorePartner(mLayoutManager);
         gridView.setOnItemClickListener(this);
-        nestedScrollView.setOnScrollChangeListener(loadmorePartner);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        loadmorePartner.setCategoryId(-1);
         gridView.setVisibility(View.VISIBLE);
     }
 
@@ -155,23 +144,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         ButterKnife.bind(this, view);
     }
 
-    @Override
-    public void onGetPartnerByCategorySuccess(Repository<Partner> data) {
-        hideLoading();
-        if (!Utils.isNotEmptyContent(data) && !hasLoadmore) {
-            mPartnerAdapter.clearAndUpdateData(Collections.EMPTY_LIST);
-            rcvPartner.setVisibility(View.GONE);
-        } else {
-            updateItemAdapter(data.getData());
-            rcvPartner.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onGetPartnerByCategoryFailure(AppError error) {
-        hideLoading();
-        Log.e(TAG, "onGetPartnerByCategoryFailure: " + error.getMessage());
-    }
 
 
     @Override
@@ -179,23 +151,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         return new HomePresenter(this);
     }
 
-    private void updateItemAdapter(@NonNull List<Partner> partners) {
-        if (countCategoryClick == 1 && !hasLoadmore) {
-            clearFirstTimeData();
-            lstPartner.addAll(partners);
-            mPartnerAdapter.notifyItemRangeChanged(0, partners.size());
-        } else {
-            int newSize = partners.size();
-            int oldSize = lstPartner.size();
-            lstPartner.addAll(partners);
-            mPartnerAdapter.notifyItemRangeChanged(0, newSize + oldSize);
-        }
-        mPartnerAdapter.notifyDataSetChanged();
-
-    }
-
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
-        if(listBannerCopy!= null){
+
+        if (listBannerCopy != null) {
             setDataBanner(listBannerCopy);
         }
         int newSize = partners.size();
@@ -232,31 +190,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         }
     }
 
-
-    private class LoadmorePartner extends EndlessParentScrollListener {
-        private int categoryId = -1;
-
-        public LoadmorePartner(RecyclerView.LayoutManager layoutManager) {
-            super(layoutManager);
-        }
-
-        @Override
-        public void onLoadMore(int page, int totalItemsCount) {
-            hasLoadmore = true;
-            onRetryGetPartner(page, categoryId);
-        }
-
-        public void setCategoryId(int categoryId) {
-            this.categoryId = categoryId;
-        }
-    }
-
-
-    private void onRetryGetPartner(int page, int categoryId) {
-        if (categoryId != -1) {
-            mvpPresenter.getPartnerByCategory(categoryId, page, user.getUserId());
-        }
-    }
 
     @Override
     public void onClick(View view, final int position) {
@@ -320,7 +253,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories) {
         listBannerCopy = banners;
-//        setDataBanner(banners);
         setDataPartner(partners);
         setDataCategory(categories);
         prgLoading.setVisibility(View.GONE);
@@ -329,7 +261,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onFetchFailure(AppError error) {
-        Log.e(TAG, "onFetchFailure " + error.getMessage());
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 
@@ -345,8 +276,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private void setDataBanner(List<Banner> images) {
         HashMap<String, String> sources = new HashMap<>();
         int length = images.size();
+
         for (int i = 0; i < length; i++) {
-//            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
             sources.put(images.get(i).getId() + "", images.get(i).getPicture());
         }
         for (String id : sources.keySet()) {
@@ -383,9 +314,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             String msg = (String) obj;
             if (msg.equalsIgnoreCase(Constant.LOCATION_NOT_FOUND)) {
                 mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
-            } else {
-                mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
-                nestedScrollView.scrollTo(0, 0);
             }
 
         } else if (obj instanceof Location) {
@@ -455,4 +383,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         }
     }
 
+    public void scrollToTop() {
+        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+        nestedScrollView.scrollTo(0, 0);
+    }
 }

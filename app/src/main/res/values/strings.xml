@@ -234,6 +234,10 @@
     <string name="sd_card">SD Card</string>
 
     <string name="home">Home</string>
+
+    <string name="term_license">로그인시 이용약관 및 개인정보취급방침 에 동의한것으로 간주합니다</string>
+
+    <string name="term_link">이용약관 및 개인정보취급방침</string>
 </resources>
 
 

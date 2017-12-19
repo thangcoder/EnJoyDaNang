@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.favorite;
 
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -113,7 +114,8 @@ public class FavoriteFragment extends MvpFragment<FavoritePresenter> implements 
     protected void init(View view) {
         userInfo = Utils.getUserInfo();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rcvFavorite.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), VERTICAL_ITEM_SPACE));
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(), layoutManager.getOrientation());
+        rcvFavorite.addItemDecoration(decoration);
         rcvFavorite.setLayoutManager(layoutManager);
         rcvFavorite.setHasFixedSize(false);
     }

@@ -308,6 +308,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
                 e.printStackTrace();
             }
         } else {
+            hideProgress(true);
             enableSearchView(searchView, true);
             txtEmpty.setVisibility(View.VISIBLE);
             rcvPartnerNearPlace.setVisibility(View.GONE);
@@ -362,8 +363,8 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             loadMapView(mLocationService.getLastLocation());
             fetchNearPlace();
         } else {
-            enableSearchView(searchView, true);
             hideProgress(true);
+            enableSearchView(searchView, true);
             txtEmpty.setVisibility(View.VISIBLE);
             rcvPartnerNearPlace.setVisibility(View.GONE);
         }

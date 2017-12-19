@@ -361,7 +361,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
                         setShowMenuItem(Constant.SHOW_QR_CODE);
-//                        EventBus.getDefault().post("hasBackFragment");
                         HomeFragment homeFragment = (HomeFragment) fragment;
                         homeFragment.scrollToTop();
                         currentTab = HomeTab.Home;
@@ -688,13 +687,14 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (position <= LOGOUT) {
             lvDrawerNav.setItemChecked(position, true);
         }
-        Fragment fragment = getActiveFragment();
-        String tag = fragment.getTag();
-        if (tag.equals(HomeFragment.class.getName())) {
-            addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
-        } else {
-            replaceFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
-        }
+//        Fragment fragment = getActiveFragment();
+//        String tag = fragment.getTag();
+        addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+//        if (tag.equals(HomeFragment.class.getName())) {
+//            addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+//        } else {
+//            addFragment(R.id.container_fragment, fragmentTag, true, null, transitionInfo);
+//        }
     }
 
     public void resurfaceFragment(Fragment fragment, String tag) {

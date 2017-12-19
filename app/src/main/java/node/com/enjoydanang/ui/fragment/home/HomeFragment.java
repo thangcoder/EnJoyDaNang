@@ -79,16 +79,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @BindView(R.id.carouselView)
     SliderLayout bannerSlider;
-    private CategoryAdapter mCategoryAdapter;
 
     private List<Partner> lstPartner;
-    private List<Banner> listBannerCopy;
-    private List<Category> lstCategories = new ArrayList<>();
+
+    private List<Category> lstCategories;
 
     private PartnerAdapter mPartnerAdapter;
-
-
-    private int countCategoryClick = 0;
 
     private UserInfo user;
 
@@ -109,17 +105,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     protected void init(View view) {
         user = Utils.getUserInfo();
-        lstPartner = new ArrayList<>();
-        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rcvPartner.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
-        rcvPartner.setLayoutManager(mLayoutManager);
-        rcvPartner.setAdapter(mPartnerAdapter);
-        rcvPartner.setHasFixedSize(false);
-        rcvPartner.setNestedScrollingEnabled(false);
-        mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
-        gridView.setAdapter(mCategoryAdapter);
     }
 
     @Override
@@ -131,7 +116,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
-        gridView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -152,21 +136,15 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
-        if (listBannerCopy != null) {
-            setDataBanner(listBannerCopy);
-        }
-        int newSize = partners.size();
-        if (CollectionUtils.isNotEmpty(lstPartner)) {
-            lstPartner.clear();
-        }
-        lstPartner.addAll(partners);
-        mPartnerAdapter.notifyItemRangeChanged(0, newSize);
-        mPartnerAdapter.notifyDataSetChanged();
-        lrlContentHome.setVisibility(View.VISIBLE);
-        gridView.setVisibility(View.VISIBLE);
-        bannerSlider.setVisibility(View.VISIBLE);
-        prgLoading.setVisibility(View.GONE);
-
+        lstPartner = partners;
+        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rcvPartner.addItemDecoration(
+                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
+        rcvPartner.setLayoutManager(mLayoutManager);
+        rcvPartner.setHasFixedSize(false);
+        rcvPartner.setNestedScrollingEnabled(false);
+        rcvPartner.setAdapter(mPartnerAdapter);
     }
 
     @Override
@@ -231,7 +209,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             rcvPartner.setVisibility(View.GONE);
             return;
         }
-        updateItemNoLoadmore(partners);
+        if(CollectionUtils.isNotEmpty(lstPartner)){
+            lstPartner.clear();
+        }
+        lstPartner.addAll(partners);
+        mPartnerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -251,7 +233,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories) {
-        listBannerCopy = banners;
+        setDataBanner(banners);
         setDataPartner(partners);
         setDataCategory(categories);
         prgLoading.setVisibility(View.GONE);
@@ -261,14 +243,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     public void onFetchFailure(AppError error) {
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
-    }
-
-    private void clearFirstTimeData() {
-        if (CollectionUtils.isNotEmpty(lstPartner)) {
-            int size = this.lstPartner.size();
-            lstPartner.clear();
-            mPartnerAdapter.notifyItemRangeChanged(0, size);
-        }
     }
 
 
@@ -295,8 +269,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void setDataCategory(List<Category> categories) {
-        lstCategories.addAll(categories);
-        mCategoryAdapter.notifyDataSetChanged();
+        lstCategories = categories;
+        CategoryAdapter mCategoryAdapter = new CategoryAdapter(getContext(), categories);
+        gridView.setAdapter(mCategoryAdapter);
     }
 
     private void setDataPartner(List<Partner> partners) {
@@ -313,6 +288,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             String msg = (String) obj;
             if (msg.equalsIgnoreCase(Constant.LOCATION_NOT_FOUND)) {
                 mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
+            }else {
+                mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+                nestedScrollView.scrollTo(0, 0);
             }
 
         } else if (obj instanceof Location) {
@@ -351,16 +329,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onResume() {
         super.onResume();
         getCurrentPosition();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     private void getCurrentPosition() {

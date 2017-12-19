@@ -1,9 +1,14 @@
 package node.com.enjoydanang.ui.activity.login;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +24,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
+import com.klinker.android.link_builder.Link;
+import com.klinker.android.link_builder.LinkBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,6 +65,7 @@ import static node.com.enjoydanang.ui.activity.login.LoginViaGoogle.RC_SIGN_IN;
 public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginView, LoginCallBack, View.OnTouchListener,
         ForceUpdateChecker.OnUpdateNeededListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -107,6 +115,10 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
     @Override
     public void init() {
+        if (!hasPermission()) {
+            requestPermission();
+        }
+        setTextTerm();
         LoginFactory loginFactory = new LoginFactory();
         loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this, this);
         loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this, this);
@@ -116,6 +128,24 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaFacebook.init();
         loginViaGoogle.init();
         setPresenter();
+    }
+
+    private void setTextTerm(){
+        String strTerm = Utils.getString(R.string.term_license);
+        txtTermSystem.setText(strTerm);
+        Link link = new Link(Utils.getString(R.string.term_link));
+        link.setTextColor(Utils.getColorRes(R.color.colorPrimary));
+        link.setOnClickListener(new Link.OnClickListener() {
+            @Override
+            public void onClick(String clickedText) {
+                Intent intent = new Intent(LoginActivity.this, TermActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+            }
+        });
+        LinkBuilder.on(txtTermSystem)
+                .addLink(link)
+                .build();
     }
 
     @Override
@@ -135,12 +165,12 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void initViewLabel() {
         LanguageHelper.getValueByViewId(edtUserName, edtPassword, txtOr, txtCreateAccount,
-                txtForgotPwd, btnLoginNormal, txtContinue, txtTermSystem);
+                txtForgotPwd, btnLoginNormal, txtContinue);
     }
 
 
     @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
-            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue, R.id.txtTermSystem})
+            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
     public void onLoginClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -161,9 +191,6 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.txtForgotPwd:
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constant.URL_FORGOT_PWD));
-                break;
-            case R.id.txtTermSystem:
-                intent = new Intent(this, TermActivity.class);
                 break;
             case R.id.txtContinue:
                 intent = new Intent(this, MainActivity.class);
@@ -328,6 +355,66 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                         Utils.redirectStore(LoginActivity.this, updateUrl);
                     }
                 });
+    }
+
+
+    private boolean hasPermission() {
+        int resultCamera = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
+        int resultWrite = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int resultRead = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        int resultLocation = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        int resultCroarse = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+        return resultCamera == PackageManager.PERMISSION_GRANTED &&
+                resultWrite == PackageManager.PERMISSION_GRANTED && resultRead == PackageManager.PERMISSION_GRANTED
+                && resultLocation == PackageManager.PERMISSION_GRANTED &&
+                resultCroarse == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, Constant.PERMISSION_REQUIRED,
+                PERMISSION_REQUEST_CODE);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraAccepted && writeAccepted && readAccepted) {
+                        //do nothing
+                    } else {
+                        DialogUtils.showDialog(LoginActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2),
+                                Utils.getLanguageByResId(R.string.Permission_Request_CAMERA_WRITE_READ));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                                DialogUtils.showDialog(LoginActivity.this,
+                                        DialogType.INFO,
+                                        Utils.getLanguageByResId(R.string.Permisstion_Title),
+                                        Utils.getLanguageByResId(R.string.Permission_Request_Content),
+                                        new PromptDialog.OnPositiveListener() {
+                                            @Override
+                                            public void onClick(PromptDialog promptDialog) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermission();
+                                                }
+                                            }
+                                        }
+                                );
+                                return;
+                            }
+                        }
+
+                    }
+                }
+
+                break;
+        }
     }
 
 }

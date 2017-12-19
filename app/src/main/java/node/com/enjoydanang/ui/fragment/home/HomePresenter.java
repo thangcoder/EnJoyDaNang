@@ -49,27 +49,6 @@ public class HomePresenter extends BasePresenter<iHomeView> {
         });
     }
 
-    void getPartnerByCategory(int categoryId, int page, long userId) {
-        addSubscription(apiStores.getPartnerByCategoryId(categoryId, page, userId), new ApiCallback<Repository<Partner>>() {
-
-            @Override
-            public void onSuccess(Repository<Partner> data) {
-                mvpView.onGetPartnerByCategorySuccess(data);
-
-            }
-
-            @Override
-            public void onFailure(String msg) {
-                mvpView.onGetPartnerByCategoryFailure(new AppError(new Throwable(msg)));
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
-    }
-
     void addFavorite(long userId, int partnerId) {
         addSubscription(apiStores.addFavorite(userId, partnerId), new ApiCallback<Repository>() {
 

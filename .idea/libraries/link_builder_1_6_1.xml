@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="link_builder-1.6.1">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/8e2c9a7b30dcfcfcb0368b6db7f519738cfc627e/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/8e2c9a7b30dcfcfcb0368b6db7f519738cfc627e/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.klinkerapps/link_builder/1.6.1/6f1e63f9d2637a8c7d1682395c2f6ac37f0ce1bf/link_builder-1.6.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

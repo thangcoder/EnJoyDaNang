@@ -119,6 +119,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true;
     }
+
+    compile 'com.klinkerapps:link_builder:1.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

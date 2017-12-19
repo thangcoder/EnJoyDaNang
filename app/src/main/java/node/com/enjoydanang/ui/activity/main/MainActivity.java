@@ -361,7 +361,9 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
                         setShowMenuItem(Constant.SHOW_QR_CODE);
-                        EventBus.getDefault().post("hasBackFragment");
+//                        EventBus.getDefault().post("hasBackFragment");
+                        HomeFragment homeFragment = (HomeFragment) fragment;
+                        homeFragment.scrollToTop();
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(MapFragment.class.getName())) {
@@ -479,52 +481,55 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @OnClick({R.id.img_home, R.id.img_search, R.id.img_scan, R.id.img_menu, R.id.img_back})
     public void onClick(View view) {
-        if (Utils.hasLogin()) {
-            if (StringUtils.isNotEmpty(Utils.getUserInfo().getFullName())) {
-                switch (view.getId()) {
-                    case R.id.img_home:
-                        if (currentTab != HomeTab.Home) {
-                            Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
-                            if (fragment == null) {
-                                addFrMenu(HomeFragment.class.getName(), true);
-                            } else {
-                                backToFragment(fragment);
-                            }
-
-                        }
-                        break;
-                    case R.id.img_search:
-                        if (currentTab != HomeTab.Search) {
-                            Fragment fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-                            if (fragment == null) {
-                                addFrMenu(MapFragment.class.getName(), true);
-                            } else {
-                                currentTab = HomeTab.Search;
-                                resurfaceFragment(fragment, MapFragment.class.getName());
-                            }
-                        }
-                        break;
-                    case R.id.img_menu:
-                        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                            mDrawerLayout.closeDrawer(GravityCompat.START);
+        boolean canClick = StringUtils.isNotBlank(Utils.getUserInfo().getFullName()) || Utils.getUserInfo().isIgnoreLogin();
+        if (canClick) {
+            switch (view.getId()) {
+                case R.id.img_home:
+                    if (currentTab != HomeTab.Home) {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getName());
+                        if (fragment == null) {
+                            addFrMenu(HomeFragment.class.getName(), true);
                         } else {
-                            mDrawerLayout.openDrawer(GravityCompat.START);
+                            backToFragment(fragment);
                         }
 
-                        break;
-                    case R.id.img_scan:
-                        if (Utils.hasLogin()) {
-                            startActivity(new Intent(MainActivity.this, ScanActivity.class));
-                            overridePendingTransitionEnter();
+                    }
+                    break;
+                case R.id.img_search:
+                    if (currentTab != HomeTab.Search) {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
+                        if (fragment == null) {
+                            addFrMenu(MapFragment.class.getName(), true);
                         } else {
-                            DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                            currentTab = HomeTab.Search;
+                            resurfaceFragment(fragment, MapFragment.class.getName());
                         }
-                        break;
-                    case R.id.img_back:
-                        this.onBackPressed();
-                        break;
-                }
+                    }
+                    break;
+                case R.id.img_menu:
+                    if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                    } else {
+                        mDrawerLayout.openDrawer(GravityCompat.START);
+                    }
+
+                    break;
+                case R.id.img_scan:
+                    if (Utils.hasLogin()) {
+                        startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                        overridePendingTransitionEnter();
+                    } else {
+                        DialogUtils.showDialog(MainActivity.this, DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                    }
+                    break;
+                case R.id.img_back:
+                    this.onBackPressed();
+                    break;
             }
+        }else{
+            DialogUtils.showDialog(MainActivity.this, DialogType.WARNING,
+                    DialogUtils.getTitleDialog(2),
+                    Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
         }
     }
 
@@ -737,9 +742,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     }
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+        ActivityCompat.requestPermissions(this, Constant.PERMISSION_REQUIRED,
                 PERMISSION_REQUEST_CODE);
 
     }

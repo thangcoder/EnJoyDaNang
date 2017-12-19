@@ -82,12 +82,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @BindView(R.id.carouselView)
     SliderLayout bannerSlider;
-
     private CategoryAdapter mCategoryAdapter;
 
     private List<Partner> lstPartner;
-
-    private List<Category> lstCategories;
+    private List<Banner> listBannerCopy;
+    private List<Category> lstCategories = new ArrayList<>();
 
     private PartnerAdapter mPartnerAdapter;
 
@@ -127,8 +126,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         rcvPartner.setAdapter(mPartnerAdapter);
         rcvPartner.setHasFixedSize(false);
         rcvPartner.setNestedScrollingEnabled(false);
-
-        lstCategories = new ArrayList<>();
         mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
         gridView.setAdapter(mCategoryAdapter);
     }
@@ -198,6 +195,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
+        setDataBanner(listBannerCopy);
         int newSize = partners.size();
         if (CollectionUtils.isNotEmpty(lstPartner)) {
             lstPartner.clear();
@@ -205,6 +203,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         lstPartner.addAll(partners);
         mPartnerAdapter.notifyItemRangeChanged(0, newSize);
         mPartnerAdapter.notifyDataSetChanged();
+        lrlContentHome.setVisibility(View.VISIBLE);
+        gridView.setVisibility(View.VISIBLE);
+        bannerSlider.setVisibility(View.VISIBLE);
+        prgLoading.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -314,6 +317,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onFetchAllDataSuccess(List<Partner> partners, List<Banner> banners, List<Category> categories) {
+        listBannerCopy = banners;
         setDataBanner(banners);
         setDataPartner(partners);
         setDataCategory(categories);
@@ -418,6 +422,16 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     public void onResume() {
         super.onResume();
         getCurrentPosition();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     private void getCurrentPosition() {

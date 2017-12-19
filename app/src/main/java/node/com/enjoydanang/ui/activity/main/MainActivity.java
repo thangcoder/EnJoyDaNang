@@ -361,7 +361,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     String tag = fragment.getTag();
                     if (tag.equals(HomeFragment.class.getName())) {
                         setShowMenuItem(Constant.SHOW_QR_CODE);
-                        EventBus.getDefault().post("hasBackFragment");
+                 //       EventBus.getDefault().post("hasBackFragment");
                         currentTab = HomeTab.Home;
                         lvDrawerNav.clearChoices();
                     } else if (tag.equals(MapFragment.class.getName())) {

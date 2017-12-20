@@ -354,7 +354,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     public void scrollToTop() {
-        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
-        nestedScrollView.scrollTo(0, 0);
+    	if(nestedScrollView != null && mMainActivity != null){
+	        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+	        nestedScrollView.scrollTo(0, 0);
+    	}
     }
 }

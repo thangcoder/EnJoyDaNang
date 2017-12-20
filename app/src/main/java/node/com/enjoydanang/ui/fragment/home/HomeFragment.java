@@ -27,7 +27,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +50,6 @@ import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
  * Created by chien on 10/8/17.
@@ -139,10 +137,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         lstPartner = partners;
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rcvPartner.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
+        rcvPartner.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
         rcvPartner.setLayoutManager(mLayoutManager);
-        rcvPartner.setHasFixedSize(false);
         rcvPartner.setNestedScrollingEnabled(false);
         rcvPartner.setAdapter(mPartnerAdapter);
     }
@@ -227,7 +223,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void addFavoriteFailure(AppError error) {
-        Log.e(TAG, "onError: " + error.getMessage());
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
     }
 

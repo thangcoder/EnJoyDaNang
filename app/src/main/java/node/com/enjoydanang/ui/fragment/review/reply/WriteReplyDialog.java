@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -65,9 +66,7 @@ import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
-import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
-import node.com.enjoydanang.utils.widget.DividerItemDecoration;
 import okhttp3.MultipartBody;
 import rx.Observable;
 import rx.Subscriber;
@@ -420,7 +419,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), orientation, true);
         recyclerView.setLayoutManager(layoutManager);
         layoutManager.setReverseLayout(rightToLeft);
-        recyclerView.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.white), 20));
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(), orientation);
+        recyclerView.addItemDecoration(decoration);
         recyclerView.setHasFixedSize(false);
     }
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -29,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import node.com.enjoydanang.GlobalApplication;
+import node.com.enjoydanang.R;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.UserInfo;
@@ -331,5 +333,11 @@ public class Utils {
 
     public static Context getContext() {
         return GlobalApplication.getGlobalApplicationContext();
+    }
+
+    public static DividerItemDecoration getDividerDecoration(int orientation){
+        DividerItemDecoration decoration = new DividerItemDecoration(getContext(), orientation);
+        decoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_item));
+        return  decoration;
     }
 }

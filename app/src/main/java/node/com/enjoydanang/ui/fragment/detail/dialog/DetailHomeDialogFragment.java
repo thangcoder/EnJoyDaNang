@@ -32,6 +32,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
+import node.com.enjoydanang.ui.fragment.home.HomeFragment;
 import node.com.enjoydanang.ui.fragment.home.PartnerCategoryFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
@@ -92,17 +93,18 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     @OnClick(R.id.img_back)
     public void onClick(View view) {
-        if(mMainActivity != null){
+        if (mMainActivity != null) {
             Fragment fragment = mMainActivity.getActiveFragment();
-            if(fragment instanceof PartnerCategoryFragment){
+            if (fragment instanceof PartnerCategoryFragment) {
                 dismiss();
-            }else{
+            } else {
                 mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
                 dismiss();
             }
         }
 
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -110,14 +112,14 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         // creating the fullscreen dialog
-        final Dialog dialog = new Dialog(getActivity(), getTheme()) {
+        final Dialog dialog = new Dialog(getActivity(), R.style.AppTheme) {
             @Override
             public void onBackPressed() {
-                if(mMainActivity != null){
+                if (mMainActivity != null) {
                     Fragment fragment = mMainActivity.getActiveFragment();
-                    if(fragment instanceof PartnerCategoryFragment){
+                    if (fragment instanceof PartnerCategoryFragment) {
                         dismiss();
-                    }else{
+                    } else {
                         mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
                         dismiss();
                     }
@@ -126,6 +128,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         };
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(root);
+        dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return dialog;
@@ -210,7 +213,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         }
     }
 
-    @OnClick({R.id.img_scan})
+    @OnClick({R.id.img_scan, R.id.img_back})
     public void onMenuOptionsClick(View view) {
         switch (view.getId()) {
             case R.id.img_scan:
@@ -219,6 +222,22 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
                     getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                 } else {
                     DialogUtils.showDialog(getActivity(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
+                break;
+            case R.id.img_back:
+                if (mMainActivity != null) {
+                    Fragment fragment = mMainActivity.getActiveFragment();
+                    if (fragment instanceof PartnerCategoryFragment) {
+                        dismiss();
+                    } else if (fragment instanceof HomeFragment) {
+                        dismiss();
+                        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+                        HomeFragment homeFragment = (HomeFragment) fragment;
+                        homeFragment.scrollToTop();
+                    } else {
+                        dismiss();
+                        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+                    }
                 }
                 break;
         }

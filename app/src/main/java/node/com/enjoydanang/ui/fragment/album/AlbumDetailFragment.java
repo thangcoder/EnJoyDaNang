@@ -19,7 +19,6 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
  * Author: Tavv
@@ -58,9 +57,10 @@ public class AlbumDetailFragment extends MvpFragment<AlbumDetailPresenter> imple
     protected void init(View view) {
         images = new ArrayList<>();
 //        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mMainActivity.getApplicationContext(), 2);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 //        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        recyclerView.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
+
+        recyclerView.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

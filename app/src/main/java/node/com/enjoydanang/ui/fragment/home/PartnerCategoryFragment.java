@@ -35,7 +35,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
  * Author: Tavv
@@ -161,7 +160,6 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
             public void onLoadMore(int page) {
                 hasLoadmore = true;
                 partnerCategoryAdapter.startLoadMore();
-//                mvpPresenter.getPartnerByCategory(categoryId, page, userInfo.getUserId());
                 if (mLocation == null) {
                     mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), page, StringUtils.EMPTY, StringUtils.EMPTY);
                 } else {
@@ -238,8 +236,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         lstPartner = new ArrayList<>();
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         partnerCategoryAdapter = new PartnerCategoryAdapter(getContext(), this);
-        rcvPartnerCategory.addItemDecoration(
-                new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.material_grey_300), VERTICAL_ITEM_SPACE));
+        rcvPartnerCategory.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
         rcvPartnerCategory.setLayoutManager(mLayoutManager);
         rcvPartnerCategory.setHasFixedSize(false);
         rcvPartnerCategory.setAdapter(partnerCategoryAdapter);

@@ -22,7 +22,6 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnFetchSearchResult;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
-import node.com.enjoydanang.utils.helper.SeparatorDecoration;
 
 /**
  * Author: Tavv
@@ -81,7 +80,7 @@ public class PartnerSearchResultFragment extends MvpFragment<SearchPresenter> im
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcvPartnerSearchResult.setLayoutManager(layoutManager);
         rcvPartnerSearchResult.setNestedScrollingEnabled(false);
-        rcvPartnerSearchResult.addItemDecoration(new SeparatorDecoration(getContext(), Utils.getColorRes(R.color.grey_700), 5));
+        rcvPartnerSearchResult.addItemDecoration(Utils.getDividerDecoration(layoutManager.getOrientation()));
         lstPartner = new ArrayList<>();
         initView();
     }

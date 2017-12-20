@@ -94,10 +94,11 @@
 
             </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/rllPartnerPlaces"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:orientation="vertical"
                 android:layout_weight=".5">
 
                 <android.support.v7.widget.RecyclerView
@@ -118,7 +119,7 @@
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

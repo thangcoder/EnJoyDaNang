@@ -1,121 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lrlContactUs"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:scrollbars="vertical"
     android:background="@color/white"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/lbBasicInfor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
-        android:text="@string/Contact.Basic.Information"
-        android:textColor="@color/color_button_login"
-        android:textSize="@dimen/_16ssp"
-        android:textStyle="bold" />
+    android:clickable="true"
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/lrlContactUs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:layout_marginRight="@dimen/_10sdp"
-        android:background="@drawable/border_info_contact"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lbBasicInfor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/Contact.Basic.Information"
+            android:textColor="@color/color_button_login"
+            android:textSize="@dimen/_16ssp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".2"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:background="@drawable/border_info_contact"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/txtAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:paddingLeft="20dp"
-                android:text="@string/Home.Address"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:paddingLeft="20dp"
-                android:text="@string/Email"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/txtAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingLeft="20dp"
+                    android:text="@string/Home.Address"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txtPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:paddingLeft="20dp"
-                android:text="@string/Phone"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingLeft="20dp"
+                    android:text="@string/Email"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingLeft="20dp"
+                    android:text="@string/Phone"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtContactAddress"
+                    style="@style/AutoScrollTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/color_title_category"
+                    android:textSize="@dimen/_10ssp" />
+
+                <TextView
+                    android:id="@+id/txtContactEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/color_title_category"
+                    android:textSize="@dimen/_10ssp" />
+
+                <TextView
+                    android:id="@+id/txtContactPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textColor="@color/color_title_category"
+                    android:textSize="@dimen/_10ssp" />
+            </LinearLayout>
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".8"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtContactAddress"
-                style="@style/AutoScrollTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:textColor="@color/color_title_category"
-                android:textSize="@dimen/_10ssp" />
-
-            <TextView
-                android:id="@+id/txtContactEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:textColor="@color/color_title_category"
-                android:textSize="@dimen/_10ssp" />
-
-            <TextView
-                android:id="@+id/txtContactPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:textColor="@color/color_title_category"
-                android:textSize="@dimen/_10ssp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/lbContact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
-        android:text="@string/Contact.For.Me"
-        android:textColor="@color/color_button_login"
-        android:textSize="@dimen/_12ssp"
-        android:textStyle="bold" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/lbContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="@string/Contact.For.Me"
+            android:textColor="@color/color_button_login"
+            android:textSize="@dimen/_12ssp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -281,7 +284,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 
-
-</LinearLayout>
+</ScrollView>

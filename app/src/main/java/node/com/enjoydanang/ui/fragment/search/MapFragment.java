@@ -53,7 +53,6 @@ import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.BitmapUtil;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.LocationUtils;
-import node.com.enjoydanang.utils.ScreenUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -115,7 +114,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     LinearLayout lrlInfoPartner;
 
     @BindView(R.id.rllPartnerPlaces)
-    RelativeLayout rllPartnerPlaces;
+    LinearLayout rllPartnerPlaces;
 
     @BindView(R.id.rcvSearchResult)
     RecyclerView rcvSearchResult;
@@ -151,9 +150,9 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
 
     private boolean isResultSearchQueryVisible;
 
-    private MarkerOptions markerOptions;
-
     private List<Marker> lstMarkers;
+
+    private boolean isDistanceTextClick;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -228,6 +227,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
                 partner = lstPartnerNearPlace.get(position);
             }
             if (view.getId() == R.id.txtDistance) {
+                isDistanceTextClick = true;
                 if (CollectionUtils.isNotEmpty(lstMarkers)) {
                     for (Marker marker : lstMarkers) {
                         InfoWindow infoWindow = (InfoWindow) marker.getTag();
@@ -490,7 +490,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     private void loadMapView(Location currentLocation) {
         if (currentLocation != null) {
             LatLng point = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-            markerOptions = new MarkerOptions();
+            MarkerOptions markerOptions = new MarkerOptions();
             Address address = mLocationHelper.getAddress(currentLocation.getLatitude(), currentLocation.getLongitude());
             String titleMarker = mLocationHelper.getFullInfoAddress(address);
             if (currentMarker != null) {
@@ -606,6 +606,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             String strCategory = infoWindow.getCategory().replaceAll("\\s+", " ");
             txtDistance.setText(infoWindow.getDistance() + " - " + strCategory);
             txtPartnerName.setText(infoWindow.getPartnerName());
+            setLayoutWeight(rllPartnerPlaces, 0.4f);
             return false;
         } else {
             txtDistance.setText(Utils.getLanguageByResId(R.string.Map_My_Current_Position));
@@ -614,7 +615,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         }
     }
 
-    private void setLayoutWeight(RelativeLayout relativeLayout, float weight) {
+    private void setLayoutWeight(LinearLayout relativeLayout, float weight) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, 0, weight);
         relativeLayout.setLayoutParams(layoutParams);
     }

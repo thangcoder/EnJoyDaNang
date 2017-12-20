@@ -119,7 +119,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private List<Partner> lstPartnerAround;
 
-    private boolean isOpenFromNearby;
+    private boolean isLocationNull;
 
     private boolean isHideListPartnerAround;
 
@@ -174,17 +174,21 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 Bundle bundle = getArguments();
                 if (bundle != null) {
                     partner = (Partner) bundle.getParcelable(TAG);
-                    isOpenFromNearby = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
+                    isLocationNull = mLastLocation == null;
+//                    isLocationNull = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
                     if (partner != null) {
                         initWebView();
-                        if (!isOpenFromNearby) {
+                        if (isLocationNull) {
                             mvpPresenter.getAllDataHome(partner.getId());
                         } else {
-                            if (StringUtils.isBlank(partner.getGeoLat()) || StringUtils.isBlank(partner.getGeoLng())) {
-                                mvpPresenter.getAllDataNearBy(partner.getId(), "", "");
-                            } else {
-                                mvpPresenter.getAllDataNearBy(partner.getId(), partner.getGeoLat(), partner.getGeoLng());
-                            }
+                            String geoLat = String.valueOf(mLastLocation.getLatitude());
+                            String geoLng = String.valueOf(mLastLocation.getLongitude());
+                            mvpPresenter.getAllDataNearBy(partner.getId(), geoLat, geoLng);
+//                            if (StringUtils.isBlank(partner.getGeoLat()) || StringUtils.isBlank(partner.getGeoLng())) {
+//                                mvpPresenter.getAllDataNearBy(partner.getId(), "", "");
+//                            } else {
+//                                mvpPresenter.getAllDataNearBy(partner.getId(), partner.getGeoLat(), partner.getGeoLng());
+//                            }
                         }
                     }
                 }
@@ -231,26 +235,10 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     public void onFetchListPartnerAround(List<Partner> lstPartnerAround) {
         if (!isHideListPartnerAround) {
             initListPartnerAround(lstPartnerAround);
-            if (isOpenFromNearby) {
-                if (StringUtils.isNotBlank(detailPartner.getDistance()) &&
-                        !StringUtils.equals(detailPartner.getDistance().trim(), "km")
-                        && detailPartner.isDisplayDistance()) {
-                    String distance = detailPartner.getDistance();
-                    txtDistance.setText(distance);
-                } else {
-                    txtDistance.setVisibility(View.GONE);
-                }
-                txtDistance.setText(detailPartner.getDistance());
-                String strDiscount = String.format(Locale.getDefault(), Constant.DISCOUNT_TEMPLATE, detailPartner.getDiscount(), "%");
-                txtDiscount.setText(strDiscount);
-                txtDistance.setVisibility(View.VISIBLE);
-                txtDiscount.setVisibility(View.VISIBLE);
-            }
         } else {
             rcvPartnerAround.setVisibility(View.GONE);
             txtNearPlaces.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -445,6 +433,22 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             if (!checkGeoPartnerEmpty(detailPartner)) {
                 UserInfo user = Utils.getUserInfo();
                 mvpPresenter.getListPartnerAround(user.getUserId(), detailPartner.getGeoLat(), detailPartner.getGeoLng());
+            }
+            if (detailPartner != null) {
+                if (StringUtils.isNotBlank(detailPartner.getDistance()) &&
+                        !StringUtils.equals(detailPartner.getDistance().trim(), "km")
+                        && detailPartner.isDisplayDistance()) {
+                    String distance = detailPartner.getDistance();
+                    txtDistance.setText(distance);
+                    txtDistance.setVisibility(View.VISIBLE);
+                } else {
+                    txtDistance.setVisibility(View.GONE);
+                }
+                if (detailPartner.getDiscount() != 0) {
+                    String strDiscount = String.format(Locale.getDefault(), Constant.DISCOUNT_TEMPLATE, detailPartner.getDiscount(), "%");
+                    txtDiscount.setText(strDiscount);
+                    txtDiscount.setVisibility(View.VISIBLE);
+                }
             }
             txtTitle.setText(detailPartner.getName());
             ImageUtils.loadImageWithFreso(imgPartner, detailPartner.getPicture());

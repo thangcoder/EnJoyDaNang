@@ -27,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,6 +104,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     @Override
     protected void init(View view) {
         user = Utils.getUserInfo();
+        lstPartner = new ArrayList<>();
+        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        rcvPartner.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
+        rcvPartner.setLayoutManager(mLayoutManager);
+        rcvPartner.setNestedScrollingEnabled(false);
+        rcvPartner.setAdapter(mPartnerAdapter);
     }
 
     @Override
@@ -134,13 +142,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
-        lstPartner = partners;
-        mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rcvPartner.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
-        rcvPartner.setLayoutManager(mLayoutManager);
-        rcvPartner.setNestedScrollingEnabled(false);
-        rcvPartner.setAdapter(mPartnerAdapter);
+        if(CollectionUtils.isNotEmpty(lstPartner)){
+            lstPartner.clear();
+        }
+        lstPartner.addAll(partners);
+        mPartnerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -264,9 +270,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     private void setDataCategory(List<Category> categories) {
-        lstCategories = categories;
-        CategoryAdapter mCategoryAdapter = new CategoryAdapter(getContext(), categories);
-        gridView.setAdapter(mCategoryAdapter);
+        if(CollectionUtils.isNotEmpty(categories)){
+            lstCategories = categories;
+            CategoryAdapter mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
+            gridView.setAdapter(mCategoryAdapter);
+        }
     }
 
     private void setDataPartner(List<Partner> partners) {

@@ -58,16 +58,13 @@
                     android:gravity="center"
                     android:numColumns="4" />
 
-                <!--<include layout="@layout/include_widget" />-->
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcv_partner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:descendantFocusability="blocksDescendants"
-                    android:focusableInTouchMode="true"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
             </LinearLayout>
         </FrameLayout>
 

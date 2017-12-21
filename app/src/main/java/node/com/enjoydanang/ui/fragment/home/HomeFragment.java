@@ -81,8 +81,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private List<Partner> lstPartner;
 
-    private List<Category> lstCategories;
-
     private PartnerAdapter mPartnerAdapter;
 
     private UserInfo user;
@@ -90,6 +88,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private Location mLastLocation;
 
     private Location firstTimePosition;
+
+    private CategoryAdapter mCategoryAdapter;
+
+    private List<Category> lstCategories;
+
+    private List<Banner> lstBanners;
 
     @Override
     public void showToast(String desc) {
@@ -111,6 +115,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         rcvPartner.setLayoutManager(mLayoutManager);
         rcvPartner.setNestedScrollingEnabled(false);
         rcvPartner.setAdapter(mPartnerAdapter);
+        lstCategories = new ArrayList<>();
+        mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
+        gridView.setAdapter(mCategoryAdapter);
     }
 
     @Override
@@ -135,14 +142,13 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
 
-
     @Override
     protected HomePresenter createPresenter() {
         return new HomePresenter(this);
     }
 
     private void updateItemNoLoadmore(@NonNull List<Partner> partners) {
-        if(CollectionUtils.isNotEmpty(lstPartner)){
+        if (CollectionUtils.isNotEmpty(lstPartner)) {
             lstPartner.clear();
         }
         lstPartner.addAll(partners);
@@ -155,6 +161,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         FragmentTransitionInfo transitionInfo = new FragmentTransitionInfo(R.anim.slide_up_in, R.anim.slide_to_left, R.anim.slide_up_in, R.anim.slide_to_left);
         Fragment prev = mFragmentManager.findFragmentByTag(PartnerCategoryFragment.class.getName());
         if (prev == null) {
+            mLastLocation = mLastLocation == null ? firstTimePosition : mLastLocation;
             mMainActivity.addFragment(PartnerCategoryFragment.newInstance(category.getId(), category.getName(), mLastLocation),
                     R.id.container_fragment, PartnerCategoryFragment.class.getName(),
                     transitionInfo);
@@ -211,7 +218,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             rcvPartner.setVisibility(View.GONE);
             return;
         }
-        if(CollectionUtils.isNotEmpty(lstPartner)){
+        if (CollectionUtils.isNotEmpty(lstPartner)) {
             lstPartner.clear();
         }
         lstPartner.addAll(partners);
@@ -248,32 +255,34 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
 
     private void setDataBanner(List<Banner> images) {
-        HashMap<String, String> sources = new HashMap<>();
-        int length = images.size();
+        if (CollectionUtils.isEmpty(lstBanners) && CollectionUtils.isNotEmpty(images)) {
+            lstBanners = images;
+            HashMap<String, String> sources = new HashMap<>();
+            int length = images.size();
 
-        for (int i = 0; i < length; i++) {
-            sources.put(images.get(i).getId() + "", images.get(i).getPicture());
+            for (int i = 0; i < length; i++) {
+                sources.put(images.get(i).getId() + "", images.get(i).getPicture());
+            }
+            for (String id : sources.keySet()) {
+                DefaultSliderView textSliderView = new DefaultSliderView(getContext());
+                textSliderView
+                        .image(sources.get(id))
+                        .description(id)
+                        .setScaleType(BaseSliderView.ScaleType.Fit)
+                        .setOnSliderClickListener(this);
+                bannerSlider.addSlider(textSliderView);
+            }
+            bannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+            bannerSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+            bannerSlider.setCustomAnimation(new DescriptionAnimation());
+            bannerSlider.setDuration(DURATION_SLIDE);
         }
-        for (String id : sources.keySet()) {
-            DefaultSliderView textSliderView = new DefaultSliderView(getContext());
-            textSliderView
-                    .image(sources.get(id))
-                    .description(id)
-                    .setScaleType(BaseSliderView.ScaleType.Fit)
-                    .setOnSliderClickListener(this);
-            bannerSlider.addSlider(textSliderView);
-        }
-        bannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
-        bannerSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        bannerSlider.setCustomAnimation(new DescriptionAnimation());
-        bannerSlider.setDuration(DURATION_SLIDE);
     }
 
     private void setDataCategory(List<Category> categories) {
-        if(CollectionUtils.isNotEmpty(categories)){
-            lstCategories = categories;
-            CategoryAdapter mCategoryAdapter = new CategoryAdapter(getContext(), lstCategories);
-            gridView.setAdapter(mCategoryAdapter);
+        if (CollectionUtils.isEmpty(lstCategories) && CollectionUtils.isNotEmpty(categories)) {
+            lstCategories.addAll(categories);
+            mCategoryAdapter.notifyDataSetChanged();
         }
     }
 
@@ -291,7 +300,7 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             String msg = (String) obj;
             if (msg.equalsIgnoreCase(Constant.LOCATION_NOT_FOUND)) {
                 mvpPresenter.getAllDataHome(user.getUserId(), StringUtils.EMPTY, StringUtils.EMPTY);
-            }else {
+            } else {
                 mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
                 nestedScrollView.scrollTo(0, 0);
             }
@@ -354,9 +363,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     }
 
     public void scrollToTop() {
-    	if(nestedScrollView != null && mMainActivity != null){
-	        mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
-	        nestedScrollView.scrollTo(0, 0);
-    	}
+        if (nestedScrollView != null && mMainActivity != null) {
+            mMainActivity.setShowMenuItem(Constant.SHOW_QR_CODE);
+            nestedScrollView.scrollTo(0, 0);
+        }
     }
 }

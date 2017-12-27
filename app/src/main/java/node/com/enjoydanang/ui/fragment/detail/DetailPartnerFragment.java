@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.LatLng;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -408,15 +407,11 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     }
 
     private void setDataAlbum(List<PartnerAlbum> images) {
-        HashMap<String, String> sources = new HashMap<>();
-        int length = images.size();
-        for (int i = 0; i < length; i++) {
-            sources.put(images.get(i).getTitle() + " [Slide " + i + " ]", images.get(i).getPicture());
-        }
-        for (String name : sources.keySet()) {
+        for (PartnerAlbum banner : images) {
             DefaultSliderView textSliderView = new DefaultSliderView(getContext());
             textSliderView
-                    .image(sources.get(name))
+                    .image(banner.getPicture())
+                    .description(String.valueOf(banner.getId()))
                     .setScaleType(BaseSliderView.ScaleType.Fit);
             slider.addSlider(textSliderView);
         }

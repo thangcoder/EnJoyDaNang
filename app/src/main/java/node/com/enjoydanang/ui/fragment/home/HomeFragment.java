@@ -28,7 +28,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -257,17 +256,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     private void setDataBanner(List<Banner> images) {
         if (CollectionUtils.isEmpty(lstBanners) && CollectionUtils.isNotEmpty(images)) {
             lstBanners = images;
-            HashMap<String, String> sources = new HashMap<>();
-            int length = images.size();
-
-            for (int i = 0; i < length; i++) {
-                sources.put(images.get(i).getId() + "", images.get(i).getPicture());
-            }
-            for (String id : sources.keySet()) {
+            for (Banner banner : images) {
                 DefaultSliderView textSliderView = new DefaultSliderView(getContext());
                 textSliderView
-                        .image(sources.get(id))
-                        .description(id)
+                        .image(banner.getPicture())
+                        .description(String.valueOf(banner.getId()))
                         .setScaleType(BaseSliderView.ScaleType.Fit)
                         .setOnSliderClickListener(this);
                 bannerSlider.addSlider(textSliderView);

@@ -68,6 +68,8 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
 
     private MainActivity mMainActivity;
 
+    public int countGetResultFailed = 0;
+
     private boolean isOpenFromNearby;
 
     public static DetailHomeDialogFragment newInstance(Partner partner, boolean isOpenFromNearby) {
@@ -242,4 +244,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
                 break;
         }
     }
+
+
 }

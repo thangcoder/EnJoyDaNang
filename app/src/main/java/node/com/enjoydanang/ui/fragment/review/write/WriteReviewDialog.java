@@ -239,12 +239,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
         if (partner != null) {
             showSending();
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
-            MultipartBody.Part[] lstParts = null;
-            if (mPreviewAdapter != null) {
-                if (CollectionUtils.isNotEmpty(mPreviewAdapter.getImages())) {
-                    lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
-                }
-            }
+            MultipartBody.Part[] lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
             addSubscription(apiStores.postComment(0, userId, partner.getId(), 0,
                     (int) ratingCount, title, content,
                     lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {

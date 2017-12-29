@@ -16,7 +16,7 @@
         android:gravity="center"
         android:isIndicator="false"
         android:numStars="5"
-        android:rating="4"
+        android:rating="5"
         android:stepSize="1"
         app:theme="@style/RatingBar" />
 

@@ -205,4 +205,5 @@
     <string name="Partner.NearByPlaces">Partner.NearByPlaces</string>
     <string name="Home.Term.System">Home.Term.System</string>
     <string name="Home.Event">Home.Event</string>
+    <string name="Message.Internet.Poor">Message.Internet.Poor</string>
 </resources>

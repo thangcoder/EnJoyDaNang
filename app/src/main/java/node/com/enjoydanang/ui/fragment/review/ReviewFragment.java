@@ -29,6 +29,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
+import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.WriteReplyDialog;
 import node.com.enjoydanang.ui.fragment.review.write.WriteReviewDialog;
@@ -92,8 +93,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private int rowIndexClick;
 
-    private boolean hasLoadmore;
-
     private Review currentReviewClick;
 
     public static ReviewFragment newInstance(Partner partner) {
@@ -147,8 +146,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
             @Override
             public void onLoadMore(int page) {
                 currentPage = page;
-//                mAdapter.setProgressMore(true);
-//                hasLoadmore = true;
                 onRetryGetListReview(page);
             }
 
@@ -206,9 +203,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchReviews(List<Review> models) {
-//        if(hasLoadmore){
-//            mAdapter.setProgressMore(false);
-//        }
         if (CollectionUtils.isEmpty(models) && currentPage == 0) {
             lrlContentReview.setVisibility(View.VISIBLE);
             prgLoading.setVisibility(View.GONE);
@@ -225,7 +219,13 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @Override
     public void onFetchFailure(AppError error) {
-        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
+        DetailHomeDialogFragment fragment = (DetailHomeDialogFragment) getParentFragment();
+        if (fragment != null) {
+            fragment.countGetResultFailed += 1;
+            if (fragment.countGetResultFailed == 1) {
+                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), error.getMessage());
+            }
+        }
     }
 
     @Override

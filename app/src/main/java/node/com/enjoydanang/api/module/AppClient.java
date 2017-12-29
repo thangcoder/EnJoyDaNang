@@ -43,10 +43,9 @@ public class AppClient {
 //                .build();
 //
         httpClient = new OkHttpClient.Builder()
-//                .addNetworkInterceptor(new HeaderInterceptor())
                 .addInterceptor(interceptor)
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(180, TimeUnit.SECONDS)
+                .readTimeout(180, TimeUnit.SECONDS)
                 .build();
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -62,6 +61,15 @@ public class AppClient {
 
 
     public static Retrofit setNewBaseUrl(String url) {
+        if(httpClient == null){
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .connectTimeout(180, TimeUnit.SECONDS)
+                    .readTimeout(180, TimeUnit.SECONDS)
+                    .build();
+        }
         if (httpClient != null) {
             return new Retrofit.Builder()
                       .baseUrl(url)

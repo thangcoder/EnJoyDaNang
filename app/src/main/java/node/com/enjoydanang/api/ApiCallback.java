@@ -54,7 +54,7 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
         }
         else if(e instanceof SocketTimeoutException || e instanceof UnknownHostException){
             if(AppError.ENABLE_CATCH_TIME_OUT){
-                String msg = Utils.getLanguageByResId(R.string.Message_Networking_Problem);
+                String msg = Utils.getLanguageByResId(R.string.Message_Internet_Poor);
                 msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_NETWORK_ERROR_MSG : msg;
                 onFailure(msg);
             }

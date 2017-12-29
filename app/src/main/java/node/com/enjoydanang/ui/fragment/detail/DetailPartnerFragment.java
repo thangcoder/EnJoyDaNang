@@ -122,8 +122,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private boolean isHideListPartnerAround;
 
-    private DetailPartner detailPartner;
-
     public static DetailPartnerFragment newInstance(Partner partner, boolean isOpenFromNearby) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
         Bundle bundle = new Bundle();
@@ -174,7 +172,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 if (bundle != null) {
                     partner = (Partner) bundle.getParcelable(TAG);
                     isLocationNull = mLastLocation == null;
-//                    isLocationNull = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
                     if (partner != null) {
                         initWebView();
                         if (isLocationNull) {
@@ -183,11 +180,6 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                             String geoLat = String.valueOf(mLastLocation.getLatitude());
                             String geoLng = String.valueOf(mLastLocation.getLongitude());
                             mvpPresenter.getAllDataNearBy(partner.getId(), geoLat, geoLng);
-//                            if (StringUtils.isBlank(partner.getGeoLat()) || StringUtils.isBlank(partner.getGeoLng())) {
-//                                mvpPresenter.getAllDataNearBy(partner.getId(), "", "");
-//                            } else {
-//                                mvpPresenter.getAllDataNearBy(partner.getId(), partner.getGeoLat(), partner.getGeoLng());
-//                            }
                         }
                     }
                 }
@@ -219,7 +211,13 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     @Override
     public void onFetchFailure(AppError appError) {
-        DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+        DetailHomeDialogFragment fragment = (DetailHomeDialogFragment) getParentFragment();
+        if (fragment != null) {
+            fragment.countGetResultFailed += 1;
+            if (fragment.countGetResultFailed == 1) {
+                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+            }
+        }
     }
 
 
@@ -423,7 +421,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private void setDataDetail(List<DetailPartner> lstDetailPartner) {
         if (CollectionUtils.isNotEmpty(lstDetailPartner)) {
-            detailPartner = lstDetailPartner.get(0);
+            DetailPartner detailPartner = lstDetailPartner.get(0);
             isHideListPartnerAround = checkGeoPartnerEmpty(detailPartner);
             if (!checkGeoPartnerEmpty(detailPartner)) {
                 UserInfo user = Utils.getUserInfo();

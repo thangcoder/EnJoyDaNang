@@ -66,11 +66,12 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
                 msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
                 onFailure(msg);
                 return;
-            }else if(msgServer.matches(Constant.REGEX_NUMBER)){
-                onFailure(AppError.DEFAULT_ERROR_MESSAGE);
-                return;
             }
-            onFailure(msgServer);
+//            else if(msgServer.matches(Constant.REGEX_NUMBER)){
+//                onFailure(AppError.DEFAULT_ERROR_MESSAGE);
+//                return;
+//            }
+//            onFailure(msgServer);
         }
         onFinish();
     }

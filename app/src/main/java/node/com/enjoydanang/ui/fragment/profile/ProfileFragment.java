@@ -129,8 +129,6 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
 
     private File fileChoose;
 
-    private CompositeSubscription mCompositeSubscription;
-
     @Override
     public void showToast(String desc) {
 
@@ -420,17 +418,5 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         } catch (Exception e) {
             return part;
         }
-    }
-
-    public void addSubscription(Observable observable, Subscriber subscriber) {
-
-        if (mCompositeSubscription == null) {
-            mCompositeSubscription = new CompositeSubscription();
-        }
-
-        mCompositeSubscription.add(observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
     }
 }

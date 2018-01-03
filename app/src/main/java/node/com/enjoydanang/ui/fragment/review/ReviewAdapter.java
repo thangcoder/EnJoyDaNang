@@ -55,10 +55,12 @@ public class ReviewAdapter extends RecyclerView.Adapter {
     private Context context;
     private OnItemClickListener onItemClickListener;
 
+    private ReplyAdapter replyAdapter;
+
     private ImagePreviewAdapter.OnImageReviewClickListener onImagePreviewClick;
 
     public interface OnReplyClickListener {
-        void onClick(ProgressBar prgLoading, View view, int position);
+        void onClick(ProgressBar prgLoading, View view, int position, int indexOfReview);
     }
 
     private OnReplyClickListener onReplyClickListener;
@@ -212,7 +214,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             // Reply
             initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
             lstReply.add(new ArrayList<Reply>());
-            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onImagePreviewClick, onItemClickListener);
+             replyAdapter = new ReplyAdapter(lstReply.get(position), onImagePreviewClick, onReplyClickListener, position);
             ((ReviewViewHolder) holder).rcvReply.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
             ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
             initExpandableLayout(holder, model);
@@ -220,7 +222,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     if (!model.isExpandedComment()) {
-                        onReplyClickListener.onClick((((ReviewViewHolder) holder).prgLoadingReply), view, position);
+                        onReplyClickListener.onClick((((ReviewViewHolder) holder).prgLoadingReply), view, position, position);
                     }
                     onClickButton(((ReviewViewHolder) holder).expandableLayout);
                 }
@@ -312,6 +314,14 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             lstReviews.remove(lstReviews.size() - 1);
             notifyItemRemoved(lstReviews.size());
         }
+    }
+
+    public void removeReply(int indexOfReview, int indexOfReply){
+        lstReply.get(indexOfReview).remove(indexOfReply);
+        replyAdapter.notifyItemRemoved(indexOfReply);
+        replyAdapter.notifyItemRangeChanged(indexOfReply, lstReply.size());
+        replyAdapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
 

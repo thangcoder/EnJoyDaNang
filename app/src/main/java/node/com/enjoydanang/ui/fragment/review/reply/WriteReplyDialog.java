@@ -1,6 +1,7 @@
 package node.com.enjoydanang.ui.fragment.review.reply;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -58,6 +60,7 @@ import node.com.enjoydanang.model.Review;
 import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
+import node.com.enjoydanang.ui.fragment.review.ReviewAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
@@ -86,8 +89,8 @@ import static android.app.Activity.RESULT_OK;
  * Version 1.0
  */
 
-public class WriteReplyDialog extends DialogFragment implements View.OnTouchListener, OnItemClickListener,
-        ImagePreviewAdapter.OnImageReviewClickListener {
+public class WriteReplyDialog extends DialogFragment implements View.OnTouchListener,
+        ImagePreviewAdapter.OnImageReviewClickListener, ReviewAdapter.OnReplyClickListener {
     private static final String TAG = WriteReplyDialog.class.getSimpleName();
     private static final String KEY_EXTRAS_PARTNER_ID = "partner_id";
 
@@ -176,6 +179,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
     private boolean isRefreshAfterSubmit;
 
+    private boolean hasActionUpdate;
+
     public void setOnBackListener(OnBackFragmentListener onBackListener) {
         this.onBackListener = onBackListener;
     }
@@ -213,7 +218,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         mPhotoHelper = new PhotoHelper(this);
         lstReplies = new ArrayList<>();
         imageChoose = new ArrayList<>();
-        replyAdapter = new ReplyAdapter(lstReplies, this, this);
+        replyAdapter = new ReplyAdapter(lstReplies, this, this, 0);
         mPreviewAdapter = new ImagePreviewAdapter(imageChoose, getContext(), 120);
         rcvImagePicked.setAdapter(mPreviewAdapter);
         initLabelView();
@@ -270,7 +275,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onBackListener != null) {
-            onBackListener.onDismiss(dialog, isBack);
+            onBackListener.onDismiss(dialog, isBack, hasActionUpdate);
         }
     }
 
@@ -380,6 +385,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         }
     }
 
+    @SuppressLint("NewApi")
     @OnClick({R.id.btnSubmitReply, R.id.btnAttachImage})
     public void onSubmitClick(View view) {
         switch (view.getId()) {
@@ -393,22 +399,6 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void fetchReplies(String code, int reviewId, int page) {
-        DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
-                Utils.getLanguageByResId(R.string.Delete),
-                Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
-                Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
-                new ColorDialog.OnPositiveListener() {
-                    @Override
-                    public void onClick(ColorDialog colorDialog) {
-                        colorDialog.dismiss();
-                    }
-                }, new ColorDialog.OnNegativeListener() {
-                    @Override
-                    public void onClick(ColorDialog colorDialog) {
-                        colorDialog.dismiss();
-                    }
-                }
-        );
         addSubscription(apiStores.getReplyByReviewId("LISTREPLYREVIEW", code, page, reviewId), new ApiCallback<Repository<Reply>>() {
 
             @Override
@@ -449,12 +439,14 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                             @Override
                             public void onSuccess(Repository<Reply> model) {
                                 hideLoading();
+                                hasActionUpdate = true;
                                 replyAdapter.removeAt(position);
                             }
 
                             @Override
                             public void onFailure(String msg) {
                                 hideLoading();
+                                hasActionUpdate = false;
                                 DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
                             }
 
@@ -468,18 +460,10 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                     @Override
                     public void onClick(ColorDialog colorDialog) {
                         colorDialog.dismiss();
+                        hasActionUpdate = false;
                     }
                 }
         );
-    }
-
-    @Override
-    public void onClick(View view, int position) {
-        switch (view.getId()){
-            case R.id.txtRemoveReply :
-                removeReply(position);
-                break;
-        }
     }
 
     private void initAdapter(RecyclerView recyclerView, int orientation, boolean rightToLeft) {
@@ -518,7 +502,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                         Utils.getLanguageByResId(R.string.Review_Write_Reply_Success), new PromptDialog.OnPositiveListener() {
                             @Override
                             public void onClick(PromptDialog promptDialog) {
-                                isRefreshAfterSubmit = true;
+                                hasActionUpdate = true;
                                 promptDialog.dismiss();
                                 clearData();
                                 fetchReplies(userInfo.getCode(), reviewId, START_PAGE);
@@ -529,6 +513,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             @Override
             public void onFailure(String msg) {
                 onWriteReplyFailure(new AppError(new Throwable(msg)));
+                hasActionUpdate = false;
             }
 
             @Override
@@ -703,5 +688,14 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     private void setLayoutWeight(LinearLayout relativeLayout, float weight) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, 0, weight);
         relativeLayout.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    public void onClick(ProgressBar prgLoading, View view, int position, int indexOfReview) {
+        switch (view.getId()){
+            case R.id.txtRemoveReply :
+                removeReply(position);
+                break;
+        }
     }
 }

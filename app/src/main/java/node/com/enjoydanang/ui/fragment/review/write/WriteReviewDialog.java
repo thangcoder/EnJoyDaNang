@@ -1,5 +1,6 @@
 package node.com.enjoydanang.ui.fragment.review.write;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -174,6 +175,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     }
 
 
+    @SuppressLint("NewApi")
     @OnClick({R.id.btnSubmitReview, R.id.btnAttachImage})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -300,7 +302,7 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (onBackListener != null) {
-            onBackListener.onDismiss(dialog, isBack);
+            onBackListener.onDismiss(dialog, isBack, false);
         }
     }
 

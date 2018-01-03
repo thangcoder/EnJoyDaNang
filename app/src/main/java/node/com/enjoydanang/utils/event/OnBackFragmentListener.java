@@ -11,5 +11,5 @@ import android.content.DialogInterface;
 
 public interface OnBackFragmentListener {
     void onBack(boolean isBack);
-    void onDismiss(DialogInterface dialogInterface, boolean isBack);
+    void onDismiss(DialogInterface dialogInterface, boolean isBack, boolean isNeedRefresh);
 }

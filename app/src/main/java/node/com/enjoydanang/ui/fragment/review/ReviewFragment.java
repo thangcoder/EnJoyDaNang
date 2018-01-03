@@ -102,6 +102,10 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private int positionClickRemove;
 
+    private int parentIndexOfReply;
+
+    private int indexOfReplyRemove;
+
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
         Bundle bundle = new Bundle();
@@ -175,10 +179,13 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                             }
 
                             @Override
-                            public void onDismiss(DialogInterface dialog, boolean isBack) {
+                            public void onDismiss(DialogInterface dialog, boolean isBack, boolean isNeedRefresh) {
                                 if (!isBack) {
                                     prgLoading.setVisibility(View.VISIBLE);
                                     lrlContentReview.setVisibility(View.GONE);
+                                    mvpPresenter.refreshReviewByPartner(userInfo.getCode(), partner.getId(), START_PAGE);
+                                }
+                                if(isNeedRefresh){
                                     mvpPresenter.refreshReviewByPartner(userInfo.getCode(), partner.getId(), START_PAGE);
                                 }
                                 dialog.dismiss();
@@ -189,9 +196,6 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                 } else {
                     DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
-                break;
-            case R.id.txtRemoveReview:
-
                 break;
         }
     }
@@ -275,6 +279,11 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         mAdapter.removeAt(positionClickRemove);
     }
 
+    @Override
+    public void onRemoveReplySuccess() {
+        mAdapter.removeReply(parentIndexOfReply, indexOfReplyRemove);
+    }
+
     private void onRetryGetListReview(int page) {
         if (StringUtils.isNoneBlank(userInfo.getCode()) && partner != null) {
             mvpPresenter.fetchReviewByPartner(partner.getId(), page);
@@ -299,12 +308,40 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     }
 
     @Override
-    public void onClick(ProgressBar prgLoadingReply, View view, final int position) {
-        rowIndexClick = position;
-        currentReviewClick = lstReviews.get(position);
-        this.prgLoadingReply = prgLoadingReply;
-        prgLoadingReply.setVisibility(View.VISIBLE);
-        mvpPresenter.fetchReplyByReviewId(userInfo.getCode(), lstReviews.get(position).getId(), START_PAGE);
+    public void onClick(ProgressBar prgLoadingReply, View view, final int position, final int indexOfReview) {
+        switch (view.getId()) {
+            case R.id.txtRemoveReply:
+                if (CollectionUtils.isNotEmpty(lstReply)) {
+                    parentIndexOfReply = indexOfReview;
+                    indexOfReplyRemove = position;
+                    final Reply reply = lstReply.get(indexOfReview).get(position);
+                    DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
+                            Utils.getLanguageByResId(R.string.Delete),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                            Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                            new ColorDialog.OnPositiveListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    colorDialog.dismiss();
+                                    mvpPresenter.removeReply(userInfo.getCode(), reply.getId());
+                                }
+                            }, new ColorDialog.OnNegativeListener() {
+                                @Override
+                                public void onClick(ColorDialog colorDialog) {
+                                    colorDialog.dismiss();
+                                }
+                            }
+                    );
+                }
+                break;
+            case R.id.btnReply:
+                rowIndexClick = position;
+                currentReviewClick = lstReviews.get(position);
+                this.prgLoadingReply = prgLoadingReply;
+                prgLoadingReply.setVisibility(View.VISIBLE);
+                mvpPresenter.fetchReplyByReviewId(userInfo.getCode(), lstReviews.get(position).getId(), START_PAGE);
+                break;
+        }
     }
 
 
@@ -333,10 +370,13 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                             }
 
                             @Override
-                            public void onDismiss(DialogInterface dialog, boolean isBack) {
+                            public void onDismiss(DialogInterface dialog, boolean isBack, boolean isNeedRefresh) {
                                 if (!isBack) {
                                     prgLoadingReply.setVisibility(View.VISIBLE);
                                     lrlContentReview.setVisibility(View.GONE);
+                                    mvpPresenter.fetchReplyByReviewId(currentReviewClick.getId(), START_PAGE);
+                                }
+                                if(isNeedRefresh){
                                     mvpPresenter.fetchReplyByReviewId(currentReviewClick.getId(), START_PAGE);
                                 }
                                 dialog.dismiss();

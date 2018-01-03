@@ -154,4 +154,27 @@ public class ReviewPresenter extends BasePresenter<iReviewView> {
         });
     }
 
+    void removeReply(String code, int replyId) {
+        addSubscription(apiStores.removeReview("REMOVEREVIEW", code, replyId), new ApiCallback<Repository>() {
+
+            @Override
+            public void onSuccess(Repository response) {
+                if (Utils.isResponseError(response)) {
+                    mvpView.onFetchFailure(new AppError(new Throwable(response.getMessage())));
+                    return;
+                }
+                mvpView.onRemoveReplySuccess();
+            }
+
+            @Override
+            public void onFailure(String msg) {
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        });
+    }
+
 }

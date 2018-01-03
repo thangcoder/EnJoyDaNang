@@ -22,6 +22,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.ReviewImage;
+import node.com.enjoydanang.ui.fragment.review.ReviewAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
@@ -37,18 +38,23 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
     private List<Reply> replies;
 
+    private int indexOfReview;
+
     private ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener;
+
+    private ReviewAdapter.OnReplyClickListener onReplyClick;
 
     public ReplyAdapter(List<Reply> replies) {
         this.replies = replies;
     }
 
-    private OnItemClickListener onItemClickListener;
 
-    public ReplyAdapter(List<Reply> replies, ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener,OnItemClickListener onItemClickListener) {
+    public ReplyAdapter(List<Reply> replies, ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener,
+                        ReviewAdapter.OnReplyClickListener onReplyClick, int indexOfReview) {
         this.replies = replies;
         this.onImageReviewClickListener = onImageReviewClickListener;
-        this.onItemClickListener = onItemClickListener;
+        this.indexOfReview = indexOfReview;
+        this.onReplyClick = onReplyClick;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         holder.txtRemoveReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               onItemClickListener.onClick(view, position);
+                onReplyClick.onClick(null, view, position, indexOfReview);
             }
         });
     }
@@ -161,7 +167,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         }
     }
 
-    public void removeAt(int position){
+    public void removeAt(int position) {
         replies.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, replies.size());

@@ -572,7 +572,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     }
 
     @Override
-    public void onDismiss(DialogInterface dialogInterface, boolean isBack) {
+    public void onDismiss(DialogInterface dialogInterface, boolean isBack, boolean isNeedRefresh) {
 
     }
 

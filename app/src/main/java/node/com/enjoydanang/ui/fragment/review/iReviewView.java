@@ -27,4 +27,6 @@ public interface iReviewView extends iBaseView {
 
     void onRemoveSuccess();
 
+    void onRemoveReplySuccess();
+
 }

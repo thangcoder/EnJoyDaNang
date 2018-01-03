@@ -40,6 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.GlobalApplication;
 import node.com.enjoydanang.R;
@@ -67,7 +68,9 @@ import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -149,6 +152,9 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     @BindView(R.id.lrlWriteReply)
     LinearLayout lrlWriteReply;
 
+    @BindView(R.id.lrlReplies)
+    LinearLayout lrlReplies;
+
     @BindView(R.id.name)
     TextView toolbarName;
     @BindView(R.id.edit_profile)
@@ -207,7 +213,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         mPhotoHelper = new PhotoHelper(this);
         lstReplies = new ArrayList<>();
         imageChoose = new ArrayList<>();
-        replyAdapter = new ReplyAdapter(lstReplies, this);
+        replyAdapter = new ReplyAdapter(lstReplies, this, this);
         mPreviewAdapter = new ImagePreviewAdapter(imageChoose, getContext(), 120);
         rcvImagePicked.setAdapter(mPreviewAdapter);
         initLabelView();
@@ -220,7 +226,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
         initAdapter(rcvImagePicked, LinearLayoutManager.HORIZONTAL, true);
         initAdapter(rcvImageReply, LinearLayoutManager.HORIZONTAL, false);
-        userInfo = GlobalApplication.getUserInfo();
+        userInfo = Utils.getUserInfo();
         Bundle bundle = getArguments();
         if (bundle != null) {
             review = (Review) bundle.getSerializable(TAG);
@@ -228,7 +234,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             if (review != null) {
                 fetchContentReview(review);
                 ImageUtils.loadImageWithFreso(imgAvtCurrent, GlobalApplication.getUserInfo().getImage());
-                fetchReplies(review.getId(), START_PAGE);
+                fetchReplies(userInfo.getCode(), review.getId(), START_PAGE);
             }
         }
         setEvents();
@@ -386,11 +392,28 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         }
     }
 
-    private void fetchReplies(int reviewId, int page) {
-        addSubscription(apiStores.getReplyByReviewId(page, reviewId), new ApiCallback<Repository<Reply>>() {
+    private void fetchReplies(String code, int reviewId, int page) {
+        DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
+                Utils.getLanguageByResId(R.string.Delete),
+                Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                new ColorDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(ColorDialog colorDialog) {
+                        colorDialog.dismiss();
+                    }
+                }, new ColorDialog.OnNegativeListener() {
+                    @Override
+                    public void onClick(ColorDialog colorDialog) {
+                        colorDialog.dismiss();
+                    }
+                }
+        );
+        addSubscription(apiStores.getReplyByReviewId("LISTREPLYREVIEW", code, page, reviewId), new ApiCallback<Repository<Reply>>() {
 
             @Override
             public void onSuccess(Repository<Reply> model) {
+                hideLoading();
                 if (Utils.isResponseError(model)) {
                     DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
                     return;
@@ -400,6 +423,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 
             @Override
             public void onFailure(String msg) {
+                hideLoading();
                 DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
             }
 
@@ -410,9 +434,52 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         });
     }
 
+    private void removeReply(final int position){
+        DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
+                Utils.getLanguageByResId(R.string.Delete),
+                Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                new ColorDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(ColorDialog colorDialog) {
+                        colorDialog.dismiss();
+                        showLoading(Utils.getLanguageByResId(R.string.Loading));
+                        addSubscription(apiStores.removeReview("REMOVEREVIEW", userInfo.getCode(), lstReplies.get(position).getId()), new ApiCallback<Repository<Reply>>() {
+
+                            @Override
+                            public void onSuccess(Repository<Reply> model) {
+                                hideLoading();
+                                replyAdapter.removeAt(position);
+                            }
+
+                            @Override
+                            public void onFailure(String msg) {
+                                hideLoading();
+                                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), msg);
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                hideLoading();
+                            }
+                        });
+                    }
+                }, new ColorDialog.OnNegativeListener() {
+                    @Override
+                    public void onClick(ColorDialog colorDialog) {
+                        colorDialog.dismiss();
+                    }
+                }
+        );
+    }
+
     @Override
     public void onClick(View view, int position) {
-
+        switch (view.getId()){
+            case R.id.txtRemoveReply :
+                removeReply(position);
+                break;
+        }
     }
 
     private void initAdapter(RecyclerView recyclerView, int orientation, boolean rightToLeft) {
@@ -437,7 +504,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             DialogUtils.showDialog(getActivity(), DialogType.WRONG, DialogUtils.getTitleDialog(3), Utils.getLanguageByResId(R.string.Validate_Message_All_Field_Empty));
             return;
         }
-        addSubscription(apiStores.postComment(0, userId, partnerId, reviewId, Constant.DEFAULT_RATING_STAR, title, content,
+        RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), content);
+        addSubscription(apiStores.postComment(0, userId, partnerId, reviewId, Constant.DEFAULT_RATING_STAR, title, contentBody,
                 lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {
 
             @Override
@@ -453,7 +521,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                                 isRefreshAfterSubmit = true;
                                 promptDialog.dismiss();
                                 clearData();
-                                fetchReplies(reviewId, START_PAGE);
+                                fetchReplies(userInfo.getCode(), reviewId, START_PAGE);
                             }
                         });
             }
@@ -471,14 +539,20 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void fetchContentReview(final Review review) {
-        List<ImageData> imgDatas = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(review.getImages())) {
-            for (ReviewImage image : review.getImages()) {
-                imgDatas.add(new ImageData(null, null, image.getPicture()));
+        if(!CollectionUtils.isEmpty(review.getImages())){
+            List<ImageData> imgDatas = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(review.getImages())) {
+                for (ReviewImage image : review.getImages()) {
+                    imgDatas.add(new ImageData(null, null, image.getPicture()));
+                }
             }
+            mImageReviewAdapter = new ImagePreviewAdapter(imgDatas, getContext(), 150, this);
+            rcvImageReply.setAdapter(mImageReviewAdapter);
+            rcvImageReply.setVisibility(View.VISIBLE);
+        }else{
+            rcvImageReply.setVisibility(View.GONE);
+            setLayoutWeight(lrlReplies, 0.7f);
         }
-        mImageReviewAdapter = new ImagePreviewAdapter(imgDatas, getContext(), 150, this);
-        rcvImageReply.setAdapter(mImageReviewAdapter);
         if (StringUtils.isNotBlank(review.getContent())) {
             txtContentReview.setText(review.getContent());
         } else {
@@ -487,7 +561,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
         txtNumRate.setText(String.valueOf(review.getStar()));
         txtReviewerName.setText(review.getName());
         txtTitleReview.setText(review.getTitle());
-        txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, review.getDate()));
+        txtDate.setText(review.getDate());
         ImageUtils.loadImageWithFreso(imgAvatar, review.getAvatar());
         if (txtContentReview.getLineCount() > 3) {
             imgExpanCollapseContent.setVisibility(View.VISIBLE);
@@ -561,7 +635,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 //                hasLoadmore = true;
 //                replyAdapter.setProgressMore(true);
                 isRefreshAfterSubmit = false;
-                fetchReplies(review.getId(), page);
+                fetchReplies(userInfo.getCode(), review.getId(), page);
             }
         });
         lrlWriteReply.setOnTouchListener(this);
@@ -624,5 +698,10 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     private void onWriteReplyFailure(AppError appError) {
         hideLoading();
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+    }
+
+    private void setLayoutWeight(LinearLayout relativeLayout, float weight) {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, 0, weight);
+        relativeLayout.setLayoutParams(layoutParams);
     }
 }

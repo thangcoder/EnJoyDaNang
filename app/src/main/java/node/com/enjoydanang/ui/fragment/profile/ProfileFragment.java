@@ -11,11 +11,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,13 +54,16 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.app.Activity.RESULT_OK;
 import static node.com.enjoydanang.utils.helper.PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE;
@@ -127,6 +128,8 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     private MainActivity mMainActivity;
 
     private File fileChoose;
+
+    private CompositeSubscription mCompositeSubscription;
 
     @Override
     public void showToast(String desc) {
@@ -387,39 +390,14 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
     }
 
     private void setValueAvatar() {
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                if (fileChoose == null) {
-                    subscriber.onNext(ImageUtils.getByteArrayFromImageURL(userInfo.getImage()));
-                } else {
-                    subscriber.onNext(ImageUtils.encodeTobase64(fileChoose));
-                }
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(String base64) {
-                        String endValue = StringUtils.isBlank(base64) ? StringUtils.EMPTY : base64;
-                        mvpPresenter.updateProfile(userInfo.getUserId(),
-                                String.valueOf(edtFullname.getText()),
-                                String.valueOf(edtPhone.getText()),
-                                String.valueOf(edtEmail.getText()),
-                                endValue);
-                    }
-                });
+        MultipartBody.Part part = getFilePartsRequest();
+        RequestBody typeBody = RequestBody.create(MediaType.parse("text/plain"), "UPDATEPROFILE");
+        RequestBody fullNameBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(edtFullname.getText()));
+        RequestBody phoneBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(edtPhone.getText()));
+        RequestBody emailBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(edtEmail.getText()));
+        RequestBody copdeBody = RequestBody.create(MediaType.parse("text/plain"), userInfo.getCode());
+        mvpPresenter.updateProfile(typeBody, userInfo.getUserId(),
+                fullNameBody, phoneBody, emailBody, copdeBody,part);
     }
 
     public boolean isEmptyFullName() {
@@ -432,5 +410,27 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
             SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
         }
         return true;
+    }
+
+    private MultipartBody.Part getFilePartsRequest() {
+        MultipartBody.Part part = null;
+        try {
+            part = Utils.createContentBody(fileChoose);
+            return part;
+        } catch (Exception e) {
+            return part;
+        }
+    }
+
+    public void addSubscription(Observable observable, Subscriber subscriber) {
+
+        if (mCompositeSubscription == null) {
+            mCompositeSubscription = new CompositeSubscription();
+        }
+
+        mCompositeSubscription.add(observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
     }
 }

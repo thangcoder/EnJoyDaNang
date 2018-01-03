@@ -109,5 +109,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         lstFavorites.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, lstFavorites.size());
+        notifyDataSetChanged();
     }
 }

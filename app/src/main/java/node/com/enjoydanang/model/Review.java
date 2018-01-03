@@ -17,7 +17,7 @@ import node.com.enjoydanang.utils.Utils;
  * Version 1.0
  */
 
-public class Review implements Serializable{
+public class Review implements Serializable {
 
     @SerializedName("Id")
     @Expose
@@ -46,11 +46,15 @@ public class Review implements Serializable{
     @Expose
     private String avatar;
 
+    @SerializedName("Access")
+    private int access;
+
+
     private boolean isExpanded;
 
     private boolean isExpandedComment;
 
-    private  TimeInterpolator interpolator;
+    private TimeInterpolator interpolator;
 
     public int getId() {
         return id;
@@ -138,5 +142,17 @@ public class Review implements Serializable{
 
     public void setImages(List<ReviewImage> images) {
         this.images = images;
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int access) {
+        this.access = access;
+    }
+
+    public boolean isEnableRemove() {
+        return access == 1;
     }
 }

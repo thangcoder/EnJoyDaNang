@@ -55,7 +55,9 @@ import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
 import node.com.enjoydanang.utils.helper.SoftKeyboardManager;
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -240,8 +242,9 @@ public class WriteReviewDialog extends DialogFragment implements View.OnTouchLis
             showSending();
             long userId = Utils.hasLogin() ? userInfo.getUserId() : 0;
             MultipartBody.Part[] lstParts = getFilePartsRequest(mPreviewAdapter.getImages());
+            RequestBody contentBody = RequestBody.create(MediaType.parse("text/plain"), content);
             addSubscription(apiStores.postComment(0, userId, partner.getId(), 0,
-                    (int) ratingCount, title, content,
+                    (int) ratingCount, title, contentBody,
                     lstParts[0], lstParts[1], lstParts[2]), new ApiCallback<Repository>() {
                 @Override
                 public void onSuccess(Repository model) {

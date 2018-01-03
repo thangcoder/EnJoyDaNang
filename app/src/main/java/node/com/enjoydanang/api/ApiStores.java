@@ -23,6 +23,7 @@ import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.model.Utility;
 import node.com.enjoydanang.model.Weather;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -153,14 +154,6 @@ public interface ApiStores {
     Observable<Repository<UserInfo>> changePwd(@Field("userId") long userId, @Field("oldPassword") String oldPwd, @Field("newPassword") String newPwd);
 
     @FormUrlEncoded
-    @POST("AccountApi.asmx/UpdateProfile")
-    Observable<Repository<UserInfo>> updateProfile(@Field("userId") long userId,
-                                                   @Field("fullname") String fullname,
-                                                   @Field("phone") String phone,
-                                                   @Field("email") String email,
-                                                   @Field("picture") String picBase64);
-
-    @FormUrlEncoded
     @POST("GlobalApi.asmx/SearchApp")
     Observable<Repository<Partner>> searchWithQuery(@Field("query") String query);
 
@@ -271,7 +264,7 @@ public interface ApiStores {
                                        @Part("ReviewId") int reviewId,
                                        @Part("Star") int star,
                                        @Part("Title") String title,
-                                       @Part("Content") String content,
+                                       @Part("Content") RequestBody content,
                                        @Part MultipartBody.Part image1,
                                        @Part MultipartBody.Part image2,
                                        @Part MultipartBody.Part image3);
@@ -298,5 +291,28 @@ public interface ApiStores {
     @POST("EnjoyApi.asmx/Get")
     Observable<Repository<Content>> getBannerEvent(@Field("Id") int bannerId, @Field("Type") String type);
 
+    @FormUrlEncoded
+    @POST("EnjoyApi.asmx/Get")
+    Observable<Repository<Review>> getListReviewByPartnerId(@Field("Type") String type,
+                                                            @Field("PartnerId") long partnerId, @Field("Page") int page,
+                                                            @Field("Code") String code);
 
+    @FormUrlEncoded
+    @POST("EnjoyApi.asmx/Delete")
+    Observable<Repository> removeReview(@Field("Type") String type, @Field("Code") String code, @Field("ReviewId") int reviewId);
+
+    @Multipart
+    @POST("EnjoyApi.asmx/Put")
+    Observable<Repository<UserInfo>> updateProfile(@Part("Type") RequestBody type,
+                                                   @Part("Fullname") RequestBody fullname,
+                                                   @Part("Email") RequestBody email,
+                                                   @Part("Phone") RequestBody phone,
+                                                   @Part("CustomerId") long userId,
+                                                   @Part("Code") RequestBody code,
+                                                   @Part MultipartBody.Part picture);
+
+    @FormUrlEncoded
+    @POST("ReviewApi.asmx/ListReplyReview")
+    Observable<Repository<Reply>> getReplyByReviewId(@Field("Type") String type, @Field("Code") String code,
+                                                     @Field("page") int page, @Field("reviewId") int reviewId);
 }

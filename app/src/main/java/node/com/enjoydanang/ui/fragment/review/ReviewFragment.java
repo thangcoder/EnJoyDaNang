@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.refactor.lib.colordialog.ColorDialog;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -29,6 +31,7 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
+import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.WriteReplyDialog;
@@ -95,6 +98,10 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private Review currentReviewClick;
 
+    private UserInfo userInfo;
+
+    private int positionClickRemove;
+
     public static ReviewFragment newInstance(Partner partner) {
         ReviewFragment fragment = new ReviewFragment();
         Bundle bundle = new Bundle();
@@ -134,8 +141,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
+        userInfo = Utils.getUserInfo();
         if (partner != null) {
-            mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE);
+            mvpPresenter.fetchReviewByPartner(partner.getId(), START_PAGE, userInfo.getCode());
         }
     }
 
@@ -155,29 +163,36 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     @OnClick(R.id.txtAddReview)
     void onClick(View view) {
-        if (Utils.hasLogin()) {
-            if (partner != null) {
-                WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
-                dialog.setOnBackListener(new OnBackFragmentListener() {
-                    @Override
-                    public void onBack(boolean isBack) {
+        switch (view.getId()) {
+            case R.id.txtAddReview:
+                if (Utils.hasLogin()) {
+                    if (partner != null) {
+                        WriteReviewDialog dialog = WriteReviewDialog.newInstance(partner);
+                        dialog.setOnBackListener(new OnBackFragmentListener() {
+                            @Override
+                            public void onBack(boolean isBack) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onDismiss(DialogInterface dialog, boolean isBack) {
-                        if (!isBack) {
-                            prgLoading.setVisibility(View.VISIBLE);
-                            lrlContentReview.setVisibility(View.GONE);
-                            mvpPresenter.refreshReviewByPartner(partner.getId(), START_PAGE);
-                        }
-                        dialog.dismiss();
+                            @Override
+                            public void onDismiss(DialogInterface dialog, boolean isBack) {
+                                if (!isBack) {
+                                    prgLoading.setVisibility(View.VISIBLE);
+                                    lrlContentReview.setVisibility(View.GONE);
+                                    mvpPresenter.refreshReviewByPartner(userInfo.getCode(), partner.getId(), START_PAGE);
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                        DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }
-                });
-                DialogUtils.openDialogFragment(mFragmentManager, dialog);
-            }
-        } else {
-            DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                } else {
+                    DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+                }
+                break;
+            case R.id.txtRemoveReview:
+
+                break;
         }
     }
 
@@ -255,8 +270,15 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         prgLoading.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onRemoveSuccess() {
+        mAdapter.removeAt(positionClickRemove);
+    }
+
     private void onRetryGetListReview(int page) {
-        mvpPresenter.fetchReviewByPartner(partner.getId(), page);
+        if (StringUtils.isNoneBlank(userInfo.getCode()) && partner != null) {
+            mvpPresenter.fetchReviewByPartner(partner.getId(), page);
+        }
     }
 
     public void updateItems(List<Review> lstReviews) {
@@ -282,7 +304,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         currentReviewClick = lstReviews.get(position);
         this.prgLoadingReply = prgLoadingReply;
         prgLoadingReply.setVisibility(View.VISIBLE);
-        mvpPresenter.fetchReplyByReviewId(lstReviews.get(position).getId(), START_PAGE);
+        mvpPresenter.fetchReplyByReviewId(userInfo.getCode(), lstReviews.get(position).getId(), START_PAGE);
     }
 
 
@@ -298,7 +320,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
     }
 
     @Override
-    public void onClick(View view, int position) {
+    public void onClick(View view, final int position) {
         switch (view.getId()) {
             case R.id.txtWriteReply:
                 if (Utils.hasLogin()) {
@@ -326,7 +348,26 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
                     DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
                 }
                 break;
-
+            case R.id.txtRemoveReview:
+                positionClickRemove = position;
+                DialogUtils.showDialogConfirm(getContext(), DialogUtils.getTitleDialog(2),
+                        Utils.getLanguageByResId(R.string.Delete),
+                        Utils.getLanguageByResId(R.string.Message_Confirm_Ok),
+                        Utils.getLanguageByResId(R.string.Message_Confirm_Cancel),
+                        new ColorDialog.OnPositiveListener() {
+                            @Override
+                            public void onClick(ColorDialog colorDialog) {
+                                colorDialog.dismiss();
+                                mvpPresenter.removeReview(userInfo.getCode(), lstReviews.get(position).getId());
+                            }
+                        }, new ColorDialog.OnNegativeListener() {
+                            @Override
+                            public void onClick(ColorDialog colorDialog) {
+                                colorDialog.dismiss();
+                            }
+                        }
+                );
+                break;
         }
     }
 
@@ -335,6 +376,5 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         SoftKeyboardManager.hideSoftKeyboard(getContext(), v.getWindowToken(), 0);
         return false;
     }
-
 
 }

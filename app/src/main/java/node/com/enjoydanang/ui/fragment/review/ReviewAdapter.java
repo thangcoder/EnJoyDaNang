@@ -26,7 +26,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.ImageData;
 import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.Review;
@@ -34,7 +33,6 @@ import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.ui.fragment.review.reply.ImagePreviewAdapter;
 import node.com.enjoydanang.ui.fragment.review.reply.ReplyAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
-import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.widget.BetterRecyclerView;
@@ -124,6 +122,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
         @BindView(R.id.txtWriteReply)
         TextView txtWriteReply;
 
+        @BindView(R.id.txtRemoveReview)
+        TextView txtRemoveReview;
 
         ReviewViewHolder(View itemView) {
             super(itemView);
@@ -167,7 +167,14 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             ((ReviewViewHolder) holder).txtNumRate.setText(String.valueOf(model.getStar()));
             ((ReviewViewHolder) holder).txtReviewerName.setText(model.getName());
             ((ReviewViewHolder) holder).txtTitleReview.setText(model.getTitle());
-            ((ReviewViewHolder) holder).txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, model.getDate()));
+            ((ReviewViewHolder) holder).txtDate.setText(model.getDate());
+//            ((ReviewViewHolder) holder).txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, model.getDate()));
+            if (model.isEnableRemove()) {
+                ((ReviewViewHolder) holder).txtRemoveReview.setVisibility(View.VISIBLE);
+                LanguageHelper.getValueByViewId(((ReviewViewHolder) holder).txtRemoveReview);
+            } else {
+                ((ReviewViewHolder) holder).txtRemoveReview.setVisibility(View.GONE);
+            }
             LanguageHelper.getValueByViewId(((ReviewViewHolder) holder).txtWriteReply);
             ImageUtils.loadImageWithFreso(((ReviewViewHolder) holder).imgAvatar, model.getAvatar());
             if (((ReviewViewHolder) holder).txtContentReview.getLineCount() > 3) {
@@ -205,7 +212,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             // Reply
             initAdapter(((ReviewViewHolder) holder).rcvReply, LinearLayoutManager.VERTICAL);
             lstReply.add(new ArrayList<Reply>());
-            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onImagePreviewClick);
+            ReplyAdapter replyAdapter = new ReplyAdapter(lstReply.get(position), onImagePreviewClick, onItemClickListener);
             ((ReviewViewHolder) holder).rcvReply.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
             ((ReviewViewHolder) holder).rcvReply.setAdapter(replyAdapter);
             initExpandableLayout(holder, model);
@@ -222,6 +229,12 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     onItemClickListener.onClick(view, position);
+                }
+            });
+            ((ReviewViewHolder) holder).txtRemoveReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onClick(v, position);
                 }
             });
         } else if (holder instanceof LoadingViewHolder) {
@@ -299,6 +312,14 @@ public class ReviewAdapter extends RecyclerView.Adapter {
             lstReviews.remove(lstReviews.size() - 1);
             notifyItemRemoved(lstReviews.size());
         }
+    }
+
+
+    public void removeAt(int position) {
+        lstReviews.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, lstReviews.size());
+        notifyDataSetChanged();
     }
 
 

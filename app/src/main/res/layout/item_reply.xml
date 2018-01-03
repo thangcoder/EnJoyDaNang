@@ -63,4 +63,18 @@
         android:paddingRight="@dimen/_5sdp"
         android:textColor="@color/blue"
         android:textCursorDrawable="@null" />
+
+    <TextView
+        android:id="@+id/txtRemoveReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:text="@string/Delete"
+        android:drawableLeft="@drawable/ic_delete_forever_red_500_18dp"
+        android:textColor="@color/material_red_500" />
+
 </LinearLayout>

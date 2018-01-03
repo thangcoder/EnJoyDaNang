@@ -24,6 +24,7 @@ import node.com.enjoydanang.model.Reply;
 import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
  * Author: Tavv
@@ -42,9 +43,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         this.replies = replies;
     }
 
-    public ReplyAdapter(List<Reply> replies, ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener) {
+    private OnItemClickListener onItemClickListener;
+
+    public ReplyAdapter(List<Reply> replies, ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener,OnItemClickListener onItemClickListener) {
         this.replies = replies;
         this.onImageReviewClickListener = onImageReviewClickListener;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -68,6 +72,13 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                 onImageReviewClickListener.onImageClick(view, position, reply.getAvatar(), getListImage(position));
             }
         });
+
+        holder.txtRemoveReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               onItemClickListener.onClick(view, position);
+            }
+        });
     }
 
     @Override
@@ -85,6 +96,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
 
         @BindView(R.id.txtContentReview)
         TextView txtContentReview;
+
+        @BindView(R.id.txtRemoveReply)
+        TextView txtRemoveReply;
 
         @BindView(R.id.txtNumberOfImages)
         TextView txtNumberOfImages;
@@ -145,5 +159,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             replies.remove(replies.size() - 1);
             notifyItemRemoved(replies.size());
         }
+    }
+
+    public void removeAt(int position){
+        replies.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, replies.size());
+        notifyDataSetChanged();
     }
 }

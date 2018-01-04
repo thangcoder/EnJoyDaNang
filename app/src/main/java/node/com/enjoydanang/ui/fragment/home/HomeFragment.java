@@ -203,7 +203,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
                         } catch (IndexOutOfBoundsException ex) {
                             partner = null;
                         }
-                        partner.setId(158);
                         DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(partner, false);
                         DialogUtils.openDialogFragment(mFragmentManager, dialog);
                     }

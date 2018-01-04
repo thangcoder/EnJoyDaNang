@@ -312,7 +312,7 @@ public interface ApiStores {
                                                    @Part MultipartBody.Part picture);
 
     @FormUrlEncoded
-    @POST("ReviewApi.asmx/ListReplyReview")
+    @POST("EnjoyApi.asmx/Get")
     Observable<Repository<Reply>> getReplyByReviewId(@Field("Type") String type, @Field("Code") String code,
                                                      @Field("page") int page, @Field("reviewId") int reviewId);
 }

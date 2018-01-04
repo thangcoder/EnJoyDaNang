@@ -51,6 +51,11 @@ public class Reply {
     @Expose
     private List<ReviewImage> images = null;
 
+    @SerializedName("Access")
+    @Expose
+    private int access;
+
+
     public int getId() {
         return id;
     }
@@ -121,5 +126,17 @@ public class Reply {
 
     public void setReviewId(int reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int access) {
+        this.access = access;
+    }
+
+    public boolean isEnableRemove() {
+        return access == 1;
     }
 }

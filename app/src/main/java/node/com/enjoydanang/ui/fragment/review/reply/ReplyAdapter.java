@@ -25,7 +25,7 @@ import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.ui.fragment.review.ReviewAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -72,6 +72,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         int size = CollectionUtils.isEmpty(reply.getImages()) ? 0 : reply.getImages().size();
         String strCountImages = String.format(Locale.getDefault(), "%d %s", size, Utils.getLanguageByResId(R.string.Image));
         holder.txtNumberOfImages.setText(strCountImages);
+        if (reply.isEnableRemove()) {
+            holder.txtRemoveReply.setVisibility(View.VISIBLE);
+            LanguageHelper.getValueByViewId(holder.txtRemoveReply);
+        } else {
+            holder.txtRemoveReply.setVisibility(View.GONE);
+        }
         holder.txtNumberOfImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

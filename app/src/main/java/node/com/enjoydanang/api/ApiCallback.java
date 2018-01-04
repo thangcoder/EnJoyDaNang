@@ -33,19 +33,15 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
         String status;
         if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
-            //httpException.response().errorBody().string()
             int code = httpException.code();
             status = String.valueOf(code);
             if(StringUtils.equals(status, Constant.API_500)){
                 String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
                 msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
                 onFailure(msg);
-                return;
             }else if(status.matches(Constant.REGEX_NUMBER)){
                 onFailure(AppError.DEFAULT_ERROR_MESSAGE);
-                return;
             }
-            onFailure(status);
         }
         else if(e instanceof ConnectException){
             String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
@@ -65,13 +61,7 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
                 String msg = Utils.getLanguageByResId(R.string.Message_Server_Error);
                 msg = StringUtils.isBlank(msg) ? AppError.DEFAULT_SERVER_ERROR_MSG : msg;
                 onFailure(msg);
-                return;
             }
-//            else if(msgServer.matches(Constant.REGEX_NUMBER)){
-//                onFailure(AppError.DEFAULT_ERROR_MESSAGE);
-//                return;
-//            }
-//            onFailure(msgServer);
         }
         onFinish();
     }

@@ -261,6 +261,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     public void onLoginSuccess(Repository<UserInfo> resultCallBack) {
         if (Utils.isNotEmptyContent(resultCallBack)) {
             UserInfo userInfo = resultCallBack.getData().get(0);
+            GlobalApplication.getGlobalApplicationContext().setHasSessionLogin(true);
             Common.validLanguageLogin(userInfo);
             GlobalApplication.setUserInfo(userInfo);
             SoftKeyboardManager.hideSoftKeyboard(this, btnLoginNormal.getWindowToken(), 0);

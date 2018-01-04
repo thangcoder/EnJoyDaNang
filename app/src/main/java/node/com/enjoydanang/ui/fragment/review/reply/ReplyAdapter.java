@@ -74,7 +74,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         holder.txtNumberOfImages.setText(strCountImages);
         if (reply.isEnableRemove()) {
             holder.txtRemoveReply.setVisibility(View.VISIBLE);
-            LanguageHelper.getValueByViewId(holder.txtRemoveReply);
+            String lblDelete = Utils.getLanguageByResId(R.string.Delete);
+            holder.txtRemoveReply.setText(lblDelete);
         } else {
             holder.txtRemoveReply.setVisibility(View.GONE);
         }

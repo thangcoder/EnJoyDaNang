@@ -329,25 +329,6 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
                 .subscribe(subscriber));
     }
 
-    private List<String> getListImageBase64(List<ImageData> images) {
-        List<String> lstImageBase64 = new ArrayList<>();
-        for (int i = 0; i < Constant.MAX_SIZE_GALLERY_SELECT; i++) {
-            lstImageBase64.add(i, StringUtils.EMPTY);
-        }
-        if (CollectionUtils.isNotEmpty(images)) {
-            int count = -1;
-            for (ImageData item : images) {
-                if (item.getUri() != null) {
-                    count++;
-                    File file = new File(FileUtils.getPath(getContext(), item.getUri()));
-                    String strConvert = ImageUtils.encodeTobase64(file);
-                    lstImageBase64.set(count, strConvert);
-                }
-            }
-        }
-        return lstImageBase64;
-    }
-
     private MultipartBody.Part[] getFilePartsRequest(List<ImageData> images) {
         MultipartBody.Part[] arrMultipart = new MultipartBody.Part[]{null, null, null};
         if (CollectionUtils.isNotEmpty(images)) {

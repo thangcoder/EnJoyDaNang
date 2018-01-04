@@ -581,6 +581,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                                 new ColorDialog.OnPositiveListener() {
                                     @Override
                                     public void onClick(ColorDialog colorDialog) {
+                                        colorDialog.dismiss();
                                         mDrawerLayout.closeDrawer(GravityCompat.START);
                                         GlobalApplication.setUserInfo(null);
                                         hasLogin = false;

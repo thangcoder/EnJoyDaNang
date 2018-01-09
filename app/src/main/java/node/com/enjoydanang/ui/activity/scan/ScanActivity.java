@@ -59,8 +59,6 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     private ZXingScannerView mScannerView;
 
     private UserInfo userInfo;
-//    @BindView(R.id.toolbar)
-//    Toolbar toolbar;
 
     @BindView(R.id.scan_container)
     ViewGroup contentFrame;
@@ -69,16 +67,10 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
     @Override
     public void handleResult(Result result) {
-
         if (result != null) {
             vibrate();
             mvpPresenter.getInfoScanQr(result.getText());
         }
-
-        // Note:
-        // * Wait 2 seconds to resume the preview.
-        // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
-        // * I don't know why this is the case but I don't have the time to figure out.
     }
 
     @Override
@@ -196,11 +188,13 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     @Override
     public void onFetchError(AppError appError) {
         DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
+        mScannerView.resumeCameraPreview(ScanActivity.this);
     }
 
     @Override
     public void onRequestOrderSuccessError(AppError appError) {
         DialogUtils.showDialog(ScanActivity.this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), appError.getMessage());
+        mScannerView.resumeCameraPreview(ScanActivity.this);
     }
 
     @Override
@@ -223,7 +217,6 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
     @Override
     public void init() {
         userInfo = Utils.getUserInfo();
-//        initToolbar(toolbar);
         mScannerView = new ZXingScannerView(this) {
             @Override
             protected IViewFinder createViewFinderView(Context context) {
@@ -259,13 +252,6 @@ public class ScanActivity extends MvpActivity<ScanQRCodePresenter> implements Sc
 
     @Override
     public void setEvent() {
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//                overridePendingTransitionExit();
-//            }
-//        });
     }
 
 

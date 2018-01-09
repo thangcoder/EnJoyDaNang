@@ -82,11 +82,6 @@ public class LanguageHelper {
         }
     }
 
-    public static String getId(View view) {
-        if (view.getId() == 0xffffffff) return "no-id";
-        else return view.getResources().getResourceName(view.getId());
-    }
-
     public static String[] getTitleMenuNormal() {
         JSONObject js = GlobalApplication.getGlobalApplicationContext().getJsLanguage();
         if (js != null) {

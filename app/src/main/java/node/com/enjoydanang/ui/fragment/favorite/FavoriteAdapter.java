@@ -34,6 +34,8 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
     private List<Partner> lstFavorites;
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private static final int IMAGE_SCALE_WIDTH = 100;
+    private static final int IMAGE_SCALE_HEIGHT = 100;
 
     public FavoriteAdapter(List<Partner> lstFavorites, Context context, OnItemClickListener onItemClickListener) {
         this.lstFavorites = lstFavorites;
@@ -53,7 +55,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         if (favorite != null) {
             holder.txtPartnerName.setText(favorite.getName());
             holder.txtDate.setText(Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, favorite.getDate()));
-            ImageUtils.loadImageNoRadius(context, holder.imgPartner, favorite.getPicture());
+            ImageUtils.loadImageNoRadiusResize(context, holder.imgPartner, favorite.getPicture(), IMAGE_SCALE_WIDTH, IMAGE_SCALE_HEIGHT);
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

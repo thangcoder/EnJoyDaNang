@@ -68,6 +68,9 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private static final int DURATION_SLIDE = 3000;
 
+    private static final int IMAGE_PARTNER_WIDTH = 400;
+    private static final int IMAGE_PARTNER_HEIGHT = 250;
+
     @BindView(R.id.txtTitle)
     TextView txtTitle;
 
@@ -411,6 +414,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                     .image(banner.getPicture())
                     .description(String.valueOf(banner.getId()))
                     .setScaleType(BaseSliderView.ScaleType.Fit);
+
             slider.addSlider(textSliderView);
         }
         slider.setPresetTransformer(SliderLayout.Transformer.Accordion);
@@ -444,7 +448,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
                 }
             }
             txtTitle.setText(detailPartner.getName());
-            ImageUtils.loadImageWithFreso(imgPartner, detailPartner.getPicture());
+            ImageUtils.loadImageWithScaleFreso(imgPartner, detailPartner.getPicture(), IMAGE_PARTNER_WIDTH, IMAGE_PARTNER_HEIGHT);
             txtContent.loadDataWithBaseURL(null, detailPartner.getDescription(), "text/html", "utf-8", null);
             ratingBar.setRating(detailPartner.getStarReview());
             ratingBar.setFocusable(false);

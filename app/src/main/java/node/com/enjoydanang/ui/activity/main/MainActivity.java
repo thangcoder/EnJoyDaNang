@@ -277,9 +277,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         if (onChangedLocationReceiver != null) {
             LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(onChangedLocationReceiver);
         }
-//        if(mLocationHelper != null){
-//            mLocationHelper.stopLocationUpdates();
-//        }
     }
 
     @Override

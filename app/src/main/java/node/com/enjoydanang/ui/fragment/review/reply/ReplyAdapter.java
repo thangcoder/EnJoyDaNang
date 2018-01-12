@@ -25,7 +25,6 @@ import node.com.enjoydanang.model.ReviewImage;
 import node.com.enjoydanang.ui.fragment.review.ReviewAdapter;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
-import node.com.enjoydanang.utils.helper.LanguageHelper;
 
 /**
  * Author: Tavv
@@ -39,6 +38,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     private List<Reply> replies;
 
     private int indexOfReview;
+
+    private static final int AVATAR_WIDTH_SCALE = 100;
+    private static final int AVATAR_HEIGHT_SCALE = 100;
 
     private ImagePreviewAdapter.OnImageReviewClickListener onImageReviewClickListener;
 
@@ -66,7 +68,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     @Override
     public void onBindViewHolder(ReplyViewHolder holder, final int position) {
         final Reply reply = replies.get(position);
-        ImageUtils.loadImageWithFreso(holder.imgAvatar, reply.getAvatar());
+        ImageUtils.loadImageWithScaleFreso(holder.imgAvatar, reply.getAvatar(), AVATAR_WIDTH_SCALE, AVATAR_HEIGHT_SCALE);
         holder.txtContentReview.setText(reply.getContent());
         holder.txtReviewerName.setText(reply.getName());
         int size = CollectionUtils.isEmpty(reply.getImages()) ? 0 : reply.getImages().size();

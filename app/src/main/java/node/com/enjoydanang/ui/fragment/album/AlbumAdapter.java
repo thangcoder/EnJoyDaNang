@@ -27,6 +27,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     private List<PartnerAlbum> images;
     private Context mContext;
+    private static final int HEIGHT_IMAGE = 300;
+    private static final int WIDTH_IMAGE = 500;
 
     static class AlbumViewHolder extends RecyclerView.ViewHolder {
         public SimpleDraweeView thumbnail;
@@ -54,16 +56,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     @Override
     public void onBindViewHolder(AlbumViewHolder holder, int position) {
         PartnerAlbum model = images.get(position);
-
-//        ImageUtils.loadImageNoRadius(mContext, holder.thumbnail, model.getPicture());
-        ImageUtils.loadImageWithFreso(holder.thumbnail, model.getPicture());
-
-//
-//        Glide.with(mContext).load(model.getImage())
-//                .thumbnail(0.5f)
-//                .crossFade()
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .into(holder.thumbnail);
+        ImageUtils.loadImageWithScaleFreso(holder.thumbnail, model.getPicture(), WIDTH_IMAGE, HEIGHT_IMAGE);
     }
 
     @Override

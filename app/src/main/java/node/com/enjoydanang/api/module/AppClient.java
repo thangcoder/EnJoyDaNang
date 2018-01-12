@@ -20,32 +20,31 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 /**
- * Created by chientruong on 12/15/16.
+ * Author: Tavv
+ * Created on 01/10/2017
+ * Project Name: EnjoyDaNang
+ * Version 1.0
  */
+
 public class AppClient {
+
     public static Retrofit retrofit = null;
 
     private static OkHttpClient httpClient;
+
+    private static final int TIMEOUT_MINUTES = 3;
 
     public static Retrofit getClient() {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-//        ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-//                .tlsVersions(TlsVersion.TLS_1_2)
-//                .cipherSuites(
-//                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-//                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-//                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
-//                .build();
-//
         httpClient = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .connectTimeout(180, TimeUnit.SECONDS)
-                .readTimeout(180, TimeUnit.SECONDS)
+                .connectTimeout(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                .readTimeout(TIMEOUT_MINUTES, TimeUnit.MINUTES)
+                .retryOnConnectionFailure(true)
                 .build();
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
@@ -66,8 +65,9 @@ public class AppClient {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClient = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
-                    .connectTimeout(180, TimeUnit.SECONDS)
-                    .readTimeout(180, TimeUnit.SECONDS)
+                    .connectTimeout(TIMEOUT_MINUTES, TimeUnit.SECONDS)
+                    .readTimeout(TIMEOUT_MINUTES, TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(true)
                     .build();
         }
         if (httpClient != null) {

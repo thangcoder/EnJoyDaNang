@@ -14,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
@@ -30,6 +28,9 @@ import node.com.enjoydanang.utils.event.OnItemClickListener;
  */
 
 public class PartnerAroundAdapter extends RecyclerView.Adapter<PartnerAroundAdapter.PartnerAroundVH> {
+
+    private static final int IMAGE_WIDTH = 350;
+    private static final int IMAGE_HEIGHT = 250;
 
     private List<Partner> lstPartner;
 
@@ -65,7 +66,7 @@ public class PartnerAroundAdapter extends RecyclerView.Adapter<PartnerAroundAdap
                 } else {
                     holder.txtDistance.setVisibility(View.INVISIBLE);
                 }
-                ImageUtils.loadImageWithFreso(holder.imgPartner, partner.getPicture());
+                ImageUtils.loadImageWithScaleFreso(holder.imgPartner, partner.getPicture(), IMAGE_WIDTH, IMAGE_HEIGHT);
                 holder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

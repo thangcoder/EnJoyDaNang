@@ -35,6 +35,10 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
     private Context context;
     private OnItemClickListener onItemClickListener;
 
+    private static final int IMAGE_SCALE_WIDTH = 100;
+    private static final int IMAGE_SCALE_HEIGHT = 100;
+
+
     public CheckinHistoryAdapter(List<HistoryCheckin> lstHistoryCheckin, Context context, OnItemClickListener onItemClickListener) {
         this.lstHistoryCheckin = lstHistoryCheckin;
         this.context = context;
@@ -54,7 +58,7 @@ public class CheckinHistoryAdapter extends RecyclerView.Adapter<CheckinHistoryAd
             holder.txtPartnerName.setText(model.getPartnerName());
             String strPayment = Utils.formatCurrency("", model.getPayment());
             holder.txtDate.setText(Utils.getLanguageByResId(R.string.Payment_Date) + ": " + Utils.formatDate(Constant.DATE_SERVER_FORMAT, Constant.DATE_FORMAT_DMY, model.getDate()));
-            ImageUtils.loadImageNoRadius(context, holder.imgPartner, model.getPicture());
+            ImageUtils.loadImageNoRadiusResize(context, holder.imgPartner, model.getPicture(), IMAGE_SCALE_WIDTH, IMAGE_SCALE_HEIGHT);
             holder.txtDiscount.setText(Utils.getLanguageByResId(R.string.Discount) + ": " + model.getDiscount() + "%");
             holder.txtPayment.setText(Utils.getLanguageByResId(R.string.Payment) + ": " + strPayment + " VND");
             holder.view.setOnClickListener(new View.OnClickListener() {

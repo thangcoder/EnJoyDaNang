@@ -59,11 +59,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static android.app.Activity.RESULT_OK;
 import static node.com.enjoydanang.utils.helper.PhotoHelper.CAPTURE_IMAGE_REQUEST_CODE;
@@ -81,6 +76,9 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         , View.OnTouchListener {
     private static final String TAG = ProfileFragment.class.getSimpleName();
     public static final int PERMISSION_CAMERA = 200;
+
+    public static final int AVATAR_WIDTH_SCALE = 200;
+    public static final int AVATAR_HEIGHT_SCALE = 200;
 
     @BindView(R.id.edtUserName)
     EditText edtUserName;
@@ -285,7 +283,7 @@ public class ProfileFragment extends MvpFragment<ProfilePresenter> implements Pr
         edtFullname.setText(StringUtils.isEmpty(userInfo.getFullName()) ? "" : userInfo.getFullName());
         edtEmail.setText(StringUtils.isEmpty(userInfo.getEmail()) ? "" : userInfo.getEmail());
         edtPhone.setText(StringUtils.isEmpty(userInfo.getPhone()) ? "" : userInfo.getPhone());
-        ImageUtils.loadImageWithFreso(imgAvatarUser, userInfo.getImage());
+        ImageUtils.loadImageWithScaleFreso(imgAvatarUser, userInfo.getImage(), AVATAR_WIDTH_SCALE, AVATAR_HEIGHT_SCALE);
     }
 
     @Override

@@ -35,6 +35,8 @@ import node.com.enjoydanang.utils.event.OnItemClickListener;
 public class PartnerAdapter extends RecyclerView.Adapter {
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private final int IMAGE_WIDTH_SCALE = 400;
+    private final int IMAGE_HEIGHT_SCALE = 250;
 
     private List<Partner> partners;
     private Context mContext;
@@ -86,7 +88,7 @@ public class PartnerAdapter extends RecyclerView.Adapter {
             } else {
                 ((ViewHolder) holder).txtDistance.setVisibility(View.GONE);
             }
-            ImageUtils.loadImageWithFreso(((ViewHolder) holder).imgPhoto, partner.getPicture());
+            ImageUtils.loadImageWithScaleFreso(((ViewHolder) holder).imgPhoto, partner.getPicture(), IMAGE_WIDTH_SCALE, IMAGE_HEIGHT_SCALE);
             boolean isFavorite = partner.getFavorite() > 0;
             ((ViewHolder) holder).fabFavorite.setImageResource(isFavorite ? R.drawable.follow : R.drawable.unfollow);
             ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {

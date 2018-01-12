@@ -19,8 +19,6 @@ import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-
 /**
  * Author: Tavv
  * Created on 28/10/2017
@@ -35,6 +33,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private List<Partner> lstResult;
 
     private OnItemClickListener onItemClick;
+
+    private static final int IMAGE_SCALE_WIDTH = 100;
+    private static final int IMAGE_SCALE_HEIGHT = 100;
 
     public SearchResultAdapter(Context context, List<Partner> lstResult, OnItemClickListener onItemClick) {
         this.lstResult = lstResult;
@@ -53,7 +54,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         Partner partner = lstResult.get(position);
         if (partner != null) {
             holder.txtPartnerName.setText(partner.getName());
-            ImageUtils.loadImageNoRadius(context, holder.imgPartner, partner.getPicture());
+            ImageUtils.loadImageNoRadiusResize(context, holder.imgPartner, partner.getPicture(), IMAGE_SCALE_WIDTH, IMAGE_SCALE_HEIGHT);
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

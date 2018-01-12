@@ -30,16 +30,13 @@ public class HomePresenter extends BasePresenter<iHomeView> {
 
             @Override
             public void onSuccess(Repository<Partner> model) {
-                if (Utils.isResponseError(model)) {
-                    mvpView.onGetPartnerFailure(new AppError(new Throwable(model.getMessage())));
-                    return;
+                if (Utils.isNotEmptyContent(model)) {
+                    mvpView.onGetPartnerSuccess(model.getData());
                 }
-                mvpView.onGetPartnerSuccess(model.getData());
             }
 
             @Override
             public void onFailure(String msg) {
-                mvpView.onGetPartnerFailure(new AppError(new Throwable(msg)));
             }
 
             @Override
@@ -87,16 +84,9 @@ public class HomePresenter extends BasePresenter<iHomeView> {
                         Repository<Partner> partnerRepository = data.getPartnerRepository();
                         Repository<Banner> bannerRepository = data.getBannerRepository();
                         Repository<Category> categoryRepository = data.getCategoryRepository();
-                        if(Utils.isResponseError(partnerRepository)){
-                           mvpView.onGetPartnerFailure(new AppError(new Throwable(partnerRepository.getMessage())));
+                        if(Utils.isNotEmptyContent(partnerRepository) || Utils.isNotEmptyContent(bannerRepository) || Utils.isNotEmptyContent(categoryRepository)){
+                            mvpView.onFetchAllDataSuccess(partnerRepository.getData(), bannerRepository.getData(), categoryRepository.getData());
                         }
-                        if(Utils.isResponseError(bannerRepository)){
-                            mvpView.onGetPartnerFailure(new AppError(new Throwable(bannerRepository.getMessage())));
-                        }
-                        if(Utils.isResponseError(categoryRepository)){
-                            mvpView.onGetPartnerFailure(new AppError(new Throwable(categoryRepository.getMessage())));
-                        }
-                        mvpView.onFetchAllDataSuccess(partnerRepository.getData(), bannerRepository.getData(), categoryRepository.getData());
                     }
 
                     @Override

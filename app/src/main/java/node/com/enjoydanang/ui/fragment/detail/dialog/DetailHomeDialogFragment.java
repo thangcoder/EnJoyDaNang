@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.LruCache;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -245,5 +247,10 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LruCache lruCache = new LruCache(getContext());
+        lruCache.evictAll();
+    }
 }

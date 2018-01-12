@@ -49,6 +49,8 @@ public class ReviewAdapter extends RecyclerView.Adapter {
 
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
+    private static final int AVATAR_WIDTH_SCALE = 100;
+    private static final int AVATAR_HEIGHT_SCALE = 100;
 
     private List<Review> lstReviews;
     private List<List<Reply>> lstReply;
@@ -178,7 +180,7 @@ public class ReviewAdapter extends RecyclerView.Adapter {
                 ((ReviewViewHolder) holder).txtRemoveReview.setVisibility(View.GONE);
             }
             LanguageHelper.getValueByViewId(((ReviewViewHolder) holder).txtWriteReply);
-            ImageUtils.loadImageWithFreso(((ReviewViewHolder) holder).imgAvatar, model.getAvatar());
+            ImageUtils.loadImageWithScaleFreso(((ReviewViewHolder) holder).imgAvatar, model.getAvatar(), AVATAR_WIDTH_SCALE, AVATAR_HEIGHT_SCALE);
             if (((ReviewViewHolder) holder).txtContentReview.getLineCount() > 3) {
                 ((ReviewViewHolder) holder).imgExpanCollapseContent.setVisibility(View.VISIBLE);
                 ((ReviewViewHolder) holder).imgExpanCollapseContent.setOnClickListener(new View.OnClickListener() {

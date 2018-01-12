@@ -82,6 +82,9 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
 
     private final int START_PAGE = 0;
 
+    private static final int IMAGE_PARTNER_WIDTH = 400;
+    private static final int IMAGE_PARTNER_HEIGHT = 250;
+
     private int currentPage;
 
     private Partner partner;
@@ -134,7 +137,7 @@ public class ReviewFragment extends MvpFragment<ReviewPresenter> implements iRev
         if (bundle != null) {
             partner = (Partner) bundle.getParcelable(TAG);
             if (partner != null) {
-                ImageUtils.loadImageWithFreso(imgPartner, partner.getPicture());
+                ImageUtils.loadImageWithScaleFreso(imgPartner, partner.getPicture(), IMAGE_PARTNER_WIDTH, IMAGE_PARTNER_HEIGHT);
                 txtPartnerName.setText(partner.getName());
             }
         }

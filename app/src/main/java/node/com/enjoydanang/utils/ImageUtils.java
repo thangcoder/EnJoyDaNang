@@ -14,7 +14,13 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
@@ -79,6 +85,17 @@ public class ImageUtils {
                 .into(imgView);
     }
 
+    public static void loadImageNoRadiusResize(Context context, ImageView imgView, String imgUrl, int width, int height) {
+        Picasso.with(context).load(imgUrl)
+                .error(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)
+                .resize(ScreenUtils.dp2px(width), ScreenUtils.dp2px(height))
+                .onlyScaleDown()
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(imgView);
+    }
+
+
     public static void loadResizeImage(Context context, ImageView imgView, Uri uri, float width, float height) {
         Picasso.with(context).load(uri).error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder)
@@ -116,6 +133,25 @@ public class ImageUtils {
         imgView.setImageURI(imageUri);
     }
 
+    public static void loadImageWithFresoDisableCache(SimpleDraweeView imgView, String url, boolean enableCache) {
+        Uri imageUri = Uri.parse(decodeURL(url));
+        imgView.setDrawingCacheEnabled(enableCache);
+        imgView.setImageURI(imageUri);
+    }
+
+
+    public static void loadImageWithScaleFreso(SimpleDraweeView imgView, String url, int width, int height) {
+        Uri imageUri = Uri.parse(decodeURL(url));
+        ResizeOptions resizeOptions = ResizeOptions.forDimensions(width, height);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(imageUri)
+                .setResizeOptions(resizeOptions)
+                .build();
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setOldController(imgView.getController()).setImageRequest(request).build();
+        imgView.setDrawingCacheEnabled(false);
+        imgView.setController(draweeController);
+    }
+
     public static void loadImageWithFresoURI(SimpleDraweeView imgView, Uri uri) {
         imgView.setImageURI(uri);
     }
@@ -147,11 +183,12 @@ public class ImageUtils {
         }
         return link + image;
     }
+
     private static String rotateImage(int degree, String imagePath) {
-        try{
-            Bitmap b= decodeSampledBitmapFromResource(imagePath);
+        try {
+            Bitmap b = decodeSampledBitmapFromResource(imagePath);
             Matrix matrix = new Matrix();
-            if(b.getWidth()>b.getHeight()){
+            if (b.getWidth() > b.getHeight()) {
                 matrix.setRotate(degree);
                 b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(),
                         matrix, true);
@@ -164,14 +201,14 @@ public class ImageUtils {
             FileOutputStream out = new FileOutputStream(imagePath);
             if (imageType.equalsIgnoreCase("png")) {
                 b.compress(Bitmap.CompressFormat.PNG, 80, out);
-            }else if (imageType.equalsIgnoreCase("jpeg")|| imageType.equalsIgnoreCase("jpg")) {
+            } else if (imageType.equalsIgnoreCase("jpeg") || imageType.equalsIgnoreCase("jpg")) {
                 b.compress(Bitmap.CompressFormat.JPEG, 80, out);
             }
             fOut.flush();
             fOut.close();
 
             b.recycle();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return imagePath;
@@ -211,12 +248,13 @@ public class ImageUtils {
         }
         return photoPath;
     }
+
     public static Bitmap decodeSampledBitmapFromResource(String patch) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(patch,options);
+        BitmapFactory.decodeFile(patch, options);
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options);
@@ -231,23 +269,22 @@ public class ImageUtils {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int reqWidth, reqHeight;
-        if(width>=1203){
-            float per = (float)1203/width;
-            reqWidth = (int) (width*per);
-            reqHeight = (int) (height*per);
-        }else if(width >= 730 && width < 1203){
-            float per = (float)730/width;
-            reqWidth = (int) (width*per);
-            reqHeight = (int) (height*per);
-        }
-        else if(width >= 441 && width < 730){
-            float per = (float)441/width;
-            reqWidth = (int) (width*per);
-            reqHeight = (int) (height*per);
-        }else{
-            float per = (float)376/width;
-            reqWidth = (int) (width*per);
-            reqHeight = (int) (height*per);
+        if (width >= 1203) {
+            float per = (float) 1203 / width;
+            reqWidth = (int) (width * per);
+            reqHeight = (int) (height * per);
+        } else if (width >= 730 && width < 1203) {
+            float per = (float) 730 / width;
+            reqWidth = (int) (width * per);
+            reqHeight = (int) (height * per);
+        } else if (width >= 441 && width < 730) {
+            float per = (float) 441 / width;
+            reqWidth = (int) (width * per);
+            reqHeight = (int) (height * per);
+        } else {
+            float per = (float) 376 / width;
+            reqWidth = (int) (width * per);
+            reqHeight = (int) (height * per);
         }
 
         int inSampleSize = 1;

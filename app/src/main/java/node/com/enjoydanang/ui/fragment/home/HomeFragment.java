@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -52,7 +51,10 @@ import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 
 /**
- * Created by chien on 10/8/17.
+ * Author: Tavv
+ * Created on 30/10/2017
+ * Project Name: EnjoyDaNang
+ * Version 1.0
  */
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener,
@@ -226,7 +228,6 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     @Override
     public void onGetPartnerFailure(AppError error) {
-        Log.e(TAG, "onGetPartnerFailure: " + error.getMessage());
     }
 
     @Override

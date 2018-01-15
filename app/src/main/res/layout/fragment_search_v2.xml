@@ -54,13 +54,20 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-            <fragment
-                android:id="@+id/mapView"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+            <node.com.enjoydanang.utils.helper.MapFragmentWrapper
+                android:id="@+id/map_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight=".5" />
+                android:layout_weight=".5"
+                android:layout_height="0dp">
+
+                <fragment
+                    android:id="@+id/mapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center" />
+
+            </node.com.enjoydanang.utils.helper.MapFragmentWrapper>
 
             <LinearLayout
                 android:id="@+id/lrlInfoPartner"

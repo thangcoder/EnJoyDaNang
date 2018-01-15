@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,7 +42,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -52,17 +49,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import node.com.enjoydanang.constant.Constant;
-import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.utils.JsonUtils;
-import node.com.enjoydanang.utils.LocationUtils;
 import node.com.enjoydanang.utils.PermissionUtils;
 import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
@@ -273,7 +267,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         mGoogleApiClient.connect();
     }
 
-    public GoogleApiClient buildGoogleApiStandard(LocationConnectListener locationConnectListener) {
+    public synchronized GoogleApiClient buildGoogleApiStandard(LocationConnectListener locationConnectListener) {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(locationConnectListener)
@@ -688,6 +682,29 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
                         e.printStackTrace();
                     }
                 });
+    }
+
+    public double calculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;//radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i(TAG, "" + valueResult + "   KM  " + kmInDec + " Meter   " + meterInDec);
+
+        return Radius * c;
     }
 
 }

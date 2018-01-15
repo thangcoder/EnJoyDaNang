@@ -84,7 +84,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
                         Repository<Partner> partnerRepository = data.getPartnerRepository();
                         Repository<Banner> bannerRepository = data.getBannerRepository();
                         Repository<Category> categoryRepository = data.getCategoryRepository();
-                        if(Utils.isNotEmptyContent(partnerRepository) || Utils.isNotEmptyContent(bannerRepository) || Utils.isNotEmptyContent(categoryRepository)){
+                        if(Utils.isNotEmptyContent(partnerRepository) && Utils.isNotEmptyContent(bannerRepository) && Utils.isNotEmptyContent(categoryRepository)){
                             mvpView.onFetchAllDataSuccess(partnerRepository.getData(), bannerRepository.getData(), categoryRepository.getData());
                         }
                     }

@@ -21,5 +21,7 @@ public interface iSearchView extends iBaseView {
 
     void onGetLocationAddress(List<String> lstAddress);
 
+    void onGetAddress(String strAddress);
+
     void onError(AppError error);
 }

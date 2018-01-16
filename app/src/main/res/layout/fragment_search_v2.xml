@@ -54,20 +54,73 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-            <node.com.enjoydanang.utils.helper.MapFragmentWrapper
+            <RelativeLayout
                 android:id="@+id/map_wrapper"
                 android:layout_width="match_parent"
-                android:layout_weight=".5"
-                android:layout_height="0dp">
+                android:layout_height="0dp"
+                android:layout_weight=".5">
 
                 <fragment
                     android:id="@+id/mapView"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
                     android:layout_gravity="center" />
 
-            </node.com.enjoydanang.utils.helper.MapFragmentWrapper>
+                <ImageButton
+                    android:id="@+id/imgSetPickup"
+                    android:layout_width="@dimen/_34sdp"
+                    android:layout_height="@dimen/_31sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/_43sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:background="#97FFFFFF"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_pick_up_another" />
+
+                <!-- Image View that acts as map marker notice centerInParent-->
+                <ImageView
+                    android:id="@+id/imgPickUpLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_pickup"
+                    android:visibility="invisible" />
+
+                <FrameLayout
+                    android:id="@+id/frlPickUpContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_alignParentBottom="true"
+                    android:visibility="gone"
+                    android:background="#80FFFFFF"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtAddressPickup"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/green_teal"
+                        android:textSize="@dimen/_12ssp"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold"
+                        android:layout_marginRight="@dimen/_40sdp"
+                        android:paddingLeft="@dimen/_5sdp"
+                        android:paddingRight="@dimen/_5sdp"/>
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnPickUpDone"
+                        android:text="@string/Map.Pickup"
+                        android:textColor="@color/black32"
+                        android:layout_width="@dimen/_43sdp"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_gravity="right" />
+                </FrameLayout>
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/lrlInfoPartner"
@@ -105,8 +158,8 @@
                 android:id="@+id/rllPartnerPlaces"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:orientation="vertical"
-                android:layout_weight=".5">
+                android:layout_weight=".5"
+                android:orientation="vertical">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcvPartnerNearPlace"

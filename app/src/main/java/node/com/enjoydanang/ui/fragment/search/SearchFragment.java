@@ -205,6 +205,11 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
         tabLayout.setupWithViewPager(searchResultPager);
     }
 
+    @Override
+    public void onGetAddress(String strAddress) {
+
+    }
+
 
     @Override
     public void onError(AppError error) {

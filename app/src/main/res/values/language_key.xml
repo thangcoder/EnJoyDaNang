@@ -206,4 +206,5 @@
     <string name="Home.Term.System">Home.Term.System</string>
     <string name="Home.Event">Home.Event</string>
     <string name="Message.Internet.Poor">Message.Internet.Poor</string>
+    <string name="Map.Pickup">Map.Pickup</string>
 </resources>

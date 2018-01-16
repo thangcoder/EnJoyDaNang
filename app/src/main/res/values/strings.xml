@@ -223,6 +223,8 @@
 
     <string name="btn_cancel">Cancel</string>
 
+    <string name="btn_ok">Pick</string>
+
     <string name="hint_amount">Amount</string>
 
     <string name="hint_write_your_review">Write your review</string>

@@ -2,6 +2,8 @@ package node.com.enjoydanang.ui.fragment.search;
 
 import android.location.Address;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,36 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
 
     }
 
+    void getAddress(final Address address) {
+        addSubscription(Observable.create(new Observable.OnSubscribe<String>() {
+
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                String fullAddress = "";
+                if (address != null) {
+                    fullAddress = LocationUtils.getFullInfoAddress(address);
+                }
+                subscriber.onNext(fullAddress);
+                subscriber.onCompleted();
+            }
+        }), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String strAddress) {
+                mvpView.onGetAddress(strAddress);
+            }
+        });
+    }
+
 
     void getAddressByGeoLocation(final List<Partner> lstPartner) {
         addSubscription(Observable.create(new Observable.OnSubscribe<List<String>>() {
@@ -80,14 +112,18 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
             public void call(Subscriber<? super List<String>> subscriber) {
                 List<String> lstAddress = new ArrayList<String>();
                 for (Partner partner : lstPartner) {
-                    double lat = Double.parseDouble(partner.getGeoLat());
-                    double lng = Double.parseDouble(partner.getGeoLng());
-                    Address address = LocationUtils.getAddress(lat, lng);
-                    String fullAddress = "";
-                    if (address != null) {
-                        fullAddress = LocationUtils.getFullInfoAddress(address);
+                    if (StringUtils.isBlank(partner.getAddress())) {
+                        double lat = Double.parseDouble(partner.getGeoLat());
+                        double lng = Double.parseDouble(partner.getGeoLng());
+                        Address address = LocationUtils.getAddress(lat, lng);
+                        String fullAddress = "";
+                        if (address != null) {
+                            fullAddress = LocationUtils.getFullInfoAddress(address);
+                        }
+                        lstAddress.add(fullAddress);
+                    } else {
+                        lstAddress.add(partner.getAddress());
                     }
-                    lstAddress.add(fullAddress);
                 }
                 subscriber.onNext(lstAddress);
                 subscriber.onCompleted();

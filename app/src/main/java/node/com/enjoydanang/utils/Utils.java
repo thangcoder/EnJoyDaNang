@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -210,7 +211,13 @@ public class Utils {
     public static void hideSoftKeyboard(Activity activity) {
         if(activity != null){
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            View focusedView = activity.getCurrentFocus();
+            if (focusedView != null) {
+                if (inputMethodManager != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(),
+                            0);
+                }
+            }
         }
     }
 

@@ -165,7 +165,8 @@ public class LocationUtils {
         for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
             sb.append(address.getAddressLine(i)).append(", ");
         }
-        return sb.toString();
+        String result = sb.toString();
+        return result.substring(0, result.lastIndexOf(","));
     }
 
 

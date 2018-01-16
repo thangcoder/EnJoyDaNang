@@ -234,6 +234,23 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback 
         return null;
     }
 
+    public Address getAddress(LatLng latLng) {
+        if(latLng != null){
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(context, Locale.getDefault());
+
+            try {
+                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                return addresses.get(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
     public String getFullInfoByAddress(Address address) {
         if (address != null) {
             String addressLine = address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0).concat(", ") : "";

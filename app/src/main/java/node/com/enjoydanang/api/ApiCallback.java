@@ -27,7 +27,9 @@ public abstract class ApiCallback<M> extends Subscriber<M> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if(e instanceof OnErrorFailedException){
+        Throwable cause = e.getCause();
+        if(cause instanceof OnErrorFailedException || e instanceof OnErrorFailedException){
+            onFinish();
             return;
         }
         String status;

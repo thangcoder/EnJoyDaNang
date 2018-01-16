@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +17,11 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,11 +38,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -291,6 +286,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         } else {
             rcvPartnerNearPlace.setVisibility(View.GONE);
             txtEmpty.setVisibility(View.VISIBLE);
+            hideProgress(true);
         }
         hideLoading();
     }
@@ -301,8 +297,9 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             lstPartnerNearPlace.get(i).setLocationAddress(lstAddress.get(i));
         }
         SearchPartnerResultAdapter mSearchNearResultAdapter = new SearchPartnerResultAdapter(lstPartnerNearPlace, getContext(), this);
-
         rcvPartnerNearPlace.setAdapter(mSearchNearResultAdapter);
+        rcvPartnerNearPlace.setVisibility(View.VISIBLE);
+        txtEmpty.setVisibility(View.GONE);
         drawNearPlace(currentLocation);
     }
 

@@ -66,7 +66,6 @@ import node.com.enjoydanang.utils.FileUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
-import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.PhotoHelper;
@@ -176,8 +175,6 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     private List<ImageData> imageChoose;
 
     private int partnerId;
-
-    private boolean isRefreshAfterSubmit;
 
     private boolean hasActionUpdate;
 
@@ -385,11 +382,9 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             @Override
             public void onSuccess(Repository<Reply> model) {
                 hideLoading();
-                if (Utils.isResponseError(model)) {
-                    DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), model.getMessage());
-                    return;
+                if (Utils.isNotEmptyContent(model)) {
+                    updateReplies(model.getData());
                 }
-                updateReplies(model.getData());
             }
 
             @Override
@@ -476,6 +471,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             @Override
             public void onSuccess(Repository model) {
                 if (Utils.isResponseError(model)) {
+                    hasActionUpdate = false;
                     onWriteReplyFailure(new AppError(new Throwable(model.getMessage())));
                     return;
                 }
@@ -573,7 +569,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
 //        }
         int oldSize = lstReplies.size();
         int newSize = 0;
-        if (isRefreshAfterSubmit) {
+        if (hasActionUpdate) {
             if (CollectionUtils.isNotEmpty(lstReplies)) {
                 lstReplies.clear();
                 replyAdapter.notifyItemRangeRemoved(0, oldSize);
@@ -600,7 +596,7 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
             public void onLoadMore(int page) {
 //                hasLoadmore = true;
 //                replyAdapter.setProgressMore(true);
-                isRefreshAfterSubmit = false;
+                hasActionUpdate = false;
                 fetchReplies(userInfo.getCode(), review.getId(), page);
             }
         });
@@ -662,8 +658,8 @@ public class WriteReplyDialog extends DialogFragment implements View.OnTouchList
     }
 
     private void onWriteReplyFailure(AppError appError) {
-        hideLoading();
         DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+        hideLoading();
     }
 
     private void setLayoutWeight(LinearLayout relativeLayout, float weight) {

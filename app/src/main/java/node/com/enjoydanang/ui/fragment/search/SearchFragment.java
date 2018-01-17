@@ -191,10 +191,8 @@ public class SearchFragment extends MvpFragment<SearchPresenter> implements iSea
     }
 
     @Override
-    public void onGetLocationAddress(List<String> lstAddress) {
-        for (int i = 0; i < lstAddress.size(); i++) {
-            lstPartner.get(i).setLocationAddress(lstAddress.get(i));
-        }
+    public void onGetLocationAddress(List<Partner> lstPartner) {
+        this.lstPartner = lstPartner;
         ArrayList<Partner> data = new ArrayList<>();
         data.addAll(lstPartner);
         String strTab1 = Utils.getLanguageByResId(R.string.Search_Tab1_Title);

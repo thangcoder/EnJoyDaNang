@@ -19,7 +19,7 @@ public interface iSearchView extends iBaseView {
 
     void onResultPlaceByRange(List<Partner> lstPartner);
 
-    void onGetLocationAddress(List<String> lstAddress);
+    void onGetLocationAddress(List<Partner> lstAddress);
 
     void onGetAddress(String strAddress);
 

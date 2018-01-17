@@ -106,11 +106,11 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
 
 
     void getAddressByGeoLocation(final List<Partner> lstPartner) {
-        addSubscription(Observable.create(new Observable.OnSubscribe<List<String>>() {
+        addSubscription(Observable.create(new Observable.OnSubscribe<List<Partner>>() {
 
             @Override
-            public void call(Subscriber<? super List<String>> subscriber) {
-                List<String> lstAddress = new ArrayList<String>();
+            public void call(Subscriber<? super List<Partner>> subscriber) {
+                List<Partner> lstPartners = new ArrayList<Partner>();
                 for (Partner partner : lstPartner) {
                     if (StringUtils.isBlank(partner.getAddress())) {
                         double lat = Double.parseDouble(partner.getGeoLat());
@@ -120,15 +120,16 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
                         if (address != null) {
                             fullAddress = LocationUtils.getFullInfoAddress(address);
                         }
-                        lstAddress.add(fullAddress);
+                        partner.setAddress(fullAddress);
+                        lstPartners.add(partner);
                     } else {
-                        lstAddress.add(partner.getAddress());
+                        lstPartners.add(partner);
                     }
                 }
-                subscriber.onNext(lstAddress);
+                subscriber.onNext(lstPartners);
                 subscriber.onCompleted();
             }
-        }), new Subscriber<List<String>>() {
+        }), new Subscriber<List<Partner>>() {
             @Override
             public void onCompleted() {
 
@@ -140,8 +141,8 @@ public class SearchPresenter extends BasePresenter<iSearchView> {
             }
 
             @Override
-            public void onNext(List<String> lstAddress) {
-                mvpView.onGetLocationAddress(lstAddress);
+            public void onNext(List<Partner> lstPartner) {
+                mvpView.onGetLocationAddress(lstPartner);
             }
         });
     }

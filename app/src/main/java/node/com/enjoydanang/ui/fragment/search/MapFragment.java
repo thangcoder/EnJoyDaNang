@@ -292,10 +292,8 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     }
 
     @Override
-    public void onGetLocationAddress(List<String> lstAddress) {
-        for (int i = 0; i < lstAddress.size(); i++) {
-            lstPartnerNearPlace.get(i).setLocationAddress(lstAddress.get(i));
-        }
+    public void onGetLocationAddress(List<Partner> lstPartners) {
+        lstPartnerNearPlace = lstPartners;
         SearchPartnerResultAdapter mSearchNearResultAdapter = new SearchPartnerResultAdapter(lstPartnerNearPlace, getContext(), this);
         rcvPartnerNearPlace.setAdapter(mSearchNearResultAdapter);
         rcvPartnerNearPlace.setVisibility(View.VISIBLE);

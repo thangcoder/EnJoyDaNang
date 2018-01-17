@@ -54,7 +54,7 @@ public class SearchPartnerResultAdapter extends RecyclerView.Adapter<SearchPartn
         holder.setIsRecyclable(false);
         if (model != null) {
             holder.txtPartnerName.setText(model.getName());
-            holder.txtAddress.setText(model.getLocationAddress());
+            holder.txtAddress.setText(model.getAddress());
             holder.txtCategory.setText(model.getCategoryName());
             ImageUtils.loadImageNoRadius(context, holder.imgPartner, model.getPicture());
             if (StringUtils.isNotBlank(model.getDistance()) &&

@@ -114,7 +114,7 @@
                         android:id="@+id/btnPickUpDone"
                         android:text="@string/Map.Pickup"
                         android:textColor="@color/black32"
-                        android:layout_width="@dimen/_43sdp"
+                        android:layout_width="@dimen/_50sdp"
                         android:layout_height="match_parent"
                         android:textSize="@dimen/_10ssp"
                         android:layout_gravity="right" />

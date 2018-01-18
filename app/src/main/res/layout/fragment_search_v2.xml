@@ -47,6 +47,143 @@
         android:layout_below="@+id/search"
         android:visibility="invisible">
 
+        <!--<LinearLayout-->
+            <!--android:id="@+id/rlrContent"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical"-->
+            <!--android:weightSum="1">-->
+
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/map_wrapper"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight=".5">-->
+
+                <!--<fragment-->
+                    <!--android:id="@+id/mapView"-->
+                    <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:layout_gravity="center" />-->
+
+                <!--<ImageButton-->
+                    <!--android:id="@+id/imgSetPickup"-->
+                    <!--android:layout_width="@dimen/_34sdp"-->
+                    <!--android:layout_height="@dimen/_31sdp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="@dimen/_43sdp"-->
+                    <!--android:layout_marginTop="@dimen/_8sdp"-->
+                    <!--android:background="#97FFFFFF"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--android:src="@drawable/ic_pick_up_another" />-->
+
+                <!--&lt;!&ndash; Image View that acts as map marker notice centerInParent&ndash;&gt;-->
+                <!--<ImageView-->
+                    <!--android:id="@+id/imgPickUpLocation"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--android:src="@drawable/ic_pickup"-->
+                    <!--android:visibility="invisible" />-->
+
+                <!--<FrameLayout-->
+                    <!--android:id="@+id/frlPickUpContent"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="@dimen/_30sdp"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:background="#80FFFFFF"-->
+                    <!--android:orientation="horizontal">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txtAddressPickup"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:textColor="@color/green_teal"-->
+                        <!--android:textSize="@dimen/_12ssp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold"-->
+                        <!--android:layout_marginRight="@dimen/_40sdp"-->
+                        <!--android:paddingLeft="@dimen/_5sdp"-->
+                        <!--android:paddingRight="@dimen/_5sdp"/>-->
+
+                    <!--<android.support.v7.widget.AppCompatButton-->
+                        <!--android:id="@+id/btnPickUpDone"-->
+                        <!--android:text="@string/Map.Pickup"-->
+                        <!--android:textColor="@color/black32"-->
+                        <!--android:layout_width="@dimen/_50sdp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:textSize="@dimen/_10ssp"-->
+                        <!--android:layout_gravity="right" />-->
+                <!--</FrameLayout>-->
+
+            <!--</RelativeLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/lrlInfoPartner"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight=".1"-->
+                <!--android:background="@color/material_grey_200"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:orientation="vertical"-->
+                <!--android:paddingLeft="@dimen/_8sdp"-->
+                <!--android:visibility="gone">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/txtPartnerName"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:ellipsize="end"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:text="@string/Search.Tab2.Title"-->
+                    <!--android:textColor="@color/material_grey_800"-->
+                    <!--android:textSize="@dimen/_11ssp"-->
+                    <!--android:textStyle="bold" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/txtDistance"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/_2sdp"-->
+                    <!--android:textColor="@color/material_grey_800"-->
+                    <!--android:textSize="@dimen/_8ssp" />-->
+
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/rllPartnerPlaces"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight=".5"-->
+                <!--android:orientation="vertical">-->
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/rcvPartnerNearPlace"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:paddingLeft="@dimen/_8sdp"-->
+                    <!--android:paddingTop="@dimen/_3sdp" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/txtEmpty"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/Message.Category.PartnerEmpty"-->
+                    <!--android:textColor="@color/red"-->
+                    <!--android:textSize="@dimen/_13ssp"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:visibility="gone" />-->
+
+            <!--</LinearLayout>-->
+
+        <!--</LinearLayout>-->
+
+
         <LinearLayout
             android:id="@+id/rlrContent"
             android:layout_width="match_parent"
@@ -54,73 +191,13 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-            <RelativeLayout
-                android:id="@+id/map_wrapper"
+            <fragment
+                android:id="@+id/mapView"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight=".5">
-
-                <fragment
-                    android:id="@+id/mapView"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center" />
-
-                <ImageButton
-                    android:id="@+id/imgSetPickup"
-                    android:layout_width="@dimen/_34sdp"
-                    android:layout_height="@dimen/_31sdp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/_43sdp"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:background="#97FFFFFF"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_pick_up_another" />
-
-                <!-- Image View that acts as map marker notice centerInParent-->
-                <ImageView
-                    android:id="@+id/imgPickUpLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_pickup"
-                    android:visibility="invisible" />
-
-                <FrameLayout
-                    android:id="@+id/frlPickUpContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_alignParentBottom="true"
-                    android:visibility="gone"
-                    android:background="#80FFFFFF"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txtAddressPickup"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/green_teal"
-                        android:textSize="@dimen/_12ssp"
-                        android:gravity="center_vertical"
-                        android:textStyle="bold"
-                        android:layout_marginRight="@dimen/_40sdp"
-                        android:paddingLeft="@dimen/_5sdp"
-                        android:paddingRight="@dimen/_5sdp"/>
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/btnPickUpDone"
-                        android:text="@string/Map.Pickup"
-                        android:textColor="@color/black32"
-                        android:layout_width="@dimen/_50sdp"
-                        android:layout_height="match_parent"
-                        android:textSize="@dimen/_10ssp"
-                        android:layout_gravity="right" />
-                </FrameLayout>
-
-            </RelativeLayout>
+                android:layout_gravity="center"
+                android:layout_weight=".5" />
 
             <LinearLayout
                 android:id="@+id/lrlInfoPartner"
@@ -158,8 +235,8 @@
                 android:id="@+id/rllPartnerPlaces"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight=".5"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_weight=".5">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcvPartnerNearPlace"

@@ -1,13 +1,11 @@
 package node.com.enjoydanang.ui.fragment.search;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -44,7 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -138,18 +134,18 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     @BindView(R.id.txtDistance)
     TextView txtDistance;
 
-    @BindView(R.id.imgPickUpLocation)
-    ImageView imgPickUpLocation;
-
-    @BindView(R.id.frlPickUpContent)
-    FrameLayout frlPickUpContent;
-
-
-    @BindView(R.id.txtAddressPickup)
-    TextView txtAddressPickup;
-
-    @BindView(R.id.btnPickUpDone)
-    AppCompatButton btnPickUpDone;
+//    @BindView(R.id.imgPickUpLocation)
+//    ImageView imgPickUpLocation;
+//
+//    @BindView(R.id.frlPickUpContent)
+//    FrameLayout frlPickUpContent;
+//
+//
+//    @BindView(R.id.txtAddressPickup)
+//    TextView txtAddressPickup;
+//
+//    @BindView(R.id.btnPickUpDone)
+//    AppCompatButton btnPickUpDone;
 
 
     private SearchResultAdapter mSearchQueryAdapter;
@@ -170,9 +166,9 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
 
     private List<Marker> lstMarkers;
 
-    private LatLng positionPickupIdle;
-
-    private Location pickUpLocation;
+//    private LatLng positionPickupIdle;
+//
+//    private Location pickUpLocation;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -288,7 +284,7 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
             txtEmpty.setVisibility(View.VISIBLE);
             hideProgress(true);
         }
-        hideLoading();
+//        hideLoading();
     }
 
     @Override
@@ -374,7 +370,6 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
         customSearchView();
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         isMapAlreadyInit = true;
@@ -416,7 +411,8 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
     @Override
     public void initViewLabel(View view) {
         super.initViewLabel(view);
-        LanguageHelper.getValueByViewId(searchView, txtSearching, txtPartnerName, txtEmpty, btnPickUpDone);
+//        LanguageHelper.getValueByViewId(searchView, txtSearching, txtPartnerName, txtEmpty, btnPickUpDone);
+        LanguageHelper.getValueByViewId(searchView, txtSearching, txtPartnerName, txtEmpty);
         String defaultDistance = Utils.getLanguageByResId(R.string.Map_Distance);
         if (StringUtils.isNotBlank(defaultDistance)) {
             txtDistance.setText(defaultDistance.concat(": -.-"));
@@ -659,55 +655,55 @@ public class MapFragment extends MvpFragment<SearchPresenter> implements iSearch
 
     @Override
     public void onCameraIdle() {
-        LatLng latLng = mGoogleMap.getCameraPosition().target;
-        pickUpLocation = new Location("");
-        pickUpLocation.setLongitude(latLng.longitude);
-        pickUpLocation.setLatitude(latLng.latitude);
-        Address address = mLocationHelper.getAddress(latLng);
-        if (address != null) {
-            if (positionPickupIdle == null) {
-                positionPickupIdle = latLng;
-                mvpPresenter.getAddress(address);
-            } else {
-                double distance = mLocationHelper.calculationByDistance(positionPickupIdle, latLng);
-                if (distance >= 0.1) {
-                    mvpPresenter.getAddress(address);
-                    positionPickupIdle = latLng;
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(INIT_ZOOM_LEVEL));
-                }
-            }
-        }
+//        LatLng latLng = mGoogleMap.getCameraPosition().target;
+//        pickUpLocation = new Location("");
+//        pickUpLocation.setLongitude(latLng.longitude);
+//        pickUpLocation.setLatitude(latLng.latitude);
+//        Address address = mLocationHelper.getAddress(latLng);
+//        if (address != null) {
+//            if (positionPickupIdle == null) {
+//                positionPickupIdle = latLng;
+//                mvpPresenter.getAddress(address);
+//            } else {
+//                double distance = mLocationHelper.calculationByDistance(positionPickupIdle, latLng);
+//                if (distance >= 0.1) {
+//                    mvpPresenter.getAddress(address);
+//                    positionPickupIdle = latLng;
+//                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(INIT_ZOOM_LEVEL));
+//                }
+//            }
+//        }
     }
 
-    @OnClick({R.id.imgSetPickup, R.id.btnPickUpDone})
-    public void onViewClick(View view) {
-        switch (view.getId()) {
-            case R.id.imgSetPickup:
-                if (mGoogleMap != null) {
-                    txtAddressPickup.setText(myCurrentAddress);
-                    imgPickUpLocation.setVisibility(View.VISIBLE);
-                    frlPickUpContent.setVisibility(View.VISIBLE);
-                    mGoogleMap.setOnCameraIdleListener(this);
-                }
-                break;
-            case R.id.btnPickUpDone:
-                if (mGoogleMap != null) {
-                    mGoogleMap.clear();
-                    if (pickUpLocation != null) {
-                        currentLocation = pickUpLocation;
-                        showLoading();
-                        enableSearchView(searchView, false);
-                        fetchNearPlace(pickUpLocation);
-                    }
-                }
-                break;
-        }
-    }
+//    @OnClick({R.id.imgSetPickup, R.id.btnPickUpDone})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            case R.id.imgSetPickup:
+//                if (mGoogleMap != null) {
+//                    txtAddressPickup.setText(myCurrentAddress);
+//                    imgPickUpLocation.setVisibility(View.VISIBLE);
+//                    frlPickUpContent.setVisibility(View.VISIBLE);
+//                    mGoogleMap.setOnCameraIdleListener(this);
+//                }
+//                break;
+//            case R.id.btnPickUpDone:
+//                if (mGoogleMap != null) {
+//                    mGoogleMap.clear();
+//                    if (pickUpLocation != null) {
+//                        currentLocation = pickUpLocation;
+//                        showLoading();
+//                        enableSearchView(searchView, false);
+//                        fetchNearPlace(pickUpLocation);
+//                    }
+//                }
+//                break;
+//        }
+//    }
 
 
     @Override
     public void onGetAddress(String strAddress) {
-        txtAddressPickup.setText(strAddress);
+//        txtAddressPickup.setText(strAddress);
     }
 }

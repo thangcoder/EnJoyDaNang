@@ -29,7 +29,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_8sdp" />
+            android:layout_height="@dimen/_7sdp" />
 
         <include
             android:id="@+id/btnLoginGPlus"
@@ -37,11 +37,19 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_8sdp" />
+            android:layout_height="@dimen/_7sdp" />
 
         <include
             android:id="@+id/btnLoginKakaotalk"
             layout="@layout/include_kakao_login" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_7sdp" />
+
+        <include
+            android:id="@+id/btnLoginZalo"
+            layout="@layout/include_zalo_login" />
 
     </LinearLayout>
 
@@ -50,7 +58,7 @@
         style="@style/ButtonLoginSocial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_3sdp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -84,14 +92,14 @@
         style="@style/ButtonLoginSocial"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/ic_login_user"
             android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:background="@drawable/rightroundborder"
             android:padding="10dp"
             android:src="@drawable/ic_login_user" />
@@ -116,14 +124,14 @@
         style="@style/ButtonLoginSocial"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/ic_login_pwd"
             android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:background="@drawable/rightroundborder"
             android:padding="10dp"
             android:src="@drawable/ic_login_pwd" />
@@ -149,7 +157,7 @@
         style="@style/ButtonLoginSocial"
         android:layout_height="@dimen/button_login_social_height"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:background="@color/color_button_login"
         android:text="@string/Home.Account.Login" />
 

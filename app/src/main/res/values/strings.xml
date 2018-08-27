@@ -20,7 +20,6 @@
     <string name="version_1_0_0">Version 1.0.0</string>
 
 
-
     <string name="change_pwd">Change Password</string>
     <string name="introduction">Introduction</string>
     <string name="login">Login</string>
@@ -89,8 +88,8 @@
     <string name="album_tab_name">Album</string>
 
     <string name="product_meta">created this recipe</string>
-    
-    
+
+
     <string name="load_fail_footer">Load failed</string>
 
     <string name="try_again_footer">Try Again</string>
@@ -169,6 +168,8 @@
 
     <string name="kakao_login">Kakao Login</string>
 
+    <string name="zalo_login">Zalo Login</string>
+
     <string name="user_name_hint">User name</string>
 
     <string name="pwd_hint">Password</string>
@@ -240,6 +241,12 @@
     <string name="term_license">로그인시 이용약관 및 개인정보취급방침 에 동의한것으로 간주합니다</string>
 
     <string name="term_link">이용약관 및 개인정보취급방침</string>
+
+    <string name="kakaotalk_title">Kakaotalk</string>
+    <string name="zalo_title">Zalo</string>
+    <string name="fb_title">Facebook</string>
+    <string name="share_action">Share</string>
+
 </resources>
 
 

@@ -4,12 +4,17 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -264,6 +269,11 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
+        }else if (view.getId() == R.id.btnShare) {
+            String urlShare = lstPartner.get(position).getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                showPopupShare(urlShare);
+            }
         } else {
             MainActivity activity = (MainActivity) getActivity();
             activity.currentTab = HomeTab.None;
@@ -283,5 +293,45 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 }
             }, 50);
         }
+    }
+
+    private void showPopupShare(final String url) {
+        if (StringUtils.isBlank(url)) return;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.popup_share, null);
+        dialogBuilder.setView(dialogView);
+
+        ImageView imgShareKakao = (ImageView) dialogView.findViewById(R.id.img_share_kakao);
+        ImageView imgShareFb = (ImageView) dialogView.findViewById(R.id.img_share_fb);
+        ImageView imgShareZalo = (ImageView) dialogView.findViewById(R.id.img_share_zalo);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setCancelable(false);
+
+        imgShareKakao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Share Kakaotalk : " + url, Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
+        imgShareFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Share Facebook : " + url, Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
+        imgShareZalo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Share Zalo : " + url, Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 }

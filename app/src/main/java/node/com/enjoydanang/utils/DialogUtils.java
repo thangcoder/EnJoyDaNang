@@ -1,7 +1,9 @@
 package node.com.enjoydanang.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -11,9 +13,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.kakao.kakaostory.KakaoStoryService;
+import com.kakao.kakaostory.api.KakaoStoryApi;
+import com.kakao.kakaostory.callback.StoryResponseCallback;
+import com.kakao.kakaostory.response.model.MyStoryInfo;
+import com.kakao.kakaotalk.v2.KakaoTalkService;
+import com.kakao.network.ErrorResult;
+import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +41,7 @@ import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.PostZalo;
 import node.com.enjoydanang.ui.fragment.album.SlideshowDialogFragment;
 
 import static node.com.enjoydanang.utils.Utils.getString;
@@ -37,6 +54,7 @@ import static node.com.enjoydanang.utils.Utils.getString;
  */
 
 public class DialogUtils {
+    private static final String TAG = DialogUtils.class.getSimpleName();
 
     /**
      * @param context Context
@@ -184,7 +202,7 @@ public class DialogUtils {
     }
 
     public static void openDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment) {
-        if(mFragmentManager != null){
+        if (mFragmentManager != null) {
             Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
             if (prev == null) {
                 dialogFragment.show(mFragmentManager, dialogFragment.getClass().getName());
@@ -193,7 +211,7 @@ public class DialogUtils {
     }
 
     public static void reOpenDialogFragment(FragmentManager mFragmentManager, DialogFragment dialogFragment) {
-        if(mFragmentManager != null){
+        if (mFragmentManager != null) {
             Fragment prev = mFragmentManager.findFragmentByTag(dialogFragment.getClass().getName());
             if (prev != null) {
                 FragmentTransaction trans = mFragmentManager.beginTransaction();
@@ -205,4 +223,81 @@ public class DialogUtils {
             }
         }
     }
+
+    public static void showPopupShare(final Context context, final ShareDialog shareDialogFb, final Activity activity,
+                                      final String url, final String title) {
+        if (StringUtils.isBlank(url)) return;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View dialogView = inflater.inflate(R.layout.popup_share, null);
+        dialogBuilder.setView(dialogView);
+
+        ImageView imgShareKakao = (ImageView) dialogView.findViewById(R.id.img_share_kakao);
+        ImageView imgShareFb = (ImageView) dialogView.findViewById(R.id.img_share_fb);
+        ImageView imgShareZalo = (ImageView) dialogView.findViewById(R.id.img_share_zalo);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setCancelable(true);
+
+        imgShareKakao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                KakaoStoryService.requestPostLink(new StoryResponseCallback<MyStoryInfo>() {
+                    @Override
+                    public void onNotKakaoStoryUser() {
+
+                    }
+
+                    @Override
+                    public void onSessionClosed(ErrorResult errorResult) {
+                        Log.d(TAG, "onSessionClosed: ");
+                    }
+
+                    @Override
+                    public void onNotSignedUp() {
+                        Log.d(TAG, "onNotSignedUp: ");
+                    }
+
+                    @Override
+                    public void onSuccess(MyStoryInfo result) {
+                        Log.d(TAG, "onSuccess: " + result);
+                    }
+                }, url, title);
+            }
+        });
+        imgShareFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(url))
+                            .build();
+                    shareDialogFb.show(content);
+                }
+            }
+        });
+
+        imgShareZalo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                ZaloSDK.Instance.isAuthenticate(new ValidateOAuthCodeCallback() {
+                    @Override
+                    public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
+                        if (isValidated) {
+                            ZaloUtils.postToWall(context, url, title);
+                        } else {
+                            //TODO: Do Login Zalo before share
+                        }
+                    }
+                });
+            }
+        });
+        alertDialog.show();
+    }
+
 }

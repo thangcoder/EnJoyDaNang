@@ -20,6 +20,8 @@ public class LoginFactory {
                 return new LoginViaGoogle(activity, loginCallBack);
             case KAKAOTALK:
                 return new LoginViaKakaoTalk(activity, loginCallBack);
+            case ZALO:
+                return new LoginViaZalo(activity, loginCallBack);
             default:
                 return null;
         }

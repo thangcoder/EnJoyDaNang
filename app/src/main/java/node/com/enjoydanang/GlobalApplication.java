@@ -5,8 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Base64;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.appevents.AppEventsLogger;
@@ -14,8 +19,12 @@ import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.kakao.auth.KakaoSDK;
+import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import io.fabric.sdk.android.Fabric;
 import node.com.enjoydanang.model.UserInfo;
@@ -62,6 +71,7 @@ public class GlobalApplication extends MultiDexApplication{
         new AppUpdateConfiguration().configFirebaseUpdate();
         SharedPrefsUtils.setContext(this);
         hasSessionLogin = Utils.hasSessionLogin();
+        ZaloSDKApplication.wrap(this);
 //        setUpLangReceiver();
 //        checkLanguage();
     }

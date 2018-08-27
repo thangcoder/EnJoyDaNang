@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ButtonLoginSocial"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/button_zalo_drawable"
+    android:orientation="horizontal">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight=".70"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_play_zalo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|center"
+        android:layout_weight=".30"
+        android:text="@string/zalo_login"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_name_social" />
+
+</LinearLayout>

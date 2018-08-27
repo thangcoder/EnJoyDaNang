@@ -66,6 +66,10 @@ public class Partner implements Parcelable {
     @Expose
     private String categoryName;
 
+    @SerializedName("ShareUrl")
+    @Expose
+    private String shareUrl;
+
     private String locationAddress;
 
     public int getId() {
@@ -200,6 +204,14 @@ public class Partner implements Parcelable {
         this.categoryName = categoryName;
     }
 
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -223,6 +235,7 @@ public class Partner implements Parcelable {
         dest.writeString(this.geoLocation);
         dest.writeString(this.locationAddress);
         dest.writeString(this.categoryName);
+        dest.writeString(this.shareUrl);
     }
 
     public Partner() {
@@ -245,6 +258,7 @@ public class Partner implements Parcelable {
         this.geoLocation = in.readString();
         this.locationAddress = in.readString();
         this.categoryName = in.readString();
+        this.shareUrl = in.readString();
     }
 
     public static final Creator<Partner> CREATOR = new Creator<Partner>() {

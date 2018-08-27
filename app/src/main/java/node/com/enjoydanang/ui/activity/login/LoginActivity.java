@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.kakao.auth.Session;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -93,6 +94,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     private LoginViaGoogle loginViaGoogle;
     private LoginViaKakaoTalk loginViaKakaoTalk;
     private LoginPresenter loginPresenter;
+    private LoginViaZalo loginViaZalo;
 
     private boolean isExit;
 
@@ -115,7 +117,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaFacebook = (LoginViaFacebook) loginFactory.getLoginType(LoginType.FACEBOOK, this, this);
         loginViaGoogle = (LoginViaGoogle) loginFactory.getLoginType(LoginType.GOOGLE, this, this);
         loginViaKakaoTalk = (LoginViaKakaoTalk) loginFactory.getLoginType(LoginType.KAKAOTALK, this, this);
-
+        loginViaZalo = (LoginViaZalo) loginFactory.getLoginType(LoginType.ZALO, this, this);
         //init
         loginViaFacebook.init();
         loginViaGoogle.init();
@@ -161,7 +163,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
 
-    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
+    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginZalo, R.id.btnLoginNormal
             , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
     public void onLoginClick(View view) {
         Intent intent = null;
@@ -174,6 +176,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.btnLoginKakaotalk:
                 loginViaKakaoTalk.login();
+                break;
+            case R.id.btnLoginZalo:
+                loginViaZalo.login();
                 break;
             case R.id.btnLoginNormal:
                 loginNormal();
@@ -207,6 +212,8 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         } else if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInGoogleResult(result);
+        }else {
+            ZaloSDK.Instance.onActivityResult(this, requestCode, resultCode, data);
         }
     }
 
@@ -236,6 +243,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
         loginViaGoogle.setLoginPresenter(loginPresenter);
         loginViaFacebook.setLoginPresenter(loginPresenter);
         loginViaKakaoTalk.setLoginPresenter(loginPresenter);
+        loginViaZalo.setLoginPresenter(loginPresenter);
     }
 
     @Override

@@ -41,11 +41,11 @@
 
             <ImageView
                 android:id="@+id/btnShare"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:layout_gravity="right|bottom"
                 android:layout_marginBottom="@dimen/_22sdp"
-                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_7sdp"
                 android:contentDescription="@null"
                 android:src="@drawable/btn_share" />
 

@@ -44,6 +44,8 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
+import com.zing.zalo.zalosdk.oauth.OauthResponse;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -96,6 +98,7 @@ import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
+import node.com.enjoydanang.utils.event.OnLoginZaloListener;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -111,7 +114,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private static final String BROADCAST_ACTION = "android.location.PROVIDERS_CHANGED";
 
-    private Menu mMenu;
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
     private final int TERM = 3;
@@ -522,7 +524,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     this.onBackPressed();
                     break;
             }
-        }else{
+        } else {
             DialogUtils.showDialog(MainActivity.this, DialogType.WARNING,
                     DialogUtils.getTitleDialog(2),
                     Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
@@ -1039,6 +1041,19 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 }
                 break;
         }
+        if (data != null) {
+            Bundle bundle = data.getExtras();
+            if (bundle != null) {
+                Integer errorCode = ((Integer) bundle.get("error"));
+                if (errorCode != null) {
+                    boolean isLoginSuccess = errorCode == 0;
+                    if (isLoginSuccess) {
+                        ZaloSDK.Instance.onActivityResult(this, requestCode, resultCode, data);
+                    }
+                    EventBus.getDefault().post(isLoginSuccess);
+                }
+            }
+        }
     }
 
     /* Broadcast receiver to check status of GPS */
@@ -1118,4 +1133,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             mLocationHelper.buildLocationSettings();
         }
     }
+
+
 }

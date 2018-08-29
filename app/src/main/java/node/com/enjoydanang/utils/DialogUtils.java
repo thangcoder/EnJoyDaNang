@@ -1,10 +1,14 @@
 package node.com.enjoydanang.utils;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.DialogFragment;
@@ -22,12 +26,20 @@ import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.kakao.auth.AuthType;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
 import com.kakao.kakaostory.KakaoStoryService;
 import com.kakao.kakaostory.api.KakaoStoryApi;
 import com.kakao.kakaostory.callback.StoryResponseCallback;
+import com.kakao.kakaostory.request.PostRequest;
+import com.kakao.kakaostory.response.LinkInfoResponse;
 import com.kakao.kakaostory.response.model.MyStoryInfo;
+import com.kakao.kakaotalk.api.KakaoTalkApi;
 import com.kakao.kakaotalk.v2.KakaoTalkService;
 import com.kakao.network.ErrorResult;
+import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
 import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -35,6 +47,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
@@ -42,6 +55,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.model.PartnerAlbum;
 import node.com.enjoydanang.model.PostZalo;
+import node.com.enjoydanang.ui.activity.login.LoginViaKakaoTalk;
 import node.com.enjoydanang.ui.fragment.album.SlideshowDialogFragment;
 
 import static node.com.enjoydanang.utils.Utils.getString;
@@ -55,6 +69,8 @@ import static node.com.enjoydanang.utils.Utils.getString;
 
 public class DialogUtils {
     private static final String TAG = DialogUtils.class.getSimpleName();
+
+    public static SessionCallback sessionCallback;
 
     /**
      * @param context Context
@@ -224,7 +240,8 @@ public class DialogUtils {
         }
     }
 
-    public static void showPopupShare(final Context context, final ShareDialog shareDialogFb, final Activity activity,
+    public static void showPopupShare(final Context context, final ShareDialog shareDialogFb, final ZaloUtils zaloUtils,
+                                      final Activity activity,
                                       final String url, final String title) {
         if (StringUtils.isBlank(url)) return;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -245,15 +262,21 @@ public class DialogUtils {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+
                 KakaoStoryService.requestPostLink(new StoryResponseCallback<MyStoryInfo>() {
                     @Override
                     public void onNotKakaoStoryUser() {
-
+                        Log.d(TAG, "onNotKakaoStoryUser: ");
                     }
 
                     @Override
                     public void onSessionClosed(ErrorResult errorResult) {
-                        Log.d(TAG, "onSessionClosed: ");
+                        if (sessionCallback == null) {
+                            sessionCallback = new SessionCallback(url, title);
+                            Session.getCurrentSession().addCallback(sessionCallback);
+                            Session.getCurrentSession().checkAndImplicitOpen();
+                        }
+                        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, activity);
                     }
 
                     @Override
@@ -263,11 +286,12 @@ public class DialogUtils {
 
                     @Override
                     public void onSuccess(MyStoryInfo result) {
-                        Log.d(TAG, "onSuccess: " + result);
+                        DialogUtils.showDialog(context, DialogType.SUCCESS, "Share Via KakaoStory", "Post succssfully");
                     }
                 }, url, title);
             }
         });
+
         imgShareFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -285,19 +309,58 @@ public class DialogUtils {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
-                ZaloSDK.Instance.isAuthenticate(new ValidateOAuthCodeCallback() {
-                    @Override
-                    public void onValidateComplete(boolean isValidated, int errorCode, long userId, String oauthCode) {
-                        if (isValidated) {
-                            ZaloUtils.postToWall(context, url, title);
-                        } else {
-                            //TODO: Do Login Zalo before share
-                        }
-                    }
-                });
+                if (ZaloSDK.Instance.getOAuthCode() != null && !ZaloSDK.Instance.getOAuthCode().equals("")) {
+                    ZaloUtils.shareFeed(activity, url, title);
+                } else {
+                    zaloUtils.login(activity);
+                }
+
             }
         });
         alertDialog.show();
+    }
+
+
+    private static class SessionCallback implements ISessionCallback {
+
+        private String url, title;
+
+        public SessionCallback(String url, String title) {
+            this.url = url;
+            this.title = title;
+        }
+
+        @Override
+        public void onSessionOpened() {
+            KakaoStoryService.requestPostLink(new StoryResponseCallback<MyStoryInfo>() {
+                @Override
+                public void onNotKakaoStoryUser() {
+
+                }
+
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+
+                }
+
+                @Override
+                public void onNotSignedUp() {
+                    Log.d(TAG, "onNotSignedUp: ");
+                }
+
+                @Override
+                public void onSuccess(MyStoryInfo result) {
+                    Log.d(TAG, "onSuccess: " + result);
+                }
+            }, url, title);
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            if (exception != null) {
+                Logger.e(exception);
+            }
+        }
     }
 
 }

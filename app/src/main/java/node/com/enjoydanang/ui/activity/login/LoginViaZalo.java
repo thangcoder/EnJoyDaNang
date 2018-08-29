@@ -11,6 +11,7 @@ import com.zing.zalo.zalosdk.oauth.OauthResponse;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,6 +81,7 @@ public class LoginViaZalo extends OAuthCompleteListener implements ILogin<OauthR
                     user.setType(LoginType.ZALO);
                     user.setFullName(zalo.getName());
                     user.setFirstName(zalo.getName());
+                    user.setEmail(zalo.getId()+"@mail.com");
                     getAccessToken();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -182,7 +184,8 @@ public class LoginViaZalo extends OAuthCompleteListener implements ILogin<OauthR
 
                     @Override
                     public void onError(Throwable e) {
-
+                        user.setAccessToken(StringUtils.EMPTY);
+                        pushToServer(user);
                     }
 
                     @Override
@@ -197,7 +200,6 @@ public class LoginViaZalo extends OAuthCompleteListener implements ILogin<OauthR
                                 e.printStackTrace();
                             }
                         }
-                        //removeAccessToken();
                     }
                 });
     }

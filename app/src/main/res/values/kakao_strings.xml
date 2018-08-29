@@ -12,4 +12,6 @@
     <string name="fabric_key">c56bb7c6dda9de4abf3082eaf30cee3de5de2186</string>
     <string name="zalo_app_id">2529004629497982421</string>
     <string name="zalo_app_key">6wR4GZG2IUN70H8XqAmL</string>
+    <string name="kakao_scheme">kakao496e1946a95637cb24165a39c1d596dd</string>
+    <string name="kakaostory_host">kakaostory</string>
 </resources>

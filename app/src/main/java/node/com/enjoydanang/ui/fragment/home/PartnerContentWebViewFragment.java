@@ -13,12 +13,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +38,12 @@ import com.facebook.share.widget.ShareDialog;
 import com.zing.zalo.zalosdk.oauth.OauthResponse;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +69,7 @@ import node.com.enjoydanang.utils.network.NetworkUtils;
  * Version 1.0
  */
 
-public class PartnerContentWebViewFragment extends DialogFragment implements OnLoginZaloListener {
+public class PartnerContentWebViewFragment extends DialogFragment implements View.OnTouchListener, OnLoginZaloListener {
     private static final String TAG = PartnerContentWebViewFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
     private static final String KEY_EXTRAS_LOCATION = "current_location";
@@ -95,8 +104,6 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
 
     private ZaloUtils zaloUtils;
 
-    private PostZalo postZalo;
-
     public static PartnerContentWebViewFragment newInstance(Category category, Location location) {
         PartnerContentWebViewFragment fragment = new PartnerContentWebViewFragment();
         Bundle bundle = new Bundle();
@@ -115,6 +122,12 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
             @Override
             public void onBackPressed() {
                 if (webViewPartner.canGoBack()) {
+                    WebBackForwardList mWebBackForwardList = webViewPartner.copyBackForwardList();
+                    if(mWebBackForwardList.getCurrentIndex() > 1){
+                        imgShare.setVisibility(View.VISIBLE);
+                    }else {
+                        imgShare.setVisibility(View.INVISIBLE);
+                    }
                     webViewPartner.goBack();
                 } else {
                     dismiss();
@@ -155,6 +168,7 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
         initToolbar();
         initWebView();
         zaloUtils = new ZaloUtils();
+        zaloUtils.setLoginZaLoListener(this);
         shareDialog = new ShareDialog(this);
         return rootView;
     }
@@ -183,12 +197,14 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
 
 
     private void initWebView() {
+        imgShare.setVisibility(View.INVISIBLE);
         WebSettings webSettings = webViewPartner.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setAppCacheEnabled(false);
         webSettings.setLoadWithOverviewMode(true);
         webViewPartner.setWebViewClient(new WebClient(getActivity()));
+        webViewPartner.setOnTouchListener(this);
     }
 
     private void getDataSent() {
@@ -216,17 +232,30 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
         switch (view.getId()) {
             case R.id.img_back:
                 if (webViewPartner.canGoBack()) {
+                    WebBackForwardList mWebBackForwardList = webViewPartner.copyBackForwardList();
+                    if(mWebBackForwardList.getCurrentIndex() > 1){
+                        imgShare.setVisibility(View.VISIBLE);
+                    }else {
+                        imgShare.setVisibility(View.INVISIBLE);
+                    }
                     webViewPartner.goBack();
                 } else {
                     dismiss();
                 }
                 break;
             case R.id.img_share:
-                postZalo = new PostZalo(webViewPartner.getTitle(), webViewPartner.getUrl(), StringUtils.EMPTY);
-                DialogUtils.showPopupShare(getContext(), shareDialog, getActivity(), postZalo.getUrlShare(), postZalo.getTitle());
+                String urlToShare = getUrlShare(webViewPartner.getOriginalUrl());
+                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlToShare, webViewPartner.getTitle());
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        WebView.HitTestResult hr = ((WebView) view).getHitTestResult();
+        imgShare.setVisibility(View.VISIBLE);
+        return false;
     }
 
     @Override
@@ -262,5 +291,26 @@ public class PartnerContentWebViewFragment extends DialogFragment implements OnL
             prgLoading.setVisibility(View.GONE);
             rlrEventContent.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getUrlShare(String originUrl) {
+        if (StringUtils.isNotEmpty(originUrl)) {
+            try {
+                URL url = new URL(originUrl);
+                Map<String, String> query_pairs = Utils.splitQuery(url);
+                String userId = query_pairs.get("id");
+                String friendly = query_pairs.get("friendlyUrl");
+                if (StringUtils.isBlank(friendly)) {
+                    friendly = "enjoy";
+                }
+                return Constant.URL_HOST_IMAGE + "/lands/topic/" + userId + "/" + friendly;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return StringUtils.EMPTY;
     }
 }

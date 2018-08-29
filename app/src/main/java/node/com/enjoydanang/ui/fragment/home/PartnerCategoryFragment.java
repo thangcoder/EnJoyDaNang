@@ -1,10 +1,13 @@
 package node.com.enjoydanang.ui.fragment.home;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.share.widget.ShareDialog;
+import com.zing.zalo.zalosdk.oauth.OauthResponse;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +38,20 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.PostZalo;
 import node.com.enjoydanang.model.UserInfo;
+import node.com.enjoydanang.ui.activity.BaseActivity;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.base.BaseRecyclerViewAdapter;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerCategoryAdapter;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.event.OnLoginZaloListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
@@ -81,6 +95,12 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private Location mLocation;
 
+    private ShareDialog shareDialog;
+
+    private ZaloUtils zaloUtils;
+
+    private PostZalo postZalo;
+
     public static PartnerCategoryFragment newInstance(int categoryId, String title, Location location) {
         PartnerCategoryFragment fragment = new PartnerCategoryFragment();
         Bundle bundle = new Bundle();
@@ -96,8 +116,8 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         userInfo = Utils.getUserInfo();
+        shareDialog = new ShareDialog(this);
         if (categoryId != -1) {
-//            mvpPresenter.getPartnerByCategory(categoryId, START_PAGE, userInfo.getUserId());
             if (mLocation == null) {
                 mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, StringUtils.EMPTY, StringUtils.EMPTY);
             } else {
@@ -131,6 +151,13 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
+        } else if (view.getId() == R.id.btnShare) {
+            String urlShare = lstPartner.get(position).getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                urlShare = Constant.URL_HOST_IMAGE + urlShare;
+                postZalo = new PostZalo(lstPartner.get(position).getName(), urlShare, "");
+                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
+            }
         } else {
             MainActivity activity = (MainActivity) getActivity();
             activity.currentTab = HomeTab.None;
@@ -156,6 +183,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
     protected void init(View view) {
         getDataSent();
         initRecyclerView();
+        zaloUtils = new ZaloUtils();
     }
 
     @Override
@@ -269,10 +297,11 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
-        }else if (view.getId() == R.id.btnShare) {
-            String urlShare = lstPartner.get(position).getShareUrl();
+        } else if (view.getId() == R.id.btnShare) {
+            String urlShare = Constant.URL_HOST_IMAGE + lstPartner.get(position).getShareUrl();
             if (StringUtils.isNotBlank(urlShare)) {
-                showPopupShare(urlShare);
+                postZalo = new PostZalo(lstPartner.get(position).getName(), urlShare, "");
+                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlShare, lstPartner.get(position).getName());
             }
         } else {
             MainActivity activity = (MainActivity) getActivity();
@@ -295,43 +324,11 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         }
     }
 
-    private void showPopupShare(final String url) {
-        if (StringUtils.isBlank(url)) return;
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.popup_share, null);
-        dialogBuilder.setView(dialogView);
+    public PostZalo getPostZalo() {
+        return postZalo;
+    }
 
-        ImageView imgShareKakao = (ImageView) dialogView.findViewById(R.id.img_share_kakao);
-        ImageView imgShareFb = (ImageView) dialogView.findViewById(R.id.img_share_fb);
-        ImageView imgShareZalo = (ImageView) dialogView.findViewById(R.id.img_share_zalo);
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-
-        alertDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        alertDialog.setCancelable(false);
-
-        imgShareKakao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "Share Kakaotalk : " + url, Toast.LENGTH_SHORT).show();
-                alertDialog.dismiss();
-            }
-        });
-        imgShareFb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "Share Facebook : " + url, Toast.LENGTH_SHORT).show();
-                alertDialog.dismiss();
-            }
-        });
-        imgShareZalo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "Share Zalo : " + url, Toast.LENGTH_SHORT).show();
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
+    public void setPostZalo(PostZalo postZalo) {
+        this.postZalo = postZalo;
     }
 }

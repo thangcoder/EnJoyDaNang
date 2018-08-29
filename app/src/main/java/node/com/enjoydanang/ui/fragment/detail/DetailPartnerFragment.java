@@ -16,6 +16,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -27,6 +28,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -37,6 +39,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.common.Common;
@@ -45,11 +48,13 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.PostZalo;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -125,6 +130,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private boolean isHideListPartnerAround;
 
+    private ShareDialog shareDialog;
+
+    private ZaloUtils zaloUtils;
+
+    private PostZalo postZalo;
+
     public static DetailPartnerFragment newInstance(Partner partner, boolean isOpenFromNearby) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
         Bundle bundle = new Bundle();
@@ -142,6 +153,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @Override
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
+        zaloUtils = new ZaloUtils();
+        shareDialog = new ShareDialog(this);
         if (mMainActivity != null) {
             if (mMainActivity.getLocationService() != null) {
                 mLastLocation = mMainActivity.getLocationService().getLastLocation();
@@ -483,5 +496,16 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private boolean checkGeoPartnerEmpty(DetailPartner partner) {
         return partner != null && (StringUtils.isEmpty(partner.getGeoLat()) || StringUtils.isEmpty(partner.getGeoLng()));
+    }
+
+    @OnClick(R.id.btnShare)
+    public void onButtonClick(View view){
+        if(partner != null){
+            String urlShare = Constant.URL_HOST_IMAGE + partner.getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                postZalo = new PostZalo(partner.getName(), urlShare, "");
+                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlShare, partner.getName());
+            }
+        }
     }
 }

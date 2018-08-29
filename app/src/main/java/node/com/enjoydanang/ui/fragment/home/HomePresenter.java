@@ -37,6 +37,7 @@ public class HomePresenter extends BasePresenter<iHomeView> {
 
             @Override
             public void onFailure(String msg) {
+                mvpView.onFetchFailure(new AppError(new Throwable(msg)));
             }
 
             @Override

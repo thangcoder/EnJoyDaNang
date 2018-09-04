@@ -242,10 +242,13 @@
 
     <string name="term_link">이용약관 및 개인정보취급방침</string>
 
-    <string name="kakaotalk_title">Kakaotalk</string>
+    <string name="kakaotalk_title">Kakao</string>
     <string name="zalo_title">Zalo</string>
     <string name="fb_title">Facebook</string>
     <string name="share_action">Share</string>
+
+    <string name="share_content">Share successfully</string>
+    <string name="share_title_success">Share %s</string>
 
 </resources>
 

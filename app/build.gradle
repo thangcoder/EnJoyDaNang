@@ -8,7 +8,7 @@ android {
         applicationId "node.com.enjoydanang"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 29
+        versionCode 30
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled  true
@@ -40,14 +40,6 @@ repositories {
     }
 }
 
-
-//pro/**
-// * Use java 1.8
-// */
-//compileOptions {
-//    targetCompatibility 1.8
-//    sourceCompatibility 1.8
-//}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -126,16 +118,6 @@ dependencies {
     compile(name: 'libZaloSDK-v2.3.01.6-authenext', ext: 'aar')
     implementation files('libs/libZaloSDK-openApi-v2.3.01.8.jar')
 }
-//
-//configurations.all {
-//    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-//        def requested = details.requested
-//        if (requested.group == 'com.android.support') {
-//            if (!requested.name.startsWith("multidex")) {
-//                details.useVersion '25.3.1'
-//            }
-//        }
-//    }
-//}
+
 
 apply plugin: 'com.google.gms.google-services'

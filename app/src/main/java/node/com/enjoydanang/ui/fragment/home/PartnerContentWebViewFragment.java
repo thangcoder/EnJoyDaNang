@@ -10,10 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,33 +31,31 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.share.widget.ShareDialog;
-import com.zing.zalo.zalosdk.oauth.OauthResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
+import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.common.Common;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Category;
-import node.com.enjoydanang.model.PostZalo;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.ui.fragment.detail.DetailPartnerFragment;
+import node.com.enjoydanang.ui.activity.main.MainActivity;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ZaloUtils;
-import node.com.enjoydanang.utils.event.OnLoginZaloListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 import node.com.enjoydanang.utils.network.NetworkUtils;
 
 /**
@@ -69,7 +65,7 @@ import node.com.enjoydanang.utils.network.NetworkUtils;
  * Version 1.0
  */
 
-public class PartnerContentWebViewFragment extends DialogFragment implements View.OnTouchListener, OnLoginZaloListener {
+public class PartnerContentWebViewFragment extends DialogFragment implements View.OnTouchListener, OnShareZaloListener {
     private static final String TAG = PartnerContentWebViewFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
     private static final String KEY_EXTRAS_LOCATION = "current_location";
@@ -100,9 +96,9 @@ public class PartnerContentWebViewFragment extends DialogFragment implements Vie
     @BindView(R.id.img_share)
     ImageView imgShare;
 
-    private ShareDialog shareDialog;
-
     private ZaloUtils zaloUtils;
+
+    private ShareDialogFragment bottomShareDialog;
 
     public static PartnerContentWebViewFragment newInstance(Category category, Location location) {
         PartnerContentWebViewFragment fragment = new PartnerContentWebViewFragment();
@@ -123,9 +119,11 @@ public class PartnerContentWebViewFragment extends DialogFragment implements Vie
             public void onBackPressed() {
                 if (webViewPartner.canGoBack()) {
                     WebBackForwardList mWebBackForwardList = webViewPartner.copyBackForwardList();
-                    if(mWebBackForwardList.getCurrentIndex() > 1){
+                    String urlOriginal = webViewPartner.getOriginalUrl();
+                    boolean isUrlShare = urlOriginal.contains("mobile/post");
+                    if (mWebBackForwardList.getCurrentIndex() > 1 && isUrlShare) {
                         imgShare.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         imgShare.setVisibility(View.INVISIBLE);
                     }
                     webViewPartner.goBack();
@@ -162,14 +160,14 @@ public class PartnerContentWebViewFragment extends DialogFragment implements Vie
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup
+            container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_partner_category_webview, container, false);
         ButterKnife.bind(this, rootView);
         initToolbar();
         initWebView();
         zaloUtils = new ZaloUtils();
         zaloUtils.setLoginZaLoListener(this);
-        shareDialog = new ShareDialog(this);
         return rootView;
     }
 
@@ -233,9 +231,9 @@ public class PartnerContentWebViewFragment extends DialogFragment implements Vie
             case R.id.img_back:
                 if (webViewPartner.canGoBack()) {
                     WebBackForwardList mWebBackForwardList = webViewPartner.copyBackForwardList();
-                    if(mWebBackForwardList.getCurrentIndex() > 1){
+                    if (mWebBackForwardList.getCurrentIndex() > 1) {
                         imgShare.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         imgShare.setVisibility(View.INVISIBLE);
                     }
                     webViewPartner.goBack();
@@ -245,26 +243,39 @@ public class PartnerContentWebViewFragment extends DialogFragment implements Vie
                 break;
             case R.id.img_share:
                 String urlToShare = getUrlShare(webViewPartner.getOriginalUrl());
-                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlToShare, webViewPartner.getTitle());
+                Share share = new Share(webViewPartner.getTitle(), urlToShare, "");
+                bottomShareDialog = DialogUtils.showSheetShareDialog(getActivity(), share);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlToShare, webViewPartner.getTitle());
                 break;
         }
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         WebView.HitTestResult hr = ((WebView) view).getHitTestResult();
-        imgShare.setVisibility(View.VISIBLE);
+        String urlOriginal = webViewPartner.getOriginalUrl();
+        if (urlOriginal.contains("mobile/post")) {
+            imgShare.setVisibility(View.VISIBLE);
+        } else {
+            imgShare.setVisibility(View.INVISIBLE);
+        }
         return false;
     }
 
     @Override
-    public void onLoginSuccess(OauthResponse response) {
-
+    public void onShareSuccess() {
+        if (bottomShareDialog != null) {
+            bottomShareDialog.dismiss();
+            String title = Utils.getString(R.string.share_title_success);
+            title = String.format(title, "Zalo");
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, title, Utils.getString(R.string.share_content));
+        }
     }
 
     @Override
-    public void onLoginFailed(String message) {
+    public void onShareFailure(String message) {
 
     }
 

@@ -1,28 +1,25 @@
 package node.com.enjoydanang.utils;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
@@ -30,33 +27,26 @@ import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.kakaostory.KakaoStoryService;
-import com.kakao.kakaostory.api.KakaoStoryApi;
 import com.kakao.kakaostory.callback.StoryResponseCallback;
-import com.kakao.kakaostory.request.PostRequest;
-import com.kakao.kakaostory.response.LinkInfoResponse;
 import com.kakao.kakaostory.response.model.MyStoryInfo;
-import com.kakao.kakaotalk.api.KakaoTalkApi;
-import com.kakao.kakaotalk.v2.KakaoTalkService;
 import com.kakao.network.ErrorResult;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
-import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cn.refactor.lib.colordialog.ColorDialog;
 import cn.refactor.lib.colordialog.PromptDialog;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.model.PartnerAlbum;
-import node.com.enjoydanang.model.PostZalo;
-import node.com.enjoydanang.ui.activity.login.LoginViaKakaoTalk;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.ui.fragment.album.SlideshowDialogFragment;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 
 import static node.com.enjoydanang.utils.Utils.getString;
 
@@ -240,6 +230,12 @@ public class DialogUtils {
         }
     }
 
+    public static ShareDialogFragment showSheetShareDialog(FragmentActivity activity, Share share){
+        ShareDialogFragment bottomSheetFragment = ShareDialogFragment.getInstance(share);
+        bottomSheetFragment.show(activity.getSupportFragmentManager(), bottomSheetFragment.getTag());
+        return bottomSheetFragment;
+    }
+
     public static void showPopupShare(final Context context, final ShareDialog shareDialogFb, final ZaloUtils zaloUtils,
                                       final Activity activity,
                                       final String url, final String title) {
@@ -310,7 +306,7 @@ public class DialogUtils {
             public void onClick(View view) {
                 alertDialog.dismiss();
                 if (ZaloSDK.Instance.getOAuthCode() != null && !ZaloSDK.Instance.getOAuthCode().equals("")) {
-                    ZaloUtils.shareFeed(activity, url, title);
+                    zaloUtils.shareFeed(activity, url, title);
                 } else {
                     zaloUtils.login(activity);
                 }

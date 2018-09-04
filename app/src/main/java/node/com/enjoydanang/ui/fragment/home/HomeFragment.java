@@ -1,6 +1,6 @@
 package node.com.enjoydanang.ui.fragment.home;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,18 +43,19 @@ import node.com.enjoydanang.framework.FragmentTransitionInfo;
 import node.com.enjoydanang.model.Banner;
 import node.com.enjoydanang.model.Category;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.model.PostZalo;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.event.EventDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.CategoryAdapter;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerAdapter;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.event.OnLoginZaloListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 
 /**
@@ -65,7 +66,7 @@ import node.com.enjoydanang.utils.helper.LocationHelper;
  */
 
 public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeView, AdapterView.OnItemClickListener,
-        OnItemClickListener, BaseSliderView.OnSliderClickListener {
+        OnItemClickListener, BaseSliderView.OnSliderClickListener, OnShareZaloListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final int VERTICAL_ITEM_SPACE = 8;
     private static final int DURATION_SLIDE = 3000;
@@ -104,12 +105,11 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
 
     private List<Banner> lstBanners;
 
-    private ShareDialog shareDialog;
-
     private ZaloUtils zaloUtils;
 
-    private PostZalo postZalo;
+    private Share share;
 
+    private ShareDialogFragment bottomShareDialog;
 
     @Override
     public void showToast(String desc) {
@@ -125,8 +125,8 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
     protected void init(View view) {
         user = Utils.getUserInfo();
         lstPartner = new ArrayList<>();
-        shareDialog = new ShareDialog(this);
         zaloUtils = new ZaloUtils();
+        zaloUtils.setLoginZaLoListener(this);
         mPartnerAdapter = new PartnerAdapter(getContext(), lstPartner, this);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         rcvPartner.addItemDecoration(Utils.getDividerDecoration(mLayoutManager.getOrientation()));
@@ -215,8 +215,9 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             String urlShare = lstPartner.get(position).getShareUrl();
             if (StringUtils.isNotBlank(urlShare)) {
                 urlShare = Constant.URL_HOST_IMAGE + urlShare;
-                postZalo = new PostZalo(lstPartner.get(position).getName(), urlShare, StringUtils.EMPTY);
-                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
+                share = new Share(lstPartner.get(position).getName(), urlShare, StringUtils.EMPTY);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
+                bottomShareDialog = DialogUtils.showSheetShareDialog(mMainActivity, share);
             }
         } else {
             MainActivity activity = (MainActivity) getActivity();
@@ -368,12 +369,12 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
             if (fragment != this) {
                 if(fragment instanceof PartnerCategoryFragment && isLoginZaloSuccess){
                     PartnerCategoryFragment partnerCategoryFragment = (PartnerCategoryFragment) fragment;
-                    PostZalo postZalo = partnerCategoryFragment.getPostZalo();
-                    ZaloUtils.shareFeed(getContext(), postZalo.getUrlShare(), postZalo.getTitle());
+                    Share share = partnerCategoryFragment.getShare();
+                    zaloUtils.shareFeed(getContext(), share.getUrlShare(), share.getTitle());
                 }
             } else {
-                if (isLoginZaloSuccess && postZalo != null) {
-                    ZaloUtils.shareFeed(getContext(), postZalo.getUrlShare(), postZalo.getTitle());
+                if (isLoginZaloSuccess && share != null) {
+                    zaloUtils.shareFeed(getContext(), share.getUrlShare(), share.getTitle());
                 }
             }
 
@@ -429,4 +430,18 @@ public class HomeFragment extends MvpFragment<HomePresenter> implements iHomeVie
         }
     }
 
+    @Override
+    public void onShareSuccess() {
+        if(bottomShareDialog != null){
+            bottomShareDialog.dismiss();
+            String title = Utils.getString(R.string.share_title_success);
+            title = String.format(title, "Zalo");
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, title, Utils.getString(R.string.share_content));
+        }
+    }
+
+    @Override
+    public void onShareFailure(String message) {
+
+    }
 }

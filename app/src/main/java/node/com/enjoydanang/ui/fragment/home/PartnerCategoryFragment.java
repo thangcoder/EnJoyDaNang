@@ -1,32 +1,20 @@
 package node.com.enjoydanang.ui.fragment.home;
 
-import android.app.Activity;
-import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.share.widget.ShareDialog;
-import com.zing.zalo.zalosdk.oauth.OauthResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,18 +28,18 @@ import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
-import node.com.enjoydanang.model.PostZalo;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.ui.activity.BaseActivity;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.base.BaseRecyclerViewAdapter;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerCategoryAdapter;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
 import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
-import node.com.enjoydanang.utils.event.OnLoginZaloListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
@@ -63,7 +51,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  */
 
 public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresenter> implements PartnerCategoryView, OnItemClickListener,
-        BaseRecyclerViewAdapter.ItemClickListener {
+        BaseRecyclerViewAdapter.ItemClickListener, OnShareZaloListener {
     private static final String TAG = PartnerCategoryFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
     private static final String KEY_EXTRAS_LOCATION = "current_location";
@@ -99,7 +87,9 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private ZaloUtils zaloUtils;
 
-    private PostZalo postZalo;
+    private Share share;
+
+    private ShareDialogFragment bottomShareDialog;
 
     public static PartnerCategoryFragment newInstance(int categoryId, String title, Location location) {
         PartnerCategoryFragment fragment = new PartnerCategoryFragment();
@@ -155,8 +145,9 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
             String urlShare = lstPartner.get(position).getShareUrl();
             if (StringUtils.isNotBlank(urlShare)) {
                 urlShare = Constant.URL_HOST_IMAGE + urlShare;
-                postZalo = new PostZalo(lstPartner.get(position).getName(), urlShare, "");
-                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
+                share = new Share(lstPartner.get(position).getName(), urlShare, "");
+                bottomShareDialog = DialogUtils.showSheetShareDialog(mMainActivity, share);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
             }
         } else {
             MainActivity activity = (MainActivity) getActivity();
@@ -184,6 +175,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         getDataSent();
         initRecyclerView();
         zaloUtils = new ZaloUtils();
+        zaloUtils.setLoginZaLoListener(this);
     }
 
     @Override
@@ -300,8 +292,9 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         } else if (view.getId() == R.id.btnShare) {
             String urlShare = Constant.URL_HOST_IMAGE + lstPartner.get(position).getShareUrl();
             if (StringUtils.isNotBlank(urlShare)) {
-                postZalo = new PostZalo(lstPartner.get(position).getName(), urlShare, "");
-                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlShare, lstPartner.get(position).getName());
+                share = new Share(lstPartner.get(position).getName(), urlShare, "");
+                bottomShareDialog =  DialogUtils.showSheetShareDialog(mMainActivity, share);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlShare, lstPartner.get(position).getName());
             }
         } else {
             MainActivity activity = (MainActivity) getActivity();
@@ -324,11 +317,26 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         }
     }
 
-    public PostZalo getPostZalo() {
-        return postZalo;
+    public Share getShare() {
+        return share;
     }
 
-    public void setPostZalo(PostZalo postZalo) {
-        this.postZalo = postZalo;
+    public void setShare(Share share) {
+        this.share = share;
+    }
+
+    @Override
+    public void onShareSuccess() {
+        if(bottomShareDialog != null){
+            bottomShareDialog.dismiss();
+            String title = Utils.getString(R.string.share_title_success);
+            title = String.format(title, "Zalo");
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, title, Utils.getString(R.string.share_content));
+        }
+    }
+
+    @Override
+    public void onShareFailure(String message) {
+
     }
 }

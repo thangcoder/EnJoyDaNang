@@ -1,7 +1,6 @@
 package node.com.enjoydanang.utils;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 
@@ -11,20 +10,15 @@ import com.zing.zalo.zalosdk.oauth.FeedData;
 import com.zing.zalo.zalosdk.oauth.LoginChannel;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.OAuthCompleteListener;
-import com.zing.zalo.zalosdk.oauth.OauthResponse;
 import com.zing.zalo.zalosdk.oauth.OpenAPIService;
-import com.zing.zalo.zalosdk.oauth.ValidateOAuthCodeCallback;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloPluginCallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import node.com.enjoydanang.R;
-import node.com.enjoydanang.model.PostZalo;
-import node.com.enjoydanang.model.UserInfo;
-import node.com.enjoydanang.utils.event.OnLoginZaloListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 
 /**
  * Author: Tavv
@@ -36,10 +30,10 @@ import node.com.enjoydanang.utils.event.OnLoginZaloListener;
 public class ZaloUtils extends OAuthCompleteListener {
     private static final String TAG = ZaloUtils.class.getSimpleName();
 
-    private OnLoginZaloListener onLoginZaloListener;
+    private OnShareZaloListener onLoginZaloListener;
 
 
-    public void setLoginZaLoListener(OnLoginZaloListener onLoginZaloListener) {
+    public void setLoginZaLoListener(OnShareZaloListener onLoginZaloListener) {
         this.onLoginZaloListener = onLoginZaloListener;
     }
 
@@ -64,14 +58,18 @@ public class ZaloUtils extends OAuthCompleteListener {
         });
     }
 
-    public static void shareFeed(Context context, String url, String title) {
+    public void shareFeed(Context context, String url, String title) {
         FeedData feedData = new FeedData();
         feedData.setLink(url);
         feedData.setAppName(Utils.getString(R.string.app_name));
         OpenAPIService.getInstance().shareFeed(context, feedData, new ZaloPluginCallback() {
             @Override
-            public void onResult(boolean isShareSuccess, int error, String s, String s1) {
-                Log.i(TAG, "onResult: " + isShareSuccess + " " + error + " "+ s);
+            public void onResult(boolean isShareSuccess, int errorCode, String errorMsg, String data) {
+                if(isShareSuccess){
+                    onLoginZaloListener.onShareSuccess();
+                }else {
+                    onLoginZaloListener.onShareFailure(errorMsg);
+                }
             }
         });
     }

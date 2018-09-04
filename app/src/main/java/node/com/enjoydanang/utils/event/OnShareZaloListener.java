@@ -9,9 +9,9 @@ import com.zing.zalo.zalosdk.oauth.OauthResponse;
  * Version 1.0
  */
 
-public interface OnLoginZaloListener {
+public interface OnShareZaloListener {
 
-    void onLoginSuccess(OauthResponse response);
+    void onShareSuccess();
 
-    void onLoginFailed(String message);
+    void onShareFailure(String message);
 }

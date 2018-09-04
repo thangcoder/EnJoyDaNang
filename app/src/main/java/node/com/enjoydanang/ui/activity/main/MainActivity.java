@@ -31,7 +31,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -42,9 +41,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
-import com.zing.zalo.zalosdk.oauth.OauthResponse;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -98,7 +97,6 @@ import node.com.enjoydanang.utils.config.ForceUpdateChecker;
 import node.com.enjoydanang.utils.event.LocationConnectListener;
 import node.com.enjoydanang.utils.event.OnBackFragmentListener;
 import node.com.enjoydanang.utils.event.OnFindLastLocationCallback;
-import node.com.enjoydanang.utils.event.OnLoginZaloListener;
 import node.com.enjoydanang.utils.event.OnUpdateProfileSuccess;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
@@ -194,6 +192,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private OnBackFragmentListener onBackFragmentListener;
 
+    public CallbackManager fbCallbackManager;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -202,6 +202,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void init() {
         setHeightToolbar();
+        fbCallbackManager = CallbackManager.Factory.create();
         if (mLocationReceiver == null) {
             mLocationReceiver = new LocationReceiver();
         }
@@ -1043,6 +1044,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         }
         if (data != null) {
             Bundle bundle = data.getExtras();
+            fbCallbackManager.onActivityResult(requestCode, resultCode, data);
             if (bundle != null) {
                 Integer errorCode = ((Integer) bundle.get("error"));
                 if (errorCode != null) {

@@ -6,9 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
+
 import node.com.enjoydanang.constant.Constant;
 
-public class Category {
+public class Category implements Serializable{
 
     @SerializedName("Icon")
     @Expose
@@ -34,6 +36,10 @@ public class Category {
     @SerializedName("Discount")
     @Expose
     private Integer discount;
+
+    @SerializedName("OriginalURI")
+    @Expose
+    private String originalUrl;
 
     public String getIcon() {
         return StringUtils.isNoneBlank(icon) ? Constant.URL_HOST_IMAGE + icon : icon;
@@ -99,6 +105,14 @@ public class Category {
         this.discount = discount;
     }
 
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
@@ -110,6 +124,7 @@ public class Category {
                 ", address='" + address + '\'' +
                 ", starReview=" + starReview +
                 ", discount=" + discount +
+                ", originalUrl='" + originalUrl + '\'' +
                 '}';
     }
 }

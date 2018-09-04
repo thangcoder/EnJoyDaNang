@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -103,6 +105,12 @@ public class PartnerAdapter extends RecyclerView.Adapter {
                     mOnItemClickListener.onClick(view, position);
                 }
             });
+            ((ViewHolder) holder).btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnItemClickListener.onClick(view, position);
+                }
+            });
             int discount = partner.getDiscount();
             if (discount != 0) {
                 String strDiscount = String.format(Locale.getDefault(), Constant.DISCOUNT_TEMPLATE, discount, "%");
@@ -139,6 +147,8 @@ public class PartnerAdapter extends RecyclerView.Adapter {
         TextView txtDistance;
         @BindView(R.id.fabFavorite)
         FloatingActionButton fabFavorite;
+        @BindView(R.id.btnShare)
+        ImageView btnShare;
 
         @BindView(R.id.txtDiscount)
         TextView txtDiscount;

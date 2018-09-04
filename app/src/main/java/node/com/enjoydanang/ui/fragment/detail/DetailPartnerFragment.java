@@ -1,14 +1,19 @@
 package node.com.enjoydanang.ui.fragment.detail;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.location.Location;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
@@ -25,7 +30,11 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.facebook.AccessToken;
+import com.facebook.FacebookDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -36,6 +45,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import node.com.enjoydanang.MvpFragment;
 import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
@@ -45,12 +55,16 @@ import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.DetailPartner;
 import node.com.enjoydanang.model.Partner;
 import node.com.enjoydanang.model.PartnerAlbum;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.ImageUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 import node.com.enjoydanang.utils.helper.LocationHelper;
 
@@ -62,7 +76,7 @@ import node.com.enjoydanang.utils.helper.LocationHelper;
  */
 
 public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> implements iDetailPartnerView,
-        OnItemClickListener {
+        OnItemClickListener, OnShareZaloListener {
     private static final String TAG = DetailPartnerFragment.class.getSimpleName();
     private static final String KEY_OPEN_FROM_NEARBY = "open_from_nearby";
 
@@ -125,6 +139,12 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private boolean isHideListPartnerAround;
 
+    private ZaloUtils zaloUtils;
+
+    private Share share;
+
+    private ShareDialogFragment bottomShareDialog;
+
     public static DetailPartnerFragment newInstance(Partner partner, boolean isOpenFromNearby) {
         DetailPartnerFragment fragment = new DetailPartnerFragment();
         Bundle bundle = new Bundle();
@@ -142,6 +162,8 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
     @Override
     protected void init(View view) {
         mBaseActivity.setTitle(Utils.getLanguageByResId(R.string.Tab_Detail));
+        zaloUtils = new ZaloUtils();
+        zaloUtils.setLoginZaLoListener(this);
         if (mMainActivity != null) {
             if (mMainActivity.getLocationService() != null) {
                 mLastLocation = mMainActivity.getLocationService().getLastLocation();
@@ -218,7 +240,7 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
         if (fragment != null) {
             fragment.countGetResultFailed += 1;
             if (fragment.countGetResultFailed == 1) {
-                DialogUtils.showDialog(getContext(), DialogType.WRONG, DialogUtils.getTitleDialog(3), appError.getMessage());
+                Log.e(TAG, "onFetchFail " + appError.getMessage());
             }
         }
     }
@@ -247,6 +269,21 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
             DetailHomeDialogFragment dialog = DetailHomeDialogFragment.newInstance(lstPartnerAround.get(position), true);
             DialogUtils.reOpenDialogFragment(mFragmentManager, dialog);
         }
+    }
+
+    @Override
+    public void onShareSuccess() {
+        if (bottomShareDialog != null) {
+            bottomShareDialog.dismiss();
+            String title = Utils.getString(R.string.share_title_success);
+            title = String.format(title, "Zalo");
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, title, Utils.getString(R.string.share_content));
+        }
+    }
+
+    @Override
+    public void onShareFailure(String message) {
+
     }
 
     private class WebClient extends WebViewClient {
@@ -482,5 +519,17 @@ public class DetailPartnerFragment extends MvpFragment<DetailPartnerPresenter> i
 
     private boolean checkGeoPartnerEmpty(DetailPartner partner) {
         return partner != null && (StringUtils.isEmpty(partner.getGeoLat()) || StringUtils.isEmpty(partner.getGeoLng()));
+    }
+
+    @OnClick(R.id.btnShare)
+    public void onButtonClick(View view) {
+        if (partner != null) {
+            String urlShare = Constant.URL_HOST_IMAGE + partner.getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                share = new Share(partner.getName(), urlShare, "");
+                bottomShareDialog = DialogUtils.showSheetShareDialog(mMainActivity, share);
+
+            }
+        }
     }
 }

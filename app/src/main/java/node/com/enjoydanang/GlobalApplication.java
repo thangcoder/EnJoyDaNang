@@ -1,12 +1,17 @@
-package node.com.enjoydanang;
+ package node.com.enjoydanang;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Base64;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.appevents.AppEventsLogger;
@@ -14,8 +19,12 @@ import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.kakao.auth.KakaoSDK;
+import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import io.fabric.sdk.android.Fabric;
 import node.com.enjoydanang.model.UserInfo;
@@ -27,7 +36,9 @@ import node.com.enjoydanang.utils.config.AppUpdateConfiguration;
 import node.com.enjoydanang.utils.helper.DomainHelper;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
-/**
+import static com.kakao.util.helper.Utility.getPackageInfo;
+
+ /**
  * Created by chien on 10/8/17.
  */
 
@@ -62,6 +73,8 @@ public class GlobalApplication extends MultiDexApplication{
         new AppUpdateConfiguration().configFirebaseUpdate();
         SharedPrefsUtils.setContext(this);
         hasSessionLogin = Utils.hasSessionLogin();
+        ZaloSDKApplication.wrap(this);
+        Log.i(TAG, "onCreate: " + getKeyHash(this));
 //        setUpLangReceiver();
 //        checkLanguage();
     }
@@ -158,6 +171,23 @@ public class GlobalApplication extends MultiDexApplication{
 
     public void setHasClickedUpdate(boolean hasClickedUpdate) {
         this.hasClickedUpdate = hasClickedUpdate;
+    }
+
+    public static String getKeyHash(final Context context) {
+        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
+        if (packageInfo == null)
+            return null;
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+            } catch (NoSuchAlgorithmException e) {
+                Log.w(TAG, "Unable to get MessageDigest. signature=" + signature, e);
+            }
+        }
+        return null;
     }
 
 }

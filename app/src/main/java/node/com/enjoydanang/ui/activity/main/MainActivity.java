@@ -31,7 +31,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -42,8 +41,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.ConnectionResult;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -111,7 +112,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private static final String BROADCAST_ACTION = "android.location.PROVIDERS_CHANGED";
 
-    private Menu mMenu;
     private final int INTRODUCTION = 1;
     private final int CONTACT_US = 2;
     private final int TERM = 3;
@@ -192,6 +192,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private OnBackFragmentListener onBackFragmentListener;
 
+    public CallbackManager fbCallbackManager;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_main);
@@ -200,6 +202,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     @Override
     public void init() {
         setHeightToolbar();
+        fbCallbackManager = CallbackManager.Factory.create();
         if (mLocationReceiver == null) {
             mLocationReceiver = new LocationReceiver();
         }
@@ -522,7 +525,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                     this.onBackPressed();
                     break;
             }
-        }else{
+        } else {
             DialogUtils.showDialog(MainActivity.this, DialogType.WARNING,
                     DialogUtils.getTitleDialog(2),
                     Utils.getLanguageByResId(R.string.Home_Account_Fullname_NotEmpty));
@@ -1039,6 +1042,20 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 }
                 break;
         }
+        if (data != null) {
+            Bundle bundle = data.getExtras();
+            fbCallbackManager.onActivityResult(requestCode, resultCode, data);
+            if (bundle != null) {
+                Integer errorCode = ((Integer) bundle.get("error"));
+                if (errorCode != null) {
+                    boolean isLoginSuccess = errorCode == 0;
+                    if (isLoginSuccess) {
+                        ZaloSDK.Instance.onActivityResult(this, requestCode, resultCode, data);
+                    }
+                    EventBus.getDefault().post(isLoginSuccess);
+                }
+            }
+        }
     }
 
     /* Broadcast receiver to check status of GPS */
@@ -1118,4 +1135,6 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             mLocationHelper.buildLocationSettings();
         }
     }
+
+
 }

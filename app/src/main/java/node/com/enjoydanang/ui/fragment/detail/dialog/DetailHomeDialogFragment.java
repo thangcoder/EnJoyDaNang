@@ -31,6 +31,7 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.activity.scan.ScanActivity;
 import node.com.enjoydanang.ui.fragment.detail.DetailPagerAdapter;
@@ -71,8 +72,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     private MainActivity mMainActivity;
 
     public int countGetResultFailed = 0;
-
-    private boolean isOpenFromNearby;
 
     public static DetailHomeDialogFragment newInstance(Partner partner, boolean isOpenFromNearby) {
         DetailHomeDialogFragment fragment = new DetailHomeDialogFragment();
@@ -139,11 +138,6 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTabLayout.addTab(mTabLayout.newTab().setText(LanguageHelper.getValueByKey(Utils.getString(R.string.Tab_Detail))));
@@ -155,7 +149,7 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
         Bundle bundle = getArguments();
         if (bundle != null) {
             partner = (Partner) bundle.getParcelable(TAG);
-            isOpenFromNearby = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
+            boolean isOpenFromNearby = bundle.getBoolean(KEY_OPEN_FROM_NEARBY);
             DetailPagerAdapter adapter = new DetailPagerAdapter(getChildFragmentManager(), mTabLayout.getTabCount(), partner, isOpenFromNearby);
             mViewPager.setAdapter(adapter);
             int limit = (adapter.getCount() > 1 ? adapter.getCount() - 1 : 1);

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.facebook.share.widget.ShareDialog;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,15 +26,20 @@ import node.com.enjoydanang.R;
 import node.com.enjoydanang.annotation.DialogType;
 import node.com.enjoydanang.api.model.Repository;
 import node.com.enjoydanang.constant.AppError;
+import node.com.enjoydanang.constant.Constant;
 import node.com.enjoydanang.model.Partner;
+import node.com.enjoydanang.model.Share;
 import node.com.enjoydanang.model.UserInfo;
 import node.com.enjoydanang.ui.activity.main.MainActivity;
 import node.com.enjoydanang.ui.base.BaseRecyclerViewAdapter;
 import node.com.enjoydanang.ui.fragment.detail.dialog.DetailHomeDialogFragment;
 import node.com.enjoydanang.ui.fragment.home.adapter.PartnerCategoryAdapter;
+import node.com.enjoydanang.ui.fragment.share.ShareDialogFragment;
 import node.com.enjoydanang.utils.DialogUtils;
 import node.com.enjoydanang.utils.Utils;
+import node.com.enjoydanang.utils.ZaloUtils;
 import node.com.enjoydanang.utils.event.OnItemClickListener;
+import node.com.enjoydanang.utils.event.OnShareZaloListener;
 import node.com.enjoydanang.utils.helper.EndlessScrollListener;
 import node.com.enjoydanang.utils.helper.LanguageHelper;
 
@@ -44,7 +51,7 @@ import node.com.enjoydanang.utils.helper.LanguageHelper;
  */
 
 public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresenter> implements PartnerCategoryView, OnItemClickListener,
-        BaseRecyclerViewAdapter.ItemClickListener {
+        BaseRecyclerViewAdapter.ItemClickListener, OnShareZaloListener {
     private static final String TAG = PartnerCategoryFragment.class.getSimpleName();
     private static final String KEY_EXTRAS_TITLE = "title_category";
     private static final String KEY_EXTRAS_LOCATION = "current_location";
@@ -76,6 +83,12 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private Location mLocation;
 
+    private ZaloUtils zaloUtils;
+
+    private Share share;
+
+    private ShareDialogFragment bottomShareDialog;
+
     public static PartnerCategoryFragment newInstance(int categoryId, String title, Location location) {
         PartnerCategoryFragment fragment = new PartnerCategoryFragment();
         Bundle bundle = new Bundle();
@@ -92,7 +105,6 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         mvpPresenter = createPresenter();
         userInfo = Utils.getUserInfo();
         if (categoryId != -1) {
-//            mvpPresenter.getPartnerByCategory(categoryId, START_PAGE, userInfo.getUserId());
             if (mLocation == null) {
                 mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, StringUtils.EMPTY, StringUtils.EMPTY);
             } else {
@@ -126,6 +138,14 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
+        } else if (view.getId() == R.id.btnShare) {
+            String urlShare = lstPartner.get(position).getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                urlShare = Constant.URL_HOST_IMAGE + urlShare;
+                share = new Share(lstPartner.get(position).getName(), urlShare, "");
+                bottomShareDialog = DialogUtils.showSheetShareDialog(mMainActivity, share);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, mMainActivity, urlShare, lstPartner.get(position).getName());
+            }
         } else {
             MainActivity activity = (MainActivity) getActivity();
             activity.currentTab = HomeTab.None;
@@ -151,6 +171,8 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
     protected void init(View view) {
         getDataSent();
         initRecyclerView();
+        zaloUtils = new ZaloUtils();
+        zaloUtils.setLoginZaLoListener(this);
     }
 
     @Override
@@ -264,6 +286,13 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 DialogUtils.showDialog(getContext(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
             }
 
+        } else if (view.getId() == R.id.btnShare) {
+            String urlShare = Constant.URL_HOST_IMAGE + lstPartner.get(position).getShareUrl();
+            if (StringUtils.isNotBlank(urlShare)) {
+                share = new Share(lstPartner.get(position).getName(), urlShare, "");
+                bottomShareDialog =  DialogUtils.showSheetShareDialog(mMainActivity, share);
+//                DialogUtils.showPopupShare(getContext(), shareDialog, zaloUtils, getActivity(), urlShare, lstPartner.get(position).getName());
+            }
         } else {
             MainActivity activity = (MainActivity) getActivity();
             activity.currentTab = HomeTab.None;
@@ -283,5 +312,28 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
                 }
             }, 50);
         }
+    }
+
+    public Share getShare() {
+        return share;
+    }
+
+    public void setShare(Share share) {
+        this.share = share;
+    }
+
+    @Override
+    public void onShareSuccess() {
+        if(bottomShareDialog != null){
+            bottomShareDialog.dismiss();
+            String title = Utils.getString(R.string.share_title_success);
+            title = String.format(title, "Zalo");
+            DialogUtils.showDialog(getContext(), DialogType.SUCCESS, title, Utils.getString(R.string.share_content));
+        }
+    }
+
+    @Override
+    public void onShareFailure(String message) {
+
     }
 }

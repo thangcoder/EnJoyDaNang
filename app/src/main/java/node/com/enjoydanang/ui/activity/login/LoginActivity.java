@@ -164,7 +164,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
 
 
     @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
-            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue, R.id.txtTermSystem})
+            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue, R.id.txtTermSystem, R.id.btnLoginZalo})
     public void onLoginClick(View view) {
         Intent intent = null;
         switch (view.getId()) {
@@ -176,6 +176,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                 break;
             case R.id.btnLoginKakaotalk:
                 loginViaKakaoTalk.login();
+                break;
+            case R.id.btnLoginZalo:
+                loginViaZalo.login();
                 break;
             case R.id.btnLoginNormal:
                 loginNormal();
@@ -296,7 +299,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     @Override
     public void onLoginFailure(AppError error) {
         hideLoading();
-        DialogUtils.showDialog(this, PromptDialog.DIALOG_TYPE_WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
+        DialogUtils.showDialog(this, DialogType.WRONG, Utils.getLanguageByResId(R.string.Dialog_Title_Wrong), error.getMessage());
     }
 
     @Override

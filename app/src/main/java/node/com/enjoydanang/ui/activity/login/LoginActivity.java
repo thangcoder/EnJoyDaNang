@@ -163,8 +163,9 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
     }
 
 
-    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginNormal
-            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue, R.id.txtTermSystem, R.id.btnLoginZalo})
+
+    @OnClick({R.id.btnLoginFb, R.id.btnLoginGPlus, R.id.btnLoginKakaotalk, R.id.btnLoginZalo, R.id.btnLoginNormal
+            , R.id.txtCreateAccount, R.id.txtForgotPwd, R.id.txtContinue})
     public void onLoginClick(View view) {
         Intent intent = null;
         switch (view.getId()) {

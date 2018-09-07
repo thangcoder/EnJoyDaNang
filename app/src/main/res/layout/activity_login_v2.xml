@@ -30,7 +30,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_8sdp" />
+            android:layout_height="@dimen/_7sdp" />
 
         <include
             android:id="@+id/btnLoginGPlus"
@@ -38,7 +38,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_8sdp" />
+            android:layout_height="@dimen/_7sdp" />
 
         <include
             android:id="@+id/btnLoginKakaotalk"
@@ -46,7 +46,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_8sdp" />
+            android:layout_height="@dimen/_7sdp" />
 
         <include
             android:id="@+id/btnLoginZalo"

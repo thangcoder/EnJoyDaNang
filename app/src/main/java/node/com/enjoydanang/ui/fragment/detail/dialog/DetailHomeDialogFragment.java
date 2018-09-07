@@ -215,12 +215,13 @@ public class DetailHomeDialogFragment extends DialogFragment implements TabLayou
     public void onMenuOptionsClick(View view) {
         switch (view.getId()) {
             case R.id.img_scan:
-                if (Utils.hasLogin()) {
-                    startActivity(new Intent(getActivity(), ScanActivity.class));
-                    getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-                } else {
-                    DialogUtils.showDialog(getActivity(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
-                }
+                DialogUtils.showSheetShareDialog(mMainActivity, new Share("Google", "https://google.com.vn", ""));
+//                if (Utils.hasLogin()) {
+//                    startActivity(new Intent(getActivity(), ScanActivity.class));
+//                    getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+//                } else {
+//                    DialogUtils.showDialog(getActivity(), DialogType.WARNING, DialogUtils.getTitleDialog(2), Utils.getLanguageByResId(R.string.Message_You_Need_Login));
+//                }
                 break;
             case R.id.img_back:
                 if (mMainActivity != null) {

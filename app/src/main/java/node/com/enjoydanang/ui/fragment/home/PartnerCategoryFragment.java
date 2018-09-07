@@ -83,6 +83,8 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
 
     private Location mLocation;
 
+    private ShareDialog shareDialog;
+
     private ZaloUtils zaloUtils;
 
     private Share share;
@@ -104,6 +106,7 @@ public class PartnerCategoryFragment extends MvpFragment<PartnerCategoryPresente
         super.onViewCreated(view, savedInstanceState);
         mvpPresenter = createPresenter();
         userInfo = Utils.getUserInfo();
+        shareDialog = new ShareDialog(this);
         if (categoryId != -1) {
             if (mLocation == null) {
                 mvpPresenter.getListByLocation(categoryId, userInfo.getUserId(), START_PAGE, StringUtils.EMPTY, StringUtils.EMPTY);
